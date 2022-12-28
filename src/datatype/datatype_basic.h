@@ -1,7 +1,7 @@
 #ifndef _DATATYPE_BASIC_H_
 #define _DATATYPE_BASIC_H_
 
-namespace slam {
+namespace SLAM_UTILITY {
 
 using uint8_t = unsigned char;
 using uint16_t = unsigned short;
@@ -13,6 +13,6 @@ using int32_t = int;
 
 }
 
-using namespace slam;
+using namespace SLAM_UTILITY;
 
 #endif
