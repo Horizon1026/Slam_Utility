@@ -26,12 +26,13 @@ public:
         return true;
     }
 
-    inline bool GetPixelValue(int32_t row, int32_t col, uint16_t *value) const {
+    template<typename T>
+    inline bool GetPixelValue(int32_t row, int32_t col, T *value) const {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
             return false;
         }
 
-        *value = static_cast<uint16_t>(image_data_[row * cols_ + col]);
+        *value = static_cast<T>(image_data_[row * cols_ + col]);
         return true;
     }
 

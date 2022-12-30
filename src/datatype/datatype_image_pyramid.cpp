@@ -53,10 +53,10 @@ bool ImagePyramid::CreateImagePyramid(uint32_t level) {
         for (int32_t row = 0; row < images_[idx].rows(); ++row) {
             for (int32_t col = 0; col < images_[idx].cols(); ++col) {
                 uint16_t values[4] = {0};
-                images_[idx - 1].GetPixelValue(row * 2, col * 2, values);
-                images_[idx - 1].GetPixelValue(row * 2 + 1, col * 2, values + 1);
-                images_[idx - 1].GetPixelValue(row * 2, col * 2 + 1, values + 2);
-                images_[idx - 1].GetPixelValue(row * 2 + 1, col * 2 + 1, values + 3);
+                images_[idx - 1].GetPixelValue<uint16_t>(row * 2, col * 2, values);
+                images_[idx - 1].GetPixelValue<uint16_t>(row * 2 + 1, col * 2, values + 1);
+                images_[idx - 1].GetPixelValue<uint16_t>(row * 2, col * 2 + 1, values + 2);
+                images_[idx - 1].GetPixelValue<uint16_t>(row * 2 + 1, col * 2 + 1, values + 3);
                 images_[idx].SetPixelValue(row, col, static_cast<uint8_t>((values[0] + values[1] + values[2] + values[3]) / 4));
             }
         }
