@@ -13,6 +13,8 @@ using int8_t = char;
 using int16_t = short;
 using int32_t = int;
 
+using Quat = Eigen::Quaternion<float>;
+
 using Matrix2 = Eigen::Matrix<float, 2, 2>;
 using Matrix3 = Eigen::Matrix<float, 3, 3>;
 using Matrix4 = Eigen::Matrix<float, 4, 4>;
