@@ -28,6 +28,7 @@ namespace LOG {
     #define BOLD_WHITE      "\033[1m\033[37m"
 
     #define LogQuat(q) "[wxyz]-[" << q.w() << ", " << q.x() << ", " << q.y() << ", " << q.z() << "]"
+    #define LogVec(v) "[" << v.transpose() << "]"
 
     #if STD_COUT_INFO
         #define LogFixPercision() std::cout << std::fixed << std::setprecision(3)
