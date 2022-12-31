@@ -14,6 +14,8 @@ using int16_t = short;
 using int32_t = int;
 
 using Quat = Eigen::Quaternion<float>;
+using Mat = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>;
+using Vec = Eigen::Matrix<float, Eigen::Dynamic, 1>;
 
 using Mat2 = Eigen::Matrix<float, 2, 2>;
 using Mat3 = Eigen::Matrix<float, 3, 3>;
