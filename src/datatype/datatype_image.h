@@ -29,6 +29,7 @@ public:
     template<typename T>
     inline bool GetPixelValue(int32_t row, int32_t col, T *value) const {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
+            *value = 0;
             return false;
         }
 
@@ -38,6 +39,7 @@ public:
 
     inline bool GetPixelValue(float row, float col, float *value) const {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
+            *value = 0.0f;
             return false;
         }
 

@@ -45,6 +45,7 @@ bool ImagePyramid::CreateImagePyramid(uint32_t level) {
     level_ = level;
 
     uint8_t *buf = pyramid_buf_;
+    uint16_t values[4] = { 0 };
     for (uint32_t idx = 1; idx < level; ++idx) {
         // Locate image of one level at the full pyramid buffer.
         images_[idx].SetImage(buf, images_[idx - 1].rows() / 2, images_[idx - 1].cols() / 2);
@@ -52,11 +53,12 @@ bool ImagePyramid::CreateImagePyramid(uint32_t level) {
 
         for (int32_t row = 0; row < images_[idx].rows(); ++row) {
             for (int32_t col = 0; col < images_[idx].cols(); ++col) {
-                uint16_t values[4] = {0};
-                images_[idx - 1].GetPixelValue<uint16_t>(row * 2, col * 2, values);
-                images_[idx - 1].GetPixelValue<uint16_t>(row * 2 + 1, col * 2, values + 1);
-                images_[idx - 1].GetPixelValue<uint16_t>(row * 2, col * 2 + 1, values + 2);
-                images_[idx - 1].GetPixelValue<uint16_t>(row * 2 + 1, col * 2 + 1, values + 3);
+                const int32_t idx_row = row * 2;
+                const int32_t idx_col = col * 2;
+                images_[idx - 1].GetPixelValue<uint16_t>(idx_row, idx_col, values);
+                images_[idx - 1].GetPixelValue<uint16_t>(idx_row + 1, idx_col, values + 1);
+                images_[idx - 1].GetPixelValue<uint16_t>(idx_row, idx_col + 1, values + 2);
+                images_[idx - 1].GetPixelValue<uint16_t>(idx_row + 1, idx_col + 1, values + 3);
                 images_[idx].SetPixelValue(row, col, static_cast<uint8_t>((values[0] + values[1] + values[2] + values[3]) / 4));
             }
         }
