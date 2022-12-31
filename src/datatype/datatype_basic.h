@@ -15,23 +15,23 @@ using int32_t = int;
 
 using Quat = Eigen::Quaternion<float>;
 
-using Matrix2 = Eigen::Matrix<float, 2, 2>;
-using Matrix3 = Eigen::Matrix<float, 3, 3>;
-using Matrix4 = Eigen::Matrix<float, 4, 4>;
-using Matrix6 = Eigen::Matrix<float, 6, 6>;
-using Matrix9 = Eigen::Matrix<float, 9, 9>;
-using Matrix15 = Eigen::Matrix<float, 15, 15>;
-using Matrix18 = Eigen::Matrix<float, 18, 18>;
+using Mat2 = Eigen::Matrix<float, 2, 2>;
+using Mat3 = Eigen::Matrix<float, 3, 3>;
+using Mat4 = Eigen::Matrix<float, 4, 4>;
+using Mat6 = Eigen::Matrix<float, 6, 6>;
+using Mat9 = Eigen::Matrix<float, 9, 9>;
+using Mat15 = Eigen::Matrix<float, 15, 15>;
+using Mat18 = Eigen::Matrix<float, 18, 18>;
 
-using Vector2 = Eigen::Matrix<float, 2, 1>;
-using Vector3 = Eigen::Matrix<float, 3, 1>;
-using Vector4 = Eigen::Matrix<float, 4, 1>;
-using Vector6 = Eigen::Matrix<float, 6, 1>;
-using Vector9 = Eigen::Matrix<float, 9, 1>;
-using Vector15 = Eigen::Matrix<float, 15, 1>;
+using Vec2 = Eigen::Matrix<float, 2, 1>;
+using Vec3 = Eigen::Matrix<float, 3, 1>;
+using Vec4 = Eigen::Matrix<float, 4, 1>;
+using Vec6 = Eigen::Matrix<float, 6, 1>;
+using Vec9 = Eigen::Matrix<float, 9, 1>;
+using Vec15 = Eigen::Matrix<float, 15, 1>;
 
-using Matrix23 = Eigen::Matrix<float, 2, 3>;
-using Matrix36 = Eigen::Matrix<float, 3, 6>;
+using Mat23 = Eigen::Matrix<float, 2, 3>;
+using Mat36 = Eigen::Matrix<float, 3, 6>;
 
 }
 
