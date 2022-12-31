@@ -37,7 +37,7 @@ public:
             return false;
         }
 
-        *value = static_cast<T>(image_data_[row * cols_ + col]);
+        *value = GetPixelValueNoCheck<T>(row, col);
         return true;
     }
 
@@ -47,16 +47,7 @@ public:
             return false;
         }
 
-        const uint8_t *values = &image_data_[static_cast<int32_t>(row) * cols_ + static_cast<int32_t>(col)];
-        const float sub_row = row - std::floor(row);
-        const float sub_col = col - std::floor(col);
-        const float inv_sub_row = 1.0f - sub_row;
-        const float inv_sub_col = 1.0f - sub_col;
-
-        *value = static_cast<float>(
-            inv_sub_col * inv_sub_row * values[0] + sub_col * inv_sub_row * values[1] +
-            inv_sub_col * sub_row * values[cols_] + sub_col * sub_row * values[cols_ + 1]);
-
+        *value = GetPixelValueNoCheck(row, col);
         return true;
     }
 
