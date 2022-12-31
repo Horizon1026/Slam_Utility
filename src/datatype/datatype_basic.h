@@ -31,6 +31,7 @@ using Vec9 = Eigen::Matrix<float, 9, 1>;
 using Vec15 = Eigen::Matrix<float, 15, 1>;
 
 using Mat23 = Eigen::Matrix<float, 2, 3>;
+using Mat26 = Eigen::Matrix<float, 2, 6>;
 using Mat36 = Eigen::Matrix<float, 3, 6>;
 
 }
