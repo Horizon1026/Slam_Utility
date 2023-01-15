@@ -56,6 +56,10 @@ public:
         return static_cast<T>(image_data_[row * cols_ + col]);
     }
 
+    inline uint8_t GetPixelValueNoCheck(int32_t row, int32_t col) const {
+        return image_data_[row * cols_ + col];
+    }
+
     inline float GetPixelValueNoCheck(float row, float col) const {
         const uint8_t *values = &image_data_[static_cast<int32_t>(row) * cols_ + static_cast<int32_t>(col)];
         const float sub_row = row - std::floor(row);
