@@ -30,11 +30,13 @@ namespace LOG {
     #define LogQuat(q) "[wxyz][" << q.w() << ", " << q.x() << ", " << q.y() << ", " << q.z() << "]"
     #define LogVec(v) "[" << v.transpose() << "]"
 
+    #define LogFixPercision(x) std::cout << std::fixed << std::setprecision(x)
+    #define LogWriteTo(...) std::cout.rdbuf(std::ofstream(__VA_ARGS__).rdbuf())
+
     #if STD_COUT_INFO
-        #define LogFixPercision() std::cout << std::fixed << std::setprecision(3)
-        #define LogInfo(...)  std::cout << __VA_ARGS__ << std::endl
-        #define LogDebug(...) std::cout << BOLD_YELLOW "[Debug] " RESET_COLOR << __VA_ARGS__ << std::endl
-        #define LogError(...) std::cout << BOLD_RED "[Error] " RESET_COLOR << __VA_ARGS__ << std::endl
+        #define LogInfo(...)  std::cout << GREEN "[Info] " RESET_COLOR << __VA_ARGS__ << std::endl
+        #define LogDebug(...) std::cout << YELLOW "[Debug] " RESET_COLOR << __VA_ARGS__ << std::endl
+        #define LogError(...) std::cout << RED "[Error] " RESET_COLOR << __VA_ARGS__ << std::endl
     #else
         #define LogFixPercision()
         #define LogInfo(...)
