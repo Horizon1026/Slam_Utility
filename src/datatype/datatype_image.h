@@ -7,14 +7,20 @@
 class Image {
 public:
     explicit Image() = default;
-    virtual ~Image() = default;
+    virtual ~Image();
+    explicit Image(int32_t rows, int32_t cols);
     explicit Image(uint8_t *data, int32_t rows, int32_t cols);
+
+    Image &operator=(Image &other);
 
     uint8_t *image_data() const { return image_data_; }
     int32_t cols() const { return cols_; }
     int32_t rows() const { return rows_; }
+    bool has_memory() const { return has_memory_; }
 
-    bool SetImage(uint8_t *data, int32_t rows, int32_t cols);
+    void Reset();
+    void Reset(int32_t rows, int32_t cols);
+    void SetImage(uint8_t *data, int32_t rows, int32_t cols);
     void SetSize(int32_t rows, int32_t cols);
 
     inline bool SetPixelValue(int32_t row, int32_t col, uint8_t value) {
@@ -76,6 +82,7 @@ private:
     uint8_t *image_data_ = nullptr;
     int32_t cols_ = 0;
     int32_t rows_ = 0;
+    bool has_memory_ = false;
 };
 
-#endif
+#endif // end of _DATATYPE_IMAGE_H_
