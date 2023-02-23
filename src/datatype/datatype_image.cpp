@@ -54,6 +54,7 @@ void Image::Reset(int32_t rows, int32_t cols) {
         }
     } else {
         image_data_ = reinterpret_cast<uint8_t *>(SlamMemory::Malloc(rows * cols));
+        has_memory_ = true;
     }
     rows_ = rows;
     cols_ = cols;
