@@ -23,6 +23,18 @@ Image &Image::operator=(Image &other) {
     this->image_data_ = other.image_data_;
     this->rows_ = other.rows_;
     this->cols_ = other.cols_;
+    this->has_memory_ = false;
+
+    return *this;
+}
+
+Image &Image::operator<(Image &other) {
+    if (this->has_memory_) {
+        SlamMemory::Free(this->image_data_);
+    }
+    this->image_data_ = other.image_data_;
+    this->rows_ = other.rows_;
+    this->cols_ = other.cols_;
     this->has_memory_ = other.has_memory_;
 
     other.has_memory_ = false;

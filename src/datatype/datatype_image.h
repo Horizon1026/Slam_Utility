@@ -11,7 +11,10 @@ public:
     explicit Image(int32_t rows, int32_t cols);
     explicit Image(uint8_t *data, int32_t rows, int32_t cols);
 
+    /* Memory manager is still the right one. */
     Image &operator=(Image &other);
+    /* Memory manager is the left one. */
+    Image &operator<(Image &other);
 
     uint8_t *image_data() const { return image_data_; }
     int32_t cols() const { return cols_; }
