@@ -8,6 +8,13 @@ Image::~Image() {
     }
 }
 
+Image::Image(const Image &image) {
+    this->image_data_ = image.image_data_;
+    this->rows_ = image.rows_;
+    this->cols_ = image.cols_;
+    this->has_memory_ = false;
+}
+
 Image::Image(int32_t rows, int32_t cols) {
     Reset(rows, cols);
 }
