@@ -5,7 +5,6 @@
 #include "datatype_image.h"
 #include <cmath>
 
-inline constexpr static uint32_t kPyramidMaxLevel = 10;
 
 class ImagePyramid {
 public:
@@ -27,6 +26,7 @@ public:
     bool CreateImagePyramid(uint32_t level);
 
 private:
+    constexpr static uint32_t kPyramidMaxLevel = 10;
     uint32_t level_ = 0;
     Image images_[kPyramidMaxLevel];
     uint8_t *pyramid_buf_ = nullptr;
