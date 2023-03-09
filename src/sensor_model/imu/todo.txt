@@ -1,0 +1,4 @@
+imu size 18 propagate
+imu size 15 propagate
+imu size 6 propagate(only rotation)
+imu size 15 preintegrate
