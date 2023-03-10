@@ -7,32 +7,18 @@ set( CMAKE_CXX_FLAGS "-std=c++17 -O3 -Wall" )
 
 find_package( Eigen3 REQUIRED )
 
-# include_directories( "/usr/include/eigen3" )
-include_directories( ${PROJECT_SOURCE_DIR}/src/datatype )
-include_directories( ${PROJECT_SOURCE_DIR}/src/log )
-include_directories( ${PROJECT_SOURCE_DIR}/src/math )
-include_directories( ${PROJECT_SOURCE_DIR}/src/operate )
-include_directories( ${PROJECT_SOURCE_DIR}/src/memory )
+aux_source_directory( ./test SRC_TEST )
 
-aux_source_directory( ${PROJECT_SOURCE_DIR}/src/datatype DATATYPE )
-aux_source_directory( ${PROJECT_SOURCE_DIR}/src/log      LOG )
-aux_source_directory( ${PROJECT_SOURCE_DIR}/src/math     MATH )
-aux_source_directory( ${PROJECT_SOURCE_DIR}/src/operate  OPERATE )
-aux_source_directory( ${PROJECT_SOURCE_DIR}/src/memory   MEMORY )
+add_subdirectory( ./src )
 
-add_library( slam_utility STATIC
-    ${DATATYPE}
-    ${LOG}
-    ${MATH}
-    ${OPERATE}
-    ${MEMORY}
+add_executable( test_slam_utility ${SRC_TEST} )
+
+target_link_libraries( test_slam_utility
+    lib_slam_utility_datatype
+    lib_slam_utility_log
+    lib_slam_utility_math
+    lib_slam_utility_memory
+    lib_slam_utility_operate
 )
 
-add_executable( test_image
-    test/test_image.cpp
-    ${DATATYPE}
-    ${LOG}
-    ${MATH}
-    ${OPERATE}
-    ${MEMORY}
-)
+target_include_directories( test_slam_utility PUBLIC ./src )

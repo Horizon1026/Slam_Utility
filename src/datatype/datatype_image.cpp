@@ -1,5 +1,4 @@
 #include "datatype_image.h"
-#include "slam_memory.h"
 #include <algorithm>
 
 Image::Image(uint8_t *data, int32_t rows, int32_t cols) {

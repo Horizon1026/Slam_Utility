@@ -1,3 +1,3 @@
 cd ./build
-./test_image
+./test_slam_utility
 cd ..

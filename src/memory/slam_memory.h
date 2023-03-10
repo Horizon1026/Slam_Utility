@@ -8,7 +8,7 @@ class SlamMemory {
 
 public:
     SlamMemory() = default;
-    ~SlamMemory() = default;
+    virtual ~SlamMemory() = default;
 
 public:
     static void *Malloc(uint32_t size) {
