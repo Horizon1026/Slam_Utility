@@ -10,5 +10,6 @@ find_package( Eigen3 REQUIRED )
 aux_source_directory( ./test SRC_TEST )
 add_executable( test_slam_utility ${SRC_TEST} )
 
+# Add slam utility lib.
 add_subdirectory( ./src )
 target_link_libraries( test_slam_utility lib_slam_utility )
