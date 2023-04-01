@@ -2,6 +2,7 @@
 #define _DATATYPE_BASIC_H_
 
 #include <eigen3/Eigen/Eigen>
+#include <eigen3/unsupported/Eigen/Polynomials>
 
 namespace SLAM_UTILITY {
 
@@ -35,6 +36,7 @@ using Vec15 = Eigen::Matrix<float, 15, 1>;
 using Mat23 = Eigen::Matrix<float, 2, 3>;
 using Mat26 = Eigen::Matrix<float, 2, 6>;
 using Mat36 = Eigen::Matrix<float, 3, 6>;
+using Mat59 = Eigen::Matrix<float, 5, 9>;
 
 using Pixel = Eigen::Matrix<int32_t, 2, 1>;
 
