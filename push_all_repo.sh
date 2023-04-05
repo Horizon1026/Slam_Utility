@@ -3,14 +3,6 @@ git add .
 git commit -m "slam utility"
 git push origin HEAD:main
 
-if [ -d "../Distortion" ]; then
-    echo ">> Submit repo 'Distortion'"
-    cd ../Distortion/
-    git add .
-    git commit -m "distortion"
-    git push origin HEAD:main
-fi
-
 if [ -d "../Feature_Detector" ]; then
     echo ">> Submit repo 'Feature_Detector'"
     cd ../Feature_Detector/
