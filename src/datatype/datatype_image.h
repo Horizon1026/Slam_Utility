@@ -10,7 +10,7 @@ public:
     virtual ~Image() = default;
     explicit Image(uint8_t *data, int32_t rows, int32_t cols);
 
-    uint8_t *image_data() const { return image_data_; }
+    uint8_t *data() const { return image_data_; }
     int32_t cols() const { return cols_; }
     int32_t rows() const { return rows_; }
 

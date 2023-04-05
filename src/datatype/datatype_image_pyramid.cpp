@@ -6,9 +6,9 @@ ImagePyramid::ImagePyramid(uint32_t level, Image *raw_image) : level_(level) {
     SetRawImage(raw_image);
 }
 
-ImagePyramid::ImagePyramid(uint32_t level, uint8_t *image_data, int32_t rows, int32_t cols) {
+ImagePyramid::ImagePyramid(uint32_t level, uint8_t *data, int32_t rows, int32_t cols) {
     level_ = std::min(std::max(level, static_cast<uint32_t>(0)), kPyramidMaxLevel - 1);
-    SetRawImage(image_data, rows, cols);
+    SetRawImage(data, rows, cols);
 }
 
 bool ImagePyramid::SetRawImage(Image *raw_image) {
@@ -16,16 +16,16 @@ bool ImagePyramid::SetRawImage(Image *raw_image) {
         return false;
     }
 
-    images_[0].SetImage(raw_image->image_data(), raw_image->rows(), raw_image->cols());
+    images_[0].SetImage(raw_image->data(), raw_image->rows(), raw_image->cols());
     return true;
 }
 
-bool ImagePyramid::SetRawImage(uint8_t *image_data, int32_t rows, int32_t cols) {
-    if (image_data == nullptr) {
+bool ImagePyramid::SetRawImage(uint8_t *data, int32_t rows, int32_t cols) {
+    if (data == nullptr) {
         return false;
     }
 
-    images_[0].SetImage(image_data, rows, cols);
+    images_[0].SetImage(data, rows, cols);
     return true;
 }
 
@@ -39,7 +39,7 @@ bool ImagePyramid::SetPyramidBuff(uint8_t *pyramid_buf) {
 }
 
 bool ImagePyramid::CreateImagePyramid(uint32_t level) {
-    if (level > kPyramidMaxLevel - 1 || images_[0].image_data() == nullptr || pyramid_buf_ == nullptr) {
+    if (level > kPyramidMaxLevel - 1 || images_[0].data() == nullptr || pyramid_buf_ == nullptr) {
         return false;
     }
     level_ = level;

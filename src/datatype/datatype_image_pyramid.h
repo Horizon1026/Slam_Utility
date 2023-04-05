@@ -11,7 +11,7 @@ public:
     explicit ImagePyramid() = default;
     virtual ~ImagePyramid() = default;
     explicit ImagePyramid(uint32_t level, Image *raw_image);
-    explicit ImagePyramid(uint32_t level, uint8_t *image_data, int32_t rows, int32_t cols);
+    explicit ImagePyramid(uint32_t level, uint8_t *data, int32_t rows, int32_t cols);
 
     uint32_t level() const { return level_; }
     Image *images() { return images_; }
@@ -20,7 +20,7 @@ public:
     Image GetImage(uint32_t level_idx) const { return images_[level_idx]; }
 
     bool SetRawImage(Image *raw_image);
-    bool SetRawImage(uint8_t *image_data, int32_t rows, int32_t cols);
+    bool SetRawImage(uint8_t *data, int32_t rows, int32_t cols);
     bool SetPyramidBuff(uint8_t *pyramid_buf);
 
     bool CreateImagePyramid(uint32_t level);
