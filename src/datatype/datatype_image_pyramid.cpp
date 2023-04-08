@@ -29,22 +29,22 @@ bool ImagePyramid::SetRawImage(uint8_t *data, int32_t rows, int32_t cols) {
     return true;
 }
 
-bool ImagePyramid::SetPyramidBuff(uint8_t *pyramid_buf) {
-    if (pyramid_buf == nullptr) {
+bool ImagePyramid::SetPyramidBuff(uint8_t *data) {
+    if (data == nullptr) {
         return false;
     }
 
-    pyramid_buf_ = pyramid_buf;
+    data_ = data;
     return true;
 }
 
 bool ImagePyramid::CreateImagePyramid(uint32_t level) {
-    if (level > kPyramidMaxLevel - 1 || images_[0].data() == nullptr || pyramid_buf_ == nullptr) {
+    if (level > kPyramidMaxLevel - 1 || images_[0].data() == nullptr || data_ == nullptr) {
         return false;
     }
     level_ = level;
 
-    uint8_t *buf = pyramid_buf_;
+    uint8_t *buf = data_;
     for (uint32_t idx = 1; idx < level; ++idx) {
         // Locate image of one level at the full pyramid buffer.
         images_[idx].SetImage(buf, images_[idx - 1].rows() / 2, images_[idx - 1].cols() / 2);

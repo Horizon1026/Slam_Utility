@@ -5,12 +5,13 @@
 #include "cmath"
 
 class Image {
+
 public:
     explicit Image() = default;
     virtual ~Image() = default;
     explicit Image(uint8_t *data, int32_t rows, int32_t cols);
 
-    uint8_t *data() const { return image_data_; }
+    uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }
     int32_t rows() const { return rows_; }
 
@@ -21,12 +22,12 @@ public:
             return false;
         }
 
-        image_data_[row * cols_ + col] = value;
+        data_[row * cols_ + col] = value;
         return true;
     }
 
     inline void SetPixelValueNoCheck(int32_t row, int32_t col, uint8_t value) {
-        image_data_[row * cols_ + col] = value;
+        data_[row * cols_ + col] = value;
     }
 
     template<typename T>
@@ -52,15 +53,15 @@ public:
 
     template<typename T>
     inline T GetPixelValueNoCheck(int32_t row, int32_t col) const {
-        return static_cast<T>(image_data_[row * cols_ + col]);
+        return static_cast<T>(data_[row * cols_ + col]);
     }
 
     inline uint8_t GetPixelValueNoCheck(int32_t row, int32_t col) const {
-        return image_data_[row * cols_ + col];
+        return data_[row * cols_ + col];
     }
 
     inline float GetPixelValueNoCheck(float row, float col) const {
-        const uint8_t *values = &image_data_[static_cast<int32_t>(row) * cols_ + static_cast<int32_t>(col)];
+        const uint8_t *values = &data_[static_cast<int32_t>(row) * cols_ + static_cast<int32_t>(col)];
         const float sub_row = row - std::floor(row);
         const float sub_col = col - std::floor(col);
         const float inv_sub_row = 1.0f - sub_row;
@@ -72,7 +73,7 @@ public:
     }
 
 private:
-    uint8_t *image_data_ = nullptr;
+    uint8_t *data_ = nullptr;
     int32_t cols_ = 0;
     int32_t rows_ = 0;
 };
