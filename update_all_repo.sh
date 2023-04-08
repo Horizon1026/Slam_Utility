@@ -24,3 +24,9 @@ if [ -d "../Sensor_Model" ]; then
     cd ../Sensor_Model/
     git pull
 fi
+
+if [ -d "../Visual_Frontend" ]; then
+    echo ">> Update repo 'Visual_Frontend'"
+    cd ../Visual_Frontend/
+    git pull
+fi
