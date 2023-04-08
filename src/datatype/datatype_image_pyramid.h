@@ -29,7 +29,7 @@ private:
     constexpr static uint32_t kPyramidMaxLevel = 10;
     uint32_t level_ = 0;
     Image images_[kPyramidMaxLevel];
-    uint8_t *data_ = nullptr;
+    uint8_t *data_ = nullptr;   // This buff not store raw image.
 };
 
 #endif
