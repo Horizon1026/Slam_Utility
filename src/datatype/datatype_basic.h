@@ -39,6 +39,7 @@ using Mat36 = Eigen::Matrix<float, 3, 6>;
 using Mat59 = Eigen::Matrix<float, 5, 9>;
 
 using Pixel = Eigen::Matrix<int32_t, 2, 1>;
+using MatInt = Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic>;
 
 }
 
