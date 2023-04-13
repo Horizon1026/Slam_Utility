@@ -5,8 +5,6 @@ project( slam_utility )
 set( CMAKE_BUILD_TYPE "Release" )
 set( CMAKE_CXX_FLAGS "-std=c++17 -O3 -Wall" )
 
-find_package( Eigen3 REQUIRED )
-
 aux_source_directory( ./test SRC_TEST )
 add_executable( test_slam_utility ${SRC_TEST} )
 
