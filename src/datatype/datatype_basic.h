@@ -1,8 +1,8 @@
 #ifndef _DATATYPE_BASIC_H_
 #define _DATATYPE_BASIC_H_
 
-#include <Eigen/Eigen>
-#include <unsupported/Eigen/Polynomials>
+#include <eigen3/Eigen/Eigen>
+#include <eigen3/unsupported/Eigen/Polynomials>
 
 namespace SLAM_UTILITY {
 
