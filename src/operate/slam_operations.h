@@ -39,6 +39,18 @@ public:
         v.resize(j);
     }
 
+    template<typename T>
+    static uint32_t StatisItemInVector(const std::vector<T> &v,
+                                       const T &item) {
+        uint32_t cnt = 0;
+        for (const auto &i : v) {
+            if (i == item) {
+                ++cnt;
+            }
+        }
+        return cnt;
+    }
+
 };
 
 }
