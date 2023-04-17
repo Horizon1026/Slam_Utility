@@ -15,7 +15,7 @@ if [ -d "../Feature_Tracker" ]; then
     echo ">> Submit repo 'Feature_Tracker'"
     cd ../Feature_Tracker/
     git add .
-    git commit -m "optical flow tracker"
+    git commit -m "feature tracker"
     git push origin HEAD:main
 fi
 
