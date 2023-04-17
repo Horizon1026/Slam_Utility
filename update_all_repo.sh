@@ -7,9 +7,9 @@ if [ -d "../Feature_Detector" ]; then
     git pull
 fi
 
-if [ -d "../Optical_Flow_Tracker" ]; then
-    echo ">> Update repo 'Optical_Flow_Tracker'"
-    cd ../Optical_Flow_Tracker/
+if [ -d "../Feature_Tracker" ]; then
+    echo ">> Update repo 'Feature_Tracker'"
+    cd ../Feature_Tracker/
     git pull
 fi
 
