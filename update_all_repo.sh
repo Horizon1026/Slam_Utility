@@ -30,3 +30,9 @@ if [ -d "../Visual_Frontend" ]; then
     cd ../Visual_Frontend/
     git pull
 fi
+
+if [ -d "../Image_Processor" ]; then
+    echo ">> Update repo 'Image_Processor'"
+    cd ../Image_Processor/
+    git pull
+fi

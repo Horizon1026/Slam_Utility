@@ -39,6 +39,14 @@ if [ -d "../Visual_Frontend" ]; then
     echo ">> Submit repo 'Visual_Frontend'"
     cd ../Visual_Frontend/
     git add .
-    git commit -m "sensor model"
+    git commit -m "visual frontend"
+    git push origin HEAD:main
+fi
+
+if [ -d "../Image_Processor" ]; then
+    echo ">> Submit repo 'Image_Processor'"
+    cd ../Image_Processor/
+    git add .
+    git commit -m "image processor"
     git push origin HEAD:main
 fi
