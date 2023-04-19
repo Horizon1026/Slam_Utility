@@ -17,7 +17,8 @@ public:
     Image *images() { return images_; }
     uint8_t *data() const { return data_; }
 
-    Image GetImage(uint32_t level_idx) const { return images_[level_idx]; }
+    Image &GetImage(uint32_t level_idx) { return images_[level_idx]; }
+    const Image &GetImageConst(uint32_t level_idx) const { return images_[level_idx]; }
 
     bool SetRawImage(Image *raw_image);
     bool SetRawImage(uint8_t *data, int32_t rows, int32_t cols);
