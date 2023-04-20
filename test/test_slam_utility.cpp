@@ -4,7 +4,7 @@
 #include "slam_operations.h"
 #include "slam_memory.h"
 
-int main() {
+int main(int argc, char **argv) {
     LogInfo("Slam Utility Test.");
     return 0;
 }
