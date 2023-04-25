@@ -50,3 +50,11 @@ if [ -d "../Image_Processor" ]; then
     git commit -m "image processor"
     git push origin HEAD:main
 fi
+
+if [ -d "../Slam_Solver" ]; then
+    echo ">> Submit repo 'Slam_Solver'"
+    cd ../Slam_Solver/
+    git add .
+    git commit -m "slam solver"
+    git push origin HEAD:main
+fi

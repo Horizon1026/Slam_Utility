@@ -36,3 +36,9 @@ if [ -d "../Image_Processor" ]; then
     cd ../Image_Processor/
     git pull
 fi
+
+if [ -d "../Slam_Solver" ]; then
+    echo ">> Update repo 'Slam_Solver'"
+    cd ../Slam_Solver/
+    git pull
+fi
