@@ -18,6 +18,7 @@ template <typename T> using TQuat = Eigen::Quaternion<T>;
 template <typename T> using TMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 template <typename T> using TVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
+template <typename T> using TMat1 = Eigen::Matrix<T, 1, 1>;
 template <typename T> using TMat2 = Eigen::Matrix<T, 2, 2>;
 template <typename T> using TMat3 = Eigen::Matrix<T, 3, 3>;
 template <typename T> using TMat4 = Eigen::Matrix<T, 4, 4>;
@@ -27,6 +28,7 @@ template <typename T> using TMat9 = Eigen::Matrix<T, 9, 9>;
 template <typename T> using TMat15 = Eigen::Matrix<T, 15, 15>;
 template <typename T> using TMat18 = Eigen::Matrix<T, 18, 18>;
 
+template <typename T> using TVec1 = Eigen::Matrix<T, 1, 1>;
 template <typename T> using TVec2 = Eigen::Matrix<T, 2, 1>;
 template <typename T> using TVec3 = Eigen::Matrix<T, 3, 1>;
 template <typename T> using TVec4 = Eigen::Matrix<T, 4, 1>;
@@ -45,6 +47,7 @@ using Quat = Eigen::Quaternion<float>;
 using Mat = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>;
 using Vec = Eigen::Matrix<float, Eigen::Dynamic, 1>;
 
+using Mat1 = Eigen::Matrix<float, 1, 1>;
 using Mat2 = Eigen::Matrix<float, 2, 2>;
 using Mat3 = Eigen::Matrix<float, 3, 3>;
 using Mat4 = Eigen::Matrix<float, 4, 4>;
@@ -54,6 +57,7 @@ using Mat9 = Eigen::Matrix<float, 9, 9>;
 using Mat15 = Eigen::Matrix<float, 15, 15>;
 using Mat18 = Eigen::Matrix<float, 18, 18>;
 
+using Vec1 = Eigen::Matrix<float, 1, 1>;
 using Vec2 = Eigen::Matrix<float, 2, 1>;
 using Vec3 = Eigen::Matrix<float, 3, 1>;
 using Vec4 = Eigen::Matrix<float, 4, 1>;
