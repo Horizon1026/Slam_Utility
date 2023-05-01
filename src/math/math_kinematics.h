@@ -13,11 +13,11 @@ namespace {
 class Utility {
 
 public:
-    explicit Utility() = default;
+    Utility() = default;
     virtual ~Utility() = default;
 
     static Mat3 SkewSymmetricMatrix(const Vec3 &v) {
-        static Mat3 M;
+        Mat3 M;
         M << 0, - v.z(), v.y(),
              v.z(), 0, - v.x(),
              - v.y(), v.x(), 0;
@@ -56,7 +56,7 @@ public:
 
     /* Compute Q_L matrix. */
     static Mat4 Qleft(const Quat &q) {
-        static Mat4 Q;
+        Mat4 Q;
         Q.template block<1, 3>(0, 1) = - q.vec().transpose();
         Q.template block<3, 1>(1, 0) = q.vec();
         Q.template block<3, 3>(1, 1) = SkewSymmetricMatrix(q.vec());
@@ -79,7 +79,7 @@ public:
 
     /* Compute Q_R matrix. */
     static Mat4 Qright(const Quat &q) {
-        static Mat4 Q;
+        Mat4 Q;
         Q.template block<1, 3>(0, 1) = - q.vec().transpose();
         Q.template block<3, 1>(1, 0) = q.vec();
         Q.template block<3, 3>(1, 1) = - SkewSymmetricMatrix(q.vec());
@@ -101,9 +101,10 @@ public:
     }
 
     /* Trasform quaternion to pitch, roll, yaw. */
-    static Vec3 QuaternionToEuler(const Quat &q_wb) {
-        static Vec3 pry;    // pitch, roll, yaw
-        Mat3 R(q_wb.inverse());
+    template <typename Scalar>
+    static TVec3<Scalar> QuaternionToEuler(const TQuat<Scalar> &q_wb) {
+        TVec3<Scalar> pry;    // pitch, roll, yaw
+        TMat3<Scalar> R(q_wb.inverse());
         pry.x() = std::atan2(R(1, 2), R(2, 2)) * kRadToDeg;
         pry.y() = std::asin(- R(0, 2)) * kRadToDeg;
         pry.z() = std::atan2(R(0, 1), R(0, 0)) * kRadToDeg;
@@ -111,9 +112,10 @@ public:
     }
 
     /* Compute inverse of symmetric matrix. */
-    static Mat Inverse(const Mat &A) {
-        Eigen::SelfAdjointEigenSolver<Mat> saes(A);
-        Mat Ainv = saes.eigenvectors() * Vec(
+    template <typename Scalar>
+    static TMat<Scalar> Inverse(const TMat<Scalar> &A) {
+        Eigen::SelfAdjointEigenSolver<TMat<Scalar>> saes(A);
+        TMat<Scalar> Ainv = saes.eigenvectors() * Vec(
             (saes.eigenvalues().array() > kZero).select(
                 saes.eigenvalues().array().inverse(), 0
             )).asDiagonal() * saes.eigenvectors().transpose();
@@ -121,8 +123,9 @@ public:
     }
 
     /* Combine q t to homogeneous transformation. */
-    static Mat4 TransformMatrix(const Quat &q, const Vec3 &t) {
-        static Mat4 Trans = Mat4::Identity();
+    template <typename Scalar>
+    static TMat4<Scalar> TransformMatrix(const TQuat<Scalar> &q, const TVec3<Scalar> &t) {
+        TMat4<Scalar> Trans = TMat4<Scalar>::Identity();
         Trans.block<3, 3>(0, 0) = q.matrix();
         Trans.block<3, 1>(0, 3) = t;
         return Trans;
