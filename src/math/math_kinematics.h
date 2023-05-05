@@ -125,12 +125,13 @@ public:
     /* Combine q t to homogeneous transformation. */
     template <typename Scalar>
     static TMat4<Scalar> TransformMatrix(const TQuat<Scalar> &q, const TVec3<Scalar> &t) {
-        TMat4<Scalar> Trans = TMat4<Scalar>::Identity();
-        Trans.block<3, 3>(0, 0) = q.matrix();
-        Trans.block<3, 1>(0, 3) = t;
-        return Trans;
+        TMat4<Scalar> transform = TMat4<Scalar>::Identity();
+        transform.template block<3, 3>(0, 0) = q.matrix();
+        transform.template block<3, 1>(0, 3) = t;
+        return transform;
     }
 };
+
 }
 
 #endif // end of _MATH_KINEMATICS_H_
