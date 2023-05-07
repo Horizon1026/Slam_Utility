@@ -8,6 +8,7 @@ namespace SLAM_UTILITY {
 namespace {
     constexpr static float kRadToDeg = 57.295779579f;
     constexpr static float kZero = 1e-8f;
+    constexpr static int32_t kMaxInt32 = 2147483647;
 }
 
 class Utility {
