@@ -131,6 +131,35 @@ public:
         transform.template block<3, 1>(0, 3) = t;
         return transform;
     }
+
+    /* Compute exp of vector3. */
+    template <typename Scalar>
+    static TQuat<Scalar> Exponent(const TVec3<Scalar> &omega) {
+        const Scalar theta_sq = omega.squaredNorm();
+        const Scalar theta = std::sqrt(theta_sq);
+        const Scalar half_theta = static_cast<Scalar>(0.5) * theta;
+
+        Scalar imag_factor;
+        Scalar real_factor;;
+        if (theta < kZero) {
+            const Scalar theta_po4 = theta_sq * theta_sq;
+            imag_factor = static_cast<Scalar>(0.5)
+                          - static_cast<Scalar>(1.0/48.0) * theta_sq
+                          + static_cast<Scalar>(1.0/3840.0) * theta_po4;
+            real_factor = static_cast<Scalar>(1)
+                          - static_cast<Scalar>(0.5) * theta_sq
+                          + static_cast<Scalar>(1.0/384.0) * theta_po4;
+        } else {
+            const Scalar sin_half_theta = std::sin(half_theta);
+            imag_factor = sin_half_theta / theta;
+            real_factor = std::cos(half_theta);
+        }
+
+        return TQuat<Scalar>(real_factor,
+                             imag_factor * omega.x(),
+                             imag_factor * omega.y(),
+                             imag_factor * omega.z());
+    }
 };
 
 }
