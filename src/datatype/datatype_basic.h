@@ -71,6 +71,7 @@ using Mat2x3 = Eigen::Matrix<float, 2, 3>;
 using Mat2x6 = Eigen::Matrix<float, 2, 6>;
 using Mat3x6 = Eigen::Matrix<float, 3, 6>;
 using Mat5x9 = Eigen::Matrix<float, 5, 9>;
+using Mat15x18 = Eigen::Matrix<float, 15, 18>;
 
 using Pixel = Eigen::Matrix<int32_t, 2, 1>;
 using MatInt = Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic>;
