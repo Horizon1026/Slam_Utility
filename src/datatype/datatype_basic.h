@@ -64,6 +64,7 @@ using Vec4 = Eigen::Matrix<float, 4, 1>;
 using Vec5 = Eigen::Matrix<float, 5, 1>;
 using Vec6 = Eigen::Matrix<float, 6, 1>;
 using Vec9 = Eigen::Matrix<float, 9, 1>;
+using Vec12 = Eigen::Matrix<float, 12, 1>;
 using Vec15 = Eigen::Matrix<float, 15, 1>;
 using Vec18 = Eigen::Matrix<float, 18, 1>;
 
@@ -71,6 +72,7 @@ using Mat2x3 = Eigen::Matrix<float, 2, 3>;
 using Mat2x6 = Eigen::Matrix<float, 2, 6>;
 using Mat3x6 = Eigen::Matrix<float, 3, 6>;
 using Mat5x9 = Eigen::Matrix<float, 5, 9>;
+using Mat15x12 = Eigen::Matrix<float, 15, 12>;
 using Mat15x18 = Eigen::Matrix<float, 15, 18>;
 
 using Pixel = Eigen::Matrix<int32_t, 2, 1>;
