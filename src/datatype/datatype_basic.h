@@ -15,8 +15,8 @@ using int16_t = short;
 using int32_t = int;
 
 template <typename T> using TQuat = Eigen::Quaternion<T>;
-template <typename T> using TMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
-template <typename T> using TVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
+template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic> using TMat = Eigen::Matrix<T, Row, Col>;
+template <typename T, int32_t Row = Eigen::Dynamic> using TVec = Eigen::Matrix<T, Row, 1>;
 
 template <typename T> using TMat1 = Eigen::Matrix<T, 1, 1>;
 template <typename T> using TMat2 = Eigen::Matrix<T, 2, 2>;
