@@ -1,38 +1,50 @@
-cd ..
+echo ">> Update repo 'Slam_Utility'"
+git pull
 
-if [ ! -d "Feature_Tracker" ]; then
-    echo ">> Git clone repo 'Feature_Tracker'"
-    git clone git@github.com:Horizon1026/Feature_Tracker.git
+if [ -d "../Feature_Detector" ]; then
+    echo ">> Update repo 'Feature_Detector'"
+    cd ../Feature_Detector/
+    git pull
 fi
 
-if [ ! -d "Feature_Detector" ]; then
-    echo ">> Git clone repo 'Feature_Detector'"
-    git clone git@github.com:Horizon1026/Feature_Detector.git
+if [ -d "../Feature_Tracker" ]; then
+    echo ">> Update repo 'Feature_Tracker'"
+    cd ../Feature_Tracker/
+    git pull
 fi
 
-if [ ! -d "Vision_Geometry" ]; then
-    echo ">> Git clone repo 'Vision_Geometry'"
-    git clone git@github.com:Horizon1026/Vision_Geometry.git
+if [ -d "../Vision_Geometry" ]; then
+    echo ">> Update repo 'Vision_Geometry'"
+    cd ../Vision_Geometry/
+    git pull
 fi
 
-if [ ! -d "Visual_Frontend" ]; then
-    echo ">> Git clone repo 'Visual_Frontend'"
-    git clone git@github.com:Horizon1026/Visual_Frontend.git
+if [ -d "../Sensor_Model" ]; then
+    echo ">> Update repo 'Sensor_Model'"
+    cd ../Sensor_Model/
+    git pull
 fi
 
-if [ ! -d "Image_Processor" ]; then
-    echo ">> Git clone repo 'Image_Processor'"
-    git clone git@github.com:Horizon1026/Image_Processor.git
+if [ -d "../Visual_Frontend" ]; then
+    echo ">> Update repo 'Visual_Frontend'"
+    cd ../Visual_Frontend/
+    git pull
 fi
 
-if [ ! -d "Sensor_Model" ]; then
-    echo ">> Git clone repo 'Sensor_Model'"
-    git clone git@github.com:Horizon1026/Sensor_Model.git
+if [ -d "../Image_Processor" ]; then
+    echo ">> Update repo 'Image_Processor'"
+    cd ../Image_Processor/
+    git pull
 fi
 
-if [ ! -d "Slam_Solver" ]; then
-    echo ">> Git clone repo 'Slam_Solver'"
-    git clone git@github.com:Horizon1026/Slam_Solver.git
+if [ -d "../Slam_Solver" ]; then
+    echo ">> Update repo 'Slam_Solver'"
+    cd ../Slam_Solver/
+    git pull
 fi
 
-cd Slam_Utility
+if [ -d "../VIO_Stereo_ORB_SLAM3" ]; then
+    echo ">> Update repo 'VIO_Stereo_ORB_SLAM3'"
+    cd ../VIO_Stereo_ORB_SLAM3/
+    git pull
+fi

@@ -58,3 +58,11 @@ if [ -d "../Slam_Solver" ]; then
     git commit -m "slam solver"
     git push origin HEAD:main
 fi
+
+if [ -d "../VIO_Stereo_ORB_SLAM3" ]; then
+    echo ">> Submit repo 'VIO_Stereo_ORB_SLAM3'"
+    cd ../VIO_Stereo_ORB_SLAM3/
+    git add .
+    git commit -m "vio stereo"
+    git push origin HEAD:main
+fi
