@@ -7,7 +7,6 @@
 #define STD_COUT_INFO (1)
 
 namespace SLAM_UTILITY {
-namespace LOG {
 
     #define RESET_COLOR     "\033[0m"
     #define BLACK           "\033[30m"
@@ -35,17 +34,17 @@ namespace LOG {
     #define LogWriteToFile(...) std::cout.rdbuf(std::ofstream(__VA_ARGS__).rdbuf())
 
     #if STD_COUT_INFO
-        #define LogInfo(...)  std::cout << GREEN "[Info ] " RESET_COLOR << __VA_ARGS__ << std::endl
-        #define LogDebug(...) std::cout << CYAN "[Debug] " RESET_COLOR << __VA_ARGS__ << std::endl
-        #define LogWarn(...)  std::cout << YELLOW "[Warn ] " RESET_COLOR << __VA_ARGS__ << std::endl
-        #define LogError(...) std::cout << RED "[Error] " RESET_COLOR << __VA_ARGS__ << std::endl
+        #define ReportInfo(...)  std::cout << GREEN "[Info ] " RESET_COLOR << __VA_ARGS__ << std::endl
+        #define ReportDebug(...) std::cout << CYAN "[Debug] " RESET_COLOR << __VA_ARGS__ << std::endl
+        #define ReportWarn(...)  std::cout << YELLOW "[Warn ] " RESET_COLOR << __VA_ARGS__ << std::endl
+        #define ReportError(...) std::cout << RED "[Error] " RESET_COLOR << __VA_ARGS__ << std::endl
     #else
-        #define LogInfo(...)
-        #define LogDebug(...)
-        #define LogWarn(...)
-        #define LogError(...)
+        #define ReportInfo(...)
+        #define ReportDebug(...)
+        #define ReportWarn(...)
+        #define ReportError(...)
     #endif
-}
+
 }
 
 using namespace SLAM_UTILITY;
