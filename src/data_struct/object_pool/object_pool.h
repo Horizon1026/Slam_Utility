@@ -1,0 +1,8 @@
+#ifndef _SLAM_UTILITY_OBJECT_POOL_H_
+#define _SLAM_UTILITY_OBJECT_POOL_H_
+
+namespace SLAM_UTILITY {
+
+}
+
+#endif // end of _SLAM_UTILITY_OBJECT_POOL_H_

@@ -21,6 +21,14 @@ if ( NOT TARGET lib_slam_utility_visualize )
     add_subdirectory( ${SLAM_UTILITY_PATH}/visualize ${PROJECT_SOURCE_DIR}/build/lib_slam_utility_visualize )
 endif()
 
+# Add all components of slam utility data struct.
+if ( NOT TARGET lib_covisible_graph )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/data_struct/covisible_graph ${PROJECT_SOURCE_DIR}/build/lib_covisible_graph )
+endif()
+if ( NOT TARGET lib_object_pool )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/data_struct/object_pool ${PROJECT_SOURCE_DIR}/build/lib_object_pool )
+endif()
+
 add_library( lib_slam_utility ${AUX_SRC_SLAM_UTILITY} )
 target_include_directories( lib_slam_utility PUBLIC . )
 target_link_libraries( lib_slam_utility
@@ -30,4 +38,7 @@ target_link_libraries( lib_slam_utility
     lib_slam_utility_memory
     lib_slam_utility_operate
     lib_slam_utility_visualize
+
+    lib_covisible_graph
+    lib_object_pool
 )

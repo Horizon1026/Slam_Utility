@@ -15,11 +15,19 @@ if ( NOT TARGET lib_slam_utility )
     add_subdirectory( src ${PROJECT_SOURCE_DIR}/build/lib_slam_utility )
 endif()
 
-add_executable( test_slam_utility
-    test/test_slam_utility.cpp
+# Create executable target to test datatype image and pyramid.
+add_executable( test_datatype_image
+    test/test_datatype_image.cpp
+)
+target_link_libraries( test_datatype_image
+    ${OpenCV_LIBS}
+    lib_slam_utility
 )
 
-target_link_libraries( test_slam_utility
-    ${OpenCV_LIBS}
+# Create executable target to test covisible graph.
+add_executable( test_covisible_graph
+    test/test_covisible_graph.cpp
+)
+target_link_libraries( test_covisible_graph
     lib_slam_utility
 )
