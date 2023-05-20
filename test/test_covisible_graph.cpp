@@ -40,8 +40,10 @@ CovisibleGraph<Vec3, Vec2> CreateGraph(std::vector<Pose> &cameras,
     // Generate data for each frame.
     std::vector<uint32_t> features_id;
     std::vector<Vec2> features_observe;
+    std::vector<Vec3> features_param;
     features_id.reserve(kPointsNumber);
     features_observe.reserve(kPointsNumber);
+    features_param.reserve(kPointsNumber);
 
     // Construct covisible graph, add cameras and points.
     CovisibleGraph<Vec3, Vec2> graph;
@@ -55,10 +57,12 @@ CovisibleGraph<Vec3, Vec2> CreateGraph(std::vector<Pose> &cameras,
             const Vec2 obv = p_c.head<2>() / p_c.z();
             features_observe.emplace_back(obv);
             features_id.emplace_back(j + 1);
+            features_param.emplace_back(points[j]);
         }
 
         // Add this frame into covisible graph.
-        graph.AddNewFrameWithFeatures(features_id, features_observe, 1.0f);
+        graph.AddNewFrameWithFeatures(features_id, features_observe, features_param,
+        	6.0f, cameras[i].q_wc, cameras[i].p_wc);
     }
 
     return graph;
@@ -66,7 +70,7 @@ CovisibleGraph<Vec3, Vec2> CreateGraph(std::vector<Pose> &cameras,
 
 void PrintCheckResult(CovisibleGraph<Vec3, Vec2> &graph) {
     // Show all information of this covisible graph.
-    // graph.Information();
+    graph.Information();
 
     // Check if the covisible graph is invalid.
     if (graph.SelfCheck()) {
@@ -98,7 +102,7 @@ void TestCovisibleGraphRemoveFeatures(std::vector<Pose> &cameras,
 void TestCovisibleGraphRemoveFrames(std::vector<Pose> &cameras,
                                     std::vector<Vec3> &points,
                                     uint32_t remove_frame_id) {
-    ReportInfo(YELLOW ">> Test covisible graph remove features." RESET_COLOR);
+    ReportInfo(YELLOW ">> Test covisible graph remove frames." RESET_COLOR);
     CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
 
     graph.RemoveFrame(remove_frame_id);

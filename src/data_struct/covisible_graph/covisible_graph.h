@@ -6,6 +6,7 @@
 #include "visual_frame.h"
 
 #include "log_report.h"
+#include "slam_operations.h"
 
 #include "unordered_map"
 #include "list"
@@ -32,6 +33,15 @@ public:
     bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                  const std::vector<FeatureObserveType> &features_observe,
                                  const float time_stamp_s);
+
+
+    bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
+                                 const std::vector<FeatureObserveType> &features_observe,
+                                 const std::vector<FeatureParamType> &features_param,
+                                 const float time_stamp_s,
+                                 const Quat &q_wc = Quat::Identity(),
+                                 const Vec3 &p_wc = Vec3::Zero(),
+                                 const Vec3 &v_wc = Vec3::Zero());
 
     bool RemoveFeature(uint32_t feature_id);
 
@@ -96,7 +106,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::SelfCheck() {
             ReportError("[Covisible Graph] The first frame observing this feature does not exist.");
             return false;
         }
-        if (frame(feature.first_frame_id() + feature.observes().size() - 1) == nullptr) {
+        if (frame(feature.final_frame_id()) == nullptr) {
             ReportError("[Covisible Graph] The last frame observing this feature does not exist.");
             return false;
         }
@@ -200,6 +210,31 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatur
 }
 
 template <typename FeatureParamType, typename FeatureObserveType>
+bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
+                                                                                   const std::vector<FeatureObserveType> &features_observe,
+                                                                                   const std::vector<FeatureParamType> &features_param,
+                                                                                   const float time_stamp_s,
+                                                                                   const Quat &q_wc,
+                                                                                   const Vec3 &p_wc,
+                                                                                   const Vec3 &v_wc) {
+    RETURN_FALSE_IF_FALSE(AddNewFrameWithFeatures(features_id, features_observe, time_stamp_s));
+
+    // Set new features' pose param.
+    frames_.back().q_wc() = q_wc;
+    frames_.back().p_wc() = p_wc;
+    frames_.back().v_wc() = v_wc;
+
+    // Set features param.
+    if (features_id.size() == features_param.size()) {
+        for (uint32_t i = 0; i < features_id.size(); ++i) {
+            feature(features_id[i])->param() = features_param[i];
+        }
+    }
+
+    return true;
+}
+
+template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFeature(uint32_t feature_id) {
     auto feature_ptr = feature(feature_id);
     if (feature_ptr == nullptr || features_.empty()) {
@@ -243,15 +278,13 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrame(uint32_t 
     // Case 1: feature.final_frame_id() < frame_id
     // [1, 2, 3, 4, 5, [6]] - [3, 4, 5]   -->> [1, 2, 3, 4, 5] - [3, 4, 5]                         - first_frame_id
 
-    // Case 2: feature.first_frame_id() < frame_id
+    // Case 2: feature.first_frame_id() <= frame_id
     // [1, 2, 3, 4, [5], 6] - [3, 4, [5]] -->> [1, 2, 3, 4, 5(6)] - [3, 4]                         - first_frame_id
     // [1, 2, 3, [4], 5, 6] - [3, [4], 5] -->> [1, 2, 3, 4(5), 5(6)] - [3, 4(5)]                   - first_frame_id
+    // [1, 2, [3], 4, 5, 6] - [[3], 4, 5] -->> [1, 2, 3(4), 4(5), 5(6)] - [3(4), 4(5)]             - first_frame_id
+    // [[1], 2, 3, 4, 5, 6] - [[1], 2, 3] -->> [1(2), 2(3), 3(4), 4(5), 5(6)] - [1(2), 2(3)]       - first_frame_id
 
-    // Case 3: feature.first_frame_id() == frame_id
-    // [1, 2, [3], 4, 5, 6] - [[3], 4, 5] -->> [1, 2, 3(4), 4(5), 5(6)] - [3(4), 4(5)]             - first_frame_id - 1
-    // [[1], 2, 3, 4, 5, 6] - [[1], 2, 3] -->> [1(2), 2(3), 3(4), 4(5), 5(6)] - [1(2), 2(3)]       - first_frame_id - 1
-
-    // Case 4: frame_id < feature.first_frame_id()
+    // Case 3: frame_id < feature.first_frame_id()
     // [1, [2], 3, 4, 5, 6] - [3, 4, 5]   -->> [1, 2(3), 3(4), 4(5), 5(6)] - [2(3), 3(4), 4(5)]    - first_frame_id - 1
     // [[1], 2, 3, 4, 5, 6] - [3, 4, 5]   -->> [1(2), 2(3), 3(4), 4(5), 5(6)] - [2(3), 3(4), 4(5)] - first_frame_id - 1
 
@@ -264,19 +297,16 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrame(uint32_t 
             // Case 1.
             continue;
         } else if (feature.first_frame_id() <= frame_id) {
-            // Case 2, 3.
+            // Case 2.
             const uint32_t start_idx = frame_id - feature.first_frame_id();
             const uint32_t end_idx = feature.observes().size() - 1;
             for (uint32_t i = start_idx; i < end_idx; ++i) {
                 feature.observes()[i] = feature.observes()[i + 1];
             }
             feature.observes().resize(end_idx);
-
-            // This step is for case 3.
-            feature.first_frame_id() -= static_cast<uint32_t>(feature.first_frame_id() == frame_id);
         } else {
-            // Case 4.
-            feature.first_frame_id() -= static_cast<uint32_t>(feature.first_frame_id() == frame_id);
+            // Case 3.
+            --feature.first_frame_id();
         }
 
         // If all observation in this feature is removed, remove this feature.
@@ -285,13 +315,18 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrame(uint32_t 
         }
     }
 
-    // Remove frame.
+    // Exchange id of frames that behind of removed frame.
+    auto frame_to_be_removed = frames_.begin();
     for (auto it = frames_.begin(); it != frames_.end(); ++it) {
         if (it->id() == frame_id) {
-            frames_.erase(it);
-            break;
+            frame_to_be_removed = it;
+        } else if (it->id() > frame_id) {
+            --it->id();
         }
     }
+
+    // Remove frame.
+    frames_.erase(frame_to_be_removed);
 
     // Remove empty features.
     for (auto &id : empty_features_id) {
@@ -349,7 +384,7 @@ typename CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType *Covisi
         return frame_i.id() < frame_j.id();
     });
 
-    if (iter != frames_.end()) {
+    if (iter != frames_.end() && iter->id() == id) {
         return &(*iter);
     }
 

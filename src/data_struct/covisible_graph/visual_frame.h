@@ -51,8 +51,8 @@ template <typename FeatureType>
 void VisualFrame<FeatureType>::Information() const {
     ReportInfo("[Visual Frame] Information of frame " << id_ << "\n"
         " - time stamp is " << time_stamp_s_ << " s\n"
-        " - q_wc is " << LogQuat(q_wc_) << "\n"
-        " - p_wc is " << LogVec(p_wc_) << "\n"
+        " - q_wc is " << LogQuat(q_wc_) << ""
+        " - p_wc is " << LogVec(p_wc_) << ""
         " - v_wc is " << LogVec(v_wc_) << "\n"
         " - number of observed features is " << features_.size()
     );
