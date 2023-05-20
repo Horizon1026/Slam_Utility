@@ -8,8 +8,8 @@ float CovisibleGraph<Vec3, Vec2>::ComputeResidual() {
     float summary_residual = 0.0f;
 
     for (auto &frame : frames_) {
-        for (auto &item : frame.features()) {
-            auto &feature = item.second;
+        for (const auto &item : frame.const_features()) {
+            const auto &feature = item.second;
 
             // Compute reprojection residual.
             const Vec3 p_c = frame.q_wc().inverse() * (feature->param() - frame.p_wc());

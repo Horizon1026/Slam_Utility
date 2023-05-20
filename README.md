@@ -8,6 +8,12 @@ Defined some basic datatype or operations for slam algorithm.
 - [x] Memory manager.
 - [x] Basic operations.
 - [ ] Visualization for slam results.
+- [ ] Data struct for slam.
+    - [x] Visual covisible graph.
+    - [ ] Object pool.
+    - [ ] Kd tree / ikd tree.
+    - [ ] Circular queue.
+- [x] Tick tock timer.
 
 # Dependence
 Eigen3 (>= 3.3.7), OpenCV4(only for test)
