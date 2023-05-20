@@ -21,6 +21,8 @@ public:
     CovisibleGraph() = default;
     virtual ~CovisibleGraph() = default;
 
+    void Clear();
+
     bool GetCovisibleFeatures(const FrameType &frame_i,
                               const FrameType &frame_j,
                               std::vector<FeatureType> &covisible_features);
@@ -35,6 +37,23 @@ private:
     std::unordered_map<uint32_t, FeatureType> features_;
 
 };
+
+/* Class Covisible Graph Definition. */
+template <typename FeatureParamType, typename FeatureObserveType>
+void CovisibleGraph<FeatureParamType, FeatureObserveType>::Clear() {
+    frames_.clear();
+    features_.clear();
+}
+
+
+template <typename FeatureParamType, typename FeatureObserveType>
+bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(const FrameType &frame_i,
+                                                                                const FrameType &frame_j,
+                                                                                std::vector<FeatureType> &covisible_features) {
+
+    return false;
+}
+
 
 }
 
