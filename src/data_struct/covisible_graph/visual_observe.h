@@ -6,9 +6,11 @@
 
 namespace SLAM_UTILITY {
 
+// Define feature point to be [x, y, 1], and only store [x, y].
 using VisualPointFeatureObserve = Vec2;
 using VisualPointFeatureObserveMultiView = std::unordered_map<int32_t, Vec2>;
 
+// [Plucker] Define feature line to be [l, m] (Vec3, Vec3).
 using VisualLineFeatureObserve = Vec6;
 using VisualLineFeatureObserveMultiView = std::unordered_map<int32_t, Vec6>;
 
