@@ -2,6 +2,7 @@
 #define _SENSOR_UTILITY_VISUAL_FEATURE_H_
 
 #include "datatype_basic.h"
+#include "log_report.h"
 
 namespace SLAM_UTILITY {
 
@@ -16,26 +17,46 @@ template <typename ParamType, typename ObserveType>
 class VisualFeature {
 
 public:
-    VisualFeature() = default;
+    VisualFeature() = delete;
+    explicit VisualFeature(uint32_t id) : id_(id) {}
     virtual ~VisualFeature() = default;
+
+    void Information() const;
+
+    // Reference for member variables.
+    const uint32_t &id() { return id_; }
+    uint32_t &first_frame_id() { return first_frame_id_; }
+    std::vector<ObserveType> &observes() { return observes_; }
+    ParamType &param() { return param_; }
+    FeatureSolvedStatus &status() { return status_; }
 
 private:
     // Visual feature id.
-    uint32_t id_ = 0;
+    const uint32_t id_ = 0;
 
     // Id of frame that firstly observe this feature.
     uint32_t first_frame_id_ = 0;
 
     // Observations in each visual frame. For example, feature point's observe in a mono rectify frame is Eigen::Vector2f.
-    std::vector<ObserveType> observes_ = {};
+    std::vector<ObserveType> observes_;
 
     // Feature parameter can be solved. For example, feature point's parameter type is Eigen::Vector3f.
-    ParamType param_;
+    ParamType param_ = ParamType::Zero();
 
     // Solved type of this feature.
     FeatureSolvedStatus status_ = FeatureSolvedStatus::kUnsolved;
 
 };
+
+/* Class Visual Feature Definition. */
+template <typename ParamType, typename ObserveType>
+void VisualFeature<ParamType, ObserveType>::Information() const {
+    ReportInfo("[Visual Feature] Information of feature " << id_ << "\n"
+        " - param is " << LogVec(param_) << "\n"
+        " - observed in " << observes_.size() << " frames [" << first_frame_id_ << " ~ " << first_frame_id_ + observes_.size() - 1 << "]\n"
+        " - solved status is " << static_cast<int32_t>(status_)
+    );
+}
 
 }
 

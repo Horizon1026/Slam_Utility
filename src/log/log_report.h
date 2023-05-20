@@ -34,11 +34,13 @@ namespace SLAM_UTILITY {
     #define LogWriteToFile(...) std::cout.rdbuf(std::ofstream(__VA_ARGS__).rdbuf())
 
     #if STD_COUT_INFO
+        #define ReportText(...)  std::cout << __VA_ARGS__
         #define ReportInfo(...)  std::cout << GREEN "[Info ] " RESET_COLOR << __VA_ARGS__ << std::endl
         #define ReportDebug(...) std::cout << CYAN "[Debug] " RESET_COLOR << __VA_ARGS__ << std::endl
         #define ReportWarn(...)  std::cout << YELLOW "[Warn ] " RESET_COLOR << __VA_ARGS__ << std::endl
         #define ReportError(...) std::cout << RED "[Error] " RESET_COLOR << __VA_ARGS__ << std::endl
     #else
+        #define ReportText(...)
         #define ReportInfo(...)
         #define ReportDebug(...)
         #define ReportWarn(...)
