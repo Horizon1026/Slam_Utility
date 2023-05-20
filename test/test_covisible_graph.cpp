@@ -68,9 +68,12 @@ CovisibleGraph<Vec3, Vec2> CreateGraph(std::vector<Pose> &cameras,
     return graph;
 }
 
-void PrintCheckResult(CovisibleGraph<Vec3, Vec2> &graph) {
+void PrintCheckResult(CovisibleGraph<Vec3, Vec2> &graph, bool show_information = false) {
     // Show all information of this covisible graph.
-    graph.Information();
+    if (show_information) {
+        graph.Information();
+    }
+    ReportInfo("Covisible graph summary residual is " << graph.ComputeResidual() << ". It must be 0.");
 
     // Check if the covisible graph is invalid.
     if (graph.SelfCheck()) {
@@ -84,7 +87,6 @@ void TestCovisibleGraphGeneration(std::vector<Pose> &cameras,
                                   std::vector<Vec3> &points) {
     ReportInfo(YELLOW ">> Test covisible graph generation." RESET_COLOR);
     CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
-
     PrintCheckResult(graph);
 }
 
@@ -93,9 +95,7 @@ void TestCovisibleGraphRemoveFeatures(std::vector<Pose> &cameras,
                                       uint32_t removed_feature_id) {
     ReportInfo(YELLOW ">> Test covisible graph remove features." RESET_COLOR);
     CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
-
     graph.RemoveFeature(removed_feature_id);
-
     PrintCheckResult(graph);
 }
 
@@ -104,10 +104,23 @@ void TestCovisibleGraphRemoveFrames(std::vector<Pose> &cameras,
                                     uint32_t remove_frame_id) {
     ReportInfo(YELLOW ">> Test covisible graph remove frames." RESET_COLOR);
     CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
-
     graph.RemoveFrame(remove_frame_id);
-
     PrintCheckResult(graph);
+}
+
+void TestGettingCovisibleFeatures(std::vector<Pose> &cameras,
+                                  std::vector<Vec3> &points) {
+    ReportInfo(YELLOW ">> Test covisible graph get covisible features." RESET_COLOR);
+    CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
+
+    VisualFrame<VisualFeature<Vec3, Vec2>> frame_i = graph.frames().front();
+    VisualFrame<VisualFeature<Vec3, Vec2>> frame_j = graph.frames().back();
+    std::vector<VisualFeature<Vec3, Vec2> *> covisible_features;
+    graph.GetCovisibleFeatures(frame_i, frame_j, covisible_features);
+    for (auto &feature : covisible_features) {
+        ReportInfo(" - feature " << feature->id() << " is covisible, ptr is " << LogPtr(feature));
+    }
+    PrintCheckResult(graph, true);
 }
 
 int main(int argc, char **argv) {
@@ -120,6 +133,8 @@ int main(int argc, char **argv) {
 
     // Run test.
     TestCovisibleGraphGeneration(cameras, points);
+    TestGettingCovisibleFeatures(cameras, points);
+
     for (uint32_t i = 0; i < kPointsNumber + 1; ++i) {
         TestCovisibleGraphRemoveFeatures(cameras, points, i);
     }

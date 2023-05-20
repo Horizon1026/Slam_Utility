@@ -24,17 +24,21 @@ public:
     CovisibleGraph() = default;
     virtual ~CovisibleGraph() = default;
 
+    // Clear all storage in this covisible graph.
     void Clear();
 
+    // Check this covisible graph, every observe between features and frames must be valid.
     bool SelfCheck();
 
+    // Print all information of this covisible graph.
     void Information() const;
 
+    // Add new frame and new features in it.
     bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                  const std::vector<FeatureObserveType> &features_observe,
                                  const float time_stamp_s);
 
-
+    // Add new frame and new features in it.
     bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                  const std::vector<FeatureObserveType> &features_observe,
                                  const std::vector<FeatureParamType> &features_param,
@@ -43,19 +47,27 @@ public:
                                  const Vec3 &p_wc = Vec3::Zero(),
                                  const Vec3 &v_wc = Vec3::Zero());
 
+    // Remove feature by feature_id.
     bool RemoveFeature(uint32_t feature_id);
 
+    // Remove frame by frame_id according to rules below.
     // [1, 2, 3, 4, [5], 6] -> [1, 2, 3, 4, 5(6)], convert the old 6 to be new 5.
     // [[1], 2, 3, 4, 5, 6] -> [(1), (2), (3), (4), (5)], convert the old 2 ~ 6 to be new 1 ~ 5.
     bool RemoveFrame(uint32_t frame_id);
 
+    // Compute summary of reprojection residual.
+    float ComputeResidual();
+
+    // Get covisible features between two frames.
     bool GetCovisibleFeatures(const uint32_t frame_i_id,
                               const uint32_t frame_j_id,
                               std::vector<FeatureType *> &covisible_features);
 
+    // Get covisible features between two frames.
     bool GetCovisibleFeatures(const FrameType &frame_i,
                               const FrameType &frame_j,
                               std::vector<FeatureType *> &covisible_features);
+
 
     // Find frame or feature by id.
     inline FrameType *frame(uint32_t id);
@@ -66,7 +78,7 @@ public:
     std::unordered_map<uint32_t, FeatureType> &features() { return features_; }
 
 private:
-    // Remove frame in std::list by check 'need_remove_' flag.
+    // Remove frame in std::list by check 'need_remove' flag.
     void RemoveFrameNeedRemove();
 
 private:
@@ -353,7 +365,7 @@ template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(const FrameType &frame_i,
                                                                                 const FrameType &frame_j,
                                                                                 std::vector<FeatureType *> &covisible_features) {
-    const int32_t max_size = std::min(frame_i.features().size(), frame_j.features().size());
+    const uint32_t max_size = std::min(frame_i.const_features().size(), frame_j.const_features().size());
     if (max_size == 0) {
         return false;
     }
@@ -363,8 +375,8 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(
     }
     covisible_features.clear();
 
-    for (const auto &item : frame_i.features()) {
-        if (frame_j.features().find(item.first) != frame_j.features().end()) {
+    for (const auto &item : frame_i.const_features()) {
+        if (frame_j.const_features().find(item.first) != frame_j.const_features().end()) {
             covisible_features.emplace_back(item.second);
         }
     }
@@ -402,7 +414,7 @@ typename CovisibleGraph<FeatureParamType, FeatureObserveType>::FeatureType *Covi
     return nullptr;
 }
 
-// Remove frame in std::list by check 'need_remove_' flag.
+// Remove frame in std::list by check 'need_remove' flag.
 template <typename FeatureParamType, typename FeatureObserveType>
 void CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrameNeedRemove() {
     for (auto it = frames_.begin(); it != frames_.end(); ) {

@@ -26,6 +26,7 @@ public:
     Vec3 &v_wc() { return v_wc_; }
     float &time_stamp_s() { return time_stamp_s_; }
     std::unordered_map<uint32_t, FeatureType *> &features() { return features_; }
+    const std::unordered_map<uint32_t, FeatureType *> &const_features() const { return features_; }
     bool &need_remove() { return need_remove_; }
 
 private:

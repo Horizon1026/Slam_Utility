@@ -28,6 +28,7 @@ public:
     uint32_t &first_frame_id() { return first_frame_id_; }
     uint32_t final_frame_id() const { return first_frame_id_ + observes_.size() - 1; }
     std::vector<ObserveType> &observes() { return observes_; }
+    ObserveType &observe(uint32_t frame_id) { return observes_[frame_id - first_frame_id_]; }
     ParamType &param() { return param_; }
     FeatureSolvedStatus &status() { return status_; }
 
