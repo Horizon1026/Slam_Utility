@@ -26,6 +26,7 @@ public:
     Vec3 &v_wc() { return v_wc_; }
     float &time_stamp_s() { return time_stamp_s_; }
     std::unordered_map<uint32_t, FeatureType *> &features() { return features_; }
+    bool &need_remove() { return need_remove_; }
 
 private:
     // Visual frame id.
@@ -39,6 +40,9 @@ private:
 
     // Features observed by this frame.
     std::unordered_map<uint32_t, FeatureType *> features_;
+
+    // Flag for erase in std::list.
+    bool need_remove_ = false;
 
 };
 
@@ -54,7 +58,7 @@ void VisualFrame<FeatureType>::Information() const {
     );
     ReportText(" - List of features observed in this frame:\n");
     for (const auto &item : features_) {
-        ReportText("   - " << item.first << ", " << LogPtr(item.second));
+        ReportText("   - id/id" << item.first << "/" << item.second->id() << ", " << LogPtr(item.second) << "\n");
     }
     ReportText("\n");
 }

@@ -24,8 +24,9 @@ public:
     void Information() const;
 
     // Reference for member variables.
-    const uint32_t &id() { return id_; }
+    const uint32_t &id() const { return id_; }
     uint32_t &first_frame_id() { return first_frame_id_; }
+    uint32_t final_frame_id() const { return first_frame_id_ + observes_.size() - 1; }
     std::vector<ObserveType> &observes() { return observes_; }
     ParamType &param() { return param_; }
     FeatureSolvedStatus &status() { return status_; }

@@ -2,8 +2,8 @@
 #include "datatype_basic.h"
 #include "covisible_graph.h"
 
-constexpr int32_t kCameraFrameNumber = 5;
-constexpr int32_t kPointsNumber = 7;
+constexpr int32_t kCameraFrameNumber = 4;
+constexpr int32_t kPointsNumber = 5;
 
 struct Pose {
     Quat q_wc = Quat::Identity();
@@ -35,14 +35,8 @@ void GenerateSimulationData(std::vector<Pose> &cameras,
     }
 }
 
-int main(int argc, char **argv) {
-    ReportInfo(YELLOW ">> Test covisible graph." RESET_COLOR);
-
-    // Generate simulate data.
-    std::vector<Pose> cameras;
-    std::vector<Vec3> points;
-    GenerateSimulationData(cameras, points);
-
+CovisibleGraph<Vec3, Vec2> CreateGraph(std::vector<Pose> &cameras,
+                                       std::vector<Vec3> &points) {
     // Generate data for each frame.
     std::vector<uint32_t> features_id;
     std::vector<Vec2> features_observe;
@@ -67,14 +61,66 @@ int main(int argc, char **argv) {
         graph.AddNewFrameWithFeatures(features_id, features_observe, 1.0f);
     }
 
+    return graph;
+}
+
+void PrintCheckResult(CovisibleGraph<Vec3, Vec2> &graph) {
     // Show all information of this covisible graph.
-    graph.Information();
+    // graph.Information();
 
     // Check if the covisible graph is invalid.
     if (graph.SelfCheck()) {
         ReportInfo("Covisible graph self check ok.");
     } else {
         ReportError("Covisible graph self check failed.");
+    }
+}
+
+void TestCovisibleGraphGeneration(std::vector<Pose> &cameras,
+                                  std::vector<Vec3> &points) {
+    ReportInfo(YELLOW ">> Test covisible graph generation." RESET_COLOR);
+    CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
+
+    PrintCheckResult(graph);
+}
+
+void TestCovisibleGraphRemoveFeatures(std::vector<Pose> &cameras,
+                                      std::vector<Vec3> &points,
+                                      uint32_t removed_feature_id) {
+    ReportInfo(YELLOW ">> Test covisible graph remove features." RESET_COLOR);
+    CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
+
+    graph.RemoveFeature(removed_feature_id);
+
+    PrintCheckResult(graph);
+}
+
+void TestCovisibleGraphRemoveFrames(std::vector<Pose> &cameras,
+                                    std::vector<Vec3> &points,
+                                    uint32_t remove_frame_id) {
+    ReportInfo(YELLOW ">> Test covisible graph remove features." RESET_COLOR);
+    CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
+
+    graph.RemoveFrame(remove_frame_id);
+
+    PrintCheckResult(graph);
+}
+
+int main(int argc, char **argv) {
+    ReportInfo(YELLOW ">> Test covisible graph." RESET_COLOR);
+
+    // Generate simulate data.
+    std::vector<Pose> cameras;
+    std::vector<Vec3> points;
+    GenerateSimulationData(cameras, points);
+
+    // Run test.
+    TestCovisibleGraphGeneration(cameras, points);
+    for (uint32_t i = 0; i < kPointsNumber + 1; ++i) {
+        TestCovisibleGraphRemoveFeatures(cameras, points, i);
+    }
+    for (uint32_t i = 0; i < kCameraFrameNumber + 1; ++i) {
+        TestCovisibleGraphRemoveFrames(cameras, points, i);
     }
 
     return 0;
