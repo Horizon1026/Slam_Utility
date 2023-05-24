@@ -116,7 +116,7 @@ public:
     template <typename Scalar>
     static TMat<Scalar> Inverse(const TMat<Scalar> &A) {
         Eigen::SelfAdjointEigenSolver<TMat<Scalar>> saes(A);
-        TMat<Scalar> Ainv = saes.eigenvectors() * Vec(
+        TMat<Scalar> Ainv = saes.eigenvectors() * TVec<Scalar>(
             (saes.eigenvalues().array() > kZero).select(
                 saes.eigenvalues().array().inverse(), 0
             )).asDiagonal() * saes.eigenvectors().transpose();
