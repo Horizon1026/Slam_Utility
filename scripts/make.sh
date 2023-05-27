@@ -22,7 +22,6 @@ fi
 
 # 执行编译过程，默认是 linux 内核
 cd build/
-rm * -rf
 
 if [ "$2" = "windows" ]; then
     cmake -G "MinGW Makefiles" .. -DOpenCV_DIR="E:\\OpenCV4\\opencv\\mingw64_build"
