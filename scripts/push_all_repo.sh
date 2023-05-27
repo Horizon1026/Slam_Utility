@@ -1,10 +1,11 @@
 #!/bin/sh
-sh push_repo.sh Slam_Utility "slam utility"
-sh push_repo.sh Feature_Detector "feature detector"
-sh push_repo.sh Feature_Tracker "feature tracker"
-sh push_repo.sh Image_Processor "image processor"
-sh push_repo.sh Sensor_Model "sensor model"
-sh push_repo.sh Slam_Solver "slam solver"
-sh push_repo.sh Visual_Frontend "visual frontend"
-sh push_repo.sh Vision_Geometry "vision geometry"
-sh push_repo.sh VIO_Stereo_ORB_SLAM3 "vio stereo orb slam3"
+# sh push_repo.sh 'commit message' 'repo name'
+sh push_repo.sh "slam utility" Slam_Utility
+sh push_repo.sh "feature detector" Feature_Detector
+sh push_repo.sh "feature tracker" Feature_Tracker
+sh push_repo.sh "image processor" Image_Processor
+sh push_repo.sh "sensor model" Sensor_Model
+sh push_repo.sh "slam solver" Slam_Solver
+sh push_repo.sh "visual frontend" Visual_Frontend
+sh push_repo.sh "vision geometry" Vision_Geometry
+sh push_repo.sh "vio stereo orb slam3" VIO_Stereo_ORB_SLAM3
