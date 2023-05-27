@@ -1,4 +1,4 @@
-cd ..
+cd ../..
 
 if [ ! -d "Feature_Tracker" ]; then
     echo ">> Git clone repo 'Feature_Tracker'"
