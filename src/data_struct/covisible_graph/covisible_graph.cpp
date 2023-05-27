@@ -14,7 +14,9 @@ float CovisibleGraph<Vec3, Vec2>::ComputeResidual() {
             // Compute reprojection residual.
             const Vec3 p_c = frame.q_wc().inverse() * (feature->param() - frame.p_wc());
             const Vec2 residual = p_c.head<2>() / p_c.z() - feature->observe(frame.id());
-            summary_residual += residual.norm();
+            if (!Eigen::isnan(residual.array()).any()) {
+                summary_residual += residual.norm();
+            }
         }
     }
 
