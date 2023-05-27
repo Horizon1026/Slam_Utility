@@ -1,59 +1,59 @@
 cd ..
-echo ">> Update repo 'Slam_Utility'"
+echo "\033[32m>> Git pull repo 'Slam_Utility'\033[0m"
 pwd
 git pull
 
 if [ -d "../Feature_Detector" ]; then
-    echo ">> Update repo 'Feature_Detector'"
+    echo "\033[32m>> Git pull repo 'Feature_Detector'\033[0m"
     cd ../Feature_Detector/
     pwd
     git pull
 fi
 
 if [ -d "../Feature_Tracker" ]; then
-    echo ">> Update repo 'Feature_Tracker'"
+    echo "\033[32m>> Git pull repo 'Feature_Tracker'\033[0m"
     cd ../Feature_Tracker/
     pwd
     git pull
 fi
 
 if [ -d "../Vision_Geometry" ]; then
-    echo ">> Update repo 'Vision_Geometry'"
+    echo "\033[32m>> Git pull repo 'Vision_Geometry'\033[0m"
     cd ../Vision_Geometry/
     pwd
     git pull
 fi
 
 if [ -d "../Sensor_Model" ]; then
-    echo ">> Update repo 'Sensor_Model'"
+    echo "\033[32m>> Git pull repo 'Sensor_Model'\033[0m"
     cd ../Sensor_Model/
     pwd
     git pull
 fi
 
 if [ -d "../Visual_Frontend" ]; then
-    echo ">> Update repo 'Visual_Frontend'"
+    echo "\033[32m>> Git pull repo 'Visual_Frontend'\033[0m"
     cd ../Visual_Frontend/
     pwd
     git pull
 fi
 
 if [ -d "../Image_Processor" ]; then
-    echo ">> Update repo 'Image_Processor'"
+    echo "\033[32m>> Git pull repo 'Image_Processor'\033[0m"
     cd ../Image_Processor/
     pwd
     git pull
 fi
 
 if [ -d "../Slam_Solver" ]; then
-    echo ">> Update repo 'Slam_Solver'"
+    echo "\033[32m>> Git pull repo 'Slam_Solver'\033[0m"
     cd ../Slam_Solver/
     pwd
     git pull
 fi
 
 if [ -d "../VIO_Stereo_ORB_SLAM3" ]; then
-    echo ">> Update repo 'VIO_Stereo_ORB_SLAM3'"
+    echo "\033[32m>> Git pull repo 'VIO_Stereo_ORB_SLAM3'\033[0m"
     cd ../VIO_Stereo_ORB_SLAM3/
     pwd
     git pull

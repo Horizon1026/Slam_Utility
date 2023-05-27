@@ -1,12 +1,12 @@
 cd ..
-echo ">> Submit repo 'Feature_Detector'"
+echo "\033[32m>> Submit repo 'Feature_Detector'\033[0m"
 pwd
 git add .
 git commit -m "slam utility"
 git push origin HEAD:main
 
 if [ -d "../Feature_Detector" ]; then
-    echo ">> Submit repo 'Feature_Detector'"
+    echo "\033[32m>> Submit repo 'Feature_Detector'\033[0m"
     cd ../Feature_Detector/
     pwd
     git add .
@@ -15,7 +15,7 @@ if [ -d "../Feature_Detector" ]; then
 fi
 
 if [ -d "../Feature_Tracker" ]; then
-    echo ">> Submit repo 'Feature_Tracker'"
+    echo "\033[32m>> Submit repo 'Feature_Tracker'\033[0m"
     cd ../Feature_Tracker/
     pwd
     git add .
@@ -24,7 +24,7 @@ if [ -d "../Feature_Tracker" ]; then
 fi
 
 if [ -d "../Vision_Geometry" ]; then
-    echo ">> Submit repo 'Vision_Geometry'"
+    echo "\033[32m>> Submit repo 'Vision_Geometry'\033[0m"
     cd ../Vision_Geometry/
     pwd
     git add .
@@ -33,7 +33,7 @@ if [ -d "../Vision_Geometry" ]; then
 fi
 
 if [ -d "../Sensor_Model" ]; then
-    echo ">> Submit repo 'Sensor_Model'"
+    echo "\033[32m>> Submit repo 'Sensor_Model'\033[0m"
     cd ../Sensor_Model/
     pwd
     git add .
@@ -42,7 +42,7 @@ if [ -d "../Sensor_Model" ]; then
 fi
 
 if [ -d "../Visual_Frontend" ]; then
-    echo ">> Submit repo 'Visual_Frontend'"
+    echo "\033[32m>> Submit repo 'Visual_Frontend'\033[0m"
     cd ../Visual_Frontend/
     pwd
     git add .
@@ -51,7 +51,7 @@ if [ -d "../Visual_Frontend" ]; then
 fi
 
 if [ -d "../Image_Processor" ]; then
-    echo ">> Submit repo 'Image_Processor'"
+    echo "\033[32m>> Submit repo 'Image_Processor'\033[0m"
     cd ../Image_Processor/
     pwd
     git add .
@@ -60,7 +60,7 @@ if [ -d "../Image_Processor" ]; then
 fi
 
 if [ -d "../Slam_Solver" ]; then
-    echo ">> Submit repo 'Slam_Solver'"
+    echo "\033[32m>> Submit repo 'Slam_Solver'\033[0m"
     cd ../Slam_Solver/
     pwd
     git add .
@@ -69,7 +69,7 @@ if [ -d "../Slam_Solver" ]; then
 fi
 
 if [ -d "../VIO_Stereo_ORB_SLAM3" ]; then
-    echo ">> Submit repo 'VIO_Stereo_ORB_SLAM3'"
+    echo "\033[32m>> Submit repo 'VIO_Stereo_ORB_SLAM3'\033[0m"
     cd ../VIO_Stereo_ORB_SLAM3/
     pwd
     git add .

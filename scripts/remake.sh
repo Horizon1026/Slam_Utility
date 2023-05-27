@@ -4,9 +4,9 @@
 path = $1
 if [ -d "../../$1" ]; then
     cd ../../$1
-    echo "Find path : ../../$1"
+    echo "\033[32m>> Find path : '../../$1', compile it.\033[0m"
 else
-    echo "Cannot find path : ../../$1. Slam_Utility will be compiled."
+    echo "\033[32m>> Cannot find path : '../../$1', 'Slam_Utility' will be compiled.\033[0m"
 fi
 
 # 如果没有发现 ./build 路径，则创建一个
