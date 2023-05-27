@@ -1,5 +1,5 @@
 cd ..
-echo "\033[32m>> Submit repo 'Feature_Detector'\033[0m"
+echo "\033[32m>> Submit repo 'Slam_Utility'\033[0m"
 pwd
 git add .
 git commit -m "slam utility"
