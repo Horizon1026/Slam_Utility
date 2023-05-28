@@ -14,6 +14,7 @@ Defined some basic datatype or operations for slam algorithm.
     - [ ] Kd tree / ikd tree.
     - [ ] Circular queue.
 - [x] Tick tock timer.
+- [x] Scripts for all repos based on Slam_Utility.
 
 # Dependence
 Eigen3 (>= 3.3.7), OpenCV4(only for test)
