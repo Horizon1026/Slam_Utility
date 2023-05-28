@@ -3,7 +3,7 @@
 # 检查 commit message
 commit_msg=$1
 if [ ! -n "${commit_msg}" ]; then
-    echo "\033[31m>> Commit message must not be empty.\033[0m"
+    echo -e "\033[31m>> Commit message must not be empty.\033[0m"
     exit
 fi
 
@@ -15,10 +15,10 @@ fi
 
 if [ -d "../../${path}" ]; then
     cd "../../${path}"
-    echo "\033[32m>> Find path : '../../${path}', Submit it.\033[0m"
+    echo -e "\033[32m>> Find path : '../../${path}', Submit it.\033[0m"
 else
     cd "../../Slam_Utility"
-    echo "\033[32m>> Cannot find path : '../../${path}', 'Slam_Utility' will be submitted.\033[0m"
+    echo -e "\033[32m>> Cannot find path : '../../${path}', 'Slam_Utility' will be submitted.\033[0m"
 fi
 
 pwd

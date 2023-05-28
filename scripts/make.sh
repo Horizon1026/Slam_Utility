@@ -8,10 +8,10 @@ fi
 
 if [ -d "../../${path}" ]; then
     cd "../../${path}"
-    echo "\033[32m>> Find path : '../../${path}', compile it.\033[0m"
+    echo -e "\033[32m>> Find path : '../../${path}', compile it.\033[0m"
 else
     cd "../../Slam_Utility"
-    echo "\033[32m>> Cannot find path : '../../${path}', 'Slam_Utility' will be compiled.\033[0m"
+    echo -e "\033[32m>> Cannot find path : '../../${path}', 'Slam_Utility' will be compiled.\033[0m"
 fi
 
 # 如果没有发现 ./build 路径，则创建一个
