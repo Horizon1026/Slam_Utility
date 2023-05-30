@@ -9,9 +9,9 @@ class ImagePyramid {
 
 public:
     explicit ImagePyramid() = default;
-    virtual ~ImagePyramid() = default;
     explicit ImagePyramid(uint32_t level, Image *raw_image);
     explicit ImagePyramid(uint32_t level, uint8_t *data, int32_t rows, int32_t cols);
+    virtual ~ImagePyramid() = default;
 
     uint32_t level() const { return level_; }
     Image *images() { return images_; }

@@ -8,8 +8,8 @@ class Image {
 
 public:
     explicit Image() = default;
-    virtual ~Image() = default;
     explicit Image(uint8_t *data, int32_t rows, int32_t cols);
+    virtual ~Image() = default;
 
     uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }

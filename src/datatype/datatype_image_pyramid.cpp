@@ -47,19 +47,19 @@ bool ImagePyramid::CreateImagePyramid(uint32_t level) {
     uint8_t *buf = data_;
     for (uint32_t idx = 1; idx < level; ++idx) {
         // Locate image of one level at the full pyramid buffer.
-        images_[idx].SetImage(buf, images_[idx - 1].rows() / 2, images_[idx - 1].cols() / 2);
+        images_[idx].SetImage(buf, images_[idx - 1].rows() >> 1, images_[idx - 1].cols() >> 1);
         buf += images_[idx].rows() * images_[idx].cols();
 
         for (int32_t row = 0; row < images_[idx].rows(); ++row) {
             for (int32_t col = 0; col < images_[idx].cols(); ++col) {
-                const int32_t idx_row = row * 2;
-                const int32_t idx_col = col * 2;
+                const int32_t idx_row = row << 1;
+                const int32_t idx_col = col << 1;
                 images_[idx].SetPixelValueNoCheck(row, col, static_cast<uint8_t>((
                     images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row, idx_col)
                     + images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row + 1, idx_col)
                     + images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row, idx_col + 1)
                     + images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row + 1, idx_col + 1)
-                ) / 4));
+                ) >> 2));
             }
         }
     }
