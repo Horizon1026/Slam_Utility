@@ -7,6 +7,8 @@
 
 namespace SLAM_UTILITY {
 
+template <typename T> using ObjectPtr = std::unique_ptr<T, std::function<void(T *)>>;
+
 /* Class Object Pool Declaratioin. */
 template <typename T>
 class ObjectPool {
@@ -15,7 +17,7 @@ public:
     explicit ObjectPool(uint32_t initial_size = 100);
     virtual ~ObjectPool() = default;
 
-    std::unique_ptr<T, std::function<void(T *)>> Get();
+    ObjectPtr<T> Get();
 
 private:
 	std::vector<T> objects_;
@@ -32,16 +34,16 @@ ObjectPool<T>::ObjectPool(uint32_t initial_size) : objects_(initial_size) {
 }
 
 template <typename T>
-std::unique_ptr<T, std::function<void(T *)>> ObjectPool<T>::Get() {
+ObjectPtr<T> ObjectPool<T>::Get() {
     if (free_objects_list_.empty()) {
-        return std::unique_ptr<T, std::function<void(T *)>>(
+        return ObjectPtr<T>(
             new T, [] (T *ptr) {
                 delete ptr;
             }
         );
     }
 
-    std::unique_ptr<T, std::function<void(T *)>> ptr(
+    ObjectPtr<T> ptr(
         free_objects_list_.back(),
         [this] (T *ptr) {
             free_objects_list_.emplace_back(ptr);
