@@ -3,7 +3,7 @@
 
 using namespace SLAM_UTILITY;
 
-int main() {
+int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test object pool." RESET_COLOR);
 
     ObjectPool<double> pool(10);
@@ -20,7 +20,6 @@ int main() {
         objects.emplace_back(pool.Get());
         ReportInfo("Item in object pool is " << *objects.back().get());
     }
-
 
     return 0;
 }
