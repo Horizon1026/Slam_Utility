@@ -10,7 +10,8 @@ int main(int argc, char **argv) {
     {
     	std::vector<ObjectPtr<double>> objects;
 		for (int32_t i = 0; i < 10; ++i) {
-    	    objects.emplace_back(pool.Get());
+            auto ptr = pool.Get();
+    	    objects.emplace_back(std::move(ptr));
 		    *objects.back().get() = 1.0 + static_cast<double>(i);
     	}
     }
