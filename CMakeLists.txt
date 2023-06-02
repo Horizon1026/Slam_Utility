@@ -31,3 +31,11 @@ add_executable( test_covisible_graph
 target_link_libraries( test_covisible_graph
     lib_slam_utility
 )
+
+# Create executable target to test object pool.
+add_executable( test_object_pool
+    test/test_object_pool.cpp
+)
+target_link_libraries( test_object_pool
+    lib_slam_utility
+)
