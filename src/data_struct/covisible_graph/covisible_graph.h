@@ -77,6 +77,10 @@ public:
     std::list<FrameType> &frames() { return frames_; }
     std::unordered_map<uint32_t, FeatureType> &features() { return features_; }
 
+    // Const reference for member varibles.
+    const std::list<FrameType> &frames() const { return frames_; }
+    const std::unordered_map<uint32_t, FeatureType> &features() const { return features_; }
+
 private:
     // Remove frame in std::list by check 'need_remove' flag.
     void RemoveFrameNeedRemove();
@@ -365,7 +369,7 @@ template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(const FrameType &frame_i,
                                                                                 const FrameType &frame_j,
                                                                                 std::vector<FeatureType *> &covisible_features) {
-    const uint32_t max_size = std::min(frame_i.const_features().size(), frame_j.const_features().size());
+    const uint32_t max_size = std::min(frame_i.features().size(), frame_j.features().size());
     if (max_size == 0) {
         return false;
     }
@@ -375,8 +379,8 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(
     }
     covisible_features.clear();
 
-    for (const auto &item : frame_i.const_features()) {
-        if (frame_j.const_features().find(item.first) != frame_j.const_features().end()) {
+    for (const auto &item : frame_i.features()) {
+        if (frame_j.features().find(item.first) != frame_j.features().end()) {
             covisible_features.emplace_back(item.second);
         }
     }

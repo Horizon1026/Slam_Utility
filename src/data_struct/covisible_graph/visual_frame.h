@@ -26,8 +26,16 @@ public:
     Vec3 &v_wc() { return v_wc_; }
     float &time_stamp_s() { return time_stamp_s_; }
     std::unordered_map<uint32_t, FeatureType *> &features() { return features_; }
-    const std::unordered_map<uint32_t, FeatureType *> &const_features() const { return features_; }
     bool &need_remove() { return need_remove_; }
+
+    // Const reference for member variables.
+    const uint32_t &id() const { return id_; }
+    const Quat &q_wc() const { return q_wc_; }
+    const Vec3 &p_wc() const { return p_wc_; }
+    const Vec3 &v_wc() const { return v_wc_; }
+    const float &time_stamp_s() const { return time_stamp_s_; }
+    const std::unordered_map<uint32_t, FeatureType *> &features() const { return features_; }
+    const bool &need_remove() const { return need_remove_; }
 
 private:
     // Visual frame id.
