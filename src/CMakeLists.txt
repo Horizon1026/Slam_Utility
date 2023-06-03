@@ -31,6 +31,9 @@ endif()
 if ( NOT TARGET lib_object_pool )
     add_subdirectory( ${SLAM_UTILITY_PATH}/data_struct/object_pool ${PROJECT_SOURCE_DIR}/build/lib_object_pool )
 endif()
+if ( NOT TARGET lib_circular_buffer )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/data_struct/circular_buffer ${PROJECT_SOURCE_DIR}/build/lib_circular_buffer )
+endif()
 
 add_library( lib_slam_utility ${AUX_SRC_SLAM_UTILITY} )
 target_include_directories( lib_slam_utility PUBLIC . )
@@ -45,4 +48,5 @@ target_link_libraries( lib_slam_utility
 
     lib_covisible_graph
     lib_object_pool
+    lib_circular_buffer
 )

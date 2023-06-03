@@ -39,3 +39,11 @@ add_executable( test_object_pool
 target_link_libraries( test_object_pool
     lib_slam_utility
 )
+
+# Create executable target to test circular buffer.
+add_executable( test_circular_buffer
+    test/test_circular_buffer.cpp
+)
+target_link_libraries( test_circular_buffer
+    lib_slam_utility
+)
