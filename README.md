@@ -10,9 +10,9 @@ Defined some basic datatype or operations for slam algorithm.
 - [ ] Visualization for slam results.
 - [ ] Data struct for slam.
     - [x] Visual covisible graph.
-    - [ ] Object pool.
+    - [x] Object pool.
     - [ ] Kd tree / ikd tree.
-    - [ ] Circular queue.
+    - [x] Circular queue.
 - [x] Tick tock timer.
 - [x] Scripts for all repos based on Slam_Utility.
 
