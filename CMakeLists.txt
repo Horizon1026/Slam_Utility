@@ -47,3 +47,12 @@ add_executable( test_circular_buffer
 target_link_libraries( test_circular_buffer
     lib_slam_utility
 )
+
+# Create executable target to test visualizor.
+add_executable( test_visualizor
+    test/test_visualizor.cpp
+)
+target_link_libraries( test_visualizor
+    ${OpenCV_LIBS}
+    lib_slam_utility
+)
