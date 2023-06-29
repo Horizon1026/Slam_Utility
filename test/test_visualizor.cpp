@@ -7,7 +7,7 @@
 using namespace SLAM_UTILITY;
 
 namespace {
-    constexpr int32_t kScale = 4;
+    constexpr int32_t kScale = 2;
     constexpr int32_t kMatrixRow = 123;
     constexpr int32_t kMatrixCol = 153;
 }
@@ -15,15 +15,14 @@ namespace {
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test visualizor." RESET_COLOR);
 
-    Mat matrix = Mat::Ones(kMatrixRow, kMatrixCol) * 1.0f;
-    matrix += Mat::Identity(kMatrixRow, kMatrixCol) * 10.0f;
+    Mat matrix = Mat::Identity(kMatrixRow, kMatrixCol) * 10.0f;
     matrix += Mat::Random(kMatrixRow, kMatrixCol);
 
     uint8_t *buf = (uint8_t *)malloc(matrix.rows() * matrix.cols() * kScale * kScale * sizeof(uint8_t));
     Image image(buf, matrix.rows() * kScale, matrix.cols() * kScale);
 
     Visualizor visualizor;
-    visualizor.ConvertMatrixToImage<float>(matrix, image, 0, 15, kScale);
+    visualizor.ConvertMatrixToImage<float>(matrix, image, matrix.maxCoeff(), kScale);
 
     cv::Mat cv_image(image.rows(), image.cols(), CV_8UC1, image.data());
     cv::imshow("Matrix shown", cv_image);
