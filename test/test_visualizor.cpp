@@ -24,6 +24,8 @@ int main(int argc, char **argv) {
     Visualizor visualizor;
     visualizor.ConvertMatrixToImage<float>(matrix, image, matrix.maxCoeff(), kScale);
 
+    visualizor.ShowImage("Title", image);
+
     cv::Mat cv_image(image.rows(), image.cols(), CV_8UC1, image.data());
     cv::imshow("Matrix shown", cv_image);
     cv::waitKey(0);

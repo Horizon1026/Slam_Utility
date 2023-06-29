@@ -13,12 +13,15 @@ public:
 	Visualizor() = default;
     virtual ~Visualizor() = default;
 
+    bool ShowImage(const std::string &window_title, const Image &image);
+
     template <typename Scalar>
     bool ConvertMatrixToImage(const TMat<Scalar> &matrix,
                               Image &image,
                               Scalar max_value = 1e3,
                               int32_t scale = 4);
 
+private:
     template <typename Scalar>
     uint8_t ConvertValueToUint8_t(Scalar value, Scalar max_value);
 
