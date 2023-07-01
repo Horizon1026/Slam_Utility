@@ -13,6 +13,11 @@ namespace SLAM_UTILITY {
 Visualizor::Visualizor() {
     // Initialize resource for glfw.
     glfwInit();
+
+    // Config the version and mode of opengl we used.
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
 Visualizor::~Visualizor() {
@@ -47,7 +52,7 @@ bool Visualizor::ShowImage(const std::string &window_title, const Image &image) 
         }
 
         // Config the color of background. Then set it to be background.
-        glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Refresh buffers.
