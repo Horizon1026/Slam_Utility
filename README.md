@@ -8,6 +8,10 @@ Defined some basic datatype or operations for slam algorithm.
 - [x] Memory manager.
 - [x] Basic operations.
 - [ ] Visualization for slam results.
+  - [x] Import 3rd library: imgui, based on glfw3 and opengl3
+  - [x] Convert matrix to image
+  - [ ] Image load.
+  - [ ] Image show.
 - [ ] Data struct for slam.
     - [x] Visual covisible graph.
     - [x] Object pool.
@@ -17,7 +21,8 @@ Defined some basic datatype or operations for slam algorithm.
 - [x] Scripts for all repos based on Slam_Utility.
 
 # Dependence
-Eigen3 (>= 3.3.7), OpenCV4(only for test)
+Eigen3 (>= 3.3.7), OpenCV4 (only for test),
+glfw3, openGL3 (for visualization)
 
 # Tips
 - 欢迎一起交流学习，不同意商用；
