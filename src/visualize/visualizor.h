@@ -5,14 +5,15 @@
 #include "datatype_image.h"
 #include "log_report.h"
 
-#include "GLFW/glfw3.h"
+#include "GL/glut.h"
 
 namespace SLAM_UTILITY {
 
 class Visualizor {
 
 public:
-	Visualizor();
+	Visualizor() = delete;
+    Visualizor(int argc, char *argv[]);
     virtual ~Visualizor();
 
     bool ShowImage(const std::string &window_title, const Image &image);
@@ -27,9 +28,13 @@ private:
     template <typename Scalar>
     uint8_t ConvertValueToUint8_t(Scalar value, Scalar max_value);
 
-private:
-    std::map<std::string, GLFWwindow *> windows_map_;
+    static void RefreshBuffer();
 
+private:
+    static GLint image_cols_ ;
+    static GLint image_rows_ ;
+    static GLint image_pixel_length_ ;
+    static GLubyte *image_data_;
 };
 
 template <typename Scalar>

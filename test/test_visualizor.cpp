@@ -21,14 +21,15 @@ int main(int argc, char **argv) {
     uint8_t *buf = (uint8_t *)malloc(matrix.rows() * matrix.cols() * kScale * kScale * sizeof(uint8_t));
     Image image(buf, matrix.rows() * kScale, matrix.cols() * kScale);
 
-    Visualizor visualizor;
+    Visualizor visualizor(argc, argv);
     visualizor.ConvertMatrixToImage<float>(matrix, image, matrix.maxCoeff(), kScale);
 
-    visualizor.ShowImage("Title", image);
 
     cv::Mat cv_image(image.rows(), image.cols(), CV_8UC1, image.data());
     cv::imshow("Matrix shown", cv_image);
     cv::waitKey(0);
+
+    visualizor.ShowImage("Title", image);
 
     return 0;
 }
