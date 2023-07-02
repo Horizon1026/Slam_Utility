@@ -5,9 +5,19 @@
 #include "datatype_image.h"
 #include "log_report.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "GLFW/glfw3.h"
 
 namespace SLAM_UTILITY {
+
+struct Texture {
+    ImTextureID id = nullptr;
+    uint8_t *buf = nullptr;
+    int32_t rows = 0;
+    int32_t cols = 0;
+};
 
 class Visualizor {
 
@@ -47,11 +57,8 @@ private:
 private:
     GLFWwindow *main_window_ = nullptr;
 
-    // Store all image object with 'image name' and 'image buffer'.
-    std::unordered_map<std::string, std::vector<uint8_t>> image_objects_ = {
-        {"Image A", {}},
-        {"Image B", {}}
-    };
+    // Store all image object with 'image name', 'texture id' and 'texture buffer'.
+    std::unordered_map<std::string, Texture> image_objects_;
 
 };
 
@@ -78,8 +85,8 @@ bool Visualizor::ConvertMatrixToImage(const TMat<Scalar> &matrix,
         for (int32_t col = 0; col < matrix.cols(); ++col) {
             // Compute image value in the first line.
             const uint8_t image_value = ConvertValueToUint8_t(matrix(row, col), max_value);
-            int32_t image_row = row * scale;
-            int32_t image_col = col * scale;
+            const int32_t image_row = row * scale;
+            const int32_t image_col = col * scale;
 
             // Fill the block in image.
             for (int32_t i = 0; i < scale; ++i) {

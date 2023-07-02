@@ -2,10 +2,6 @@
 #include "log_report.h"
 #include "slam_memory.h"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 #include "thread"
 
 namespace SLAM_UTILITY {
@@ -39,8 +35,6 @@ Visualizor::Visualizor() {
         return;
     }
     InitializeImgui(main_window_);
-
-    RenderMainWindow(main_window_);
 }
 
 Visualizor::~Visualizor() {
@@ -52,6 +46,28 @@ Visualizor::~Visualizor() {
     // Delete resources of glfw.
     glfwDestroyWindow(main_window_);
     glfwTerminate();
+}
+
+bool Visualizor::ShowImage(const std::string &window_title, const Image &image) {
+    if (image.data() == nullptr || image.cols() < 1 || image.rows() < 1) {
+        return false;
+    }
+
+    auto item = image_objects_.find(window_title.data());
+    if (item == image_objects_.end()) {
+        Texture texture;
+        texture.rows = image.rows();
+        texture.cols = image.cols();
+        texture.id = nullptr;
+        image_objects_.insert(std::make_pair(window_title, texture));
+    } else {
+        Texture &texture = item->second;
+        texture.rows = image.rows();
+        texture.cols = image.cols();
+        texture.id = nullptr;
+    }
+
+    return true;
 }
 
 GLFWwindow *Visualizor::CreateNewWindow(int width, int height, const char *title) {
@@ -123,6 +139,9 @@ void Visualizor::RefreshMainWindow(GLFWwindow *window) {
     // Debug.
     for (auto &item : image_objects_) {
         ImGui::Begin(item.first.data());
+
+        ImGui::Image(ImGui::GetIO().Fonts->TexID, ImVec2(item.second.cols, item.second.rows));
+
         ImGui::End();
     }
 }

@@ -23,6 +23,8 @@ int main(int argc, char **argv) {
 
     Visualizor &visualizor = Visualizor::GetInstance();
     visualizor.ConvertMatrixToImage<float>(matrix, image, matrix.maxCoeff(), kScale);
+    visualizor.ShowImage("Matrix", image);
+    visualizor.RenderMainWindow(visualizor.main_window());
 
     // cv::Mat cv_image(image.rows(), image.cols(), CV_8UC1, image.data());
     // cv::imshow("Matrix shown", cv_image);
