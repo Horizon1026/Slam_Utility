@@ -90,6 +90,9 @@ void Visualizor::InitializeImgui(GLFWwindow *window, const char *glsl_version) {
 
 void Visualizor::RenderMainWindow(GLFWwindow *window) {
     while (!glfwWindowShouldClose(window)) {
+        // Poll and handle events.
+        glfwPollEvents();
+
         // Start the Dear ImGui frame.
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
