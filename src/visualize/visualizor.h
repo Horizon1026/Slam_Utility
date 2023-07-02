@@ -26,7 +26,7 @@ public:
     void RenderMainWindow(GLFWwindow *window);
 
     // Reference for member variables.
-    const std::map<std::string, GLFWwindow *> &window_map() const { return window_map_; }
+    GLFWwindow *main_window() { return main_window_; }
 
 private:
 	Visualizor();
@@ -45,7 +45,14 @@ private:
     void ProcessKeyboardMessage(GLFWwindow *window);
 
 private:
-    std::map<std::string, GLFWwindow *> window_map_;
+    GLFWwindow *main_window_ = nullptr;
+
+    // Store all image object with 'image name' and 'image buffer'.
+    std::unordered_map<std::string, std::vector<uint8_t>> image_objects_ = {
+        {"Image A", {}},
+        {"Image B", {}}
+    };
+
 };
 
 template <typename Scalar>

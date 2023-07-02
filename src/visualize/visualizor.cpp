@@ -33,15 +33,14 @@ Visualizor::Visualizor() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    auto &window = window_map_["SLAM Visualizor"];
-    window = CreateNewWindow(1280, 720, "SLAM Visualizor");
-    if (window == nullptr) {
+    main_window_ = CreateNewWindow(1280, 720, "SLAM Visualizor");
+    if (main_window_ == nullptr) {
         ReportError("[Visualizor] GLFW cannot create new window.");
         return;
     }
-    InitializeImgui(window);
+    InitializeImgui(main_window_);
 
-    RenderMainWindow(window);
+    RenderMainWindow(main_window_);
 }
 
 Visualizor::~Visualizor() {
@@ -51,9 +50,7 @@ Visualizor::~Visualizor() {
     ImGui::DestroyContext();
 
     // Delete resources of glfw.
-    for (auto &item : window_map_) {
-        glfwDestroyWindow(item.second);
-    }
+    glfwDestroyWindow(main_window_);
     glfwTerminate();
 }
 
@@ -111,7 +108,7 @@ void Visualizor::RenderMainWindow(GLFWwindow *window) {
         glViewport(0, 0, display_w, display_h);
 
         // Config the color of background. Then set it to be background.
-        glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Refresh buffers.
@@ -123,7 +120,11 @@ void Visualizor::RenderMainWindow(GLFWwindow *window) {
 }
 
 void Visualizor::RefreshMainWindow(GLFWwindow *window) {
-
+    // Debug.
+    for (auto &item : image_objects_) {
+        ImGui::Begin(item.first.data());
+        ImGui::End();
+    }
 }
 
 void Visualizor::ProcessKeyboardMessage(GLFWwindow *window) {
