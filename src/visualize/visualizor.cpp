@@ -136,11 +136,15 @@ void Visualizor::RenderMainWindow(GLFWwindow *window) {
 }
 
 void Visualizor::RefreshMainWindow(GLFWwindow *window) {
-    // Debug.
     for (auto &item : image_objects_) {
-        ImGui::Begin(item.first.data());
+        // Config the size and alpha of this sub window.
+        ImGui::SetNextWindowSize(ImVec2(item.second.cols, item.second.rows));
+        ImGui::SetNextWindowBgAlpha(0.5f);
 
-        ImGui::Image(ImGui::GetIO().Fonts->TexID, ImVec2(item.second.cols, item.second.rows));
+        ImGui::Begin(item.first.data(), nullptr, ImGuiWindowFlags_NoResize);
+
+        // ImGui::Image(ImGui::GetIO().Fonts->TexID, ImVec2(item.second.cols, item.second.rows));
+        ImGui::Image(ImGui::GetIO().Fonts->TexID, ImGui::GetContentRegionAvail(), ImVec2(0.0, 0.0));
 
         ImGui::End();
     }
