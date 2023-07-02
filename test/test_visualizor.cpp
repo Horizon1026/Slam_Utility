@@ -8,8 +8,8 @@ using namespace SLAM_UTILITY;
 
 namespace {
     constexpr int32_t kScale = 2;
-    constexpr int32_t kMatrixRow = 123;
-    constexpr int32_t kMatrixCol = 153;
+    constexpr int32_t kMatrixRow = 60;
+    constexpr int32_t kMatrixCol = 60;
 }
 
 int main(int argc, char **argv) {
@@ -24,11 +24,14 @@ int main(int argc, char **argv) {
     Visualizor &visualizor = Visualizor::GetInstance();
     visualizor.ConvertMatrixToImage<float>(matrix, image, matrix.maxCoeff(), kScale);
     visualizor.ShowImage("Matrix", image);
-    visualizor.RenderMainWindow(visualizor.main_window());
 
-    // cv::Mat cv_image(image.rows(), image.cols(), CV_8UC1, image.data());
-    // cv::imshow("Matrix shown", cv_image);
-    // cv::waitKey(0);
+    // Debug.
+    auto texture = visualizor.image_objects()["Matrix"];
+    cv::Mat rgba_image(image.rows(), image.cols(), CV_32FC1, texture.buf);
+    cv::imshow("Matrix shown", rgba_image);
+    cv::waitKey(0);
+
+    visualizor.RenderMainWindow(visualizor.main_window());
 
     return 0;
 }

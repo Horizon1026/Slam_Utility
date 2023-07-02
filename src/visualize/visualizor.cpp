@@ -53,18 +53,18 @@ bool Visualizor::ShowImage(const std::string &window_title, const Image &image) 
         return false;
     }
 
-    auto item = image_objects_.find(window_title.data());
+    auto item = image_objects_.find(window_title);
     if (item == image_objects_.end()) {
         Texture texture;
         texture.rows = image.rows();
         texture.cols = image.cols();
-        texture.id = nullptr;
+        ConvertImageToTexture(image, texture);
         image_objects_.insert(std::make_pair(window_title, texture));
     } else {
         Texture &texture = item->second;
         texture.rows = image.rows();
         texture.cols = image.cols();
-        texture.id = nullptr;
+        ConvertImageToTexture(image, texture);
     }
 
     return true;
@@ -124,7 +124,7 @@ void Visualizor::RenderMainWindow(GLFWwindow *window) {
         glViewport(0, 0, display_w, display_h);
 
         // Config the color of background. Then set it to be background.
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Refresh buffers.
@@ -138,13 +138,12 @@ void Visualizor::RenderMainWindow(GLFWwindow *window) {
 void Visualizor::RefreshMainWindow(GLFWwindow *window) {
     for (auto &item : image_objects_) {
         // Config the size and alpha of this sub window.
-        ImGui::SetNextWindowSize(ImVec2(item.second.cols, item.second.rows));
-        ImGui::SetNextWindowBgAlpha(0.5f);
+        // ImGui::SetNextWindowSize(ImVec2(item.second.cols, item.second.rows));
+        // ImGui::SetNextWindowBgAlpha(0.5f);
 
-        ImGui::Begin(item.first.data(), nullptr, ImGuiWindowFlags_NoResize);
+        ImGui::Begin(item.first.data(), nullptr);
 
-        // ImGui::Image(ImGui::GetIO().Fonts->TexID, ImVec2(item.second.cols, item.second.rows));
-        ImGui::Image(ImGui::GetIO().Fonts->TexID, ImGui::GetContentRegionAvail(), ImVec2(0.0, 0.0));
+        ImGui::Image(item.second.id, ImVec2(item.second.cols, item.second.rows), ImVec2(0, 0));
 
         ImGui::End();
     }
@@ -155,6 +154,48 @@ void Visualizor::ProcessKeyboardMessage(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
+}
+
+void Visualizor::ConvertUint8ToRGBA(const uint8_t *gray, uint8_t *rgba, int32_t gray_size) {
+    for (int32_t i = 0; i < gray_size; ++i) {
+        const int32_t idx = i << 2;
+        std::fill_n(rgba + idx, 3, gray[i]);
+        rgba[idx + 3] = 0;
+    }
+}
+
+void Visualizor::ConvertImageToTexture(const Image &image, Texture &texture) {
+    if (image.data() == nullptr) {
+        return;
+    }
+
+    // If the texture is not exist, create a new one.
+    if (texture.id == nullptr) {
+        // Generate a new texture, return its id.
+        GLuint temp_id = 0;
+        glGenTextures(1, &temp_id);
+        texture.id = (ImTextureID)(intptr_t)temp_id;
+    }
+
+    // Create buffer of texture.
+    const int32_t size = image.rows() * image.cols();
+    if (texture.buf != nullptr) {
+        SlamMemory::Free(texture.buf);
+    }
+    texture.buf = new uint8_t[size << 2];
+    ConvertUint8ToRGBA(image.data(), texture.buf, size);
+
+    // Bind the operations below with this texture.
+    glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)texture.id);
+
+    // Load image into texture.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, image.cols(), image.rows(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.buf);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 }

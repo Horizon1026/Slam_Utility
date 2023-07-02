@@ -37,12 +37,17 @@ public:
 
     // Reference for member variables.
     GLFWwindow *main_window() { return main_window_; }
+    std::unordered_map<std::string, Texture> &image_objects() { return image_objects_; }
 
 private:
 	Visualizor();
 
     template <typename Scalar>
-    uint8_t ConvertValueToUint8_t(Scalar value, Scalar max_value);
+    static uint8_t ConvertValueToUint8(Scalar value, Scalar max_value);
+
+    static void ConvertUint8ToRGBA(const uint8_t *gray, uint8_t *rgba, int32_t gray_size);
+
+    void ConvertImageToTexture(const Image &image, Texture &texture);
 
     static void GlfwErrorCallback(int error, const char *description);
 
@@ -84,7 +89,7 @@ bool Visualizor::ConvertMatrixToImage(const TMat<Scalar> &matrix,
     for (int32_t row = 0; row < matrix.rows(); ++row) {
         for (int32_t col = 0; col < matrix.cols(); ++col) {
             // Compute image value in the first line.
-            const uint8_t image_value = ConvertValueToUint8_t(matrix(row, col), max_value);
+            const uint8_t image_value = ConvertValueToUint8(matrix(row, col), max_value);
             const int32_t image_row = row * scale;
             const int32_t image_col = col * scale;
 
@@ -99,7 +104,7 @@ bool Visualizor::ConvertMatrixToImage(const TMat<Scalar> &matrix,
 }
 
 template <typename Scalar>
-uint8_t Visualizor::ConvertValueToUint8_t(Scalar value, Scalar max_value) {
+uint8_t Visualizor::ConvertValueToUint8(Scalar value, Scalar max_value) {
     value = std::fabs(value);
     if (value >= max_value) {
         return 0;
