@@ -8,66 +8,126 @@
 
 #include "thread"
 
-
 namespace SLAM_UTILITY {
 
-// Declare static member variables.
-GLint Visualizor::image_cols_  = 0;
-GLint Visualizor::image_rows_  = 0;
-GLint Visualizor::image_pixel_length_  = 0;
-GLubyte *Visualizor::image_data_ = nullptr;
+Visualizor &Visualizor::GetInstance() {
+    static Visualizor instance;
+    return instance;
+}
 
-Visualizor::Visualizor(int argc, char *argv[]) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(0, 0);
+void Visualizor::GlfwErrorCallback(int error, const char *description) {
+    ReportError("[Visualizor] GLFW error " << error << " : " << description);
+}
+
+Visualizor::Visualizor() {
+    glfwSetErrorCallback(&GlfwErrorCallback);
+
+    // Initialize resource for glfw.
+    if (!glfwInit()) {
+        ReportError("[Visualizor] GLFW init failed.");
+        return;
+    }
+
+    // Config the version and mode of opengl we used.
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    auto &window = window_map_["SLAM Visualizor"];
+    window = CreateNewWindow(1280, 720, "SLAM Visualizor");
+    if (window == nullptr) {
+        ReportError("[Visualizor] GLFW cannot create new window.");
+        return;
+    }
+    InitializeImgui(window);
+
+    RenderMainWindow(window);
 }
 
 Visualizor::~Visualizor() {
-    if (image_data_ != nullptr) {
-        SlamMemory::Free(image_data_);
+    // Clean up settings of ImGui.
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    // Delete resources of glfw.
+    for (auto &item : window_map_) {
+        glfwDestroyWindow(item.second);
+    }
+    glfwTerminate();
+}
+
+GLFWwindow *Visualizor::CreateNewWindow(int width, int height, const char *title) {
+    GLFWwindow *window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    if (window == nullptr) {
+        return nullptr;
+    }
+
+    // Focus on this window. Then it can be operated.
+    glfwMakeContextCurrent(window);
+    // Enable vsync.
+    glfwSwapInterval(1);
+
+    return window;
+}
+
+void Visualizor::InitializeImgui(GLFWwindow *window, const char *glsl_version) {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+}
+
+void Visualizor::RenderMainWindow(GLFWwindow *window) {
+    while (!glfwWindowShouldClose(window)) {
+        // Start the Dear ImGui frame.
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // Refresh all components of main window.
+        RefreshMainWindow(window);
+
+        // Rendering the frame.
+        ImGui::Render();
+
+        // Config the affine transform from NDC to screen.
+        int display_w = 0;
+        int display_h = 0;
+        glfwGetFramebufferSize(window, &display_w, &display_h);
+        glViewport(0, 0, display_w, display_h);
+
+        // Config the color of background. Then set it to be background.
+        glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Refresh buffers.
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(window);
+
+        ProcessKeyboardMessage(window);
     }
 }
 
-bool Visualizor::ShowImage(const std::string &window_title, const Image &image) {
-    if (image.data() == nullptr || image.rows() < 1 || image.cols() < 1) {
-        ReportWarn("[Visualizor] Image to be shown is invalid.");
-        return false;
-    }
+void Visualizor::RefreshMainWindow(GLFWwindow *window) {
 
-    image_rows_ = image.rows();
-    image_cols_ = image.cols();
-    image_pixel_length_ = image.rows() * image.cols();
-
-    if (image_data_ != nullptr) {
-        SlamMemory::Free(image_data_);
-    }
-    image_data_ = (GLubyte *)SlamMemory::Malloc(image_pixel_length_ * 4 * sizeof(GLubyte));
-
-    // Convert uint8 image to rgb image.
-    for (int32_t row = 0; row < image_rows_; ++row) {
-        for (int32_t col = 0; col < image_cols_; ++col) {
-            const uint32_t i = (image_rows_ - row - 1) * image_cols_ + col;
-            const uint32_t idx = (row * image_cols_ + col) << 2;
-            image_data_[idx] = image.data()[i];
-            image_data_[idx + 1] = image_data_[idx];
-            image_data_[idx + 2] = image_data_[idx];
-            image_data_[idx + 3] = 255;
-        }
-    }
-
-    glutInitWindowSize(image.cols(), image.rows());
-    glutCreateWindow(window_title.data());
-    glutDisplayFunc(&RefreshBuffer);
-    glutMainLoop();
-
-    return true;
 }
 
-void Visualizor::RefreshBuffer() {
-    glDrawPixels(image_cols_, image_rows_, GL_RGBA, GL_UNSIGNED_BYTE, image_data_);
-    glFlush();
-    glutSwapBuffers();
+void Visualizor::ProcessKeyboardMessage(GLFWwindow *window) {
+    // If any key is pressed, this window should be closed.
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
 }
 
 }
