@@ -9,7 +9,7 @@ using namespace SLAM_UTILITY;
 namespace {
     constexpr int32_t kScale = 2;
     constexpr int32_t kMatrixRow = 60;
-    constexpr int32_t kMatrixCol = 60;
+    constexpr int32_t kMatrixCol = 80;
 }
 
 int main(int argc, char **argv) {
@@ -26,8 +26,10 @@ int main(int argc, char **argv) {
     visualizor.ShowImage("Matrix", image);
 
     // Debug.
+    // cv::Mat show_image(merged_image.rows, merged_image.cols, CV_8UC3);
+    // cv::cvtColor(merged_image, show_image, cv::COLOR_GRAY2BGR);
     auto texture = visualizor.image_objects()["Matrix"];
-    cv::Mat rgba_image(image.rows(), image.cols(), CV_32FC1, texture.buf);
+    cv::Mat rgba_image(image.rows(), image.cols(), CV_8UC4, texture.buf);
     cv::imshow("Matrix shown", rgba_image);
     cv::waitKey(0);
 

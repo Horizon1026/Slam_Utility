@@ -160,7 +160,7 @@ void Visualizor::ConvertUint8ToRGBA(const uint8_t *gray, uint8_t *rgba, int32_t 
     for (int32_t i = 0; i < gray_size; ++i) {
         const int32_t idx = i << 2;
         std::fill_n(rgba + idx, 3, gray[i]);
-        rgba[idx + 3] = 0;
+        rgba[idx + 3] = 255;
     }
 }
 
@@ -193,7 +193,7 @@ void Visualizor::ConvertImageToTexture(const Image &image, Texture &texture) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, image.cols(), image.rows(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.buf);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, image.cols(), image.rows(), 0, GL_RED, GL_UNSIGNED_BYTE, texture.buf);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
