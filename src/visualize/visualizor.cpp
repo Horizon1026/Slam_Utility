@@ -143,10 +143,8 @@ void Visualizor::RefreshMainWindow(GLFWwindow *window) {
         // ImGui::SetNextWindowSize(ImVec2(item.second.cols, item.second.rows));
         // ImGui::SetNextWindowBgAlpha(0.5f);
 
-        ImGui::Begin(item.first.data(), nullptr);
-
+        ImGui::Begin(item.first.data(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::Image(item.second.id, ImVec2(item.second.cols, item.second.rows), ImVec2(0, 0));
-
         ImGui::End();
     }
 }
@@ -160,9 +158,8 @@ void Visualizor::ProcessKeyboardMessage(GLFWwindow *window) {
 
 void Visualizor::ConvertUint8ToRGBA(const uint8_t *gray, uint8_t *rgba, int32_t gray_size) {
     for (int32_t i = 0; i < gray_size; ++i) {
-        const int32_t idx = i << 2;
+        const int32_t idx = i * 3;
         std::fill_n(rgba + idx, 3, gray[i]);
-        rgba[idx + 3] = 255;
     }
 }
 
@@ -187,21 +184,13 @@ void Visualizor::ConvertImageToTexture(const Image &image, Texture &texture) {
     texture.buf = new uint8_t[size << 2];
     ConvertUint8ToRGBA(image.data(), texture.buf, size);
 
-    // Debug.
-    cv::Mat gray_image(image.rows(), image.cols(), CV_8UC1, image.data());
-    cv::Mat rgb_image(gray_image.rows, gray_image.cols, CV_8UC3);
-    cv::cvtColor(gray_image, rgb_image, cv::COLOR_GRAY2BGR);
-    cv::imshow("rgb image", rgb_image);
-    cv::waitKey(0);
-
     // Bind the operations below with this texture.
-    std::cout << "Now is operate texture id " << (GLuint)(intptr_t)texture.id << std::endl;
     glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)texture.id);
 
     // Load image into texture.
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, rgb_image.cols, rgb_image.rows, 0, GL_BGR, GL_UNSIGNED_BYTE, rgb_image.data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.cols(), image.rows(), 0, GL_BGR, GL_UNSIGNED_BYTE, texture.buf);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
