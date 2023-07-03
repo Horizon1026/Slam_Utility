@@ -4,6 +4,8 @@
 
 #include "thread"
 
+#include "opencv2/opencv.hpp"
+
 namespace SLAM_UTILITY {
 
 Visualizor &Visualizor::GetInstance() {
@@ -185,15 +187,21 @@ void Visualizor::ConvertImageToTexture(const Image &image, Texture &texture) {
     texture.buf = new uint8_t[size << 2];
     ConvertUint8ToRGBA(image.data(), texture.buf, size);
 
+    // Debug.
+    cv::Mat gray_image(image.rows(), image.cols(), CV_8UC1, image.data());
+    cv::Mat rgb_image(gray_image.rows, gray_image.cols, CV_8UC3);
+    cv::cvtColor(gray_image, rgb_image, cv::COLOR_GRAY2BGR);
+    cv::imshow("rgb image", rgb_image);
+    cv::waitKey(0);
+
     // Bind the operations below with this texture.
+    std::cout << "Now is operate texture id " << (GLuint)(intptr_t)texture.id << std::endl;
     glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)texture.id);
 
     // Load image into texture.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, image.cols(), image.rows(), 0, GL_RED, GL_UNSIGNED_BYTE, texture.buf);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, rgb_image.cols, rgb_image.rows, 0, GL_BGR, GL_UNSIGNED_BYTE, rgb_image.data);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }

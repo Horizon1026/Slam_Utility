@@ -8,8 +8,8 @@ using namespace SLAM_UTILITY;
 
 namespace {
     constexpr int32_t kScale = 2;
-    constexpr int32_t kMatrixRow = 60;
-    constexpr int32_t kMatrixCol = 80;
+    constexpr int32_t kMatrixRow = 64;
+    constexpr int32_t kMatrixCol = 64;
 }
 
 int main(int argc, char **argv) {
