@@ -104,7 +104,11 @@ void Visualizor::InitializeImgui(GLFWwindow *window, const char *glsl_version) {
 }
 
 void Visualizor::RenderMainWindow(GLFWwindow *window) {
-    while (!glfwWindowShouldClose(window)) {
+    while (RenderMainWindowOnce(window)) {}
+}
+
+bool Visualizor::RenderMainWindowOnce(GLFWwindow *window) {
+    if (!glfwWindowShouldClose(window)) {
         // Poll and handle events.
         glfwPollEvents();
 
@@ -134,7 +138,11 @@ void Visualizor::RenderMainWindow(GLFWwindow *window) {
         glfwSwapBuffers(window);
 
         ProcessKeyboardMessage(window);
+
+        return true;
     }
+
+    return false;
 }
 
 void Visualizor::RefreshMainWindow(GLFWwindow *window) {

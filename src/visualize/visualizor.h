@@ -34,6 +34,7 @@ public:
                               int32_t scale = 4);
 
     void RenderMainWindow(GLFWwindow *window);
+    bool RenderMainWindowOnce(GLFWwindow *window);
 
     // Reference for member variables.
     GLFWwindow *main_window() { return main_window_; }
