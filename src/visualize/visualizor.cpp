@@ -139,10 +139,6 @@ void Visualizor::RenderMainWindow(GLFWwindow *window) {
 
 void Visualizor::RefreshMainWindow(GLFWwindow *window) {
     for (auto &item : image_objects_) {
-        // Config the size and alpha of this sub window.
-        // ImGui::SetNextWindowSize(ImVec2(item.second.cols, item.second.rows));
-        // ImGui::SetNextWindowBgAlpha(0.5f);
-
         ImGui::Begin(item.first.data(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::Image(item.second.id, ImVec2(item.second.cols, item.second.rows), ImVec2(0, 0));
         ImGui::End();
