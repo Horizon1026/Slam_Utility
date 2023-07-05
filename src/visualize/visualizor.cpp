@@ -4,8 +4,6 @@
 
 #include "thread"
 
-#include "opencv2/opencv.hpp"
-
 namespace SLAM_UTILITY {
 
 Visualizor &Visualizor::GetInstance() {
