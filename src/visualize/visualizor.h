@@ -10,6 +10,10 @@
 #include "imgui_impl_opengl3.h"
 #include "GLFW/glfw3.h"
 
+#include "mutex"
+#include "unordered_map"
+#include "deque"
+
 namespace SLAM_UTILITY {
 
 struct Texture {
@@ -33,8 +37,11 @@ public:
                               Scalar max_value = 1e3,
                               int32_t scale = 4);
 
-    void RenderMainWindow(GLFWwindow *window);
-    bool RenderMainWindowOnce(GLFWwindow *window);
+    // If return false, the window should quit.
+    bool RenderMainWindowOnce();
+    void RenderMainWindow();
+
+    bool ShouldQuit() { return glfwWindowShouldClose(main_window_); }
 
     // Reference for member variables.
     GLFWwindow *main_window() { return main_window_; }
@@ -60,11 +67,18 @@ private:
 
     void ProcessKeyboardMessage(GLFWwindow *window);
 
+    void ProcessDeques();
+
+    void ProcessImageDequeItem(const std::string &window_title, const Image &image);
+
 private:
     GLFWwindow *main_window_ = nullptr;
 
     // Store all image object with 'image name', 'texture id' and 'texture buffer'.
     std::unordered_map<std::string, Texture> image_objects_;
+
+    std::deque<std::pair<std::string, Image>> image_deque_;
+    std::mutex image_deque_lock_;
 
 };
 

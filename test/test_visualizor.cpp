@@ -9,6 +9,7 @@
 #include "vector"
 #include "cstring"
 
+#include "thread"
 #include "opencv2/opencv.hpp"
 
 using namespace SLAM_UTILITY;
@@ -51,12 +52,21 @@ void TestVisualizorStatic() {
     cv::Mat cv_image = cv::imread("../example/image.png", 0);
     Image image_png(cv_image.data, cv_image.rows, cv_image.cols);
 
-    // Show images.
-    Visualizor &visualizor = Visualizor::GetInstance();
-    visualizor.ConvertMatrixToImage<float>(matrix, image_matrix, matrix.maxCoeff(), kScale);
-    visualizor.ShowImage("Matrix", image_matrix);
-    visualizor.ShowImage("PNG file", image_png);
-    visualizor.RenderMainWindow(visualizor.main_window());
+    // Start render thread. Keep visualizor running.
+    std::thread([&]() {
+        Visualizor &visualizor = Visualizor::GetInstance();
+        visualizor.RenderMainWindow();
+    }).detach();
+
+    // Start another thread, add something into visualizor.
+    std::thread([&]() {
+        Visualizor &visualizor = Visualizor::GetInstance();
+        visualizor.ConvertMatrixToImage<float>(matrix, image_matrix, matrix.maxCoeff(), kScale);
+        visualizor.ShowImage("Matrix", image_matrix);
+        visualizor.ShowImage("PNG file", image_png);
+
+        while (!visualizor.ShouldQuit()) {}
+    }).join();
 }
 
 void TestVisualizorDynamic() {
@@ -68,22 +78,29 @@ void TestVisualizorDynamic() {
     RETURN_IF(!GetFilesInPath("/home/horizon/Desktop/date_sets/euroc/MH_01_easy/mav0/cam1/data", cam1_filenames));
     std::sort(cam1_filenames.begin(), cam1_filenames.end());
 
-    // Initialize visualizor.
-    Visualizor &visualizor = Visualizor::GetInstance();
+    // Start render thread. Keep visualizor running.
+    std::thread([&]() {
+        Visualizor &visualizor = Visualizor::GetInstance();
+        visualizor.RenderMainWindow();
+    }).detach();
 
-    const int32_t max_size = std::min(cam0_filenames.size(), cam1_filenames.size());
-    for (int32_t i = 0; i < max_size; ++i) {
-        cv::Mat cv_image_left = cv::imread(cam0_filenames[i], 0);
-        cv::Mat cv_image_right = cv::imread(cam1_filenames[i], 0);
-        Image image_left(cv_image_left.data, cv_image_left.rows, cv_image_left.cols);
-        Image image_right(cv_image_right.data, cv_image_right.rows, cv_image_right.cols);
+    // Start another thread, add something into visualizor.
+    std::thread([&]() {
+        Visualizor &visualizor = Visualizor::GetInstance();
 
-        visualizor.ShowImage("Camera Left", image_left);
-        visualizor.ShowImage("Camera Right", image_right);
+        const int32_t max_size = std::min(cam0_filenames.size(), cam1_filenames.size());
+        for (int32_t i = 0; i < max_size; ++i) {
+            cv::Mat cv_image_left = cv::imread(cam0_filenames[i], 0);
+            cv::Mat cv_image_right = cv::imread(cam1_filenames[i], 0);
+            Image image_left(cv_image_left.data, cv_image_left.rows, cv_image_left.cols);
+            Image image_right(cv_image_right.data, cv_image_right.rows, cv_image_right.cols);
 
-        BREAK_IF(!visualizor.RenderMainWindowOnce(visualizor.main_window()));
-    }
-    visualizor.RenderMainWindow(visualizor.main_window());
+            visualizor.ShowImage("Camera Left", image_left);
+            visualizor.ShowImage("Camera Right", image_right);
+
+            BREAK_IF(visualizor.ShouldQuit());
+        }
+    }).join();
 }
 
 int main(int argc, char **argv) {
