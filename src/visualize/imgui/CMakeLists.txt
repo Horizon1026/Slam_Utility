@@ -14,4 +14,5 @@ target_include_directories( lib_imgui_glfw_opengl PUBLIC
 target_link_libraries( lib_imgui_glfw_opengl
     -lglfw
     -lGL
+    -ldl
 )
