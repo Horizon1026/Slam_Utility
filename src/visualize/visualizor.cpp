@@ -130,16 +130,12 @@ GLuint Visualizor::CreateTextureByImage(const Image &image) {
 
     const int32_t size = image.rows() * image.cols();
     uint8_t image_buff[size * 3];
-    for (int32_t i = 0; i < size; ++i) {
-        const int32_t idx = i * 3;
-        image_buff[idx] = image.data()[i];
-        image_buff[idx + 1] = image.data()[i];
-        image_buff[idx + 2] = image.data()[i];
-    }
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGR, image.cols(), image.rows(), 0, GL_RGB, GL_UNSIGNED_BYTE, image_buff);
-
+    Visualizor::ConvertUint8ToRGB(image.data(), image_buff, size);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.cols(), image.rows(), 0, GL_BGR, GL_UNSIGNED_BYTE, image_buff);
+
 
     return texture_id;
 }
