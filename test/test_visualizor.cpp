@@ -52,21 +52,11 @@ void TestVisualizorStatic() {
     cv::Mat cv_image = cv::imread("../example/image.png", 0);
     Image image_png(cv_image.data, cv_image.rows, cv_image.cols);
 
-    // Start render thread. Keep visualizor running.
-    std::thread([&]() {
-        Visualizor &visualizor = Visualizor::GetInstance();
-        visualizor.RenderMainWindow();
-    }).detach();
+    // Test visualizor.
+    Visualizor::ShowImage("Matrix", image_matrix);
+    Visualizor::ShowImage("PNG Image", image_png);
+    Visualizor::WaitKey(10);
 
-    // Start another thread, add something into visualizor.
-    std::thread([&]() {
-        Visualizor &visualizor = Visualizor::GetInstance();
-        visualizor.ConvertMatrixToImage<float>(matrix, image_matrix, matrix.maxCoeff(), kScale);
-        visualizor.ShowImage("Matrix", image_matrix);
-        visualizor.ShowImage("PNG file", image_png);
-
-        while (!visualizor.ShouldQuit()) {}
-    }).join();
 }
 
 void TestVisualizorDynamic() {
@@ -77,30 +67,6 @@ void TestVisualizorDynamic() {
     std::vector<std::string> cam1_filenames;
     RETURN_IF(!GetFilesInPath("/home/horizon/Desktop/date_sets/euroc/MH_01_easy/mav0/cam1/data", cam1_filenames));
     std::sort(cam1_filenames.begin(), cam1_filenames.end());
-
-    // Start render thread. Keep visualizor running.
-    std::thread([&]() {
-        Visualizor &visualizor = Visualizor::GetInstance();
-        visualizor.RenderMainWindow();
-    }).detach();
-
-    // Start another thread, add something into visualizor.
-    std::thread([&]() {
-        Visualizor &visualizor = Visualizor::GetInstance();
-
-        const int32_t max_size = std::min(cam0_filenames.size(), cam1_filenames.size());
-        for (int32_t i = 0; i < max_size; ++i) {
-            cv::Mat cv_image_left = cv::imread(cam0_filenames[i], 0);
-            cv::Mat cv_image_right = cv::imread(cam1_filenames[i], 0);
-            Image image_left(cv_image_left.data, cv_image_left.rows, cv_image_left.cols);
-            Image image_right(cv_image_right.data, cv_image_right.rows, cv_image_right.cols);
-
-            visualizor.ShowImage("Camera Left", image_left);
-            visualizor.ShowImage("Camera Right", image_right);
-
-            BREAK_IF(visualizor.ShouldQuit());
-        }
-    }).join();
 }
 
 int main(int argc, char **argv) {

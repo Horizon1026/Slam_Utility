@@ -7,185 +7,163 @@
 
 namespace SLAM_UTILITY {
 
+std::map<std::string, VisualizorWindow> Visualizor::windows_;
+
 Visualizor &Visualizor::GetInstance() {
     static Visualizor instance;
     return instance;
 }
 
-void Visualizor::GlfwErrorCallback(int error, const char *description) {
-    ReportError("[Visualizor] GLFW error " << error << " : " << description);
-}
-
-Visualizor::Visualizor() {
-    glfwTerminate();
-    glfwSetErrorCallback(&GlfwErrorCallback);
-
-    // Initialize resource for glfw.
-    if (!glfwInit()) {
-        ReportError("[Visualizor] GLFW init failed.");
-        return;
-    }
-
-    // Config the version and mode of opengl we used.
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    main_window_ = CreateNewWindow(1280, 720, "SLAM Visualizor");
-    if (main_window_ == nullptr) {
-        ReportError("[Visualizor] GLFW cannot create new window.");
-        return;
-    }
-    InitializeImgui(main_window_);
-}
-
-Visualizor::~Visualizor() {
-    // Clean up settings of ImGui.
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    // Delete resources of glfw.
-    glfwDestroyWindow(main_window_);
-    glfwTerminate();
-}
-
-bool Visualizor::ShowImage(const std::string &window_title, const Image &image) {
-    if (image.data() == nullptr || image.cols() < 1 || image.rows() < 1) {
+bool Visualizor::ShowImage(const std::string &window_title, const Image &image, bool resizable) {
+    if (image.data() == nullptr || image.rows() < 1 || image.cols() < 1) {
+        ReportError("[Visualizor] ShowImage() got an invalid image.");
         return false;
     }
 
-    std::unique_lock l(image_deque_lock_);
-    image_deque_.emplace_back(std::make_pair(window_title, image));
+    glfwSetErrorCallback(Visualizor::ErrorCallback);
+
+    if (!glfwInit()) {
+        ReportError("[Visualizor] GLFW initialize failed.");
+        return false;
+    }
+
+    if (resizable) {
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    } else {
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    }
+
+    VisualizorWindow *window = GetWindowPointer(window_title, image.cols(), image.rows());
+    window->texture_id = Visualizor::CreateTextureByImage(image);
+
+    glfwMakeContextCurrent(window->glfw_window);
+    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+    glfwSwapInterval(1);
+    glfwSetWindowPos(window->glfw_window, 0, 0);
+    glfwShowWindow(window->glfw_window);
+    glfwSetKeyCallback(window->glfw_window, Visualizor::KeyboardCallback);
+
+    glfwMakeContextCurrent(window->glfw_window);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glfwHideWindow(window->glfw_window);
+
     return true;
 }
 
-GLFWwindow *Visualizor::CreateNewWindow(int width, int height, const char *title) {
-    GLFWwindow *window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-    if (window == nullptr) {
-        return nullptr;
-    }
-
-    // Focus on this window. Then it can be operated.
-    glfwMakeContextCurrent(window);
-    // Enable vsync.
-    glfwSwapInterval(1);
-
-    return window;
-}
-
-void Visualizor::InitializeImgui(GLFWwindow *window, const char *glsl_version) {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-
-    ImGuiIO &io = ImGui::GetIO();
-    (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
-}
-
-void Visualizor::RenderMainWindow() {
-    while (RenderMainWindowOnce()) {}
-}
-
-bool Visualizor::RenderMainWindowOnce() {
-    if (!glfwWindowShouldClose(main_window_)) {
-        // Poll and handle events.
-        glfwPollEvents();
-
-        // Start the Dear ImGui frame.
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // Refresh all components of main window.
-        RefreshMainWindow(main_window_);
-
-        // Rendering the frame.
-        ImGui::Render();
-
-        // Config the affine transform from NDC to screen.
-        int display_w = 0;
-        int display_h = 0;
-        glfwGetFramebufferSize(main_window_, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-
-        // Config the color of background. Then set it to be background.
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        // Refresh buffers.
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        glfwSwapBuffers(main_window_);
-
-        ProcessKeyboardMessage(main_window_);
-
-        // Wait 10ms every loop.
-        usleep(1000);
-
-        return true;
-    }
-
-    return false;
-}
-
-void Visualizor::RefreshMainWindow(GLFWwindow *window) {
-    // Load items in deque.
-    ProcessDeques();
-
-    // Iterate all items to be shown.
-    for (auto &item : image_objects_) {
-        ImGui::Begin(item.first.data(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::Image(item.second.id, ImVec2(item.second.cols, item.second.rows), ImVec2(0, 0));
-        ImGui::End();
-    }
-}
-
-void Visualizor::ProcessKeyboardMessage(GLFWwindow *window) {
-    // If any key is pressed, this window should be closed.
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    }
-}
-
-void Visualizor::ProcessDeques() {
-    // Process image deque.
-    {
-        std::unique_lock l(image_deque_lock_);
-        while (!image_deque_.empty()) {
-            ProcessImageDequeItem(image_deque_.front().first, image_deque_.front().second);
-            image_deque_.pop_front();
+void Visualizor::WaitKey(int32_t delay_s) {
+    // Display add window hidden in ShowImage().
+    for (auto &item : Visualizor::windows_) {
+        auto &glfw_window = item.second.glfw_window;
+        if (!glfwWindowShouldClose(glfw_window)) {
+            glfwShowWindow(glfw_window);
+        } else {
+            glfwHideWindow(glfw_window);
         }
     }
+
+    while (!Visualizor::windows_.empty()) {
+        for (auto &item : Visualizor::windows_) {
+            auto &window = item.second;
+
+            if (!glfwWindowShouldClose(window.glfw_window)) {
+                glfwMakeContextCurrent(window.glfw_window);
+                Visualizor::DrawTextureInCurrentWindow(window.texture_id);
+                glfwSwapBuffers(window.glfw_window);
+            } else {
+                glfwHideWindow(window.glfw_window);
+            }
+
+            if (delay_s > 0) {
+                // Waiting for key event during specified duration.
+                sleep(delay_s);
+                glfwWaitEvents();
+                break;
+            } else {
+                // Waiting for key event until all windows are hidden.
+                glfwPollEvents();
+            }
+        }
+    }
+
+    // Clear all windows and recovery resources.
+    Visualizor::windows_.clear();
+    glfwTerminate();
+
 }
 
-void Visualizor::ProcessImageDequeItem(const std::string &window_title, const Image &image) {
-    if (image.data() == nullptr || image.cols() < 1 || image.rows() < 1) {
-        return;
-    }
+void Visualizor::ErrorCallback(int32_t error, const char *description) {
+    ReportError("[Visualizor] Error detected :" << description);
+}
 
-    // If this is new window, create new texture by this image.
-    // Or only update the exist texture.
-    auto item = image_objects_.find(window_title);
-    if (item == image_objects_.end()) {
-        Texture texture;
-        texture.rows = image.rows();
-        texture.cols = image.cols();
-        ConvertImageToTexture(image, texture);
-        image_objects_.insert(std::make_pair(window_title, texture));
-    } else {
-        Texture &texture = item->second;
-        texture.rows = image.rows();
-        texture.cols = image.cols();
-        ConvertImageToTexture(image, texture);
+void Visualizor::KeyboardCallback(GLFWwindow *window, int32_t key, int32_t scan_code, int32_t action, int32_t mods) {
+    if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE) {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
+}
+
+VisualizorWindow *Visualizor::GetWindowPointer(const std::string &title, int32_t width, int32_t height) {
+    auto item = Visualizor::windows_.find(title);
+    if (item == Visualizor::windows_.end()) {
+        // If window with selected title is not found, create a new window.
+        auto iter = Visualizor::windows_.insert(std::make_pair(title, VisualizorWindow()));
+        iter.first->second.glfw_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+
+        // If insert failed, clear it.
+        if (iter.first->second.glfw_window == nullptr) {
+            Visualizor::windows_.erase(title);
+            return nullptr;
+        }
+        return &(iter.first->second);
+    } else {
+        // Return the exist window.
+        return &(item->second);
+    }
+}
+
+GLuint Visualizor::CreateTextureByImage(const Image &image) {
+    GLuint texture_id = 0;
+    glGenTextures(1, &texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, image.cols(), image.rows(), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image.data());
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    return texture_id;
+}
+
+void Visualizor::DrawTextureInCurrentWindow(GLuint texture_id) {
+    int32_t width, height;
+    glfwGetFramebufferSize(glfwGetCurrentContext(), &width, &height);
+
+    glViewport(0, 0, width, height);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.f, 1.f, 0.f, 1.f, 0.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.f, 0.f);
+    glVertex2f(0.f, 0.f);
+
+    glTexCoord2f(1.f, 0.f);
+    glVertex2f(1.f, 0.f);
+
+    glTexCoord2f(1.f, 1.f);
+    glVertex2f(1.f, 1.f);
+
+    glTexCoord2f(0.f, 1.f);
+    glVertex2f(0.f, 1.f);
+
+    glEnd();
 }
 
 }

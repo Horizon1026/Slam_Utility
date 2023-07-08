@@ -4,43 +4,65 @@
 
 namespace SLAM_UTILITY {
 
-void Visualizor::ConvertUint8ToRGBA(const uint8_t *gray, uint8_t *rgba, int32_t gray_size) {
+template <> uint8_t Visualizor::ConvertValueToUint8<float>(float value, float max_value);
+template <> uint8_t Visualizor::ConvertValueToUint8<double>(double value, double max_value);
+template <typename Scalar>
+uint8_t Visualizor::ConvertValueToUint8(Scalar value, Scalar max_value) {
+    value = std::fabs(value);
+    if (value >= max_value) {
+        return 0;
+    }
+
+    const Scalar step = max_value / 256.0;
+    return 255 - static_cast<uint8_t>(value / step);
+}
+
+template <> bool Visualizor::ConvertMatrixToImage<float>(const TMat<float> &matrix, Image &image, float max_value, int32_t scale);
+template <> bool Visualizor::ConvertMatrixToImage<double>(const TMat<double> &matrix, Image &image, double max_value, int32_t scale);
+template <typename Scalar>
+bool Visualizor::ConvertMatrixToImage(const TMat<Scalar> &matrix,
+                                      Image &image,
+                                      Scalar max_value,
+                                      int32_t scale) {
+    if (image.data() == nullptr) {
+        ReportError("[Visualizor] Image buffer is empty.");
+        return false;
+    }
+    if (scale < 0) {
+        ReportError("[Visualizor] Scale must larger than 0.");
+        return false;
+    }
+    if (image.rows() != matrix.rows() * scale || image.cols() != matrix.cols() * scale) {
+        ReportError("[Visualizor] Image buffer size does not match matrix size.");
+        return false;
+    }
+
+    // Convert matrix to image.
+    for (int32_t row = 0; row < matrix.rows(); ++row) {
+        for (int32_t col = 0; col < matrix.cols(); ++col) {
+            // Compute image value in the first line.
+            const uint8_t image_value = ConvertValueToUint8(matrix(row, col), max_value);
+            const int32_t image_row = row * scale;
+            const int32_t image_col = col * scale;
+
+            // Fill the block in image.
+            for (int32_t i = 0; i < scale; ++i) {
+                std::fill_n(image.data() + (image_row + i) * image.cols() + image_col, scale, image_value);
+            }
+        }
+    }
+
+    return true;
+}
+
+void Visualizor::ConvertUint8ToRGB(const uint8_t *gray, uint8_t *rgba, int32_t gray_size) {
     for (int32_t i = 0; i < gray_size; ++i) {
         const int32_t idx = i * 3;
         std::fill_n(rgba + idx, 3, gray[i]);
     }
 }
 
-void Visualizor::ConvertImageToTexture(const Image &image, Texture &texture) {
-    if (image.data() == nullptr) {
-        return;
-    }
 
-    // If the texture is not exist, create a new one.
-    if (texture.id == nullptr) {
-        // Generate a new texture, return its id.
-        GLuint temp_id = 0;
-        glGenTextures(1, &temp_id);
-        texture.id = (ImTextureID)(intptr_t)temp_id;
-    }
 
-    // Create buffer of texture.
-    const int32_t size = image.rows() * image.cols();
-    if (texture.buf != nullptr) {
-        SlamMemory::Free(texture.buf);
-    }
-    texture.buf = (uint8_t *)SlamMemory::Malloc(size * 3 * sizeof(uint8_t));
-    ConvertUint8ToRGBA(image.data(), texture.buf, size);
-
-    // Bind the operations below with this texture.
-    glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)texture.id);
-
-    // Load image into texture.
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.cols(), image.rows(), 0, GL_BGR, GL_UNSIGNED_BYTE, texture.buf);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
 
 }
