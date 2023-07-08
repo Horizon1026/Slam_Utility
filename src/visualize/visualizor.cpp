@@ -34,7 +34,6 @@ bool Visualizor::ShowImage(const std::string &window_title, const Image &image, 
     }
 
     VisualizorWindow *window = GetWindowPointer(window_title, image.cols(), image.rows());
-    window->texture_id = Visualizor::CreateTextureByImage(image);
 
     glfwMakeContextCurrent(window->glfw_window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -42,6 +41,8 @@ bool Visualizor::ShowImage(const std::string &window_title, const Image &image, 
     glfwSetWindowPos(window->glfw_window, 0, 0);
     glfwShowWindow(window->glfw_window);
     glfwSetKeyCallback(window->glfw_window, Visualizor::KeyboardCallback);
+
+    window->texture_id = Visualizor::CreateTextureByImage(image);
 
     glfwMakeContextCurrent(window->glfw_window);
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -127,7 +128,15 @@ GLuint Visualizor::CreateTextureByImage(const Image &image) {
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, image.cols(), image.rows(), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image.data());
+    const int32_t size = image.rows() * image.cols();
+    uint8_t image_buff[size * 3];
+    for (int32_t i = 0; i < size; ++i) {
+        const int32_t idx = i * 3;
+        image_buff[idx] = image.data()[i];
+        image_buff[idx + 1] = image.data()[i];
+        image_buff[idx + 2] = image.data()[i];
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGR, image.cols(), image.rows(), 0, GL_RGB, GL_UNSIGNED_BYTE, image_buff);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
