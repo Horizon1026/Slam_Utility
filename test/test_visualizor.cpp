@@ -47,6 +47,7 @@ void TestVisualizorStatic() {
     matrix += Mat::Random(kMatrixRow, kMatrixCol);
     uint8_t *buf = (uint8_t *)malloc(matrix.rows() * matrix.cols() * kScale * kScale * sizeof(uint8_t));
     Image image_matrix(buf, matrix.rows() * kScale, matrix.cols() * kScale);
+    Visualizor::ConvertMatrixToImage<float>(matrix, image_matrix, 15.0f, kScale);
 
     // Create image of png file.
     cv::Mat cv_image = cv::imread("../example/image.png", 0);
@@ -54,8 +55,9 @@ void TestVisualizorStatic() {
 
     // Test visualizor.
     Visualizor::ShowImage("Matrix", image_matrix);
+    Visualizor::WaitKey(1);
     Visualizor::ShowImage("PNG Image", image_png);
-    Visualizor::WaitKey(10);
+    Visualizor::WaitKey(0);
 
 }
 
@@ -67,6 +69,16 @@ void TestVisualizorDynamic() {
     std::vector<std::string> cam1_filenames;
     RETURN_IF(!GetFilesInPath("/home/horizon/Desktop/date_sets/euroc/MH_01_easy/mav0/cam1/data", cam1_filenames));
     std::sort(cam1_filenames.begin(), cam1_filenames.end());
+
+    for (uint32_t i = 0; i < 100; ++i) {
+        cv::Mat cv_image_left = cv::imread(cam0_filenames[i], 0);
+        cv::Mat cv_image_right = cv::imread(cam1_filenames[i], 0);
+        Image image_left(cv_image_left.data, cv_image_left.rows, cv_image_left.cols);
+        Image image_right(cv_image_right.data, cv_image_right.rows, cv_image_right.cols);
+        Visualizor::ShowImage("Left", image_left);
+        Visualizor::ShowImage("Right", image_right);
+        Visualizor::WaitKey(50);
+    }
 }
 
 int main(int argc, char **argv) {
