@@ -77,8 +77,9 @@ void TestVisualizorDynamic() {
         Image image_right(cv_image_right.data, cv_image_right.rows, cv_image_right.cols);
         Visualizor::ShowImage("Left", image_left);
         Visualizor::ShowImage("Right", image_right);
-        Visualizor::WaitKey(50);
+        Visualizor::WaitKey(20);
     }
+    Visualizor::WaitKey(0);
 }
 
 int main(int argc, char **argv) {

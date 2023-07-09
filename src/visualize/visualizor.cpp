@@ -9,6 +9,7 @@
 namespace SLAM_UTILITY {
 
 std::map<std::string, VisualizorWindow> Visualizor::windows_;
+bool Visualizor::some_key_pressed_ = false;
 
 Visualizor &Visualizor::GetInstance() {
     static Visualizor instance;
@@ -103,9 +104,11 @@ void Visualizor::WaitKey(int32_t delay_ms) {
         }
 
         BREAK_IF(closed_window_cnt == Visualizor::windows_.size());
+        BREAK_IF(Visualizor::some_key_pressed_);
     }
 
     // Resource recovery is in Destructor Function.
+    Visualizor::some_key_pressed_ = false;
 }
 
 void Visualizor::ErrorCallback(int32_t error, const char *description) {
@@ -115,6 +118,8 @@ void Visualizor::ErrorCallback(int32_t error, const char *description) {
 void Visualizor::KeyboardCallback(GLFWwindow *window, int32_t key, int32_t scan_code, int32_t action, int32_t mods) {
     if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+    } else if (action == GLFW_PRESS) {
+        Visualizor::some_key_pressed_ = true;
     }
 }
 

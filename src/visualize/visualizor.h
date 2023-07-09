@@ -70,6 +70,7 @@ private:
 
 private:
     static std::map<std::string, VisualizorWindow> windows_;
+    static bool some_key_pressed_;
 };
 
 // Class Visualizor Definition.
