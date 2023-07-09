@@ -12,9 +12,6 @@ endif()
 if ( NOT TARGET lib_slam_utility_operate )
     add_subdirectory( ../operate ${PROJECT_SOURCE_DIR}/build/lib_slam_utility_operate )
 endif()
-if ( NOT TARGET lib_imgui_glfw_opengl )
-    add_subdirectory( ../visualize/imgui ${PROJECT_SOURCE_DIR}/build/lib_imgui_glfw_opengl )
-endif()
 if ( NOT TARGET lib_visualize_base_glad_khr )
     add_subdirectory( ../visualize/glad+khr ${PROJECT_SOURCE_DIR}/build/lib_visualize_base_glad_khr )
 endif()
@@ -27,6 +24,5 @@ target_link_libraries( lib_slam_utility_visualize
     lib_slam_utility_memory
     lib_slam_utility_operate
 
-    lib_imgui_glfw_opengl
     lib_visualize_base_glad_khr
 )

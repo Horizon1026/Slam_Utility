@@ -35,6 +35,11 @@ if ( NOT TARGET lib_circular_buffer )
     add_subdirectory( ${SLAM_UTILITY_PATH}/data_struct/circular_buffer ${PROJECT_SOURCE_DIR}/build/lib_circular_buffer )
 endif()
 
+# Add all components of slam utility 3rd libraries.
+if ( NOT TARGET lib_imgui_glfw_opengl )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/3rd_libraries/imgui ${PROJECT_SOURCE_DIR}/build/lib_imgui_glfw_opengl )
+endif()
+
 add_library( lib_slam_utility ${AUX_SRC_SLAM_UTILITY} )
 target_include_directories( lib_slam_utility PUBLIC . )
 target_link_libraries( lib_slam_utility
@@ -49,4 +54,6 @@ target_link_libraries( lib_slam_utility
     lib_covisible_graph
     lib_object_pool
     lib_circular_buffer
+
+    lib_imgui_glfw_opengl
 )

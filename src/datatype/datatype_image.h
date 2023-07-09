@@ -4,18 +4,25 @@
 #include "datatype_basic.h"
 #include "cmath"
 
+enum class ImageType : uint8_t {
+    kGray = 0,
+    kRgb = 1,
+};
+
+// Class Image Declaration.
 class Image {
 
 public:
     explicit Image() = default;
-    explicit Image(uint8_t *data, int32_t rows, int32_t cols);
+    explicit Image(uint8_t *data, int32_t rows, int32_t cols, ImageType type = ImageType::kGray);
     virtual ~Image() = default;
 
     uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }
     int32_t rows() const { return rows_; }
+    ImageType type() const { return type_; }
 
-    void SetImage(uint8_t *data, int32_t rows, int32_t cols);
+    void SetImage(uint8_t *data, int32_t rows, int32_t cols, ImageType type = ImageType::kGray);
 
     inline bool SetPixelValue(int32_t row, int32_t col, uint8_t value) {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
@@ -76,6 +83,7 @@ private:
     uint8_t *data_ = nullptr;
     int32_t cols_ = 0;
     int32_t rows_ = 0;
+    ImageType type_ = ImageType::kGray;
 };
 
 #endif // end of _DATATYPE_IMAGE_H_
