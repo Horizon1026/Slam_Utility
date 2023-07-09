@@ -60,6 +60,8 @@ bool Visualizor::ShowImage(const std::string &window_title, const Image &image, 
 
     } else {
         VisualizorWindow *window = GetWindowPointer(window_title, image.cols(), image.rows());
+        glfwMakeContextCurrent(window->glfw_window);
+        glfwSetWindowShouldClose(window->glfw_window, GLFW_FALSE);
         // glfwMakeContextCurrent(window->glfw_window);
         Visualizor::CreateTextureByImage(image, window->texture_id);
     }
