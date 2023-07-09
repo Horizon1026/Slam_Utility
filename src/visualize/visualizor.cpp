@@ -87,7 +87,6 @@ void Visualizor::WaitKey(int32_t delay_ms) {
 
             if (!glfwWindowShouldClose(window.glfw_window)) {
                 glfwMakeContextCurrent(window.glfw_window);
-                ReportDebug("[Visualizor] glfw window ptr " << LogPtr(window.glfw_window));
                 Visualizor::DrawTextureInCurrentWindow(window.texture_id);
                 glfwSwapBuffers(window.glfw_window);
             } else {
