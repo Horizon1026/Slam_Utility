@@ -42,6 +42,8 @@ bool GetFilesInPath(std::string dir, std::vector<std::string> &filenames) {
 }
 
 void TestVisualizorStatic() {
+    ReportInfo(YELLOW ">> Test visualizor show static image." RESET_COLOR);
+
     // Create image of matrix.
     Mat matrix = Mat::Identity(kMatrixRow, kMatrixCol) * 10.0f;
     matrix += Mat::Random(kMatrixRow, kMatrixCol);
@@ -62,6 +64,8 @@ void TestVisualizorStatic() {
 }
 
 void TestVisualizorDynamic() {
+    ReportInfo(YELLOW ">> Test visualizor show dynamic image." RESET_COLOR);
+
     std::vector<std::string> cam0_filenames;
     RETURN_IF(!GetFilesInPath("/home/horizon/Desktop/date_sets/euroc/MH_01_easy/mav0/cam0/data", cam0_filenames));
     std::sort(cam0_filenames.begin(), cam0_filenames.end());
@@ -83,7 +87,7 @@ void TestVisualizorDynamic() {
 }
 
 int main(int argc, char **argv) {
-    ReportInfo(YELLOW ">> Test visualizor based on ImGui." RESET_COLOR);
+    ReportInfo(YELLOW ">> Test visualizor." RESET_COLOR);
 
     if (argc == 1) {
         ReportInfo("Argc is 1, run static image test.");
