@@ -3,15 +3,18 @@ Defined some basic datatype or operations for slam algorithm.
 
 # Components
 - [x] Datatype for matrix, image, image pyramid and so on.
-- [x] Simple log api.
+- [ ] Log system.
+    - [x] Simple log api.
+    - [ ] Log recorder based on csv file.
+    - [ ] Log decoder base on csv file.
 - [x] Math lib.
 - [x] Memory manager.
 - [x] Basic operations.
 - [ ] Visualization for slam results.
-  - [x] Import 3rd library: imgui, based on glfw3 and opengl3
   - [x] Convert matrix to image
   - [ ] Image load.
-  - [ ] Image show.
+  - [ ] Image paint.
+  - [x] Image show. (Based on glfw3)
 - [ ] Data struct for slam.
     - [x] Visual covisible graph.
     - [x] Object pool.
@@ -19,6 +22,8 @@ Defined some basic datatype or operations for slam algorithm.
     - [x] Circular queue.
 - [x] Tick tock timer.
 - [x] Scripts for all repos based on Slam_Utility.
+- [x] 3rd libraries.
+    - [x] imgui based on glfw3 and opengl3
 
 # Dependence
 Eigen3 (>= 3.3.7), OpenCV4 (only for test),
