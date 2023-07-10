@@ -135,24 +135,14 @@ void Visualizor::CreateTextureByImage(const Image &image, GLuint &texture_id) {
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    switch (image.type()) {
-        default:
-        case ImageType::kGray: {
-            const int32_t size = image.rows() * image.cols();
-            uint8_t *image_buff = (uint8_t *)SlamMemory::Malloc(size * 3 * sizeof(uint8_t));
-            Visualizor::ConvertUint8ToRgbAndUpsideDown(image.data(), image_buff, image.rows(), image.cols());
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.cols(), image.rows(), 0, GL_BGR, GL_UNSIGNED_BYTE, image_buff);
+    const int32_t size = image.rows() * image.cols();
+    uint8_t *image_buff = (uint8_t *)SlamMemory::Malloc(size * 3 * sizeof(uint8_t));
+    Visualizor::ConvertUint8ToRgbAndUpsideDown(image.data(), image_buff, image.rows(), image.cols());
 
-            SlamMemory::Free(image_buff);
-            break;
-        }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.cols(), image.rows(), 0, GL_BGR, GL_UNSIGNED_BYTE, image_buff);
 
-        case ImageType::kRgb: {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.cols(), image.rows(), 0, GL_BGR, GL_UNSIGNED_BYTE, image.data());
-            break;
-        }
-    }
+    SlamMemory::Free(image_buff);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
