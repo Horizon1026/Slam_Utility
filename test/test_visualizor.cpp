@@ -52,8 +52,8 @@ void TestVisualizorStatic() {
     Visualizor::ConvertMatrixToImage<float>(matrix, image_matrix, 15.0f, kScale);
 
     // Create image of png file.
-    cv::Mat cv_image = cv::imread("../example/image.png", 0);
-    GrayImage image_png(cv_image.data, cv_image.rows, cv_image.cols);
+    cv::Mat cv_image = cv::imread("../example/image.png");
+    RgbImage image_png(cv_image.data, cv_image.rows, cv_image.cols);
 
     // Test visualizor.
     Visualizor::ShowImage("Matrix", image_matrix);

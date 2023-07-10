@@ -30,7 +30,8 @@ public:
     static Visualizor &GetInstance();
 
     // Support for image show.
-    static bool ShowImage(const std::string &window_title, const GrayImage &image, bool resizable = false);
+    template <typename T>
+    static bool ShowImage(const std::string &window_title, const T &image, bool resizable = false);
     static void WaitKey(int32_t delay_ms);
     static void WindowList();
 
@@ -74,7 +75,7 @@ private:
     // Inner support.
     static VisualizorWindow *GetWindowPointer(const std::string &title, int32_t width, int32_t height);
     template <typename T> static void PreprocessImage(const T &image, uint8_t *buff);
-    static void CreateTextureByImage(const GrayImage &image, GLuint &texture_id);
+    template <typename T> static void CreateTextureByImage(const T &image, GLuint &texture_id);
     static void DrawTextureInCurrentWindow(GLuint texture_id);
 
 private:

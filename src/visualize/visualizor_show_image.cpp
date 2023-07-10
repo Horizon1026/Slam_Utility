@@ -7,7 +7,10 @@
 
 namespace SLAM_UTILITY {
 
-bool Visualizor::ShowImage(const std::string &window_title, const GrayImage &image, bool resizable) {
+template bool Visualizor::ShowImage<GrayImage>(const std::string &window_title, const GrayImage &image, bool resizable);
+template bool Visualizor::ShowImage<RgbImage>(const std::string &window_title, const RgbImage &image, bool resizable);
+template <typename T>
+bool Visualizor::ShowImage(const std::string &window_title, const T &image, bool resizable) {
     if (image.data() == nullptr || image.rows() < 1 || image.cols() < 1) {
         ReportError("[Visualizor] ShowImage() got an invalid image.");
         return false;
@@ -38,7 +41,7 @@ bool Visualizor::ShowImage(const std::string &window_title, const GrayImage &ima
         glfwShowWindow(window->glfw_window);
         glfwSetKeyCallback(window->glfw_window, Visualizor::KeyboardCallback);
 
-        Visualizor::CreateTextureByImage(image, window->texture_id);
+        Visualizor::CreateTextureByImage<T>(image, window->texture_id);
 
         glfwMakeContextCurrent(window->glfw_window);
         glColor3f(1.0f, 1.0f, 1.0f);
@@ -49,7 +52,7 @@ bool Visualizor::ShowImage(const std::string &window_title, const GrayImage &ima
         VisualizorWindow *window = GetWindowPointer(window_title, image.cols(), image.rows());
         glfwMakeContextCurrent(window->glfw_window);
         glfwSetWindowShouldClose(window->glfw_window, GLFW_FALSE);
-        Visualizor::CreateTextureByImage(image, window->texture_id);
+        Visualizor::CreateTextureByImage<T>(image, window->texture_id);
     }
 
     return true;
@@ -127,15 +130,18 @@ VisualizorWindow *Visualizor::GetWindowPointer(const std::string &title, int32_t
     }
 }
 
-template <> void Visualizor::PreprocessImage(const GrayImage &image, uint8_t *buff) {
+template <> void Visualizor::PreprocessImage<GrayImage>(const GrayImage &image, uint8_t *buff) {
     Visualizor::ConvertUint8ToRgbAndUpsideDown(image.data(), buff, image.rows(), image.cols());
 }
 
-template <> void Visualizor::PreprocessImage(const RgbImage &image, uint8_t *buff) {
+template <> void Visualizor::PreprocessImage<RgbImage>(const RgbImage &image, uint8_t *buff) {
     Visualizor::ConvertRgbByUpsideDown(image.data(), buff, image.rows(), image.cols());
 }
 
-void Visualizor::CreateTextureByImage(const GrayImage &image, GLuint &texture_id) {
+template void Visualizor::CreateTextureByImage<GrayImage>(const GrayImage &image, GLuint &texture_id);
+template void Visualizor::CreateTextureByImage<RgbImage>(const RgbImage &image, GLuint &texture_id);
+template <typename T>
+void Visualizor::CreateTextureByImage(const T &image, GLuint &texture_id) {
     if (texture_id == 0) {
         glGenTextures(1, &texture_id);
     }
@@ -145,7 +151,7 @@ void Visualizor::CreateTextureByImage(const GrayImage &image, GLuint &texture_id
 
     const int32_t size = image.rows() * image.cols();
     uint8_t *image_buff = (uint8_t *)SlamMemory::Malloc(size * 3 * sizeof(uint8_t));
-    Visualizor::ConvertUint8ToRgbAndUpsideDown(image.data(), image_buff, image.rows(), image.cols());
+    Visualizor::PreprocessImage<T>(image, image_buff);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.cols(), image.rows(), 0, GL_BGR, GL_UNSIGNED_BYTE, image_buff);
 
