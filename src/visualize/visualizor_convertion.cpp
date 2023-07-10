@@ -38,15 +38,15 @@ uint8_t Visualizor::ConvertValueToUint8(Scalar value, Scalar max_value) {
     return 255 - static_cast<uint8_t>(value / step);
 }
 
-template bool Visualizor::ConvertMatrixToImage<float>(const TMat<float> &matrix, Image &image, float max_value, int32_t scale);
-template bool Visualizor::ConvertMatrixToImage<double>(const TMat<double> &matrix, Image &image, double max_value, int32_t scale);
+template bool Visualizor::ConvertMatrixToImage<float>(const TMat<float> &matrix, GrayImage &image, float max_value, int32_t scale);
+template bool Visualizor::ConvertMatrixToImage<double>(const TMat<double> &matrix, GrayImage &image, double max_value, int32_t scale);
 template <typename Scalar>
 bool Visualizor::ConvertMatrixToImage(const TMat<Scalar> &matrix,
-                                      Image &image,
+                                      GrayImage &image,
                                       Scalar max_value,
                                       int32_t scale) {
     if (image.data() == nullptr) {
-        ReportError("[Visualizor] Image buffer is empty.");
+        ReportError("[Visualizor] GrayImage buffer is empty.");
         return false;
     }
     if (scale < 0) {
@@ -54,7 +54,7 @@ bool Visualizor::ConvertMatrixToImage(const TMat<Scalar> &matrix,
         return false;
     }
     if (image.rows() != matrix.rows() * scale || image.cols() != matrix.cols() * scale) {
-        ReportError("[Visualizor] Image buffer size does not match matrix size.");
+        ReportError("[Visualizor] GrayImage buffer size does not match matrix size.");
         return false;
     }
 

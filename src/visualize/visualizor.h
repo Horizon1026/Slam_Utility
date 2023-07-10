@@ -30,14 +30,14 @@ public:
     static Visualizor &GetInstance();
 
     // Support for image show.
-    static bool ShowImage(const std::string &window_title, const Image &image, bool resizable = false);
+    static bool ShowImage(const std::string &window_title, const GrayImage &image, bool resizable = false);
     static void WaitKey(int32_t delay_ms);
     static void WindowList();
 
     // Suppotr for convertion.
     template <typename Scalar>
     static bool ConvertMatrixToImage(const TMat<Scalar> &matrix,
-                                     Image &image,
+                                     GrayImage &image,
                                      Scalar max_value = 1e3,
                                      int32_t scale = 4);
     static void ConvertUint8ToRGB(const uint8_t *gray,
@@ -64,7 +64,7 @@ private:
 
     // Inner support.
     static VisualizorWindow *GetWindowPointer(const std::string &title, int32_t width, int32_t height);
-    static void CreateTextureByImage(const Image &image, GLuint &texture_id);
+    static void CreateTextureByImage(const GrayImage &image, GLuint &texture_id);
     static void DrawTextureInCurrentWindow(GLuint texture_id);
 
 private:

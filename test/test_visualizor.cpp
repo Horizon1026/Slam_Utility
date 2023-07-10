@@ -48,17 +48,17 @@ void TestVisualizorStatic() {
     Mat matrix = Mat::Identity(kMatrixRow, kMatrixCol) * 10.0f;
     matrix += Mat::Random(kMatrixRow, kMatrixCol);
     uint8_t *buf = (uint8_t *)malloc(matrix.rows() * matrix.cols() * kScale * kScale * sizeof(uint8_t));
-    Image image_matrix(buf, matrix.rows() * kScale, matrix.cols() * kScale);
+    GrayImage image_matrix(buf, matrix.rows() * kScale, matrix.cols() * kScale);
     Visualizor::ConvertMatrixToImage<float>(matrix, image_matrix, 15.0f, kScale);
 
     // Create image of png file.
     cv::Mat cv_image = cv::imread("../example/image.png", 0);
-    Image image_png(cv_image.data, cv_image.rows, cv_image.cols);
+    GrayImage image_png(cv_image.data, cv_image.rows, cv_image.cols);
 
     // Test visualizor.
     Visualizor::ShowImage("Matrix", image_matrix);
     Visualizor::WaitKey(1);
-    Visualizor::ShowImage("PNG Image", image_png);
+    Visualizor::ShowImage("PNG GrayImage", image_png);
     Visualizor::WaitKey(0);
 
 }
@@ -77,8 +77,8 @@ void TestVisualizorDynamic() {
     for (uint32_t i = 0; i < 100; ++i) {
         cv::Mat cv_image_left = cv::imread(cam0_filenames[i], 0);
         cv::Mat cv_image_right = cv::imread(cam1_filenames[i], 0);
-        Image image_left(cv_image_left.data, cv_image_left.rows, cv_image_left.cols);
-        Image image_right(cv_image_right.data, cv_image_right.rows, cv_image_right.cols);
+        GrayImage image_left(cv_image_left.data, cv_image_left.rows, cv_image_left.cols);
+        GrayImage image_right(cv_image_right.data, cv_image_right.rows, cv_image_right.cols);
         Visualizor::ShowImage("Left", image_left);
         Visualizor::ShowImage("Right", image_right);
         Visualizor::WaitKey(20);

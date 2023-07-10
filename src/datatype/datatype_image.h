@@ -4,13 +4,13 @@
 #include "datatype_basic.h"
 #include "cmath"
 
-// Class Image Declaration.
-class Image {
+// Class GrayImage Declaration.
+class GrayImage {
 
 public:
-    explicit Image() = default;
-    explicit Image(uint8_t *data, int32_t rows, int32_t cols);
-    virtual ~Image() = default;
+    explicit GrayImage() = default;
+    explicit GrayImage(uint8_t *data, int32_t rows, int32_t cols);
+    virtual ~GrayImage() = default;
 
     uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }
@@ -79,7 +79,7 @@ private:
     int32_t rows_ = 0;
 };
 
-// Class Rgb Image Declaration.
+// Class Rgb GrayImage Declaration.
 
 
 #endif // end of _DATATYPE_IMAGE_H_

@@ -1,7 +1,7 @@
 #include "datatype_image_pyramid.h"
 #include <algorithm>
 
-ImagePyramid::ImagePyramid(uint32_t level, Image *raw_image) : level_(level) {
+ImagePyramid::ImagePyramid(uint32_t level, GrayImage *raw_image) : level_(level) {
     level_ = std::min(std::max(level, static_cast<uint32_t>(0)), kPyramidMaxLevel - 1);
     SetRawImage(raw_image);
 }
@@ -11,7 +11,7 @@ ImagePyramid::ImagePyramid(uint32_t level, uint8_t *data, int32_t rows, int32_t 
     SetRawImage(data, rows, cols);
 }
 
-bool ImagePyramid::SetRawImage(Image *raw_image) {
+bool ImagePyramid::SetRawImage(GrayImage *raw_image) {
     if (raw_image == nullptr) {
         return false;
     }

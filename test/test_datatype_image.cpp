@@ -13,7 +13,7 @@ void TestImage() {
     cv::Mat cv_image;
     cv_image = cv::imread(test_image_file_name, 0);
 
-    Image image;
+    GrayImage image;
     image.SetImage(cv_image.data, cv_image.rows, cv_image.cols);
     std::cout << image.rows() << std::endl;
     std::cout << image.cols() << std::endl;
@@ -43,7 +43,7 @@ void TestPyramid() {
     pyramid.CreateImagePyramid(5);
 
     for (uint32_t i = 0; i < pyramid.level(); ++i) {
-        Image one_level = pyramid.GetImage(i);
+        GrayImage one_level = pyramid.GetImage(i);
         cv::Mat image(one_level.rows(), one_level.cols(), CV_8UC1, one_level.data());
         cv::imshow(std::to_string(i), image);
         cv::waitKey(1);

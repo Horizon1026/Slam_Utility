@@ -7,7 +7,7 @@
 
 namespace SLAM_UTILITY {
 
-bool Visualizor::ShowImage(const std::string &window_title, const Image &image, bool resizable) {
+bool Visualizor::ShowImage(const std::string &window_title, const GrayImage &image, bool resizable) {
     if (image.data() == nullptr || image.rows() < 1 || image.cols() < 1) {
         ReportError("[Visualizor] ShowImage() got an invalid image.");
         return false;
@@ -127,7 +127,7 @@ VisualizorWindow *Visualizor::GetWindowPointer(const std::string &title, int32_t
     }
 }
 
-void Visualizor::CreateTextureByImage(const Image &image, GLuint &texture_id) {
+void Visualizor::CreateTextureByImage(const GrayImage &image, GLuint &texture_id) {
     if (texture_id == 0) {
         glGenTextures(1, &texture_id);
     }
