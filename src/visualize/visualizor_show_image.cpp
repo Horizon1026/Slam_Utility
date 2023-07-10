@@ -127,6 +127,14 @@ VisualizorWindow *Visualizor::GetWindowPointer(const std::string &title, int32_t
     }
 }
 
+template <> void Visualizor::PreprocessImage(const GrayImage &image, uint8_t *buff) {
+    Visualizor::ConvertUint8ToRgbAndUpsideDown(image.data(), buff, image.rows(), image.cols());
+}
+
+template <> void Visualizor::PreprocessImage(const RgbImage &image, uint8_t *buff) {
+    Visualizor::ConvertRgbByUpsideDown(image.data(), buff, image.rows(), image.cols());
+}
+
 void Visualizor::CreateTextureByImage(const GrayImage &image, GLuint &texture_id) {
     if (texture_id == 0) {
         glGenTextures(1, &texture_id);
@@ -134,7 +142,6 @@ void Visualizor::CreateTextureByImage(const GrayImage &image, GLuint &texture_id
     glBindTexture(GL_TEXTURE_2D, texture_id);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
 
     const int32_t size = image.rows() * image.cols();
     uint8_t *image_buff = (uint8_t *)SlamMemory::Malloc(size * 3 * sizeof(uint8_t));

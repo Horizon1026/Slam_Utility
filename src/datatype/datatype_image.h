@@ -44,7 +44,6 @@ public:
 
     inline bool GetPixelValue(float row, float col, float *value) const {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
-            *value = 0.0f;
             return false;
         }
 
@@ -79,7 +78,68 @@ private:
     int32_t rows_ = 0;
 };
 
-// Class Rgb GrayImage Declaration.
+// Rgb image element definition.
+struct RgbPixel {
+    uint8_t r = 0;
+    uint8_t g = 0;
+    uint8_t b = 0;
+};
 
+// Class RgbImage Declaration.
+class RgbImage {
+
+public:
+    explicit RgbImage() = default;
+    explicit RgbImage(uint8_t *data, int32_t rows, int32_t cols);
+    virtual ~RgbImage() = default;
+
+    uint8_t *data() const { return data_; }
+    int32_t cols() const { return cols_; }
+    int32_t rows() const { return rows_; }
+
+    void SetImage(uint8_t *data, int32_t rows, int32_t cols);
+
+    inline bool SetPixelValue(int32_t row, int32_t col, RgbPixel value) {
+        if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
+            return false;
+        }
+
+        const int32_t offset = row * cols_ * 3 + col;
+        data_[offset] = value.r;
+        data_[offset + 1] = value.g;
+        data_[offset + 2] = value.b;
+        return true;
+    }
+
+    inline void SetPixelValueNoCheck(int32_t row, int32_t col, RgbPixel value) {
+        const int32_t offset = row * cols_ * 3 + col;
+        data_[offset] = value.r;
+        data_[offset + 1] = value.g;
+        data_[offset + 2] = value.b;
+    }
+
+    inline bool GetPixelValue(int32_t row, int32_t col, RgbPixel *value) const {
+        if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
+            return false;
+        }
+
+        *value = GetPixelValueNoCheck(row, col);
+        return true;
+    }
+
+    inline RgbPixel GetPixelValueNoCheck(int32_t row, int32_t col) const {
+        const int32_t offset = row * cols_ * 3 + col;
+        return RgbPixel {
+            .r = data_[offset],
+            .g = data_[offset + 1],
+            .b = data_[offset + 2],
+        };
+    }
+
+private:
+    uint8_t *data_ = nullptr;
+    int32_t cols_ = 0;
+    int32_t rows_ = 0;
+};
 
 #endif // end of _DATATYPE_IMAGE_H_

@@ -40,13 +40,22 @@ public:
                                      GrayImage &image,
                                      Scalar max_value = 1e3,
                                      int32_t scale = 4);
+    template <typename Scalar>
+    static bool ConvertMatrixToImage(const TMat<Scalar> &matrix,
+                                     RgbImage &image,
+                                     Scalar max_value = 1e3,
+                                     int32_t scale = 4);
     static void ConvertUint8ToRGB(const uint8_t *gray,
-                                  uint8_t *rgba,
+                                  uint8_t *rgb,
                                   int32_t gray_size);
     static void ConvertUint8ToRgbAndUpsideDown(const uint8_t *gray,
-                                               uint8_t *rgba,
+                                               uint8_t *rgb,
                                                int32_t gray_rows,
                                                int32_t gray_cols);
+    static void ConvertRgbByUpsideDown(const uint8_t *rgb,
+                                       uint8_t *converted_rgb,
+                                       int32_t rgb_rows,
+                                       int32_t rgb_cols);
 
     // Reference for member variables.
     static std::map<std::string, VisualizorWindow> &windows() { return windows_; }
@@ -64,6 +73,7 @@ private:
 
     // Inner support.
     static VisualizorWindow *GetWindowPointer(const std::string &title, int32_t width, int32_t height);
+    template <typename T> static void PreprocessImage(const T &image, uint8_t *buff);
     static void CreateTextureByImage(const GrayImage &image, GLuint &texture_id);
     static void DrawTextureInCurrentWindow(GLuint texture_id);
 
