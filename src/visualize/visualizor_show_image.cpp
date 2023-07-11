@@ -76,7 +76,7 @@ void Visualizor::WaitKey(int32_t delay_ms) {
 
             if (!glfwWindowShouldClose(window.glfw_window)) {
                 glfwMakeContextCurrent(window.glfw_window);
-                Visualizor::DrawTextureInCurrentWindow(window.texture_id);
+                Visualizor::ShowTextureInCurrentWindow(window.texture_id);
                 glfwSwapBuffers(window.glfw_window);
             } else {
                 glfwHideWindow(window.glfw_window);
@@ -161,7 +161,7 @@ void Visualizor::CreateTextureByImage(const T &image, GLuint &texture_id) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-void Visualizor::DrawTextureInCurrentWindow(GLuint texture_id) {
+void Visualizor::ShowTextureInCurrentWindow(GLuint texture_id) {
     int32_t width, height;
     glfwGetFramebufferSize(glfwGetCurrentContext(), &width, &height);
 

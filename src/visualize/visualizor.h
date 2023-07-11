@@ -35,7 +35,11 @@ public:
     static void WaitKey(int32_t delay_ms);
     static void WindowList();
 
-    // Suppotr for convertion.
+    // Support for image draw.
+
+    // Support for convertion.
+    template <typename Scalar>
+    static uint8_t ConvertValueToUint8(Scalar value, Scalar max_value);
     template <typename Scalar>
     static bool ConvertMatrixToImage(const TMat<Scalar> &matrix,
                                      GrayImage &image,
@@ -65,20 +69,22 @@ public:
 private:
 	Visualizor() = default;
 
-    template <typename Scalar>
-    static uint8_t ConvertValueToUint8(Scalar value, Scalar max_value);
-
-    // Callback function.
+    // Callback function for image show.
     static void ErrorCallback(int32_t error, const char *description);
     static void KeyboardCallback(GLFWwindow *window, int32_t key, int32_t scan_code, int32_t action, int32_t mods);
 
-    // Inner support.
+    // Inner support for image show.
     static VisualizorWindow *GetWindowPointer(const std::string &title, int32_t width, int32_t height);
     template <typename T> static void PreprocessImage(const T &image, uint8_t *buff);
     template <typename T> static void CreateTextureByImage(const T &image, GLuint &texture_id);
-    static void DrawTextureInCurrentWindow(GLuint texture_id);
+    static void ShowTextureInCurrentWindow(GLuint texture_id);
+
+    // Inner support for image draw.
+    template <typename ImageType, typename PixelType>
+    static void DrawSolidRectangle(ImageType &image, int32_t x, int32_t y, int32_t width, int32_t height, PixelType &color);
 
 private:
+    // Member varibles for image show.
     static std::map<std::string, VisualizorWindow> windows_;
     static bool some_key_pressed_;
 };
