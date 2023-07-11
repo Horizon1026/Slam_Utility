@@ -81,7 +81,9 @@ private:
 
     // Inner support for image draw.
     template <typename ImageType, typename PixelType>
-    static void DrawSolidRectangle(ImageType &image, int32_t x, int32_t y, int32_t width, int32_t height, PixelType &color);
+    static void DrawSolidRectangle(ImageType &image, int32_t x, int32_t y, int32_t width, int32_t height, const PixelType &color);
+    template <typename ImageType, typename PixelType>
+    static void DrawBressenhanLine(ImageType &image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, const PixelType &color);
 
 private:
     // Member varibles for image show.
