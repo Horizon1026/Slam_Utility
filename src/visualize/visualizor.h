@@ -57,7 +57,7 @@ public:
                                                uint8_t *rgb,
                                                int32_t gray_rows,
                                                int32_t gray_cols);
-    static void ConvertRgbByUpsideDown(const uint8_t *rgb,
+    static void ConvertRgbToBgrAndUpsideDown(const uint8_t *rgb,
                                        uint8_t *converted_rgb,
                                        int32_t rgb_rows,
                                        int32_t rgb_cols);
@@ -79,6 +79,7 @@ private:
     template <typename T> static void CreateTextureByImage(const T &image, GLuint &texture_id);
     static void ShowTextureInCurrentWindow(GLuint texture_id);
 
+public:
     // Inner support for image draw.
     template <typename ImageType, typename PixelType>
     static void DrawSolidRectangle(ImageType &image, int32_t x, int32_t y, int32_t width, int32_t height, const PixelType &color);

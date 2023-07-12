@@ -25,15 +25,20 @@ void Visualizor::ConvertUint8ToRgbAndUpsideDown(const uint8_t *gray,
     }
 }
 
-void Visualizor::ConvertRgbByUpsideDown(const uint8_t *rgb,
+void Visualizor::ConvertRgbToBgrAndUpsideDown(const uint8_t *rgb,
                                         uint8_t *converted_rgb,
                                         int32_t rgb_rows,
                                         int32_t rgb_cols) {
     const int32_t rgb_stride = rgb_cols * 3;
     for (int32_t row = 0; row < rgb_rows; ++row) {
-        const int32_t offset = row * rgb_stride;
-        const int32_t offset_converted = (rgb_rows - row - 1) * rgb_stride;
-        std::copy_n(rgb + offset, rgb_stride, converted_rgb + offset_converted);
+        for (int32_t col = 0; col < rgb_cols; ++col) {
+            const int32_t offset_col = 3 * col;
+            const int32_t offset = row * rgb_stride + offset_col;
+            const int32_t offset_converted = (rgb_rows - row - 1) * rgb_stride + offset_col;
+            converted_rgb[offset_converted] = rgb[offset + 2];
+            converted_rgb[offset_converted + 1] = rgb[offset + 1];
+            converted_rgb[offset_converted + 2] = rgb[offset];
+        }
     }
 }
 

@@ -104,7 +104,7 @@ public:
             return false;
         }
 
-        const int32_t offset = row * cols_ * 3 + col;
+        const int32_t offset = row * cols_ * 3 + col * 3;
         data_[offset] = value.r;
         data_[offset + 1] = value.g;
         data_[offset + 2] = value.b;
@@ -112,7 +112,7 @@ public:
     }
 
     inline void SetPixelValueNoCheck(int32_t row, int32_t col, RgbPixel value) {
-        const int32_t offset = row * cols_ * 3 + col;
+        const int32_t offset = row * cols_ * 3 + col * 3;
         data_[offset] = value.r;
         data_[offset + 1] = value.g;
         data_[offset + 2] = value.b;
@@ -128,7 +128,7 @@ public:
     }
 
     inline RgbPixel GetPixelValueNoCheck(int32_t row, int32_t col) const {
-        const int32_t offset = row * cols_ * 3 + col;
+        const int32_t offset = row * cols_ * 3 + col * 3;
         return RgbPixel {
             .r = data_[offset],
             .g = data_[offset + 1],

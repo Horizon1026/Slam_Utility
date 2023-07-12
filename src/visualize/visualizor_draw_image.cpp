@@ -14,8 +14,8 @@ void Visualizor::DrawSolidRectangle(ImageType &image, int32_t x, int32_t y, int3
     }
     for (int32_t u = x; u < x + width; ++u) {
         CONTINUE_IF(u > image.cols() - 1);
-        for (int32_t v = y; v < y + height; ++y) {
-        CONTINUE_IF(v > image.rows() - 1);
+        for (int32_t v = y; v < y + height; ++v) {
+        BREAK_IF(v > image.rows() - 1);
             image.SetPixelValue(v, u, color);
         }
     }

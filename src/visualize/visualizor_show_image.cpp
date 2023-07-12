@@ -135,7 +135,7 @@ template <> void Visualizor::PreprocessImage<GrayImage>(const GrayImage &image, 
 }
 
 template <> void Visualizor::PreprocessImage<RgbImage>(const RgbImage &image, uint8_t *buff) {
-    Visualizor::ConvertRgbByUpsideDown(image.data(), buff, image.rows(), image.cols());
+    Visualizor::ConvertRgbToBgrAndUpsideDown(image.data(), buff, image.rows(), image.cols());
 }
 
 template void Visualizor::CreateTextureByImage<GrayImage>(const GrayImage &image, GLuint &texture_id);
