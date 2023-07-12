@@ -36,6 +36,18 @@ public:
     static void WindowList();
 
     // Support for image draw.
+    template <typename ImageType, typename PixelType>
+    static void DrawSolidRectangle(ImageType &image, int32_t x, int32_t y, int32_t width, int32_t height, const PixelType &color);
+    template <typename ImageType, typename PixelType>
+    static void DrawHollowRectangle(ImageType &image, int32_t x, int32_t y, int32_t width, int32_t height, const PixelType &color);
+    template <typename ImageType, typename PixelType>
+    static void DrawBressenhanLine(ImageType &image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, const PixelType &color);
+    template <typename ImageType, typename PixelType>
+    static void DrawNaiveLine(ImageType &image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, const PixelType &color);
+    template <typename ImageType, typename PixelType>
+    static void DrawSolidCircle(ImageType &image, int32_t center_x, int32_t center_y, int32_t radius, const PixelType &color);
+    template <typename ImageType, typename PixelType>
+    static void DrawHollowCircle(ImageType &image, int32_t center_x, int32_t center_y, int32_t radius, const PixelType &color);
 
     // Support for convertion.
     template <typename Scalar>
@@ -79,20 +91,7 @@ private:
     template <typename T> static void CreateTextureByImage(const T &image, GLuint &texture_id);
     static void ShowTextureInCurrentWindow(GLuint texture_id);
 
-public:
     // Inner support for image draw.
-    template <typename ImageType, typename PixelType>
-    static void DrawSolidRectangle(ImageType &image, int32_t x, int32_t y, int32_t width, int32_t height, const PixelType &color);
-    template <typename ImageType, typename PixelType>
-    static void DrawHollowRectangle(ImageType &image, int32_t x, int32_t y, int32_t width, int32_t height, const PixelType &color);
-    template <typename ImageType, typename PixelType>
-    static void DrawBressenhanLine(ImageType &image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, const PixelType &color);
-    template <typename ImageType, typename PixelType>
-    static void DrawNaiveLine(ImageType &image, int32_t x1, int32_t y1, int32_t x2, int32_t y2, const PixelType &color);
-    template <typename ImageType, typename PixelType>
-    static void DrawSolidCircle(ImageType &image, int32_t center_x, int32_t center_y, int32_t radius, const PixelType &color);
-    template <typename ImageType, typename PixelType>
-    static void DrawHollowCircle(ImageType &image, int32_t center_x, int32_t center_y, int32_t radius, const PixelType &color);
 
 private:
     // Member varibles for image show.

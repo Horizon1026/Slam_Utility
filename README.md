@@ -13,7 +13,8 @@ Defined some basic datatype or operations for slam algorithm.
 - [ ] Visualization for slam results.
   - [x] Convert matrix to image
   - [ ] Image load.
-  - [ ] Image paint.
+  - [x] Image paint.
+  - [ ] Image text write.
   - [x] Image show. (Based on glfw3)
 - [ ] Data struct for slam.
     - [x] Visual covisible graph.
