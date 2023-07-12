@@ -9,7 +9,7 @@ template void Visualizor::DrawSolidRectangle<GrayImage, uint8_t>(GrayImage &imag
 template void Visualizor::DrawSolidRectangle<RgbImage, RgbPixel>(RgbImage &image, int32_t x, int32_t y, int32_t width, int32_t height, const RgbPixel &color);
 template <typename ImageType, typename PixelType>
 void Visualizor::DrawSolidRectangle(ImageType &image, int32_t x, int32_t y, int32_t width, int32_t height, const PixelType &color) {
-    if (image.data() == nullptr) {
+    if (image.data() == nullptr || width < 0 || height < 0) {
         return;
     }
     for (int32_t u = x; u < x + width; ++u) {
@@ -29,14 +29,14 @@ void Visualizor::DrawBressenhanLine(ImageType &image, int32_t x1, int32_t y1, in
         return;
     }
 
-    const int32_t dx = std::abs(x2 - x1);
-    const int32_t dy = std::abs(y2 - y1);
+    int32_t dx = std::abs(x2 - x1);
+    int32_t dy = std::abs(y2 - y1);
     bool is_larger_than_45_deg = false;
     if (dx < dy) {
         is_larger_than_45_deg = true;
-        std::swap(x1, y1);
-        std::swap(x2, y2);
-        std::swap(dx, dy);
+        SlamOperation::ExchangeValue(x1, y1);
+        SlamOperation::ExchangeValue(x2, y2);
+        SlamOperation::ExchangeValue(dx, dy);
     }
 
     // Precompute some temp variables.
@@ -44,9 +44,9 @@ void Visualizor::DrawBressenhanLine(ImageType &image, int32_t x1, int32_t y1, in
     const int32_t iy = (y2 - y1) > 0 ? 1 : -1;
     int32_t cx = x1;
     int32_t cy = y1;
-    const int32_t dy_2 = dy << 1;
-    const int32_t dy_dx_2 = (dy - dx) << 1;
-    int32_t dy_2_dx = dy << 1 - dx;
+    const int32_t dy_2 = dy * 2;
+    const int32_t dy_dx_2 = (dy - dx) * 2;
+    int32_t dy_2_dx = dy * 2 - dx;
 
     // Draw line.
     while (cx != x2) {
@@ -58,9 +58,9 @@ void Visualizor::DrawBressenhanLine(ImageType &image, int32_t x1, int32_t y1, in
         }
 
         if (is_larger_than_45_deg) {
-            image.SetPixelValue(cy, cx, color);
-        } else {
             image.SetPixelValue(cx, cy, color);
+        } else {
+            image.SetPixelValue(cy, cx, color);
         }
         cx += ix;
     }

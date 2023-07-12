@@ -22,14 +22,21 @@ public:
     SlamOperation() = default;
     virtual ~SlamOperation() = default;
 
-    template<typename T>
+    template <typename T>
     static void ExchangePointer(T **ptr1, T** ptr2) {
         T *ptr_tmp = *ptr1;
         *ptr1 = *ptr2;
         *ptr2 = ptr_tmp;
     }
 
-    template<typename T, typename StatusType>
+    template <typename T>
+    static void ExchangeValue(T &val1, T &val2) {
+        T val = val1;
+        val1 = val2;
+        val2 = val;
+    }
+
+    template <typename T, typename StatusType>
     static void ReduceVectorByStatus(const std::vector<StatusType> &status,
                                      std::vector<T> &v) {
         uint32_t j = 0;
