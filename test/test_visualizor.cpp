@@ -54,14 +54,16 @@ void TestVisualizorStatic() {
     for (int32_t i = 0; i < 10; ++i) {
         Visualizor::DrawBressenhanLine(image_matrix, 111 - 10 * i, 10 * i, 100, 100, static_cast<uint8_t>(255));
     }
+    Visualizor::DrawSolidCircle(image_matrix, 130, 200, 10, static_cast<uint8_t>(127));
 
     // Create image of png file.
     cv::Mat cv_image = cv::imread("../example/image.png");
     RgbImage image_png(cv_image.data, cv_image.rows, cv_image.cols);
-    Visualizor::DrawSolidRectangle(image_png, 20, 20, 200, 200, RgbPixel{.r = 255, .g = 255, .b = 10});
+    Visualizor::DrawHollowRectangle(image_png, 20, 20, 200, 200, RgbPixel{.r = 255, .g = 255, .b = 10});
     for (int32_t i = 0; i < 10; ++i) {
         Visualizor::DrawNaiveLine(image_png, 111 - 10 * i, 10 * i, 100, 100, RgbPixel{.r = 10, .g = 255, .b = 10});
     }
+    Visualizor::DrawHollowCircle(image_png, 130, 200, 10, RgbPixel{.r = 10, .g = 10, .b = 255});
 
     // Test visualizor.
     Visualizor::ShowImage("Matrix", image_matrix);
