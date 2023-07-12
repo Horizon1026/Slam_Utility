@@ -60,7 +60,7 @@ void TestVisualizorStatic() {
     RgbImage image_png(cv_image.data, cv_image.rows, cv_image.cols);
     Visualizor::DrawSolidRectangle(image_png, 20, 20, 200, 200, RgbPixel{.r = 255, .g = 255, .b = 10});
     for (int32_t i = 0; i < 10; ++i) {
-        Visualizor::DrawBressenhanLine(image_png, 111 - 10 * i, 10 * i, 100, 100, RgbPixel{.r = 10, .g = 255, .b = 10});
+        Visualizor::DrawNaiveLine(image_png, 111 - 10 * i, 10 * i, 100, 100, RgbPixel{.r = 10, .g = 255, .b = 10});
     }
 
     // Test visualizor.
