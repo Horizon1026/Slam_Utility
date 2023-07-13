@@ -1,4 +1,6 @@
 #include "visualizor.h"
+#include "fonts.h"
+
 #include "log_report.h"
 #include "slam_memory.h"
 #include "slam_operations.h"
@@ -155,6 +157,64 @@ void Visualizor::DrawHollowCircle(ImageType &image, int32_t center_x, int32_t ce
                 image.SetPixelValue(y, x, color);
             }
         }
+    }
+}
+
+template void Visualizor::DrawCharacter<GrayImage, uint8_t>(GrayImage &image, char character, int32_t x, int32_t y, const uint8_t &color, int32_t font_size);
+template void Visualizor::DrawCharacter<RgbImage, RgbPixel>(RgbImage &image, char character, int32_t x, int32_t y, const RgbPixel &color, int32_t font_size);
+template <typename ImageType, typename PixelType>
+void Visualizor::DrawCharacter(ImageType &image, char character, int32_t x, int32_t y, const PixelType &color, int32_t font_size) {
+    const int32_t idx = static_cast<int32_t>(character - ' ');
+    const int32_t size = ((font_size >> 3) + ((font_size % 8) ? 1 : 0)) * (font_size >> 1);
+    int32_t y0 = y;
+
+    for (int32_t i = 0; i < size; ++i) {
+        // Get the item in fonts with index.
+        uint8_t item = 0;
+        switch (font_size) {
+            default:
+            case 12: {
+                item = VisualizeFonts::ascii_1206()[idx][i];
+                break;
+            }
+            case 16: {
+                item = VisualizeFonts::ascii_1608()[idx][i];
+                break;
+            }
+            case 24: {
+                item = VisualizeFonts::ascii_2412()[idx][i];
+                break;
+            }
+        }
+
+        // Draw pixel based on this item.
+        for (int32_t j = 0; j < 8; ++j) {
+            if (item & 0x80) {
+                image.SetPixelValue(y, x, color);
+            }
+
+            item <<= 1;
+            ++y;
+            if (y - y0 == font_size) {
+                y = y0;
+                ++x;
+                break;
+            }
+        }
+    }
+}
+
+template void Visualizor::DrawString<GrayImage, uint8_t>(GrayImage &image, const std::string &str, int32_t x, int32_t y, const uint8_t &color, int32_t font_size);
+template void Visualizor::DrawString<RgbImage, RgbPixel>(RgbImage &image, const std::string &str, int32_t x, int32_t y, const RgbPixel &color, int32_t font_size);
+template <typename ImageType, typename PixelType>
+void Visualizor::DrawString(ImageType &image, const std::string &str, int32_t x, int32_t y, const PixelType &color, int32_t font_size) {
+    if (font_size != 12 && font_size != 16 && font_size != 24) {
+        font_size = 12;
+    }
+    const int32_t dx = font_size >> 1;
+    for (const auto &chr : str) {
+        DrawCharacter(image, chr, x, y, color, font_size);
+        x += dx;
     }
 }
 

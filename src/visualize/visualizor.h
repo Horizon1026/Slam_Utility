@@ -48,6 +48,8 @@ public:
     static void DrawSolidCircle(ImageType &image, int32_t center_x, int32_t center_y, int32_t radius, const PixelType &color);
     template <typename ImageType, typename PixelType>
     static void DrawHollowCircle(ImageType &image, int32_t center_x, int32_t center_y, int32_t radius, const PixelType &color);
+    template <typename ImageType, typename PixelType>
+    static void DrawString(ImageType &image, const std::string &str, int32_t x, int32_t y, const PixelType &color, int32_t font_size = 12);
 
     // Support for convertion.
     template <typename Scalar>
@@ -92,6 +94,9 @@ private:
     static void ShowTextureInCurrentWindow(GLuint texture_id);
 
     // Inner support for image draw.
+    template <typename ImageType, typename PixelType>
+    static void DrawCharacter(ImageType &image, char character, int32_t x, int32_t y, const PixelType &color, int32_t font_size = 12);
+
 
 private:
     // Member varibles for image show.

@@ -55,6 +55,8 @@ void TestVisualizorStatic() {
         Visualizor::DrawBressenhanLine(image_matrix, 111 - 10 * i, 10 * i, 100, 100, static_cast<uint8_t>(255));
     }
     Visualizor::DrawSolidCircle(image_matrix, 130, 200, 10, static_cast<uint8_t>(127));
+    Visualizor::DrawString(image_matrix, "This is a string.", 240, 100 - 16, static_cast<uint8_t>(0), 99);
+    Visualizor::DrawString(image_matrix, "This is a string.", 240, 100, static_cast<uint8_t>(127), 16);
 
     // Create image of png file.
     cv::Mat cv_image = cv::imread("../example/image.png");
@@ -64,6 +66,7 @@ void TestVisualizorStatic() {
         Visualizor::DrawNaiveLine(image_png, 111 - 10 * i, 10 * i, 100, 100, RgbPixel{.r = 10, .g = 255, .b = 10});
     }
     Visualizor::DrawHollowCircle(image_png, 130, 200, 10, RgbPixel{.r = 10, .g = 10, .b = 255});
+    Visualizor::DrawString(image_png, "This is a string.", 0, 0, RgbPixel{.r = 255, .g = 255, .b = 10}, 24);
 
     // Test visualizor.
     Visualizor::ShowImage("Matrix", image_matrix);

@@ -12,8 +12,12 @@ endif()
 if ( NOT TARGET lib_slam_utility_operate )
     add_subdirectory( ../operate ${PROJECT_SOURCE_DIR}/build/lib_slam_utility_operate )
 endif()
+
 if ( NOT TARGET lib_visualize_base_glad_khr )
     add_subdirectory( ../visualize/glad+khr ${PROJECT_SOURCE_DIR}/build/lib_visualize_base_glad_khr )
+endif()
+if ( NOT TARGET lib_visualize_base_fonts )
+    add_subdirectory( ../visualize/fonts ${PROJECT_SOURCE_DIR}/build/lib_visualize_base_fonts )
 endif()
 
 add_library( lib_slam_utility_visualize ${AUX_SRC_SLAM_UTILITY_VISUALIZE} )
@@ -25,4 +29,5 @@ target_link_libraries( lib_slam_utility_visualize
     lib_slam_utility_operate
 
     lib_visualize_base_glad_khr
+    lib_visualize_base_fonts
 )
