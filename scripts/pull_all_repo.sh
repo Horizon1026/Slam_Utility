@@ -7,4 +7,4 @@ sh pull_repo.sh Sensor_Model
 sh pull_repo.sh Slam_Solver
 sh pull_repo.sh Visual_Frontend
 sh pull_repo.sh Vision_Geometry
-sh pull_repo.sh VIO_Stereo_ORB_SLAM3
+sh pull_repo.sh VIO_Stereo_BASALT

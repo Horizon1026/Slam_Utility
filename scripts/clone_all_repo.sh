@@ -7,4 +7,4 @@ sh clone_repo.sh Sensor_Model
 sh clone_repo.sh Slam_Solver
 sh clone_repo.sh Visual_Frontend
 sh clone_repo.sh Vision_Geometry
-sh clone_repo.sh VIO_Stereo_ORB_SLAM3
+sh clone_repo.sh VIO_Stereo_BASALT

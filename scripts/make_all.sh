@@ -7,4 +7,4 @@ sh make.sh Sensor_Model $1
 sh make.sh Slam_Solver $1
 sh make.sh Visual_Frontend $1
 sh make.sh Vision_Geometry $1
-sh make.sh VIO_Stereo_ORB_SLAM3 $1
+sh make.sh VIO_Stereo_BASALT $1
