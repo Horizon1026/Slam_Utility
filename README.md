@@ -12,10 +12,11 @@ Defined some basic datatype or operations for slam algorithm.
 - [x] Basic operations.
 - [ ] Visualization for slam results.
   - [x] Convert matrix to image
-  - [ ] Image load.
+  - [x] Image load.
   - [x] Image paint.
-  - [ ] Image text write.
+  - [x] Image text write.
   - [x] Image show. (Based on glfw3)
+  - [ ] Image save.
 - [ ] Data struct for slam.
     - [x] Visual covisible graph.
     - [x] Object pool.
@@ -27,8 +28,9 @@ Defined some basic datatype or operations for slam algorithm.
     - [x] imgui based on glfw3 and opengl3
 
 # Dependence
-Eigen3 (>= 3.3.7), OpenCV4 (only for test),
-glfw3, openGL3 (for visualization)
+Eigen3 (>= 3.3.7)
+glfw3 (for visualization and imgui)
+opengl3 (for imgui)
 
 # Tips
 - 欢迎一起交流学习，不同意商用；
