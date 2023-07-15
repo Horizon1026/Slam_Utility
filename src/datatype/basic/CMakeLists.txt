@@ -1,9 +1,10 @@
 # Find eigen3.
 if ( NOT EIGEN3_INCLUDE_DIR )
-    set( EIGEN3_INCLUDE_DIR
-        /usr/include/eigen3
-        E:/Eigen3/include
-    )
+    if ( "${COMPILE_ENV}" STREQUAL "windows" )
+        set( EIGEN3_INCLUDE_DIR E:/Eigen3/include )
+    else()
+        set( EIGEN3_INCLUDE_DIR /usr/include/eigen3 )
+    endif()
 endif()
 message( ">> EIGEN3_INCLUDE_DIR is ${EIGEN3_INCLUDE_DIR}" )
 
