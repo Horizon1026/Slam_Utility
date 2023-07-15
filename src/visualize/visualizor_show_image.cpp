@@ -43,7 +43,6 @@ bool Visualizor::ShowImage(const std::string &window_title, const T &image, bool
 
         Visualizor::CreateTextureByImage<T>(image, window->texture_id);
 
-        glfwMakeContextCurrent(window->glfw_window);
         glColor3f(1.0f, 1.0f, 1.0f);
         glfwHideWindow(window->glfw_window);
 
