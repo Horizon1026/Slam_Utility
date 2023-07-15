@@ -11,7 +11,7 @@ public:
     explicit ImagePyramid() = default;
     explicit ImagePyramid(uint32_t level, GrayImage *raw_image);
     explicit ImagePyramid(uint32_t level, uint8_t *data, int32_t rows, int32_t cols);
-    virtual ~ImagePyramid() = default;
+    virtual ~ImagePyramid();
 
     uint32_t level() const { return level_; }
     GrayImage *images() { return images_; }
@@ -22,7 +22,7 @@ public:
 
     bool SetRawImage(GrayImage *raw_image);
     bool SetRawImage(uint8_t *data, int32_t rows, int32_t cols);
-    bool SetPyramidBuff(uint8_t *data);
+    bool SetPyramidBuff(uint8_t *data, bool is_owner = false);
 
     bool CreateImagePyramid(uint32_t level);
 
@@ -31,6 +31,7 @@ private:
     uint32_t level_ = 0;
     GrayImage images_[kPyramidMaxLevel];
     uint8_t *data_ = nullptr;   // This buff not store raw image.
+    bool memory_owner_ = false;
 };
 
 #endif

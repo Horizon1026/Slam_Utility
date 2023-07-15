@@ -1,5 +1,5 @@
 #include "datatype_image_pyramid.h"
-#include <algorithm>
+#include "slam_memory.h"
 
 ImagePyramid::ImagePyramid(uint32_t level, GrayImage *raw_image) : level_(level) {
     level_ = std::min(std::max(level, static_cast<uint32_t>(0)), kPyramidMaxLevel - 1);
@@ -9,6 +9,12 @@ ImagePyramid::ImagePyramid(uint32_t level, GrayImage *raw_image) : level_(level)
 ImagePyramid::ImagePyramid(uint32_t level, uint8_t *data, int32_t rows, int32_t cols) {
     level_ = std::min(std::max(level, static_cast<uint32_t>(0)), kPyramidMaxLevel - 1);
     SetRawImage(data, rows, cols);
+}
+
+ImagePyramid::~ImagePyramid() {
+    if (memory_owner_) {
+        SlamMemory::Free(data_);
+    }
 }
 
 bool ImagePyramid::SetRawImage(GrayImage *raw_image) {
@@ -29,12 +35,13 @@ bool ImagePyramid::SetRawImage(uint8_t *data, int32_t rows, int32_t cols) {
     return true;
 }
 
-bool ImagePyramid::SetPyramidBuff(uint8_t *data) {
+bool ImagePyramid::SetPyramidBuff(uint8_t *data, bool is_owner) {
     if (data == nullptr) {
         return false;
     }
 
     data_ = data;
+    memory_owner_ = is_owner;
     return true;
 }
 

@@ -10,13 +10,13 @@ class GrayImage {
 public:
     explicit GrayImage() = default;
     explicit GrayImage(uint8_t *data, int32_t rows, int32_t cols);
-    virtual ~GrayImage() = default;
+    virtual ~GrayImage();
 
     uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }
     int32_t rows() const { return rows_; }
 
-    void SetImage(uint8_t *data, int32_t rows, int32_t cols);
+    void SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
 
     inline bool SetPixelValue(int32_t row, int32_t col, uint8_t value) {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
@@ -76,6 +76,7 @@ private:
     uint8_t *data_ = nullptr;
     int32_t cols_ = 0;
     int32_t rows_ = 0;
+    bool memory_owner_ = false;
 };
 
 // Rgb image element definition.
@@ -91,13 +92,13 @@ class RgbImage {
 public:
     explicit RgbImage() = default;
     explicit RgbImage(uint8_t *data, int32_t rows, int32_t cols);
-    virtual ~RgbImage() = default;
+    virtual ~RgbImage();
 
     uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }
     int32_t rows() const { return rows_; }
 
-    void SetImage(uint8_t *data, int32_t rows, int32_t cols);
+    void SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
 
     inline bool SetPixelValue(int32_t row, int32_t col, RgbPixel value) {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
@@ -140,6 +141,7 @@ private:
     uint8_t *data_ = nullptr;
     int32_t cols_ = 0;
     int32_t rows_ = 0;
+    bool memory_owner_ = false;
 };
 
 #endif // end of _DATATYPE_IMAGE_H_
