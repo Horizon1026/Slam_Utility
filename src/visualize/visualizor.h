@@ -68,17 +68,20 @@ public:
                                      RgbImage &image,
                                      Scalar max_value = 1e3,
                                      int32_t scale = 4);
-    static void ConvertUint8ToRGB(const uint8_t *gray,
+    static void ConvertUint8ToRgb(const uint8_t *gray,
                                   uint8_t *rgb,
+                                  int32_t gray_size);
+    static void ConvertRgbToUint8(const uint8_t *rgb,
+                                  uint8_t *gray,
                                   int32_t gray_size);
     static void ConvertUint8ToRgbAndUpsideDown(const uint8_t *gray,
                                                uint8_t *rgb,
                                                int32_t gray_rows,
                                                int32_t gray_cols);
     static void ConvertRgbToBgrAndUpsideDown(const uint8_t *rgb,
-                                       uint8_t *converted_rgb,
-                                       int32_t rgb_rows,
-                                       int32_t rgb_cols);
+                                             uint8_t *converted_rgb,
+                                             int32_t rgb_rows,
+                                             int32_t rgb_cols);
 
     // Reference for member variables.
     static std::map<std::string, VisualizorWindow> &windows() { return windows_; }

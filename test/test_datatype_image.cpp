@@ -4,17 +4,13 @@
 #include "math_kinematics.h"
 #include "slam_operations.h"
 #include "slam_memory.h"
-
-#include "opencv2/opencv.hpp"
+#include "visualizor.h"
 
 std::string test_image_file_name = "../example/image.png";
 
 void TestImage() {
-    cv::Mat cv_image;
-    cv_image = cv::imread(test_image_file_name, 0);
-
     GrayImage image;
-    image.SetImage(cv_image.data, cv_image.rows, cv_image.cols);
+    Visualizor::LoadImage(test_image_file_name, image);
     std::cout << image.rows() << std::endl;
     std::cout << image.cols() << std::endl;
 
@@ -28,27 +24,25 @@ void TestImage() {
         }
     }
 
-    cv::Mat show_image(image.rows(), image.cols(), CV_8UC1, image.data());
-    cv::imshow("convert cv_image to image", show_image);
-    cv::waitKey(0);
+    Visualizor::ShowImage("Loaded png image", image);
+    Visualizor::WaitKey(0);
 }
 
 void TestPyramid() {
-    cv::Mat cv_image;
-    cv_image = cv::imread(test_image_file_name, 0);
+    GrayImage image;
+    Visualizor::LoadImage(test_image_file_name, image);
 
     ImagePyramid pyramid;
-    pyramid.SetPyramidBuff((uint8_t *)malloc(sizeof(uint8_t) * cv_image.rows * cv_image.cols));
-    pyramid.SetRawImage(cv_image.data, cv_image.rows, cv_image.cols);
+    pyramid.SetPyramidBuff((uint8_t *)malloc(sizeof(uint8_t) * image.rows() * image.cols()));
+    pyramid.SetRawImage(image.data(), image.rows(), image.cols());
     pyramid.CreateImagePyramid(5);
 
     for (uint32_t i = 0; i < pyramid.level(); ++i) {
         GrayImage one_level = pyramid.GetImage(i);
-        cv::Mat image(one_level.rows(), one_level.cols(), CV_8UC1, one_level.data());
-        cv::imshow(std::to_string(i), image);
-        cv::waitKey(1);
+        Visualizor::ShowImage(std::to_string(i), one_level);
+        Visualizor::WaitKey(1);
     }
-    cv::waitKey(0);
+    Visualizor::WaitKey(0);
 }
 
 int main(int argc, char **argv) {

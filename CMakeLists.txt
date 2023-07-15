@@ -7,9 +7,6 @@ set( CMAKE_CXX_FLAGS "-std=c++17 -O3 -Wall -lpthread" )
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set( CMAKE_CXX_STANDARD 17 )
 
-# Add opencv.
-find_package( OpenCV REQUIRED )
-
 # Add slam utility.
 if ( NOT TARGET lib_slam_utility )
     add_subdirectory( src ${PROJECT_SOURCE_DIR}/build/lib_slam_utility )
@@ -20,7 +17,6 @@ add_executable( test_datatype_image
     test/test_datatype_image.cpp
 )
 target_link_libraries( test_datatype_image
-    ${OpenCV_LIBS}
     lib_slam_utility
 )
 
@@ -53,6 +49,5 @@ add_executable( test_visualizor
     test/test_visualizor.cpp
 )
 target_link_libraries( test_visualizor
-    ${OpenCV_LIBS}
     lib_slam_utility
 )

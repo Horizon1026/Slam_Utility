@@ -9,7 +9,7 @@ class GrayImage {
 
 public:
     explicit GrayImage() = default;
-    explicit GrayImage(uint8_t *data, int32_t rows, int32_t cols);
+    explicit GrayImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
     virtual ~GrayImage();
 
     uint8_t *data() const { return data_; }
@@ -91,7 +91,7 @@ class RgbImage {
 
 public:
     explicit RgbImage() = default;
-    explicit RgbImage(uint8_t *data, int32_t rows, int32_t cols);
+    explicit RgbImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
     virtual ~RgbImage();
 
     uint8_t *data() const { return data_; }

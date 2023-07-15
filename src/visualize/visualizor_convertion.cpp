@@ -4,10 +4,19 @@
 
 namespace SLAM_UTILITY {
 
-void Visualizor::ConvertUint8ToRGB(const uint8_t *gray, uint8_t *rgb, int32_t gray_size) {
+void Visualizor::ConvertUint8ToRgb(const uint8_t *gray, uint8_t *rgb, int32_t gray_size) {
     for (int32_t i = 0; i < gray_size; ++i) {
         const int32_t idx = i * 3;
         std::fill_n(rgb + idx, 3, gray[i]);
+    }
+}
+
+void Visualizor::ConvertRgbToUint8(const uint8_t *rgb, uint8_t *gray, int32_t gray_size) {
+    for (int32_t i = 0; i < gray_size; ++i) {
+        const int32_t idx = i * 3;
+        gray[i] = static_cast<uint8_t>(static_cast<float>(rgb[idx]) * 0.299f +
+                                       static_cast<float>(rgb[idx + 1]) * 0.587f +
+                                       static_cast<float>(rgb[idx + 2]) * 0.114f);
     }
 }
 
@@ -26,9 +35,9 @@ void Visualizor::ConvertUint8ToRgbAndUpsideDown(const uint8_t *gray,
 }
 
 void Visualizor::ConvertRgbToBgrAndUpsideDown(const uint8_t *rgb,
-                                        uint8_t *converted_rgb,
-                                        int32_t rgb_rows,
-                                        int32_t rgb_cols) {
+                                              uint8_t *converted_rgb,
+                                              int32_t rgb_rows,
+                                              int32_t rgb_cols) {
     const int32_t rgb_stride = rgb_cols * 3;
     for (int32_t row = 0; row < rgb_rows; ++row) {
         for (int32_t col = 0; col < rgb_cols; ++col) {
