@@ -1,5 +1,5 @@
 # Find eigen3.
-if( NOT EIGEN3_INCLUDE_DIR )
+if ( NOT EIGEN3_INCLUDE_DIR )
     set( EIGEN3_INCLUDE_DIR
         /usr/include/eigen3
         E:/Eigen3/include

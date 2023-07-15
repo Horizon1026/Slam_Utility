@@ -37,7 +37,6 @@ bool Visualizor::ShowImage(const std::string &window_title, const T &image, bool
 
         gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         glfwSwapInterval(1);
-        glfwSetWindowPos(window->glfw_window, 0, 0);
         glfwShowWindow(window->glfw_window);
         glfwSetKeyCallback(window->glfw_window, Visualizor::KeyboardCallback);
 

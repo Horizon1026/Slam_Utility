@@ -24,6 +24,7 @@ if ( NOT TARGET lib_visualize_base_stb )
 endif()
 
 add_library( lib_slam_utility_visualize ${AUX_SRC_SLAM_UTILITY_VISUALIZE} )
+
 target_include_directories( lib_slam_utility_visualize PUBLIC
     .
     fonts
@@ -31,8 +32,6 @@ target_include_directories( lib_slam_utility_visualize PUBLIC
     stb_image
 )
 target_link_libraries( lib_slam_utility_visualize
-    -lglfw
-
     lib_slam_utility_datatype
     lib_slam_utility_log
     lib_slam_utility_memory
@@ -42,3 +41,13 @@ target_link_libraries( lib_slam_utility_visualize
     lib_visualize_base_fonts
     lib_visualize_base_stb
 )
+
+# Check compile environment. If environment is windows, add additional dependence.
+if ( "${COMPILE_ENV}" STREQUAL "windows" )
+    target_include_directories( lib_slam_utility_visualize PUBLIC
+        "E:/glfw-3.3.8.bin.WIN64/include"
+    )
+    target_link_libraries( lib_slam_utility_visualize
+        "E:/glfw-3.3.8.bin.WIN64/lib-mingw-w64/glfw3.dll"
+    )
+endif()
