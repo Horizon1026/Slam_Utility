@@ -19,6 +19,9 @@ endif()
 if ( NOT TARGET lib_visualize_base_fonts )
     add_subdirectory( ../visualize/fonts ${PROJECT_SOURCE_DIR}/build/lib_visualize_base_fonts )
 endif()
+if ( NOT TARGET lib_visualize_base_stb )
+    add_subdirectory( ../visualize/stb_image ${PROJECT_SOURCE_DIR}/build/lib_visualize_base_stb )
+endif()
 
 add_library( lib_slam_utility_visualize ${AUX_SRC_SLAM_UTILITY_VISUALIZE} )
 target_include_directories( lib_slam_utility_visualize PUBLIC . )
@@ -30,4 +33,5 @@ target_link_libraries( lib_slam_utility_visualize
 
     lib_visualize_base_glad_khr
     lib_visualize_base_fonts
+    lib_visualize_base_stb
 )

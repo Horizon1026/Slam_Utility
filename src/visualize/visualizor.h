@@ -51,6 +51,10 @@ public:
     template <typename ImageType, typename PixelType>
     static void DrawString(ImageType &image, const std::string &str, int32_t x, int32_t y, const PixelType &color, int32_t font_size = 12);
 
+    // Support for image load and save.
+    template <typename ImageType>
+    static bool LoadImage(const std::string &image_file, ImageType &image);
+
     // Support for convertion.
     template <typename Scalar>
     static uint8_t ConvertValueToUint8(Scalar value, Scalar max_value);
