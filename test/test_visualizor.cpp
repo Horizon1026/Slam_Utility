@@ -74,6 +74,7 @@ void TestVisualizorStatic() {
     Visualizor::ShowImage("PNG GrayImage", image_png);
     Visualizor::WaitKey(0);
 
+    free(buf);
 }
 
 void TestVisualizorDynamic() {
