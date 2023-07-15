@@ -48,7 +48,7 @@ void TestVisualizorStatic() {
     uint8_t *buf = (uint8_t *)malloc(matrix.rows() * matrix.cols() * kScale * kScale * sizeof(uint8_t));
     GrayImage image_matrix(buf, matrix.rows() * kScale, matrix.cols() * kScale, true);
     Visualizor::ConvertMatrixToImage<float>(matrix, image_matrix, 15.0f, kScale);
-    Visualizor::DrawSolidRectangle(image_matrix, 10, 10, 200, 200, static_cast<uint8_t>(0));
+    Visualizor::DrawSolidRectangle(image_matrix, 10.1, 10.1, 200, 200, static_cast<uint8_t>(0));
     for (int32_t i = 0; i < 10; ++i) {
         Visualizor::DrawBressenhanLine(image_matrix, 111 - 10 * i, 10 * i, 100, 100, static_cast<uint8_t>(255));
     }
