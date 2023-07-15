@@ -24,8 +24,15 @@ if ( NOT TARGET lib_visualize_base_stb )
 endif()
 
 add_library( lib_slam_utility_visualize ${AUX_SRC_SLAM_UTILITY_VISUALIZE} )
-target_include_directories( lib_slam_utility_visualize PUBLIC . )
+target_include_directories( lib_slam_utility_visualize PUBLIC
+    .
+    fonts
+    glad+khr
+    stb_image
+)
 target_link_libraries( lib_slam_utility_visualize
+    -lglfw
+
     lib_slam_utility_datatype
     lib_slam_utility_log
     lib_slam_utility_memory
