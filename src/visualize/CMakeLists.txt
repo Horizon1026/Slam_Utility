@@ -44,10 +44,16 @@ target_link_libraries( lib_slam_utility_visualize
 
 # Check compile environment. If environment is windows, add additional dependence.
 if ( "${COMPILE_ENV}" STREQUAL "windows" )
+    # If environment is windows, add special dependence.
     target_include_directories( lib_slam_utility_visualize PUBLIC
         "E:/glfw-3.3.8.bin.WIN64/include"
     )
     target_link_libraries( lib_slam_utility_visualize
         "E:/glfw-3.3.8.bin.WIN64/lib-mingw-w64/glfw3.dll"
+    )
+else()
+    # If environment is linux, add special dependence.
+    target_link_libraries( lib_slam_utility_visualize
+        -lglfw
     )
 endif()
