@@ -38,6 +38,7 @@ void Visualizor::ShowImageWithTrackedFeatures(const std::string &window_title,
                                               const std::vector<Vec2> &ref_pixel_uv,
                                               const std::vector<Vec2> &cur_pixel_uv,
                                               const std::vector<uint8_t> &track_status,
+                                              uint8_t min_valid_track_status_value,
                                               RgbPixel tracked_color,
                                               RgbPixel untracked_color,
                                               RgbPixel flow_line_color) {
@@ -51,7 +52,7 @@ void Visualizor::ShowImageWithTrackedFeatures(const std::string &window_title,
     Visualizor::ConvertUint8ToRgb(cur_image.data(), show_cur_image.data(), cur_image.rows() * cur_image.cols());
 
     for (uint32_t i = 0; i < ref_pixel_uv.size(); ++i) {
-        if (track_status[i] > 1) {
+        if (track_status[i] > min_valid_track_status_value) {
             Visualizor::DrawSolidCircle(show_cur_image, cur_pixel_uv[i].x(), cur_pixel_uv[i].y(), 3, untracked_color);
             continue;
         }
