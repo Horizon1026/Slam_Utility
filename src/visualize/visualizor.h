@@ -29,6 +29,20 @@ public:
     virtual ~Visualizor();
     static Visualizor &GetInstance();
 
+    // Support for feature tracking result visualization.
+    static void ShowImageWithDetectedFeatures(const std::string &window_title,
+                                              const GrayImage &image,
+                                              const std::vector<Vec2> &pixel_uv,
+                                              RgbPixel color = RgbPixel{.r = 255, .g = 0, .b = 0});
+    static void ShowImageWithTrackedFeatures(const std::string &window_title,
+                                             const GrayImage &cur_image,
+                                             const std::vector<Vec2> &ref_pixel_uv,
+                                             const std::vector<Vec2> &cur_pixel_uv,
+                                             const std::vector<uint8_t> &track_status,
+                                             RgbPixel tracked_color = RgbPixel{.r = 0, .g = 255, .b = 255},
+                                             RgbPixel untracked_color = RgbPixel{.r = 255, .g = 0, .b = 0},
+                                             RgbPixel flow_line_color = RgbPixel{.r = 0, .g = 255, .b = 0});
+
     // Support for image show.
     template <typename T>
     static bool ShowImage(const std::string &window_title, const T &image, bool resizable = false);
