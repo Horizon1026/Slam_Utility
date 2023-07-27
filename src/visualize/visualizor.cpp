@@ -94,13 +94,16 @@ void Visualizor::ShowImageWithTrackedFeatures(const std::string &window_title,
     RgbImage show_image(merged_rgb_buf, merged_image.rows(), merged_image.cols(), true);
     Visualizor::ConvertUint8ToRgb(merged_image.data(), show_image.data(), merged_image.rows() * merged_image.cols());
 
-    // Draw current points and pairs.
+    // Draw untracked current points.
     for (uint32_t i = 0; i < cur_pixel_uv.size(); ++i) {
         if (track_status[i] > min_valid_track_status_value) {
             Visualizor::DrawSolidCircle(show_image, cur_pixel_uv[i].x() + cur_image.cols(), cur_pixel_uv[i].y(), 3, untracked_color);
-            continue;
         }
+    }
 
+    // Draw tracked current points and pairs.
+    for (uint32_t i = 0; i < cur_pixel_uv.size(); ++i) {
+        CONTINUE_IF(track_status[i] > min_valid_track_status_value);
         Visualizor::DrawSolidCircle(show_image, cur_pixel_uv[i].x() + cur_image.cols(), cur_pixel_uv[i].y(), 3, tracked_color);
         Visualizor::DrawBressenhanLine(show_image, ref_pixel_uv[i].x(), ref_pixel_uv[i].y(),
             cur_pixel_uv[i].x() + cur_image.cols(), cur_pixel_uv[i].y(),
