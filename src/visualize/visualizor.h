@@ -43,6 +43,15 @@ public:
                                              RgbPixel tracked_color = RgbPixel{.r = 0, .g = 255, .b = 255},
                                              RgbPixel untracked_color = RgbPixel{.r = 255, .g = 0, .b = 0},
                                              RgbPixel flow_line_color = RgbPixel{.r = 0, .g = 255, .b = 0});
+    static void ShowImageWithTrackedFeatures(const std::string &window_title,
+                                             const GrayImage &ref_image,
+                                             const GrayImage &cur_image,
+                                             const std::vector<Vec2> &ref_pixel_uv,
+                                             const std::vector<Vec2> &cur_pixel_uv,
+                                             const std::vector<uint8_t> &track_status,
+                                             uint8_t min_valid_track_status_value = 2,
+                                             RgbPixel tracked_color = RgbPixel{.r = 0, .g = 255, .b = 255},
+                                             RgbPixel untracked_color = RgbPixel{.r = 255, .g = 0, .b = 0});
 
     // Support for image show.
     template <typename T>
