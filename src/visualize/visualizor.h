@@ -52,6 +52,15 @@ public:
                                              uint8_t min_valid_track_status_value = 2,
                                              RgbPixel tracked_color = RgbPixel{.r = 0, .g = 255, .b = 255},
                                              RgbPixel untracked_color = RgbPixel{.r = 255, .g = 0, .b = 0});
+    static void ShowImageWithTrackedFeaturesWithId(const std::string &window_title,
+                                                   const GrayImage &ref_image,
+                                                   const GrayImage &cur_image,
+                                                   const std::vector<Vec2> &ref_pixel_uv,
+                                                   const std::vector<Vec2> &cur_pixel_uv,
+                                                   const std::vector<uint32_t> &ref_ids,
+                                                   const std::vector<uint32_t> &cur_ids,
+                                                   const std::vector<uint32_t> &ref_tracked_cnt = std::vector<uint32_t>(),
+                                                   const std::vector<Vec2> &cur_optical_velocity = std::vector<Vec2>());
 
     // Support for image show.
     template <typename T>
