@@ -287,7 +287,7 @@ void Visualizor::DrawFeaturesWithIdByOpticalVelocity(const std::vector<Vec2> &pi
 
     if (pixel_uv.size() == optical_velocity.size()) {
         // If optical flow velocity of current features is valid, draw the optical flow trajectory.
-        const RgbPixel line_color = RgbPixel{.r = 255, .g = 255, .b = 0};
+        const RgbPixel line_color = RgbPixel{.r = 255, .g = 10, .b = 0};
         for (uint32_t i = 0; i < pixel_uv.size(); ++i) {
             CONTINUE_IF(!status.empty() && status[i] > min_valid_status_value);
 
