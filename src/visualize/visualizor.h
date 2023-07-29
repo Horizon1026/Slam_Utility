@@ -61,6 +61,21 @@ public:
                                                    const std::vector<uint32_t> &cur_ids,
                                                    const std::vector<uint32_t> &ref_tracked_cnt = std::vector<uint32_t>(),
                                                    const std::vector<Vec2> &cur_optical_velocity = std::vector<Vec2>());
+    static void ShowImageWithTrackedFeaturesWithId(const std::string &window_title,
+                                                   const GrayImage &ref_image_left,
+                                                   const GrayImage &ref_image_right,
+                                                   const GrayImage &cur_image_left,
+                                                   const GrayImage &cur_image_right,
+                                                   const std::vector<Vec2> &ref_pixel_uv_left,
+                                                   const std::vector<Vec2> &ref_pixel_uv_right,
+                                                   const std::vector<Vec2> &cur_pixel_uv_left,
+                                                   const std::vector<Vec2> &cur_pixel_uv_right,
+                                                   const std::vector<uint32_t> &ref_ids_left,
+                                                   const std::vector<uint32_t> &ref_ids_right,
+                                                   const std::vector<uint32_t> &cur_ids_left,
+                                                   const std::vector<uint32_t> &cur_ids_right,
+                                                   const std::vector<uint32_t> &ref_tracked_cnt = std::vector<uint32_t>(),
+                                                   const std::vector<Vec2> &cur_optical_velocity = std::vector<Vec2>());
 
     // Support for image show.
     template <typename T>
@@ -137,6 +152,17 @@ private:
     template <typename ImageType, typename PixelType>
     static void DrawCharacter(ImageType &image, char character, int32_t x, int32_t y, const PixelType &color, int32_t font_size = 12);
 
+    // Inner support for feature tracking result visualization.
+    static void DrawFeaturesWithIdByTrackedNumbers(const std::vector<Vec2> &pixel_uv,
+                                                   const std::vector<uint32_t> &ids,
+                                                   const Pixel &pixel_offset,
+                                                   const std::vector<uint32_t> &tracked_cnt,
+                                                   RgbImage &image);
+    static void DrawFeaturesWithIdByOpticalVelocity(const std::vector<Vec2> &pixel_uv,
+                                                    const std::vector<uint32_t> &ids,
+                                                    const Pixel &pixel_offset,
+                                                    const std::vector<Vec2> &optical_velocity,
+                                                    RgbImage &image);
 
 private:
     // Member varibles for image show.
