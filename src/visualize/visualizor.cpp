@@ -155,6 +155,8 @@ void Visualizor::ShowImageWithTrackedFeaturesWithId(const std::string &window_ti
     uint8_t *merged_rgb_buf = (uint8_t *)SlamMemory::Malloc(merged_image.rows() * merged_image.cols() * 3 * sizeof(uint8_t));
     RgbImage show_image(merged_rgb_buf, merged_image.rows(), merged_image.cols(), true);
     Visualizor::ConvertUint8ToRgb(merged_image.data(), show_image.data(), merged_image.rows() * merged_image.cols());
+    Visualizor::DrawString(show_image, "[ref image]", 0, 0, RgbPixel{.r = 200, .g = 150, .b = 255}, 16);
+    Visualizor::DrawString(show_image, "[cur image]", ref_image.cols(), 0, RgbPixel{.r = 200, .g = 150, .b = 255}, 16);
 
     // [left] Draw points in reference image.
     if (ref_pixel_uv.size() == ref_tracked_cnt.size()) {
