@@ -161,10 +161,12 @@ void Visualizor::ShowImageWithTrackedFeaturesWithId(const std::string &window_ti
     Visualizor::DrawString(show_image, "[cur image]", ref_image.cols(), 0, RgbPixel{.r = 200, .g = 150, .b = 255}, 16);
 
     // [left] Draw points in reference image.
-    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv, ref_ids, Pixel(0, 0), tracked_status, min_valid_track_status_value, ref_tracked_cnt, show_image);
+    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv, ref_ids, Pixel(0, 0), tracked_status,
+        min_valid_track_status_value, ref_tracked_cnt, show_image);
 
     // [right] Draw points in current image.
-    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv, cur_ids, Pixel(cur_image.cols(), 0), tracked_status, min_valid_track_status_value, cur_optical_velocity, show_image);
+    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv, cur_ids, Pixel(cur_image.cols(), 0),
+        tracked_status, min_valid_track_status_value, cur_optical_velocity, show_image);
 
     Visualizor::ShowImage(window_title, show_image);
 }
@@ -223,16 +225,20 @@ void Visualizor::ShowImageWithTrackedFeaturesWithId(const std::string &window_ti
     std::vector<uint8_t> status;
 
     // [top left] Draw points in reference left image.
-    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_left, ref_ids_left, ref_left_offset, status, 2, ref_tracked_cnt, show_image);
+    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_left, ref_ids_left, ref_left_offset,
+        status, 2,ref_tracked_cnt, show_image);
 
     // [top right] Draw points in reference right image.
-    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_right, ref_ids_right, ref_right_offset, status, 2, ref_tracked_cnt, show_image);
+    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_right, ref_ids_right, ref_right_offset,
+        status, 2, ref_tracked_cnt, show_image);
 
     // [bottom left] Draw points in current left image.
-    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv_left, cur_ids_left, cur_left_offset, status, 2, cur_optical_velocity, show_image);
+    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv_left, cur_ids_left, cur_left_offset,
+        status, 2, cur_optical_velocity, show_image);
 
     // [bottom right] Draw points in current right image.
-    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv_right, cur_ids_right, cur_right_offset, status, 2, cur_optical_velocity, show_image);
+    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv_right, cur_ids_right, cur_right_offset,
+        status, 2, cur_optical_velocity, show_image);
 
     Visualizor::ShowImage(window_title, show_image);
 }
@@ -281,7 +287,7 @@ void Visualizor::DrawFeaturesWithIdByOpticalVelocity(const std::vector<Vec2> &pi
 
     if (pixel_uv.size() == optical_velocity.size()) {
         // If optical flow velocity of current features is valid, draw the optical flow trajectory.
-        const RgbPixel line_color = RgbPixel{.r = 0, .g = 255, .b = 0};
+        const RgbPixel line_color = RgbPixel{.r = 255, .g = 255, .b = 0};
         for (uint32_t i = 0; i < pixel_uv.size(); ++i) {
             CONTINUE_IF(!status.empty() && status[i] > min_valid_status_value);
 
