@@ -250,8 +250,6 @@ void Visualizor::DrawFeaturesWithIdByTrackedNumbers(const std::vector<Vec2> &pix
                                                     const uint8_t min_valid_status_value,
                                                     const std::vector<uint32_t> &tracked_cnt,
                                                     RgbImage &image) {
-    RETURN_IF(status.size() != pixel_uv.size());
-
     if (pixel_uv.size() == tracked_cnt.size()) {
         // If tracked cnt of reference features is valid, draw features with different color.
         for (uint32_t i = 0; i < pixel_uv.size(); ++i) {
