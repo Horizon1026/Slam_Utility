@@ -59,6 +59,8 @@ public:
                                                    const std::vector<Vec2> &cur_pixel_uv,
                                                    const std::vector<uint32_t> &ref_ids,
                                                    const std::vector<uint32_t> &cur_ids,
+                                                   const std::vector<uint8_t> &tracked_status,
+                                                   uint8_t min_valid_track_status_value = 2,
                                                    const std::vector<uint32_t> &ref_tracked_cnt = std::vector<uint32_t>(),
                                                    const std::vector<Vec2> &cur_optical_velocity = std::vector<Vec2>());
     static void ShowImageWithTrackedFeaturesWithId(const std::string &window_title,
@@ -156,11 +158,15 @@ private:
     static void DrawFeaturesWithIdByTrackedNumbers(const std::vector<Vec2> &pixel_uv,
                                                    const std::vector<uint32_t> &ids,
                                                    const Pixel &pixel_offset,
+                                                   const std::vector<uint8_t> &status,
+                                                   const uint8_t min_valid_status_value,
                                                    const std::vector<uint32_t> &tracked_cnt,
                                                    RgbImage &image);
     static void DrawFeaturesWithIdByOpticalVelocity(const std::vector<Vec2> &pixel_uv,
                                                     const std::vector<uint32_t> &ids,
                                                     const Pixel &pixel_offset,
+                                                    const std::vector<uint8_t> &status,
+                                                    const uint8_t min_valid_status_value,
                                                     const std::vector<Vec2> &optical_velocity,
                                                     RgbImage &image);
 

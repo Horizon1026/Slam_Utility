@@ -132,6 +132,8 @@ void Visualizor::ShowImageWithTrackedFeaturesWithId(const std::string &window_ti
                                                     const std::vector<Vec2> &cur_pixel_uv,
                                                     const std::vector<uint32_t> &ref_ids,
                                                     const std::vector<uint32_t> &cur_ids,
+                                                    const std::vector<uint8_t> &tracked_status,
+                                                    uint8_t min_valid_track_status_value,
                                                     const std::vector<uint32_t> &ref_tracked_cnt,
                                                     const std::vector<Vec2> &cur_optical_velocity) {
     RETURN_IF(ref_image.data() == nullptr || cur_image.data() == nullptr);
@@ -159,10 +161,10 @@ void Visualizor::ShowImageWithTrackedFeaturesWithId(const std::string &window_ti
     Visualizor::DrawString(show_image, "[cur image]", ref_image.cols(), 0, RgbPixel{.r = 200, .g = 150, .b = 255}, 16);
 
     // [left] Draw points in reference image.
-    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv, ref_ids, Pixel(0, 0), ref_tracked_cnt, show_image);
+    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv, ref_ids, Pixel(0, 0), tracked_status, min_valid_track_status_value, ref_tracked_cnt, show_image);
 
     // [right] Draw points in current image.
-    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv, cur_ids, Pixel(cur_image.cols(), 0), cur_optical_velocity, show_image);
+    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv, cur_ids, Pixel(cur_image.cols(), 0), tracked_status, min_valid_track_status_value, cur_optical_velocity, show_image);
 
     Visualizor::ShowImage(window_title, show_image);
 }
@@ -218,17 +220,19 @@ void Visualizor::ShowImageWithTrackedFeaturesWithId(const std::string &window_ti
     Visualizor::DrawString(show_image, "[cur left image]", cur_left_offset.x(), cur_left_offset.y(), RgbPixel{.r = 200, .g = 150, .b = 255}, 16);
     Visualizor::DrawString(show_image, "[cur right image]", cur_right_offset.x(), cur_right_offset.y(), RgbPixel{.r = 200, .g = 150, .b = 255}, 16);
 
+    std::vector<uint8_t> status;
+
     // [top left] Draw points in reference left image.
-    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_left, ref_ids_left, ref_left_offset, ref_tracked_cnt, show_image);
+    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_left, ref_ids_left, ref_left_offset, status, 2, ref_tracked_cnt, show_image);
 
     // [top right] Draw points in reference right image.
-    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_right, ref_ids_right, ref_right_offset, ref_tracked_cnt, show_image);
+    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_right, ref_ids_right, ref_right_offset, status, 2, ref_tracked_cnt, show_image);
 
     // [bottom left] Draw points in current left image.
-    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv_left, cur_ids_left, cur_left_offset, cur_optical_velocity, show_image);
+    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv_left, cur_ids_left, cur_left_offset, status, 2, cur_optical_velocity, show_image);
 
     // [bottom right] Draw points in current right image.
-    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv_right, cur_ids_right, cur_right_offset, cur_optical_velocity, show_image);
+    Visualizor::DrawFeaturesWithIdByOpticalVelocity(cur_pixel_uv_right, cur_ids_right, cur_right_offset, status, 2, cur_optical_velocity, show_image);
 
     Visualizor::ShowImage(window_title, show_image);
 }
@@ -236,12 +240,18 @@ void Visualizor::ShowImageWithTrackedFeaturesWithId(const std::string &window_ti
 void Visualizor::DrawFeaturesWithIdByTrackedNumbers(const std::vector<Vec2> &pixel_uv,
                                                     const std::vector<uint32_t> &ids,
                                                     const Pixel &pixel_offset,
+                                                    const std::vector<uint8_t> &status,
+                                                    const uint8_t min_valid_status_value,
                                                     const std::vector<uint32_t> &tracked_cnt,
                                                     RgbImage &image) {
+    RETURN_IF(status.size() != pixel_uv.size());
+
     if (pixel_uv.size() == tracked_cnt.size()) {
         // If tracked cnt of reference features is valid, draw features with different color.
         for (uint32_t i = 0; i < pixel_uv.size(); ++i) {
-            const int32_t color = std::max(static_cast<int32_t>(255 - tracked_cnt[i] * 50), static_cast<int32_t>(0));
+            CONTINUE_IF(!status.empty() && status[i] > min_valid_status_value);
+
+            const int32_t color = std::max(static_cast<int32_t>(255 - tracked_cnt[i] * 80), static_cast<int32_t>(0));
             const RgbPixel pixel_color = RgbPixel{.r = 255, .g = static_cast<uint8_t>(255 - color), .b = 0};
             Visualizor::DrawSolidCircle(image, pixel_uv[i].x() + pixel_offset.x(), pixel_uv[i].y() + pixel_offset.y(), 3, pixel_color);
             Visualizor::DrawString(image, std::to_string(ids[i]), pixel_uv[i].x() + kStringLocationColOffset + pixel_offset.x(),
@@ -251,6 +261,8 @@ void Visualizor::DrawFeaturesWithIdByTrackedNumbers(const std::vector<Vec2> &pix
         // Draw features with fixed color.
         const RgbPixel pixel_color = RgbPixel{.r = 255, .g = 255, .b = 0};
         for (uint32_t i = 0; i < pixel_uv.size(); ++i) {
+            CONTINUE_IF(!status.empty() && status[i] > min_valid_status_value);
+
             Visualizor::DrawSolidCircle(image, pixel_uv[i].x() + pixel_offset.x(), pixel_uv[i].y() + pixel_offset.y(), 3, pixel_color);
             Visualizor::DrawString(image, std::to_string(ids[i]), pixel_uv[i].x() + kStringLocationColOffset + pixel_offset.x(),
                 pixel_uv[i].y() + kStringLocationRowOffset + pixel_offset.y(), pixel_color);
@@ -261,6 +273,8 @@ void Visualizor::DrawFeaturesWithIdByTrackedNumbers(const std::vector<Vec2> &pix
 void Visualizor::DrawFeaturesWithIdByOpticalVelocity(const std::vector<Vec2> &pixel_uv,
                                                      const std::vector<uint32_t> &ids,
                                                      const Pixel &pixel_offset,
+                                                     const std::vector<uint8_t> &status,
+                                                     const uint8_t min_valid_status_value,
                                                      const std::vector<Vec2> &optical_velocity,
                                                      RgbImage &image) {
     const RgbPixel pixel_color = RgbPixel{.r = 0, .g = 255, .b = 255};
@@ -269,6 +283,8 @@ void Visualizor::DrawFeaturesWithIdByOpticalVelocity(const std::vector<Vec2> &pi
         // If optical flow velocity of current features is valid, draw the optical flow trajectory.
         const RgbPixel line_color = RgbPixel{.r = 0, .g = 255, .b = 0};
         for (uint32_t i = 0; i < pixel_uv.size(); ++i) {
+            CONTINUE_IF(!status.empty() && status[i] > min_valid_status_value);
+
             Visualizor::DrawSolidCircle(image, pixel_uv[i].x() + pixel_offset.x(), pixel_uv[i].y() + pixel_offset.y(), 3, pixel_color);
             Visualizor::DrawString(image, std::to_string(ids[i]), pixel_uv[i].x() + kStringLocationColOffset + pixel_offset.x(),
                 pixel_uv[i].y() + kStringLocationRowOffset + pixel_offset.y(), pixel_color);
@@ -279,6 +295,8 @@ void Visualizor::DrawFeaturesWithIdByOpticalVelocity(const std::vector<Vec2> &pi
     } else {
         // Only draw features.
         for (uint32_t i = 0; i < pixel_uv.size(); ++i) {
+            CONTINUE_IF(!status.empty() && status[i] > min_valid_status_value);
+
             Visualizor::DrawSolidCircle(image, pixel_uv[i].x() + pixel_offset.x(), pixel_uv[i].y() + pixel_offset.y(), 3, pixel_color);
             Visualizor::DrawString(image, std::to_string(ids[i]), pixel_uv[i].x() + kStringLocationColOffset + pixel_offset.x(),
                 pixel_uv[i].y() + kStringLocationRowOffset + pixel_offset.y(), pixel_color);
