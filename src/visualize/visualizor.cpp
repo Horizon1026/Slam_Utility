@@ -161,7 +161,8 @@ void Visualizor::ShowImageWithTrackedFeaturesWithId(const std::string &window_ti
     Visualizor::DrawString(show_image, "[cur image]", ref_image.cols(), 0, RgbPixel{.r = 200, .g = 150, .b = 255}, 16);
 
     // [left] Draw points in reference image.
-    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv, ref_ids, Pixel(0, 0), tracked_status,
+    std::vector<uint8_t> empty_tracked_status;
+    Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv, ref_ids, Pixel(0, 0), empty_tracked_status,
         min_valid_track_status_value, ref_tracked_cnt, show_image);
 
     // [right] Draw points in current image.
@@ -226,7 +227,7 @@ void Visualizor::ShowImageWithTrackedFeaturesWithId(const std::string &window_ti
 
     // [top left] Draw points in reference left image.
     Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_left, ref_ids_left, ref_left_offset,
-        status, 2,ref_tracked_cnt, show_image);
+        status, 2, ref_tracked_cnt, show_image);
 
     // [top right] Draw points in reference right image.
     Visualizor::DrawFeaturesWithIdByTrackedNumbers(ref_pixel_uv_right, ref_ids_right, ref_right_offset,
