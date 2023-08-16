@@ -8,3 +8,4 @@ sh clone_repo.sh Slam_Solver
 sh clone_repo.sh Visual_Frontend
 sh clone_repo.sh Vision_Geometry
 sh clone_repo.sh VIO_Stereo_BASALT
+sh clone_repo.sh Reference_Papers
