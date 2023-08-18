@@ -1,5 +1,5 @@
-#ifndef _SLAM_LOG_API_H_
-#define _SLAM_LOG_API_H_
+#ifndef _SLAM_LOG_REPORT_H_
+#define _SLAM_LOG_REPORT_H_
 
 #include "iostream"
 #include "iomanip"
@@ -26,9 +26,9 @@ namespace SLAM_UTILITY {
     #define BOLD_CYAN       "\033[1m\033[36m"
     #define BOLD_WHITE      "\033[1m\033[37m"
 
-    #define LogPtr(p) reinterpret_cast<void *>(p)
+    #define LogPtr(p) "[ptr][" << reinterpret_cast<void *>(p) << "]"
     #define LogQuat(q) "[wxyz][" << q.w() << ", " << q.x() << ", " << q.y() << ", " << q.z() << "]"
-    #define LogVec(v) "[" << v.transpose() << "]"
+    #define LogVec(v) "[vec][" << v.transpose() << "]"
 
     #define LogFixPercision(x) std::cout << std::fixed << std::setprecision(x)
     #define LogWriteToFile(...) std::cout.rdbuf(std::ofstream(__VA_ARGS__).rdbuf())
@@ -51,4 +51,4 @@ namespace SLAM_UTILITY {
 
 using namespace SLAM_UTILITY;
 
-#endif // end of _SLAM_LOG_API_H_
+#endif // end of _SLAM_LOG_REPORT_H_
