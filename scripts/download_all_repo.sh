@@ -1,5 +1,6 @@
 #!/bin/sh
-# 要去掉'\n'符号，所以写成下面这样
-while IFS=$'\n' read -r rows; do
-    sh download_repo.sh $rows
+while read rows; do
+    # 要去掉每一行字符的最后一个符号（\r或者\n）
+    repo_name=${rows:0:${#rows}-1}
+    sh download_repo.sh $repo_name
 done < all_repos_name.txt

@@ -1,5 +1,6 @@
 #!/bin/sh
-# 要去掉'\n'符号，所以写成下面这样
-while IFS=$'\n' read -r rows; do
-    sh remake.sh $rows $1
+while read rows; do
+    # 要去掉每一行字符的最后一个符号（\r或者\n）
+    repo_name=${rows:0:${#rows}-1}
+    sh remake.sh $repo_name $1
 done < all_repos_name.txt
