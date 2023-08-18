@@ -7,6 +7,6 @@ Slam_Solver
 Visual_Frontend
 Vision_Geometry
 VIO_Stereo_BASALT
-Reference_Papers
 Visualizor2D
 Hex_Data_Log
+Reference_Papers
