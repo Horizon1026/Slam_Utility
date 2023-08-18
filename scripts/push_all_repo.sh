@@ -10,3 +10,4 @@ sh push_repo.sh "visual frontend" Visual_Frontend
 sh push_repo.sh "vision geometry" Vision_Geometry
 sh push_repo.sh "vio stereo basalt" VIO_Stereo_BASALT
 sh push_repo.sh "upload reference papers or notes" Reference_Papers
+sh push_repo.sh "slam visualizor in 2d" Visualizor2D

@@ -8,3 +8,4 @@ sh remake.sh Slam_Solver $1
 sh remake.sh Visual_Frontend $1
 sh remake.sh Vision_Geometry $1
 sh remake.sh VIO_Stereo_BASALT $1
+sh remake.sh Visualizor2D $1

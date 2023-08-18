@@ -17,9 +17,6 @@ endif()
 if ( NOT TARGET lib_slam_utility_operate )
     add_subdirectory( ${SLAM_UTILITY_PATH}/operate ${PROJECT_SOURCE_DIR}/build/lib_slam_utility_operate )
 endif()
-if ( NOT TARGET lib_slam_utility_visualize )
-    add_subdirectory( ${SLAM_UTILITY_PATH}/visualize ${PROJECT_SOURCE_DIR}/build/lib_slam_utility_visualize )
-endif()
 if ( NOT TARGET lib_slam_utility_tick_tock )
     add_subdirectory( ${SLAM_UTILITY_PATH}/tick_tock ${PROJECT_SOURCE_DIR}/build/lib_slam_utility_tick_tock )
 endif()
@@ -35,11 +32,6 @@ if ( NOT TARGET lib_circular_buffer )
     add_subdirectory( ${SLAM_UTILITY_PATH}/data_struct/circular_buffer ${PROJECT_SOURCE_DIR}/build/lib_circular_buffer )
 endif()
 
-# Add all components of slam utility 3rd libraries.
-if ( NOT TARGET lib_imgui_glfw_opengl )
-    add_subdirectory( ${SLAM_UTILITY_PATH}/3rd_libraries/imgui ${PROJECT_SOURCE_DIR}/build/lib_imgui_glfw_opengl )
-endif()
-
 add_library( lib_slam_utility ${AUX_SRC_SLAM_UTILITY} )
 target_include_directories( lib_slam_utility PUBLIC . )
 target_link_libraries( lib_slam_utility
@@ -48,12 +40,9 @@ target_link_libraries( lib_slam_utility
     lib_slam_utility_math
     lib_slam_utility_memory
     lib_slam_utility_operate
-    lib_slam_utility_visualize
     lib_slam_utility_tick_tock
 
     lib_covisible_graph
     lib_object_pool
     lib_circular_buffer
-
-    lib_imgui_glfw_opengl
 )

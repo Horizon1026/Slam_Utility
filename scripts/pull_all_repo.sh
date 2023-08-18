@@ -9,3 +9,4 @@ sh pull_repo.sh Visual_Frontend
 sh pull_repo.sh Vision_Geometry
 sh pull_repo.sh VIO_Stereo_BASALT
 sh pull_repo.sh Reference_Papers
+sh pull_repo.sh Visualizor2D

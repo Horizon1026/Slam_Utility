@@ -8,3 +8,4 @@ sh make.sh Slam_Solver $1
 sh make.sh Visual_Frontend $1
 sh make.sh Vision_Geometry $1
 sh make.sh VIO_Stereo_BASALT $1
+sh make.sh Visualizor2D $1
