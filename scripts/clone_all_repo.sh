@@ -1,5 +1,5 @@
 #!/bin/sh
-# 要去掉'\r'符号，所以写成下面这样
-while IFS=$'\r' read -r rows; do
+# 要去掉'\n'符号，所以写成下面这样
+while IFS=$'\n' read -r rows; do
     sh clone_repo.sh $rows
 done < all_repos_name.txt
