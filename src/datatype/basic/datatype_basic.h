@@ -9,12 +9,12 @@ namespace SLAM_UTILITY {
 using uint8_t = unsigned char;
 using uint16_t = unsigned short;
 using uint32_t = unsigned int;
-using uint64_t = unsigned long long;
+using uint64_t = unsigned long int;
 
 using int8_t = char;
 using int16_t = short;
 using int32_t = int;
-using int64_t = long long;
+using int64_t = long int;
 
 template <typename T> using TQuat = Eigen::Quaternion<T>;
 template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic> using TMat = Eigen::Matrix<T, Row, Col>;
