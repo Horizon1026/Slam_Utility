@@ -15,6 +15,7 @@ public:
     uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }
     int32_t rows() const { return rows_; }
+    bool &memory_owner() { return memory_owner_; }
 
     void SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
 
@@ -97,6 +98,7 @@ public:
     uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }
     int32_t rows() const { return rows_; }
+    bool &memory_owner() { return memory_owner_; }
 
     void SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
 
