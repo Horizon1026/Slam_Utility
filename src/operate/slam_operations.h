@@ -61,6 +61,8 @@ public:
         return cnt;
     }
 
+    static bool GetFilesNameInDirectory(const std::string &dir, std::vector<std::string> &filenames);
+
 };
 
 }
