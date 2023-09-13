@@ -50,3 +50,11 @@ add_executable( test_circular_buffer
 target_link_libraries( test_circular_buffer
     lib_slam_utility
 )
+
+# Create executable target to test stack trace back.
+add_executable( test_backward
+    test/test_backward.cpp
+)
+target_link_libraries( test_backward
+    lib_slam_utility
+)
