@@ -24,7 +24,7 @@ fi
 cd build/
 
 if [ "$2" = "windows" ]; then
-    cmake -G "MinGW Makefiles" .. -DOpenCV_DIR="E:\\OpenCV4\\opencv\\mingw64_build"
+    cmake -G "MinGW Makefiles" .. -DOpenCV_DIR="E:\\OpenCV4\\opencv\\mingw64_build" -DCOMPILE_ENV="windows"
     mingw32-make.exe -j
 else
     cmake ..
