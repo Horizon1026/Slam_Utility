@@ -12,10 +12,7 @@ backward::SignalHandling sh;
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test stack trace back." RESET_COLOR);
 
-    std::vector<float> numbers;
-    for (uint32_t i = 0; i <= 10; ++i) {
-        ReportInfo(numbers.front());
-    }
+    throw 1;
 
     return 0;
 }
