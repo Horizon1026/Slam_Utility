@@ -50,6 +50,7 @@ template <typename T> using TMat1x2 = Eigen::Matrix<T, 1, 2>;
 template <typename T> using TMat1x3 = Eigen::Matrix<T, 1, 3>;
 template <typename T> using TMat2x3 = Eigen::Matrix<T, 2, 3>;
 template <typename T> using TMat2x6 = Eigen::Matrix<T, 2, 6>;
+template <typename T> using TMat3x2 = Eigen::Matrix<T, 3, 2>;
 template <typename T> using TMat3x6 = Eigen::Matrix<T, 3, 6>;
 template <typename T> using TMat5x9 = Eigen::Matrix<T, 5, 9>;
 
@@ -82,6 +83,7 @@ using Mat1x2 = Eigen::Matrix<float, 1, 2>;
 using Mat1x3 = Eigen::Matrix<float, 1, 3>;
 using Mat2x3 = Eigen::Matrix<float, 2, 3>;
 using Mat2x6 = Eigen::Matrix<float, 2, 6>;
+using Mat3x2 = Eigen::Matrix<float, 3, 2>;
 using Mat3x6 = Eigen::Matrix<float, 3, 6>;
 using Mat5x9 = Eigen::Matrix<float, 5, 9>;
 using Mat15x12 = Eigen::Matrix<float, 15, 12>;
