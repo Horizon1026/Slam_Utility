@@ -144,11 +144,11 @@ public:
         if (theta < kZero) {
             const Scalar theta_po4 = theta_sq * theta_sq;
             imag_factor = static_cast<Scalar>(0.5)
-                          - static_cast<Scalar>(1.0/48.0) * theta_sq
-                          + static_cast<Scalar>(1.0/3840.0) * theta_po4;
+                          - static_cast<Scalar>(1.0 / 48.0) * theta_sq
+                          + static_cast<Scalar>(1.0 / 3840.0) * theta_po4;
             real_factor = static_cast<Scalar>(1)
                           - static_cast<Scalar>(0.5) * theta_sq
-                          + static_cast<Scalar>(1.0/384.0) * theta_po4;
+                          + static_cast<Scalar>(1.0 / 384.0) * theta_po4;
         } else {
             const Scalar sin_half_theta = std::sin(half_theta);
             imag_factor = sin_half_theta / theta;
@@ -159,6 +159,20 @@ public:
                              imag_factor * omega.x(),
                              imag_factor * omega.y(),
                              imag_factor * omega.z());
+    }
+
+    /* Compute one of the basis on the tangent plane of the input vector. */
+    template <typename Scalar>
+    static TMat3x2<Scalar> TangentBase(const TVec3<Scalar> &v) {
+        TMat3x2<Scalar> b0b1;
+        const TVec3<Scalar> a = v.normalized();
+        TVec3<Scalar> b(0, 0, 1);
+        if (a == b) {
+            b = TVec3<Scalar>(1, 0, 0);
+        }
+        b0b1.template block<3, 1>(0, 0) = (b - a * a.dot(b) * b).normalized();
+        b0b1.template block<3, 1>(0, 1) = a.cross(b0b1.template block<3, 1>(0, 0));
+        return b0b1;
     }
 };
 

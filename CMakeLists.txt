@@ -58,3 +58,11 @@ add_executable( test_backward
 target_link_libraries( test_backward
     lib_slam_utility
 )
+
+# Create executable target to test math kinematics.
+add_executable( test_math_kinematics
+    test/test_math_kinematics.cpp
+)
+target_link_libraries( test_math_kinematics
+    lib_slam_utility
+)
