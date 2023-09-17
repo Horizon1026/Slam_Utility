@@ -170,7 +170,7 @@ public:
         if (a == b) {
             b = TVec3<Scalar>(1, 0, 0);
         }
-        b0b1.template block<3, 1>(0, 0) = (b - a * a.dot(b) * b).normalized();
+        b0b1.template block<3, 1>(0, 0) = (b - a * a.dot(b)).normalized();
         b0b1.template block<3, 1>(0, 1) = a.cross(b0b1.template block<3, 1>(0, 0));
         return b0b1;
     }
