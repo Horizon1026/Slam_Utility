@@ -73,11 +73,11 @@ public:
     inline FrameType *frame(uint32_t id);
     inline FeatureType *feature(uint32_t id);
 
-    // Reference for member varibles.
+    // Reference for member variables.
     std::list<FrameType> &frames() { return frames_; }
     std::unordered_map<uint32_t, FeatureType> &features() { return features_; }
 
-    // Const reference for member varibles.
+    // Const reference for member variables.
     const std::list<FrameType> &frames() const { return frames_; }
     const std::unordered_map<uint32_t, FeatureType> &features() const { return features_; }
 
