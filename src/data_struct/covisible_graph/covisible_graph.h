@@ -9,7 +9,7 @@
 #include "slam_operations.h"
 
 #include "unordered_map"
-#include "list"
+#include "deque"
 
 namespace SLAM_UTILITY {
 
@@ -74,11 +74,11 @@ public:
     inline FeatureType *feature(uint32_t id);
 
     // Reference for member variables.
-    std::list<FrameType> &frames() { return frames_; }
+    std::deque<FrameType> &frames() { return frames_; }
     std::unordered_map<uint32_t, FeatureType> &features() { return features_; }
 
     // Const reference for member variables.
-    const std::list<FrameType> &frames() const { return frames_; }
+    const std::deque<FrameType> &frames() const { return frames_; }
     const std::unordered_map<uint32_t, FeatureType> &features() const { return features_; }
 
 private:
@@ -87,7 +87,7 @@ private:
 
 private:
     // Frames and features in this covisible graph.
-    std::list<FrameType> frames_;
+    std::deque<FrameType> frames_;
     std::unordered_map<uint32_t, FeatureType> features_;
 
 };
