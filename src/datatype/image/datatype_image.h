@@ -10,6 +10,7 @@ class GrayImage {
 public:
     explicit GrayImage() = default;
     explicit GrayImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
+    explicit GrayImage(MatImg &matrix_image);
     virtual ~GrayImage();
 
     uint8_t *data() const { return data_; }

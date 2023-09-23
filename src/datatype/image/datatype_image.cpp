@@ -5,6 +5,10 @@ GrayImage::GrayImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner) {
     SetImage(data, rows, cols, is_owner);
 }
 
+GrayImage::GrayImage(MatImg &matrix_image) {
+    SetImage(matrix_image.data(), matrix_image.rows(), matrix_image.cols(), false);
+}
+
 GrayImage::~GrayImage() {
     if (memory_owner_ && data_ != nullptr) {
         SlamMemory::Free(data_);
