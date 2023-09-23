@@ -17,6 +17,7 @@ public:
 
     static void Free(void *ptr) {
         free(ptr);
+        ptr = nullptr;
     }
 
     static void MemorySet(void *ptr, uint8_t data, uint32_t size) {

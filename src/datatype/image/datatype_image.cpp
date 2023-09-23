@@ -6,13 +6,13 @@ GrayImage::GrayImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner) {
 }
 
 GrayImage::~GrayImage() {
-    if (memory_owner_) {
+    if (memory_owner_ && data_ != nullptr) {
         SlamMemory::Free(data_);
     }
 }
 
 void GrayImage::SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner) {
-    if (memory_owner_) {
+    if (memory_owner_ && data_ != nullptr) {
         SlamMemory::Free(data_);
     }
 
