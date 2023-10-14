@@ -174,6 +174,52 @@ public:
         b0b1.template block<3, 1>(0, 1) = a.cross(b0b1.template block<3, 1>(0, 0));
         return b0b1;
     }
+
+    /* Convert rotation matrix to cayley. */
+    template <typename Scalar>
+    static TVec3<Scalar> ConvertRotationMatrixToCayley(const TMat3<Scalar> &R) {
+        const TMat3<Scalar> C1 = R - TMat3<Scalar>::Identity();
+        const TMat3<Scalar> C2 = R + TMat3<Scalar>::Identity();
+        const TMat3<Scalar> C = C1 * C2.inverse();
+        return TVec3<Scalar>(
+            - C(1, 2),
+            C(0, 2),
+            - C(0, 1));
+    }
+
+    /* Convert cayley to reduced rotation matrix. */
+    template <typename Scalar>
+    static TMat3<Scalar> ConvertCayleyToReducedRotationMatrix(const TVec3<Scalar> &cayley) {
+        TMat3<Scalar> R;
+        R(0, 0) = 1.0 + pow(cayley(0), 2) - pow(cayley(1), 2) - pow(cayley(2), 2);
+        R(0, 1) = 2.0 * (cayley(0) * cayley(1) - cayley(2));
+        R(0, 2) = 2.0 * (cayley(0) * cayley(2) + cayley(1));
+        R(1, 0) = 2.0 * (cayley(0) * cayley(1) + cayley(2));
+        R(1, 1) = 1.0 - pow(cayley(0), 2) + pow(cayley(1), 2) - pow(cayley(2), 2);
+        R(1, 2) = 2.0 * (cayley(1) * cayley(2) - cayley(0));
+        R(2, 0) = 2.0 * (cayley(0) * cayley(2) - cayley(1));
+        R(2, 1) = 2.0 * (cayley(1) * cayley(2) + cayley(0));
+        R(2, 2) = 1.0 - pow(cayley(0), 2) - pow(cayley(1), 2) + pow(cayley(2), 2);
+        return R;
+    }
+
+    /* Convert cayley to rotation matrix. */
+    template <typename Scalar>
+    static TMat3<Scalar> ConvertCayleyToRotationMatrix(const TVec3<Scalar> &cayley) {
+        Scalar scale = 1.0 + pow(cayley[0], 2) + pow(cayley[1], 2) + pow(cayley[2], 2);
+
+        TMat3<Scalar> R;
+        R(0, 0) = 1.0 + pow(cayley(0), 2) - pow(cayley(1), 2) - pow(cayley(2), 2);
+        R(0, 1) = 2.0 * (cayley(0) * cayley(1) - cayley(2));
+        R(0, 2) = 2.0 * (cayley(0) * cayley(2) + cayley(1));
+        R(1, 0) = 2.0 * (cayley(0) * cayley(1) + cayley(2));
+        R(1, 1) = 1.0 - pow(cayley(0), 2) + pow(cayley(1), 2) - pow(cayley(2), 2);
+        R(1, 2) = 2.0 * (cayley(1) * cayley(2) - cayley(0));
+        R(2, 0) = 2.0 * (cayley(0) * cayley(2) - cayley(1));
+        R(2, 1) = 2.0 * (cayley(1) * cayley(2) + cayley(0));
+        R(2, 2) = 1.0 - pow(cayley(0), 2) - pow(cayley(1), 2) + pow(cayley(2), 2);
+        return R / scale;
+    }
 };
 
 }
