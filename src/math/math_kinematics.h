@@ -206,7 +206,7 @@ public:
     /* Convert cayley to rotation matrix. */
     template <typename Scalar>
     static TMat3<Scalar> ConvertCayleyToRotationMatrix(const TVec3<Scalar> &cayley) {
-        Scalar scale = 1.0 + pow(cayley[0], 2) + pow(cayley[1], 2) + pow(cayley[2], 2);
+        Scalar scale = 1.0 + pow(cayley(0), 2) + pow(cayley(1), 2) + pow(cayley(2), 2);
 
         TMat3<Scalar> R;
         R(0, 0) = 1.0 + pow(cayley(0), 2) - pow(cayley(1), 2) - pow(cayley(2), 2);
