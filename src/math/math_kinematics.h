@@ -7,6 +7,7 @@ namespace SLAM_UTILITY {
 
 namespace {
     constexpr static float kRadToDeg = 57.295779579f;
+    constexpr static float kDegToRad = 1.0f / kRadToDeg;
     constexpr static float kZero = 1e-8f;
     constexpr static int32_t kMaxInt32 = 2147483647;
 }
@@ -101,7 +102,7 @@ public:
         return ans;
     }
 
-    /* Trasform quaternion to pitch, roll, yaw. */
+    /* Transform quaternion to pitch, roll, yaw. */
     template <typename Scalar>
     static TVec3<Scalar> QuaternionToEuler(const TQuat<Scalar> &q_wb) {
         TVec3<Scalar> pry;    // pitch, roll, yaw
@@ -110,6 +111,29 @@ public:
         pry.y() = std::asin(- R(0, 2)) * kRadToDeg;
         pry.z() = std::atan2(R(0, 1), R(0, 0)) * kRadToDeg;
         return pry;
+    }
+
+    /* Transform pitch, roll, yaw to quaternion. */
+    template <typename Scalar>
+    static TQuat<Scalar> EulerToQuaternion(const TVec3<Scalar> &pry) {
+        const TVec3<Scalar> c = TVec3<Scalar>(
+            std::cos(static_cast<Scalar>(0.5) * pry.x() * kDegToRad),
+            std::cos(static_cast<Scalar>(0.5) * pry.y() * kDegToRad),
+            std::cos(static_cast<Scalar>(0.5) * pry.z() * kDegToRad));
+        const TVec3<Scalar> s = TVec3<Scalar>(
+            std::sin(static_cast<Scalar>(0.5) * pry.x() * kDegToRad),
+            std::sin(static_cast<Scalar>(0.5) * pry.y() * kDegToRad),
+            std::sin(static_cast<Scalar>(0.5) * pry.z() * kDegToRad));
+        const Scalar w = c.x() * c.y() * c.z() + s.x() * s.y() * s.z();
+        const Scalar x = s.x() * c.y() * c.z() - c.x() * s.y() * s.z();
+        const Scalar y = c.x() * s.y() * c.z() + s.x() * c.y() * s.z();
+        const Scalar z = c.x() * c.y() * s.z() - s.x() * s.y() * c.z();
+        TQuat<Scalar> q_wb;
+        q_wb.w() = w;
+        q_wb.x() = x;
+        q_wb.y() = y;
+        q_wb.z() = z;
+        return q_wb;
     }
 
     /* Compute inverse of symmetric matrix. */
