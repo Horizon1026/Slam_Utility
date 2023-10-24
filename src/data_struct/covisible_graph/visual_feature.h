@@ -43,7 +43,7 @@ private:
     std::vector<ObserveType> observes_;
 
     // Feature parameter can be solved. For example, feature point's parameter type is Eigen::Vector3f.
-    ParamType param_ = ParamType::Zero();
+    ParamType param_;
 
     // Solved type of this feature.
     FeatureSolvedStatus status_ = FeatureSolvedStatus::kUnsolved;
