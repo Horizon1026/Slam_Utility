@@ -283,6 +283,21 @@ public:
         return TQuat<Scalar>(rotation_matrix);
     }
 
+    /* Convert quaternion to angle axis. */
+    template <typename Scalar>
+    static TVec3<Scalar> ConvertQuaternionToAngleAxis(const TQuat<Scalar> &q) {
+        const TMat3<Scalar> R = q.toRotationMatrix();
+        return ConvertRotationMatrixToAngleAxis(R);
+    }
+
+    /* Convert rotation matrix to angle axis. */
+    template <typename Scalar>
+    static TVec3<Scalar> ConvertRotationMatrixToAngleAxis(const TMat3<Scalar> &R) {
+        Eigen::AngleAxis<Scalar> angle_axis;
+        angle_axis.fromRotationMatrix(R);
+        return angle_axis.angle() * angle_axis.axis();
+    }
+
 };
 
 }
