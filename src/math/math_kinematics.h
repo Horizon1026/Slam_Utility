@@ -230,7 +230,7 @@ public:
     /* Convert cayley to rotation matrix. */
     template <typename Scalar>
     static TMat3<Scalar> ConvertCayleyToRotationMatrix(const TVec3<Scalar> &cayley) {
-        Scalar scale = 1.0 + pow(cayley(0), 2) + pow(cayley(1), 2) + pow(cayley(2), 2);
+        const Scalar scale = 1.0 + pow(cayley(0), 2) + pow(cayley(1), 2) + pow(cayley(2), 2);
 
         TMat3<Scalar> R;
         R(0, 0) = 1.0 + pow(cayley(0), 2) - pow(cayley(1), 2) - pow(cayley(2), 2);
@@ -244,6 +244,45 @@ public:
         R(2, 2) = 1.0 - pow(cayley(0), 2) - pow(cayley(1), 2) + pow(cayley(2), 2);
         return R / scale;
     }
+
+    /* Convert cayley to quaternion. */
+    template <typename Scalar>
+    static TQuat<Scalar> ConvertCayleyToQuaternion(const TVec3<Scalar> &cayley) {
+        TQuat<Scalar> q = TQuat<Scalar>::Identity();
+        q.w() = static_cast<Scalar>(1);
+        q.x() = cayley.x();
+        q.y() = cayley.y();
+        q.z() = cayley.z();
+        return q.normalized();
+    }
+
+    /* Convert quaternion to cayley. */
+    template <typename Scalar>
+    static TVec3<Scalar> ConvertQuaternionToCayley(const TQuat<Scalar> &q) {
+        return TVec3<Scalar>(q.x() / q.w(), q.y() / q.w(), q.z() / q.w());
+    }
+
+    /* Convert angle axis to rotation matrix. */
+    template <typename Scalar>
+    static TMat3<Scalar> ConvertAngleAxisToRotationMatrix(const TVec3<Scalar> &rvec) {
+        const Scalar angle = rvec.norm();
+        if (angle == static_cast<Scalar>(0)) {
+            return TMat3<Scalar>::Identity();
+        }
+
+        const TVec3<Scalar> axis = rvec.normalized();
+        TMat3<Scalar> rmat;
+        rmat = Eigen::AngleAxis<Scalar>(angle, axis);
+        return rmat;
+    }
+
+    /* Convert angle axis to quaternion. */
+    template <typename Scalar>
+    static TQuat<Scalar> ConvertAngleAxisToQuaternion(const TVec3<Scalar> &rvec) {
+        const TMat3<Scalar> rotation_matrix = ConvertAngleAxisToRotationMatrix(rvec);
+        return TQuat<Scalar>(rotation_matrix);
+    }
+
 };
 
 }
