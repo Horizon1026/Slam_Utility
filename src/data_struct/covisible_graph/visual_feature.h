@@ -23,14 +23,23 @@ public:
 
     void Information() const;
 
-    // Reference for member variables.
-    const uint32_t &id() const { return id_; }
-    uint32_t &first_frame_id() { return first_frame_id_; }
     uint32_t final_frame_id() const { return first_frame_id_ + observes_.size() - 1; }
+
+    // Reference for member variables.
+    uint32_t &first_frame_id() { return first_frame_id_; }
     std::vector<ObserveType> &observes() { return observes_; }
     ObserveType &observe(uint32_t frame_id) { return observes_[frame_id - first_frame_id_]; }
     ParamType &param() { return param_; }
     FeatureSolvedStatus &status() { return status_; }
+
+    // Const reference for member variables.
+    const uint32_t &id() const { return id_; }
+    const uint32_t &first_frame_id() const { return first_frame_id_; }
+    const std::vector<ObserveType> &observes() const { return observes_; }
+    const ObserveType &observe(uint32_t frame_id) const { return observes_[frame_id - first_frame_id_]; }
+    const ParamType &param() const { return param_; }
+    const FeatureSolvedStatus &status() const { return status_; }
+
 
 private:
     // Visual feature id.
