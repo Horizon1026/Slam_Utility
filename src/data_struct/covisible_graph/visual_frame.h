@@ -18,6 +18,7 @@ public:
     virtual ~VisualFrame() = default;
 
     void Information() const;
+    void SimpleInformation() const;
 
     // Reference for member variables.
     uint32_t &id() { return id_; }
@@ -67,9 +68,20 @@ void VisualFrame<FeatureType>::Information() const {
     );
     ReportText(" - List of features observed in this frame:\n");
     for (const auto &item : features_) {
-        ReportText("   - id/id" << item.first << "/" << item.second->id() << ", " << LogPtr(item.second) << "\n");
+        ReportText("   - id/id " << item.first << "/" << item.second->id() << ", " << LogPtr(item.second) << "\n");
     }
     ReportText("\n");
+}
+
+template <typename FeatureType>
+void VisualFrame<FeatureType>::SimpleInformation() const {
+    ReportInfo("[Visual Frame] Information of frame " << id_ << "\n"
+        " - time stamp is " << time_stamp_s_ << " s\n"
+        " - q_wc is " << LogQuat(q_wc_) << ""
+        " - p_wc is " << LogVec(p_wc_) << ""
+        " - v_wc is " << LogVec(v_wc_) << "\n"
+        " - number of observed features is " << features_.size()
+    );
 }
 
 }
