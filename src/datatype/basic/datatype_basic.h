@@ -2,6 +2,7 @@
 #define _DATATYPE_BASIC_H_
 
 #include <eigen3/Eigen/Eigen>
+#include <eigen3/Eigen/Eigenvalues>
 #include <eigen3/unsupported/Eigen/Polynomials>
 
 namespace SLAM_UTILITY {
