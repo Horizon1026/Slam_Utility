@@ -4,7 +4,7 @@ Defined some basic datatype or operations for slam algorithm.
 # Components
 - [x] Datatype for matrix, image, image pyramid and so on.
 - [x] Simple log api.
-- [x] Math lib.
+- [x] Simple math lib.
 - [x] Memory manager.
 - [x] Basic operations.
 - [ ] Data struct for slam.
@@ -17,6 +17,7 @@ Defined some basic datatype or operations for slam algorithm.
 
 # Dependence
 - Eigen3 (>= 3.3.7)
+- Visualizor2D (only for test)
 
 # Tips
 - 欢迎一起交流学习，不同意商用；
