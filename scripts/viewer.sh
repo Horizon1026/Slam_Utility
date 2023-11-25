@@ -1,1 +1,0 @@
-sh run_test.sh Binary_Data_Viewer
