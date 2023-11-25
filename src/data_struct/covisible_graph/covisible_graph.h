@@ -36,7 +36,8 @@ public:
     // Add new frame and new features in it.
     bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                  const std::vector<FeatureObserveType> &features_observe,
-                                 const float time_stamp_s);
+                                 const float time_stamp_s,
+                                 int32_t new_frame_id = -1);
 
     // Add new frame and new features in it.
     bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
@@ -181,13 +182,18 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::SelfCheck() {
 template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                                                                    const std::vector<FeatureObserveType> &features_observe,
-                                                                                   const float time_stamp_s) {
+                                                                                   const float time_stamp_s,
+                                                                                   int32_t new_frame_id) {
     if (features_id.size() != features_observe.size()) {
         return false;
     }
 
+    // If new frame id is not appointed, use the next frame id.
+    if (new_frame_id < 0) {
+        new_frame_id = frames_.empty() ? 1 : frames_.back().id() + 1;
+    }
+
     // Create new frame, add it at the back of frame list.
-    const int32_t new_frame_id = frames_.empty() ? 1 : frames_.back().id() + 1;
     CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType new_frame(new_frame_id);
     frames_.emplace_back(new_frame);
     frames_.back().time_stamp_s() = time_stamp_s;
@@ -206,20 +212,21 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatur
             if (!iter.second) {
                 return false;
             }
-
             // Add the first observe.
             iter.first->second.observes().emplace_back(obv);
             iter.first->second.first_frame_id() = new_frame_id;
-
             // Get the pointer of this new feature.
             feature_ptr = &(iter.first->second);
-        } else {
+            // Add this new feature into new frame.
+            frames_.back().features().insert(std::make_pair(id, feature_ptr));
+
+        } else if (new_frame_id < 0 || static_cast<int32_t>(feature_ptr->observes().size() + feature_ptr->first_frame_id()) == new_frame_id) {
             // Add new observation for exist feature.
             feature_ptr->observes().emplace_back(obv);
-        }
+            // Add this new feature into new frame.
+            frames_.back().features().insert(std::make_pair(id, feature_ptr));
 
-        // Add this new feature into new frame.
-        frames_.back().features().insert(std::make_pair(id, feature_ptr));
+        }
     }
 
     return true;

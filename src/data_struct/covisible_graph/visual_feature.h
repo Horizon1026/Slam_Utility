@@ -63,7 +63,6 @@ private:
 template <typename ParamType, typename ObserveType>
 void VisualFeature<ParamType, ObserveType>::Information() const {
     ReportInfo("[Visual Feature] Information of feature " << id_ << "\n"
-        " - param is " << LogVec(param_) << "\n"
         " - observed in " << observes_.size() << " frames [" << first_frame_id_ << " ~ " << first_frame_id_ + observes_.size() - 1 << "]\n"
         " - solved status is " << static_cast<int32_t>(status_)
     );
