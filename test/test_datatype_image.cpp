@@ -6,6 +6,8 @@
 #include "slam_memory.h"
 #include "visualizor.h"
 
+using namespace SLAM_VISUALIZOR;
+
 std::string test_image_file_name = "../example/image.png";
 
 void TestImage() {
