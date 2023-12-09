@@ -298,6 +298,41 @@ public:
         return angle_axis.angle() * angle_axis.axis();
     }
 
+    /* Compute transform matrix. */
+    template <typename Scalar>
+    static void ComputeTransformTransform(const TVec3<Scalar> &p_ij, const TQuat<Scalar> &q_ij,
+                                          const TVec3<Scalar> &p_jk, const TQuat<Scalar> &q_jk,
+                                          TVec3<Scalar> &p_ik, TQuat<Scalar> &q_ik) {
+        // T_ik = T_ij * T_jk.
+        /* [R_ik  t_ik] = [R_ij  t_ij] * [R_jk  t_jk]
+                        = [R_ij * R_jk  R_ij * t_jk + t_ij] */
+        p_ik = q_ij * p_jk + p_ij;
+        q_ik = q_ij * q_jk;
+    }
+
+    template <typename Scalar>
+    static void ComputeTransformInverseTransform(const TVec3<Scalar> &p_ji, const TQuat<Scalar> &q_ji,
+                                                 const TVec3<Scalar> &p_jk, const TQuat<Scalar> &q_jk,
+                                                 TVec3<Scalar> &p_ik, TQuat<Scalar> &q_ik) {
+        // T_ik = T_ji.inv * T_jk.
+        /* [R_ik  t_ik] = [R_ji.inv  -R_ji.inv * t_ji] * [R_jk  t_jk]
+                        = [R_ji.inv * R_jk  R_ji.inv * t_jk - R_ji.inv * t_ji] */
+        const TQuat<Scalar> q_ij = q_ji.inverse();
+        p_ik = q_ij * p_jk - q_ij * p_ji;
+        q_ik = q_ij * q_jk;
+    }
+
+    template <typename Scalar>
+    static void ComputeTransformTransformInverse(const TVec3<Scalar> &p_ij, const TQuat<Scalar> &q_ij,
+                                                 const TVec3<Scalar> &p_kj, const TQuat<Scalar> &q_kj,
+                                                 TVec3<Scalar> &p_ik, TQuat<Scalar> &q_ik) {
+        // T_ik = T_ij * T_kj.inv.
+        /* [R_ik  t_ik] = [R_ij  t_ij] * [R_kj.inv  -R_kj.inv * t_kj]
+                        = [R_ij * R_kj.inv  -R_ij * R_kj.inv * t_kj + t_ij] */
+        p_ik = - q_ij * q_kj.inverse() * p_kj + p_ij;
+        q_ik = q_ij * q_kj.inverse();
+    }
+
 };
 
 }
