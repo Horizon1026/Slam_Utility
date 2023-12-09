@@ -18,6 +18,7 @@ public:
     int32_t rows() const { return rows_; }
     bool &memory_owner() { return memory_owner_; }
 
+    void Clear();
     void SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
 
     inline bool SetPixelValue(int32_t row, int32_t col, uint8_t value) {
@@ -101,6 +102,7 @@ public:
     int32_t rows() const { return rows_; }
     bool &memory_owner() { return memory_owner_; }
 
+    void Clear();
     void SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
 
     inline bool SetPixelValue(int32_t row, int32_t col, RgbPixel value) {
