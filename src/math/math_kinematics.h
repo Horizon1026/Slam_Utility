@@ -329,7 +329,7 @@ public:
         // T_ik = T_ij * T_kj.inv.
         /* [R_ik  t_ik] = [R_ij  t_ij] * [R_kj.inv  -R_kj.inv * t_kj]
                         = [R_ij * R_kj.inv  -R_ij * R_kj.inv * t_kj + t_ij] */
-        p_ik = - q_ij * q_kj.inverse() * p_kj + p_ij;
+        p_ik = - (q_ij * q_kj.inverse() * p_kj) + p_ij;
         q_ik = q_ij * q_kj.inverse();
     }
 
