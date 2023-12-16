@@ -54,6 +54,9 @@ template <typename T> using TMat2x6 = Eigen::Matrix<T, 2, 6>;
 template <typename T> using TMat3x2 = Eigen::Matrix<T, 3, 2>;
 template <typename T> using TMat3x6 = Eigen::Matrix<T, 3, 6>;
 template <typename T> using TMat5x9 = Eigen::Matrix<T, 5, 9>;
+template <typename T> using TMat15x3 = Eigen::Matrix<T, 15, 3>;
+template <typename T> using TMat15x12 = Eigen::Matrix<T, 15, 12>;
+template <typename T> using TMat15x18 = Eigen::Matrix<T, 15, 18>;
 
 using Quat = Eigen::Quaternion<float>;
 using Mat = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>;
@@ -87,6 +90,7 @@ using Mat2x6 = Eigen::Matrix<float, 2, 6>;
 using Mat3x2 = Eigen::Matrix<float, 3, 2>;
 using Mat3x6 = Eigen::Matrix<float, 3, 6>;
 using Mat5x9 = Eigen::Matrix<float, 5, 9>;
+using Mat15x3 = Eigen::Matrix<float, 15, 3>;
 using Mat15x12 = Eigen::Matrix<float, 15, 12>;
 using Mat15x18 = Eigen::Matrix<float, 15, 18>;
 
