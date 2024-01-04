@@ -10,6 +10,7 @@ enum FeatureSolvedStatus : uint8_t {
     kUnsolved = 0,
     kSolved = 1,
     kOutliers = 2,
+    kMarginalized = 3,
 };
 
 /* Class Visual Feature Decalaration. */
