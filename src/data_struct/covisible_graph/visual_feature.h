@@ -9,8 +9,7 @@ namespace SLAM_UTILITY {
 enum FeatureSolvedStatus : uint8_t {
     kUnsolved = 0,
     kSolved = 1,
-    kOutliers = 2,
-    kMarginalized = 3,
+    kMarginalized = 2,
 };
 
 /* Class Visual Feature Decalaration. */
