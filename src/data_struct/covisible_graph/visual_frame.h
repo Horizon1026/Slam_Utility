@@ -27,6 +27,7 @@ public:
     Vec3 &v_w() { return v_w_; }
     float &time_stamp_s() { return time_stamp_s_; }
     std::unordered_map<uint32_t, FeatureType *> &features() { return features_; }
+    std::vector<MatImg> &raw_images() { return raw_images_; }
     bool &need_remove() { return need_remove_; }
 
     // Const reference for member variables.
@@ -36,6 +37,7 @@ public:
     const Vec3 &v_w() const { return v_w_; }
     const float &time_stamp_s() const { return time_stamp_s_; }
     const std::unordered_map<uint32_t, FeatureType *> &features() const { return features_; }
+    const std::vector<MatImg> &raw_images() const { return raw_images_; }
     const bool &need_remove() const { return need_remove_; }
 
 private:
@@ -50,6 +52,9 @@ private:
 
     // Features observed by this frame.
     std::unordered_map<uint32_t, FeatureType *> features_;
+
+    // Camera images of this frame.
+    std::vector<MatImg> raw_images_;
 
     // Flag for erase in std::list.
     bool need_remove_ = false;

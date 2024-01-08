@@ -37,7 +37,8 @@ public:
     bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                  const std::vector<FeatureObserveType> &features_observe,
                                  const float time_stamp_s,
-                                 int32_t new_frame_id = -1);
+                                 const int32_t new_frame_id = -1,
+                                 const std::vector<MatImg> &raw_images = std::vector<MatImg>());
 
     // Add new frame and new features in it.
     bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
@@ -46,7 +47,8 @@ public:
                                  const float time_stamp_s,
                                  const Quat &q_wc = Quat::Identity(),
                                  const Vec3 &p_wc = Vec3::Zero(),
-                                 const Vec3 &v_w = Vec3::Zero());
+                                 const Vec3 &v_w = Vec3::Zero(),
+                                 const std::vector<MatImg> &raw_images = std::vector<MatImg>());
 
     // Remove feature by feature_id.
     bool RemoveFeature(uint32_t feature_id);
@@ -183,20 +185,25 @@ template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                                                                    const std::vector<FeatureObserveType> &features_observe,
                                                                                    const float time_stamp_s,
-                                                                                   int32_t new_frame_id) {
+                                                                                   const int32_t new_frame_id,
+                                                                                   const std::vector<MatImg> &raw_images) {
     if (features_id.size() != features_observe.size()) {
         return false;
     }
 
     // If new frame id is not appointed, use the next frame id.
-    if (new_frame_id < 0) {
-        new_frame_id = frames_.empty() ? 1 : frames_.back().id() + 1;
+    int32_t new_frame_id_ = new_frame_id;
+    if (new_frame_id_ < 0) {
+        new_frame_id_ = frames_.empty() ? 1 : frames_.back().id() + 1;
     }
 
     // Create new frame, add it at the back of frame list.
-    CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType new_frame(new_frame_id);
+    CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType new_frame(new_frame_id_);
     frames_.emplace_back(new_frame);
     frames_.back().time_stamp_s() = time_stamp_s;
+
+    // Add raw images.
+    frames_.back().raw_images() = raw_images;
 
     // Add new features or new observations for exist features.
     const int32_t max_size = features_id.size();
@@ -214,13 +221,13 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatur
             }
             // Add the first observe.
             iter.first->second.observes().emplace_back(obv);
-            iter.first->second.first_frame_id() = new_frame_id;
+            iter.first->second.first_frame_id() = new_frame_id_;
             // Get the pointer of this new feature.
             feature_ptr = &(iter.first->second);
             // Add this new feature into new frame.
             frames_.back().features().insert(std::make_pair(id, feature_ptr));
 
-        } else if (new_frame_id < 0 || static_cast<int32_t>(feature_ptr->observes().size() + feature_ptr->first_frame_id()) == new_frame_id) {
+        } else if (new_frame_id_ < 0 || static_cast<int32_t>(feature_ptr->observes().size() + feature_ptr->first_frame_id()) == new_frame_id_) {
             // Add new observation for exist feature.
             feature_ptr->observes().emplace_back(obv);
             // Add this new feature into new frame.
@@ -239,8 +246,9 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatur
                                                                                    const float time_stamp_s,
                                                                                    const Quat &q_wc,
                                                                                    const Vec3 &p_wc,
-                                                                                   const Vec3 &v_w) {
-    RETURN_FALSE_IF_FALSE(AddNewFrameWithFeatures(features_id, features_observe, time_stamp_s));
+                                                                                   const Vec3 &v_w,
+                                                                                   const std::vector<MatImg> &raw_images) {
+    RETURN_FALSE_IF_FALSE(AddNewFrameWithFeatures(features_id, features_observe, time_stamp_s, -1, raw_images));
 
     // Set new features' pose param.
     frames_.back().q_wc() = q_wc;
