@@ -101,6 +101,7 @@ using Mat15x18 = Eigen::Matrix<float, 15, 18>;
 using Pixel = Eigen::Matrix<int32_t, 2, 1>;
 using MatInt = Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic>;
 using MatImg = Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+using MatImgF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
 }
 
