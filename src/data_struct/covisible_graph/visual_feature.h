@@ -40,23 +40,17 @@ public:
     const ParamType &param() const { return param_; }
     const FeatureSolvedStatus &status() const { return status_; }
 
-
 private:
     // Visual feature id.
     const uint32_t id_ = 0;
-
     // Id of frame that firstly observe this feature.
     uint32_t first_frame_id_ = 0;
-
     // Observations in each visual frame. For example, feature point's observe in a mono rectify frame is Eigen::Vector2f.
     std::vector<ObserveType> observes_;
-
     // Feature parameter can be solved. For example, feature point's parameter type is Eigen::Vector3f.
     ParamType param_ = ParamType::Zero();
-
     // Solved type of this feature.
     FeatureSolvedStatus status_ = FeatureSolvedStatus::kUnsolved;
-
 };
 
 /* Class Visual Feature Definition. */
