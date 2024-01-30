@@ -104,9 +104,9 @@ void CovisibleGraph<FeatureParamType, FeatureObserveType>::Clear() {
 
 template <typename FeatureParamType, typename FeatureObserveType>
 void CovisibleGraph<FeatureParamType, FeatureObserveType>::Information() const {
-    for (const auto &frame : frames_) {
-        frame.Information();
-    }
+    // for (const auto &frame : frames_) {
+    //     frame.Information();
+    // }
     for (const auto &item : features_) {
         item.second.Information();
     }
@@ -226,13 +226,13 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatur
             feature_ptr = &(iter.first->second);
             // Add this new feature into new frame.
             frames_.back().features().insert(std::make_pair(id, feature_ptr));
-
-        } else if (new_frame_id_ < 0 || static_cast<int32_t>(feature_ptr->observes().size() + feature_ptr->first_frame_id()) == new_frame_id_) {
+        } else if (static_cast<int32_t>(feature_ptr->observes().size() + feature_ptr->first_frame_id()) == new_frame_id_) {
             // Add new observation for exist feature.
             feature_ptr->observes().emplace_back(obv);
             // Add this new feature into new frame.
             frames_.back().features().insert(std::make_pair(id, feature_ptr));
-
+        } else {
+            ReportWarn("[CovisibleGraph] Invalid observation is discard. Feature id [" << id << "].");
         }
     }
 
