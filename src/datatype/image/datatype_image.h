@@ -2,7 +2,10 @@
 #define _DATATYPE_IMAGE_H_
 
 #include "datatype_basic.h"
+#include "datatype_rgbcolor.h"
 #include "cmath"
+
+namespace SLAM_UTILITY {
 
 // Class GrayImage Declaration.
 class GrayImage {
@@ -82,13 +85,6 @@ private:
     bool memory_owner_ = false;
 };
 
-// Rgb image element definition.
-struct RgbPixel {
-    uint8_t r = 0;
-    uint8_t g = 0;
-    uint8_t b = 0;
-};
-
 // Class RgbImage Declaration.
 class RgbImage {
 
@@ -148,5 +144,7 @@ private:
     int32_t rows_ = 0;
     bool memory_owner_ = false;
 };
+
+}
 
 #endif // end of _DATATYPE_IMAGE_H_
