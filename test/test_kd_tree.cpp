@@ -69,7 +69,8 @@ void TestKdTree() {
 
     // Search knn.
     std::map<float, int32_t> residual_index_of_points;
-    kd_tree_ptr->SearchKnn(kd_tree_ptr, raw_points, target_point, 5, residual_index_of_points);
+    // kd_tree_ptr->SearchKnn(kd_tree_ptr, raw_points, target_point, 5, residual_index_of_points);
+    kd_tree_ptr->SearchRadius(kd_tree_ptr, raw_points, target_point, 5.0, residual_index_of_points);
 
     // Visualize result.
     Visualizor3D::Clear();

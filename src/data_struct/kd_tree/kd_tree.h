@@ -33,6 +33,11 @@ public:
                    const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
                    const uint32_t target_number,
                    std::map<float, int32_t> &residual_index_of_points);
+    void SearchRadius(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
+                      const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                      const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
+                      const Scalar max_radius,
+                      std::map<float, int32_t> &residual_index_of_points);
 
     bool IsLeafNode() const { return left_ptr_ == nullptr || right_ptr_ == nullptr; }
 
@@ -119,8 +124,8 @@ void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::unique_ptr<KdTreeNode<S
     if (node_ptr->IsLeafNode()) {
         // Add all points in this node.
         for (const auto &index : node_ptr->point_indices()) {
-            const Scalar discance = (target_point - points[index]).norm();
-            residual_index_of_points.insert(std::make_pair(discance, index));
+            const Scalar distance = (target_point - points[index]).norm();
+            residual_index_of_points.insert(std::make_pair(distance, index));
 
             // Control num of searched points.
             if (residual_index_of_points.size() > target_number) {
@@ -139,6 +144,45 @@ void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::unique_ptr<KdTreeNode<S
         SearchKnn(node_ptr->right_ptr(), points, target_point, target_number, residual_index_of_points);
         if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
             SearchKnn(node_ptr->left_ptr(), points, target_point, target_number, residual_index_of_points);
+        }
+    }
+}
+
+template <typename Scalar, int32_t Dimension>
+void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
+                                                 const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                                                 const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
+                                                 const Scalar max_radius,
+                                                 std::map<float, int32_t> &residual_index_of_points) {
+    RETURN_IF(node_ptr == nullptr || points.empty());
+
+    if (node_ptr->IsLeafNode()) {
+        // Add all points in this node.
+        for (const auto &index : node_ptr->point_indices()) {
+            const Scalar distance = (target_point - points[index]).norm();
+            residual_index_of_points.insert(std::make_pair(distance, index));
+
+            // Control num of searched points.
+            while (!residual_index_of_points.empty()) {
+                if (residual_index_of_points.rbegin()->first > max_radius) {
+                    residual_index_of_points.erase(std::prev(residual_index_of_points.end()));
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
+    // Recursion search.
+    if (target_point(node_ptr->axis()) < node_ptr->divider()) {
+        SearchRadius(node_ptr->left_ptr(), points, target_point, max_radius, residual_index_of_points);
+        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
+            SearchRadius(node_ptr->right_ptr(), points, target_point, max_radius, residual_index_of_points);
+        }
+    } else {
+        SearchRadius(node_ptr->right_ptr(), points, target_point, max_radius, residual_index_of_points);
+        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
+            SearchRadius(node_ptr->left_ptr(), points, target_point, max_radius, residual_index_of_points);
         }
     }
 }
