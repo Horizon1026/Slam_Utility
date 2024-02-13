@@ -46,17 +46,17 @@ void TestKdTree() {
 
     // Create points cloud.
     std::vector<Vec3> raw_points;
-    raw_points.reserve(1000);
-    for (int32_t i = 0; i < 10; ++i) {
-        for (int32_t j = 0; j < 10; ++j) {
-            for (int32_t k = 0; k < 10; ++k) {
+    raw_points.reserve(50);
+    for (int32_t i = 0; i < 3; ++i) {
+        for (int32_t j = 0; j < 3; ++j) {
+            for (int32_t k = 0; k < 3; ++k) {
                 raw_points.emplace_back(Vec3(i, j, k));
             }
         }
     }
 
     // Create a new point.
-    Vec3 target_point = Vec3(4.5, 5.1, 6.2);
+    Vec3 target_point = Vec3(1.5, 1.2, 1.8);
 
     // Create kd-tree to find nearest points.
     std::vector<int32_t> sorted_point_indices(raw_points.size(), 0);
@@ -65,7 +65,7 @@ void TestKdTree() {
     }
     std::unique_ptr<KdTreeNode<float, 3>> kd_tree_ptr = std::make_unique<KdTreeNode<float, 3>>();
     kd_tree_ptr->Construct(raw_points, sorted_point_indices, 0, kd_tree_ptr);
-    // kd_tree_ptr->InformationRecursion();
+    kd_tree_ptr->InformationRecursion();
 
     // Search knn.
     std::map<float, int32_t> residual_index_of_points;

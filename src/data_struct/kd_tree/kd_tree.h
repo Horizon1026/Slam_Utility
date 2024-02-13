@@ -87,6 +87,9 @@ void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<Eigen::Matrix<Sc
 
     RETURN_IF(static_cast<int32_t>(point_indices.size()) <= options_.kMaxNumberOfPointsInLeafNode);
 
+    // If this node is not leaf, clear its points.
+    node_ptr->point_indices().clear();
+
     // Sort indices.
     std::vector<int32_t> sorted_indices = point_indices;
     SlamOperation::ArgSortVector(points, specified_axis, sorted_indices);
