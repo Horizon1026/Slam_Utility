@@ -46,10 +46,10 @@ void TestKdTree() {
 
     // Create points cloud.
     std::vector<Vec3> raw_points;
-    raw_points.reserve(8);
-    for (int32_t i = 0; i < 2; ++i) {
-        for (int32_t j = 0; j < 1; ++j) {
-            for (int32_t k = 0; k < 1; ++k) {
+    raw_points.reserve(1000);
+    for (int32_t i = 0; i < 10; ++i) {
+        for (int32_t j = 0; j < 10; ++j) {
+            for (int32_t k = 0; k < 10; ++k) {
                 raw_points.emplace_back(Vec3(i, j, k));
             }
         }
@@ -65,7 +65,11 @@ void TestKdTree() {
     }
     std::unique_ptr<KdTreeNode<float, 3>> kd_tree_ptr = std::make_unique<KdTreeNode<float, 3>>();
     kd_tree_ptr->Construct(raw_points, sorted_point_indices, 0, kd_tree_ptr);
-    kd_tree_ptr->InformationRecursion();
+    // kd_tree_ptr->InformationRecursion();
+
+    // Search knn.
+    std::map<float, int32_t> residual_index_of_points;
+    kd_tree_ptr->SearchKnn(kd_tree_ptr, raw_points, target_point, 5, residual_index_of_points);
 
     // Visualize result.
     Visualizor3D::Clear();
@@ -79,8 +83,17 @@ void TestKdTree() {
     Visualizor3D::points().emplace_back(PointType{
         .p_w = target_point,
         .color = RgbColor::kHotPink,
-        .radius = 3,
+        .radius = 4,
     });
+    for (const auto &pair : residual_index_of_points) {
+        Visualizor3D::points().emplace_back(PointType{
+            .p_w = raw_points[pair.second],
+            .color = RgbColor::kGreen,
+            .radius = 4,
+        });
+
+        Visualizor3D::strings().emplace_back(std::to_string(pair.first));
+    }
 
     while (!Visualizor3D::ShouldQuit()) {
         Visualizor3D::Refresh("Visualizor 3D", 30);

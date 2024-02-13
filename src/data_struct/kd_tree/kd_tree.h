@@ -4,7 +4,10 @@
 #include "datatype_basic.h"
 #include "log_report.h"
 #include "slam_operations.h"
+
 #include "memory"
+#include "vector"
+#include "map"
 
 namespace SLAM_UTILITY {
 
@@ -21,11 +24,17 @@ public:
     KdTreeNode() = default;
     virtual ~KdTreeNode() = default;
 
-    void Construct(
-        const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-        const std::vector<int32_t> &point_indices,
-        const int32_t specified_axis,
-        std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr);
+    void Construct(const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                   const std::vector<int32_t> &point_indices,
+                   const int32_t specified_axis,
+                   std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr);
+    void SearchKnn(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
+                   const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                   const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
+                   const uint32_t target_number,
+                   std::map<float, int32_t> &residual_index_of_points);
+
+    bool IsLeafNode() const { return left_ptr_ == nullptr || right_ptr_ == nullptr; }
 
     void Information();
     void InformationRecursion();
@@ -56,12 +65,10 @@ private:
 
 /* Class KD-Tree Definition. */
 template <typename Scalar, int32_t Dimension>
-void KdTreeNode<Scalar, Dimension>::Construct(
-    const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-    const std::vector<int32_t> &point_indices,
-    const int32_t specified_axis,
-    std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr) {
-
+void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                                              const std::vector<int32_t> &point_indices,
+                                              const int32_t specified_axis,
+                                              std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr) {
     RETURN_IF(points.empty() || point_indices.empty());
 
     if (node_ptr == nullptr) {
@@ -99,6 +106,41 @@ void KdTreeNode<Scalar, Dimension>::Construct(
     const int32_t next_axis = (specified_axis + 1) % Dimension;
     Construct(points, left_indices, next_axis, node_ptr->left_ptr());
     Construct(points, right_indices, next_axis, node_ptr->right_ptr());
+}
+
+template <typename Scalar, int32_t Dimension>
+void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
+                                              const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                                              const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
+                                              const uint32_t target_number,
+                                              std::map<float, int32_t> &residual_index_of_points) {
+    RETURN_IF(node_ptr == nullptr || points.empty());
+
+    if (node_ptr->IsLeafNode()) {
+        // Add all points in this node.
+        for (const auto &index : node_ptr->point_indices()) {
+            const Scalar discance = (target_point - points[index]).norm();
+            residual_index_of_points.insert(std::make_pair(discance, index));
+
+            // Control num of searched points.
+            if (residual_index_of_points.size() > target_number) {
+                residual_index_of_points.erase(std::prev(residual_index_of_points.end()));
+            }
+        }
+    }
+
+    // Recursion search.
+    if (target_point(node_ptr->axis()) < node_ptr->divider()) {
+        SearchKnn(node_ptr->left_ptr(), points, target_point, target_number, residual_index_of_points);
+        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
+            SearchKnn(node_ptr->right_ptr(), points, target_point, target_number, residual_index_of_points);
+        }
+    } else {
+        SearchKnn(node_ptr->right_ptr(), points, target_point, target_number, residual_index_of_points);
+        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
+            SearchKnn(node_ptr->left_ptr(), points, target_point, target_number, residual_index_of_points);
+        }
+    }
 }
 
 template <typename Scalar, int32_t Dimension>
