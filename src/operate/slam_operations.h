@@ -63,6 +63,22 @@ public:
 
     static bool GetFilesNameInDirectory(const std::string &dir, std::vector<std::string> &filenames);
 
+    template <typename T>
+    static void ArgSort(const std::vector<T> &array, std::vector<int32_t> &indices) {
+        RETURN_IF(array.empty());
+
+        if (array.size() != indices.size()) {
+            indices.resize(array.size());
+        }
+        for (uint32_t i = 0; i < array.size(); ++i) {
+            indices[i] = i;
+        }
+
+        std::sort(indices.begin(), indices.end(), [&array](int32_t idx_1, int32_t idx_2) {
+            return array[idx_1] < array[idx_2];
+        });
+    }
+
 };
 
 }

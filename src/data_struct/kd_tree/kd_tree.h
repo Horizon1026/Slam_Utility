@@ -6,12 +6,14 @@
 
 namespace SLAM_UTILITY {
 
+/* Options of KD-Tree. */
+struct OptionsOfKdTree {
+    int32_t kNumOfPointsInLeaf = 1;
+};
+
 /* Class KD-Tree Declaration. */
 template <typename Scalar, int32_t Dimension>
 class KdTreeNode {
-
-public:
-    using ValueType = Eigen::Matrix<Scalar, Dimension, 1>;
 
 public:
     KdTreeNode() = default;
@@ -19,30 +21,31 @@ public:
 
     bool IsLeaf() const { return axis_ < 0; }
 
+    std::unique_ptr<KdTreeNode<Scalar, Dimension>> Construct(KdTreeNode<Scalar, Dimension> *root_ptr,
+        const std::vector<Scalar> &points,
+        const std::vector<int32_t> &sorted_point_indices,
+        const int32_t axis);
+
     // Reference for member variables.
     int32_t &axis() { return axis_; }
-    ValueType &value() { return value_; }
+    Scalar &value() { return value_; }
     KdTreeNode<Scalar, Dimension> &left_ptr() { return left_ptr_.get(); }
     KdTreeNode<Scalar, Dimension> &right_ptr() { return right_ptr_.get(); }
-    std::vector<int32_t> &points_index() { return points_index_; }
+    std::vector<int32_t> &point_indices() { return point_indices_; }
 
     // Const reference for member variables.
     const int32_t &axis() const { return axis_; }
-    const ValueType &value() const { return value_; }
-    const std::vector<int32_t> &points_index() const { return points_index_; }
+    const Scalar &value() const { return value_; }
+    const std::vector<int32_t> &point_indices() const { return point_indices_; }
 
 private:
+    OptionsOfKdTree options_;
+
     int32_t axis_ = 0;
-    ValueType value_ = ValueType::Zero();
+    Scalar value_ = static_cast<Scalar>(0);
     std::unique_ptr<KdTreeNode<Scalar, Dimension>> left_ptr_ = nullptr;
     std::unique_ptr<KdTreeNode<Scalar, Dimension>> right_ptr_ = nullptr;
-    std::vector<int32_t> points_index_;
-};
-
-/* Class KD-Tree Declaration. */
-template <typename T>
-class KdTree {
-
+    std::vector<int32_t> point_indices_;
 };
 
 /* Class KD-Tree Definition. */
