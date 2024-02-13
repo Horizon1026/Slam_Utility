@@ -31,6 +31,9 @@ endif()
 if ( NOT TARGET lib_circular_buffer )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_struct/circular_buffer ${PROJECT_SOURCE_DIR}/build/lib_circular_buffer )
 endif()
+if ( NOT TARGET lib_kd_tree )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_struct/kd_tree ${PROJECT_SOURCE_DIR}/build/lib_kd_tree )
+endif()
 
 # Add all 3rd libraries.
 if ( NOT TARGET lib_stack_backward )
@@ -50,6 +53,7 @@ target_link_libraries( lib_slam_utility
     lib_covisible_graph
     lib_object_pool
     lib_circular_buffer
+    lib_kd_tree
 
     lib_stack_backward
 )

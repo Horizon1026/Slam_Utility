@@ -13,9 +13,13 @@ if ( NOT TARGET lib_slam_utility )
 endif()
 
 # Add visualizor.
-set( VISUALIZOR_PATH ${PROJECT_SOURCE_DIR}/../Visualizor2D )
+set( VISUALIZOR_2D_PATH ${PROJECT_SOURCE_DIR}/../Visualizor2D )
 if ( NOT TARGET lib_image_visualizor )
-    add_subdirectory( ${VISUALIZOR_PATH}/src ${PROJECT_SOURCE_DIR}/build/lib_image_visualizor )
+    add_subdirectory( ${VISUALIZOR_2D_PATH}/src ${PROJECT_SOURCE_DIR}/build/lib_image_visualizor )
+endif()
+set( VISUALIZOR_3D_PATH ${PROJECT_SOURCE_DIR}/../Visualizor3D )
+if ( NOT TARGET lib_3d_visualizor )
+    add_subdirectory( ${VISUALIZOR_3D_PATH}/src ${PROJECT_SOURCE_DIR}/build/lib_3d_visualizor )
 endif()
 
 # Create executable target to test datatype image and pyramid.
@@ -65,4 +69,13 @@ add_executable( test_math_kinematics
 )
 target_link_libraries( test_math_kinematics
     lib_slam_utility
+)
+
+# Create executable target to test math kinematics.
+add_executable( test_kd_tree
+    test/test_kd_tree.cpp
+)
+target_link_libraries( test_kd_tree
+    lib_slam_utility
+    lib_3d_visualizor
 )

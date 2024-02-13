@@ -5,4 +5,5 @@ cd ./build
 ./test_circular_buffer
 ./test_backward
 ./test_math_kinematics
+./test_kd_tree
 cd ..
