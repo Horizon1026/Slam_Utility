@@ -9,6 +9,8 @@
 using namespace SLAM_UTILITY;
 using namespace SLAM_VISUALIZOR;
 
+constexpr int32_t kNumOfPointsInOneDimension = 4;
+
 void TestArgSort() {
     ReportInfo(YELLOW ">> Test arg sort." RESET_COLOR);
 
@@ -46,10 +48,10 @@ void TestKdTree() {
 
     // Create points cloud.
     std::vector<Vec3> raw_points;
-    raw_points.reserve(50);
-    for (int32_t i = 0; i < 3; ++i) {
-        for (int32_t j = 0; j < 3; ++j) {
-            for (int32_t k = 0; k < 3; ++k) {
+    raw_points.reserve(kNumOfPointsInOneDimension * kNumOfPointsInOneDimension * kNumOfPointsInOneDimension);
+    for (int32_t i = 0; i < kNumOfPointsInOneDimension; ++i) {
+        for (int32_t j = 0; j < kNumOfPointsInOneDimension; ++j) {
+            for (int32_t k = 0; k < kNumOfPointsInOneDimension; ++k) {
                 raw_points.emplace_back(Vec3(i, j, k));
             }
         }
@@ -64,23 +66,63 @@ void TestKdTree() {
         sorted_point_indices[i] = i;
     }
     std::unique_ptr<KdTreeNode<float, 3>> kd_tree_ptr = std::make_unique<KdTreeNode<float, 3>>();
-    kd_tree_ptr->Construct(raw_points, sorted_point_indices, 0, kd_tree_ptr);
-    kd_tree_ptr->InformationRecursion();
+    kd_tree_ptr->Construct(raw_points, sorted_point_indices, kd_tree_ptr->GetAxisWithMaxRange(
+            sorted_point_indices, raw_points
+        ), kd_tree_ptr);
+    // kd_tree_ptr->InformationRecursion();
 
     // Search knn.
     std::map<float, int32_t> residual_index_of_points;
     // kd_tree_ptr->SearchKnn(kd_tree_ptr, raw_points, target_point, 5, residual_index_of_points);
-    kd_tree_ptr->SearchRadius(kd_tree_ptr, raw_points, target_point, 5.0, residual_index_of_points);
+    kd_tree_ptr->SearchRadius(kd_tree_ptr, raw_points, target_point, 3.0, residual_index_of_points);
+
+    // Extract all points in kd-tree.
+    std::vector<int32_t> index_of_points;
+    kd_tree_ptr->ExtractAllPoints(kd_tree_ptr, raw_points, index_of_points);
 
     // Visualize result.
     Visualizor3D::Clear();
-    for (const auto &point : raw_points) {
+    for (const auto &index : index_of_points) {
         Visualizor3D::points().emplace_back(PointType{
-            .p_w = point,
+            .p_w = raw_points[index],
             .color = RgbColor::kCyan,
-            .radius = 2,
+            .radius = 3,
         });
     }
+
+    // Extract half points in kd-tree.
+    index_of_points.clear();
+    kd_tree_ptr->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr(), raw_points, index_of_points);
+    for (const auto &index : index_of_points) {
+        Visualizor3D::points().emplace_back(PointType{
+            .p_w = raw_points[index],
+            .color = RgbColor::kRed,
+            .radius = 3,
+        });
+    }
+
+    // Extract half-half points in kd-tree.
+    index_of_points.clear();
+    kd_tree_ptr->left_ptr()->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr()->left_ptr(), raw_points, index_of_points);
+    for (const auto &index : index_of_points) {
+        Visualizor3D::points().emplace_back(PointType{
+            .p_w = raw_points[index],
+            .color = RgbColor::kYellow,
+            .radius = 3,
+        });
+    }
+
+    // Extract half-half-half points in kd-tree.
+    index_of_points.clear();
+    kd_tree_ptr->left_ptr()->left_ptr()->left_ptr()->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr()->left_ptr()->left_ptr()->left_ptr(), raw_points, index_of_points);
+    for (const auto &index : index_of_points) {
+        Visualizor3D::points().emplace_back(PointType{
+            .p_w = raw_points[index],
+            .color = RgbColor::kBlue,
+            .radius = 3,
+        });
+    }
+
     Visualizor3D::points().emplace_back(PointType{
         .p_w = target_point,
         .color = RgbColor::kHotPink,
@@ -90,7 +132,7 @@ void TestKdTree() {
         Visualizor3D::points().emplace_back(PointType{
             .p_w = raw_points[pair.second],
             .color = RgbColor::kGreen,
-            .radius = 4,
+            .radius = 2,
         });
 
         Visualizor3D::strings().emplace_back(std::to_string(pair.first));
