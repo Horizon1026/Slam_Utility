@@ -155,9 +155,10 @@ void TestKdTreeSearch() {
 
     // Create target and do search.
     const Vec3 target_point = Vec3(2.2, 3.4, 5.8);
-    std::multimap<float, int32_t> residual_index_of_points;
-    // kd_tree_ptr->SearchKnn(kd_tree_ptr, raw_points, target_point, 7, residual_index_of_points);
-    kd_tree_ptr->SearchRadius(kd_tree_ptr, raw_points, target_point, 2.0f, residual_index_of_points);
+    std::multimap<float, int32_t> result_of_radius;
+    kd_tree_ptr->SearchRadius(kd_tree_ptr, raw_points, target_point, 3.0f, result_of_radius);
+    std::multimap<float, int32_t> result_of_knn;
+    kd_tree_ptr->SearchKnn(kd_tree_ptr, raw_points, target_point, 4, result_of_knn);
 
     // Visualize target and result.
     Visualizor3D::points().emplace_back(PointType{
@@ -165,10 +166,17 @@ void TestKdTreeSearch() {
         .color = RgbColor::kGold,
         .radius = 5,
     });
-    for (const auto &pair : residual_index_of_points) {
+    for (const auto &pair : result_of_radius) {
         Visualizor3D::points().emplace_back(PointType{
             .p_w = raw_points[pair.second],
             .color = RgbColor::kRed,
+            .radius = 3,
+        });
+    }
+    for (const auto &pair : result_of_knn) {
+        Visualizor3D::points().emplace_back(PointType{
+            .p_w = raw_points[pair.second],
+            .color = RgbColor::kRoyalBlue,
             .radius = 3,
         });
     }
