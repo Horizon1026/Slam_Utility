@@ -26,7 +26,6 @@ public:
 
     void Construct(const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
                    const std::vector<int32_t> &point_indices,
-                   const int32_t specified_axis,
                    std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr);
     void ExtractAllPoints(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
                           const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
@@ -35,12 +34,12 @@ public:
                    const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
                    const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
                    const uint32_t target_number,
-                   std::map<float, int32_t> &residual_index_of_points);
+                   std::multimap<float, int32_t> &residual_index_of_points);
     void SearchRadius(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
                       const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
                       const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
                       const Scalar max_radius,
-                      std::map<float, int32_t> &residual_index_of_points);
+                      std::multimap<float, int32_t> &residual_index_of_points);
 
     int32_t GetAxisWithMaxRange(const std::vector<int32_t> &point_indices,
                                 const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points);
@@ -78,19 +77,21 @@ private:
 template <typename Scalar, int32_t Dimension>
 void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
                                               const std::vector<int32_t> &point_indices,
-                                              const int32_t specified_axis,
                                               std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr) {
     RETURN_IF(points.empty() || point_indices.empty());
 
+    // Decide selected_axis.
+    const int32_t axis = GetAxisWithMaxRange(point_indices, points);
+
+    // Initialize a new node.
     if (node_ptr == nullptr) {
         node_ptr = std::make_unique<KdTreeNode<Scalar, Dimension>>();
-        node_ptr->axis() = specified_axis;
-        node_ptr->divider() = points[point_indices.front()][specified_axis];
+        node_ptr->axis() = axis;
+        node_ptr->divider() = points[point_indices.front()][axis];
         node_ptr->left_ptr() = nullptr;
         node_ptr->right_ptr() = nullptr;
         node_ptr->point_indices() = point_indices;
     }
-
     RETURN_IF(static_cast<int32_t>(point_indices.size()) <= options_.kMaxNumberOfPointsInLeafNode);
 
     // If this node is not leaf, clear its points.
@@ -98,15 +99,14 @@ void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<Eigen::Matrix<Sc
 
     // Sort indices.
     std::vector<int32_t> sorted_indices = point_indices;
-    SlamOperation::ArgSortVector(points, specified_axis, sorted_indices);
+    SlamOperation::ArgSortVector(points, axis, sorted_indices);
 
     // Compute divider value in current node.
     const uint32_t left_index = (sorted_indices.size() / 2) - 1;
     const uint32_t right_index = left_index + 1;
-    const Scalar left_value = points[sorted_indices[left_index]][specified_axis];
-    const Scalar right_value = points[sorted_indices[right_index]][specified_axis];
+    const Scalar left_value = points[sorted_indices[left_index]][axis];
+    const Scalar right_value = points[sorted_indices[right_index]][axis];
     node_ptr->divider() = static_cast<Scalar>(0.5) * (left_value + right_value);
-
 
     // Divide point indices. Move them to left and right child node.
     std::vector<int32_t> left_indices;
@@ -118,11 +118,8 @@ void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<Eigen::Matrix<Sc
         right_indices.emplace_back(sorted_indices[i]);
     }
 
-    // Decide next dimension.
-    const int32_t next_axis = GetAxisWithMaxRange(sorted_indices, points);
-
-    Construct(points, left_indices, next_axis, node_ptr->left_ptr());
-    Construct(points, right_indices, next_axis, node_ptr->right_ptr());
+    Construct(points, left_indices, node_ptr->left_ptr());
+    Construct(points, right_indices, node_ptr->right_ptr());
 }
 
 template <typename Scalar, int32_t Dimension>
@@ -147,7 +144,7 @@ void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::unique_ptr<KdTreeNode<S
                                               const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
                                               const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
                                               const uint32_t target_number,
-                                              std::map<float, int32_t> &residual_index_of_points) {
+                                              std::multimap<float, int32_t> &residual_index_of_points) {
     RETURN_IF(node_ptr == nullptr || points.empty() || target_number == 0);
 
     if (node_ptr->IsLeafNode()) {
@@ -155,26 +152,29 @@ void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::unique_ptr<KdTreeNode<S
         for (const auto &index : node_ptr->point_indices()) {
             const Scalar distance = (target_point - points[index]).norm();
             residual_index_of_points.insert(std::make_pair(distance, index));
-
-            // Control num of searched points.
-            while (residual_index_of_points.size() > target_number) {
-                residual_index_of_points.erase(std::prev(residual_index_of_points.end()));
-            }
         }
+        RETURN_IF(residual_index_of_points.empty());
+
+        // Control num of searched points.
+        while (residual_index_of_points.size() > target_number) {
+            residual_index_of_points.erase(std::prev(residual_index_of_points.end()));
+        }
+
+        return;
     }
 
     // Recursion search.
-    // if (target_point(node_ptr->axis()) < node_ptr->divider()) {
+    if (target_point(node_ptr->axis()) < node_ptr->divider()) {
         SearchKnn(node_ptr->left_ptr(), points, target_point, target_number, residual_index_of_points);
-        // if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
+        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
             SearchKnn(node_ptr->right_ptr(), points, target_point, target_number, residual_index_of_points);
-        // }
-    // } else {
-    //     SearchKnn(node_ptr->right_ptr(), points, target_point, target_number, residual_index_of_points);
-    //     if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
-    //         SearchKnn(node_ptr->left_ptr(), points, target_point, target_number, residual_index_of_points);
-    //     }
-    // }
+        }
+    } else {
+        SearchKnn(node_ptr->right_ptr(), points, target_point, target_number, residual_index_of_points);
+        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
+            SearchKnn(node_ptr->left_ptr(), points, target_point, target_number, residual_index_of_points);
+        }
+    }
 }
 
 template <typename Scalar, int32_t Dimension>
@@ -182,38 +182,32 @@ void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::unique_ptr<KdTreeNod
                                                  const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
                                                  const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
                                                  const Scalar max_radius,
-                                                 std::map<float, int32_t> &residual_index_of_points) {
+                                                 std::multimap<float, int32_t> &residual_index_of_points) {
     RETURN_IF(node_ptr == nullptr || points.empty());
 
+    // Add all points in this node.
     if (node_ptr->IsLeafNode()) {
-        // Add all points in this node.
         for (const auto &index : node_ptr->point_indices()) {
             const Scalar distance = (target_point - points[index]).norm();
+            CONTINUE_IF(distance > max_radius);
             residual_index_of_points.insert(std::make_pair(distance, index));
-
-            // Control num of searched points.
-            while (!residual_index_of_points.empty()) {
-                if (residual_index_of_points.rbegin()->first > max_radius) {
-                    residual_index_of_points.erase(std::prev(residual_index_of_points.end()));
-                } else {
-                    break;
-                }
-            }
         }
+
+        return;
     }
 
     // Recursion search.
-    // if (target_point(node_ptr->axis()) < node_ptr->divider()) {
+    if (target_point(node_ptr->axis()) < node_ptr->divider()) {
         SearchRadius(node_ptr->left_ptr(), points, target_point, max_radius, residual_index_of_points);
-        // if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
+        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < max_radius) {
             SearchRadius(node_ptr->right_ptr(), points, target_point, max_radius, residual_index_of_points);
-        // }
-    // } else {
-    //     SearchRadius(node_ptr->right_ptr(), points, target_point, max_radius, residual_index_of_points);
-    //     if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
-    //         SearchRadius(node_ptr->left_ptr(), points, target_point, max_radius, residual_index_of_points);
-    //     }
-    // }
+        }
+    } else {
+        SearchRadius(node_ptr->right_ptr(), points, target_point, max_radius, residual_index_of_points);
+        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < max_radius) {
+            SearchRadius(node_ptr->left_ptr(), points, target_point, max_radius, residual_index_of_points);
+        }
+    }
 }
 
 template <typename Scalar, int32_t Dimension>

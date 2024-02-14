@@ -9,7 +9,7 @@
 using namespace SLAM_UTILITY;
 using namespace SLAM_VISUALIZOR;
 
-constexpr int32_t kNumOfPointsInOneDimension = 4;
+constexpr int32_t kNumOfPointsInOneDimension = 10;
 
 void TestArgSort() {
     ReportInfo(YELLOW ">> Test arg sort." RESET_COLOR);
@@ -43,8 +43,8 @@ void TestArgSortVector() {
     }
 }
 
-void TestKdTree() {
-    ReportInfo(YELLOW ">> Test kd tree." RESET_COLOR);
+void TestKdTreeConstruction() {
+    ReportInfo(YELLOW ">> Test kd tree construction." RESET_COLOR);
 
     // Create points cloud.
     std::vector<Vec3> raw_points;
@@ -57,24 +57,13 @@ void TestKdTree() {
         }
     }
 
-    // Create a new point.
-    Vec3 target_point = Vec3(1.5, 1.2, 1.8);
-
     // Create kd-tree to find nearest points.
     std::vector<int32_t> sorted_point_indices(raw_points.size(), 0);
     for (uint32_t i = 0; i < sorted_point_indices.size(); ++i) {
         sorted_point_indices[i] = i;
     }
     std::unique_ptr<KdTreeNode<float, 3>> kd_tree_ptr = std::make_unique<KdTreeNode<float, 3>>();
-    kd_tree_ptr->Construct(raw_points, sorted_point_indices, kd_tree_ptr->GetAxisWithMaxRange(
-            sorted_point_indices, raw_points
-        ), kd_tree_ptr);
-    // kd_tree_ptr->InformationRecursion();
-
-    // Search knn.
-    std::map<float, int32_t> residual_index_of_points;
-    // kd_tree_ptr->SearchKnn(kd_tree_ptr, raw_points, target_point, 5, residual_index_of_points);
-    kd_tree_ptr->SearchRadius(kd_tree_ptr, raw_points, target_point, 3.0, residual_index_of_points);
+    kd_tree_ptr->Construct(raw_points, sorted_point_indices, kd_tree_ptr);
 
     // Extract all points in kd-tree.
     std::vector<int32_t> index_of_points;
@@ -112,34 +101,80 @@ void TestKdTree() {
         });
     }
 
-    // Extract half-half-half points in kd-tree.
+    // Extract half-half points in kd-tree.
     index_of_points.clear();
-    kd_tree_ptr->left_ptr()->left_ptr()->left_ptr()->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr()->left_ptr()->left_ptr()->left_ptr(), raw_points, index_of_points);
+    kd_tree_ptr->left_ptr()->left_ptr()->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr()->left_ptr()->left_ptr(), raw_points, index_of_points);
     for (const auto &index : index_of_points) {
         Visualizor3D::points().emplace_back(PointType{
             .p_w = raw_points[index],
-            .color = RgbColor::kBlue,
+            .color = RgbColor::kWhite,
             .radius = 3,
         });
     }
 
+    while (!Visualizor3D::ShouldQuit()) {
+        Visualizor3D::Refresh("Constructed kd-tree", 30);
+    }
+}
+
+void TestKdTreeSearch() {
+    ReportInfo(YELLOW ">> Test kd tree search knn and radius." RESET_COLOR);
+
+    // Create points cloud.
+    std::vector<Vec3> raw_points;
+    raw_points.reserve(kNumOfPointsInOneDimension * kNumOfPointsInOneDimension * kNumOfPointsInOneDimension);
+    for (int32_t i = 0; i < kNumOfPointsInOneDimension; ++i) {
+        for (int32_t j = 0; j < kNumOfPointsInOneDimension; ++j) {
+            for (int32_t k = 0; k < kNumOfPointsInOneDimension; ++k) {
+                raw_points.emplace_back(Vec3(i, j, k));
+            }
+        }
+    }
+
+    // Create kd-tree to find nearest points.
+    std::vector<int32_t> sorted_point_indices(raw_points.size(), 0);
+    for (uint32_t i = 0; i < sorted_point_indices.size(); ++i) {
+        sorted_point_indices[i] = i;
+    }
+    std::unique_ptr<KdTreeNode<float, 3>> kd_tree_ptr = std::make_unique<KdTreeNode<float, 3>>();
+    kd_tree_ptr->Construct(raw_points, sorted_point_indices, kd_tree_ptr);
+
+    // Extract all points in kd-tree.
+    std::vector<int32_t> index_of_points;
+    kd_tree_ptr->ExtractAllPoints(kd_tree_ptr, raw_points, index_of_points);
+
+    // Visualize result full kd-tree.
+    Visualizor3D::Clear();
+    for (const auto &index : index_of_points) {
+        Visualizor3D::points().emplace_back(PointType{
+            .p_w = raw_points[index],
+            .color = RgbColor::kCyan,
+            .radius = 2,
+        });
+    }
+
+    // Create target and do search.
+    const Vec3 target_point = Vec3(2.2, 3.4, 5.8);
+    std::multimap<float, int32_t> residual_index_of_points;
+    // kd_tree_ptr->SearchKnn(kd_tree_ptr, raw_points, target_point, 7, residual_index_of_points);
+    kd_tree_ptr->SearchRadius(kd_tree_ptr, raw_points, target_point, 2.0f, residual_index_of_points);
+
+    // Visualize target and result.
     Visualizor3D::points().emplace_back(PointType{
         .p_w = target_point,
-        .color = RgbColor::kHotPink,
-        .radius = 4,
+        .color = RgbColor::kGold,
+        .radius = 5,
     });
     for (const auto &pair : residual_index_of_points) {
         Visualizor3D::points().emplace_back(PointType{
             .p_w = raw_points[pair.second],
-            .color = RgbColor::kGreen,
-            .radius = 2,
+            .color = RgbColor::kRed,
+            .radius = 3,
         });
-
-        Visualizor3D::strings().emplace_back(std::to_string(pair.first));
     }
 
     while (!Visualizor3D::ShouldQuit()) {
-        Visualizor3D::Refresh("Visualizor 3D", 30);
+        Visualizor3D::Refresh("Searched result in kd-tree", 30);
     }
 }
 
@@ -147,7 +182,9 @@ int main(int argc, char **argv) {
 
     TestArgSort();
     TestArgSortVector();
-    TestKdTree();
+
+    // TestKdTreeConstruction();
+    TestKdTreeSearch();
 
     return 0;
 }
