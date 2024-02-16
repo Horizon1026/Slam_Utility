@@ -43,7 +43,11 @@ public:
                       const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
                       const Scalar max_radius,
                       std::multimap<float, int32_t> &residual_index_of_points);
-
+    void SearchCube(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
+                    const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                    const Eigen::Matrix<Scalar, Dimension, 1> &min_value,
+                    const Eigen::Matrix<Scalar, Dimension, 1> &max_value,
+                    std::multimap<float, int32_t> &residual_index_of_points);
 
     int32_t GetAxisWithMaxRange(const std::vector<int32_t> &point_indices,
                                 const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points);
@@ -211,6 +215,43 @@ void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::unique_ptr<KdTreeNod
         if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < max_radius) {
             SearchRadius(node_ptr->left_ptr(), points, target_point, max_radius, residual_index_of_points);
         }
+    }
+}
+
+template <typename Scalar, int32_t Dimension>
+void KdTreeNode<Scalar, Dimension>::SearchCube(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
+                                               const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                                               const Eigen::Matrix<Scalar, Dimension, 1> &min_value,
+                                               const Eigen::Matrix<Scalar, Dimension, 1> &max_value,
+                                               std::multimap<float, int32_t> &residual_index_of_points) {
+    RETURN_IF(node_ptr == nullptr || points.empty());
+
+    // Add all points in this node.
+    if (node_ptr->IsLeafNode()) {
+        for (const auto &index : node_ptr->point_indices()) {
+            // Check if this point is inside cube.
+            bool is_inside = true;
+            for (uint32_t dim = 0; dim < Dimension; ++dim) {
+                if (min_value(dim) > points[index](dim) || max_value(dim) < points[index](dim)) {
+                    is_inside = false;
+                    break;
+                }
+            }
+            CONTINUE_IF(!is_inside);
+
+            const Scalar distance = (max_value - min_value - points[index]).norm();
+            residual_index_of_points.insert(std::make_pair(distance, index));
+        }
+
+        return;
+    }
+
+    // Recursion search.
+    if (min_value(node_ptr->axis()) < node_ptr->divider()) {
+        SearchCube(node_ptr->left_ptr(), points, min_value, max_value, residual_index_of_points);
+    }
+    if (max_value(node_ptr->axis()) > node_ptr->divider()) {
+        SearchCube(node_ptr->right_ptr(), points, min_value, max_value, residual_index_of_points);
     }
 }
 
