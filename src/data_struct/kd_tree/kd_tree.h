@@ -51,6 +51,7 @@ public:
 
     int32_t GetAxisWithMaxRange(const std::vector<int32_t> &point_indices,
                                 const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points);
+    int32_t GetDepth(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr);
 
     bool IsLeafNode() const { return !point_indices_.empty(); }
 
@@ -283,6 +284,25 @@ int32_t KdTreeNode<Scalar, Dimension>::GetAxisWithMaxRange(const std::vector<int
     }
 
     return axis;
+}
+
+template <typename Scalar, int32_t Dimension>
+int32_t KdTreeNode<Scalar, Dimension>::GetDepth(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr) {
+    if (node_ptr == nullptr) {
+        return 0;
+    }
+
+    if (node_ptr->IsLeafNode()) {
+        return 1;
+    }
+
+    if (node_ptr->left_ptr() != nullptr) {
+        return GetDepth(node_ptr->left_ptr()) + 1;
+    } else if (node_ptr->right_ptr() != nullptr) {
+        return GetDepth(node_ptr->right_ptr()) + 1;
+    } else {
+        return 1;
+    }
 }
 
 template <typename Scalar, int32_t Dimension>

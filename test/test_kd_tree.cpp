@@ -64,6 +64,7 @@ void TestKdTreeConstruction() {
     }
     std::unique_ptr<KdTreeNode<float, 3>> kd_tree_ptr = std::make_unique<KdTreeNode<float, 3>>();
     kd_tree_ptr->Construct(raw_points, sorted_point_indices, kd_tree_ptr);
+    ReportInfo("Construct a kd-tree with depth " << kd_tree_ptr->GetDepth(kd_tree_ptr));
 
     // Extract all points in kd-tree.
     std::vector<int32_t> index_of_points;
@@ -138,6 +139,7 @@ void TestKdTreeSearch() {
     }
     std::unique_ptr<KdTreeNode<float, 3>> kd_tree_ptr = std::make_unique<KdTreeNode<float, 3>>();
     kd_tree_ptr->Construct(raw_points, sorted_point_indices, kd_tree_ptr);
+    ReportInfo("Construct a kd-tree with depth " << kd_tree_ptr->GetDepth(kd_tree_ptr));
 
     // Extract all points in kd-tree.
     std::vector<int32_t> index_of_points;
