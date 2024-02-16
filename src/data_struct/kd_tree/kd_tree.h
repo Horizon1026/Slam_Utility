@@ -24,9 +24,12 @@ public:
     KdTreeNode() = default;
     virtual ~KdTreeNode() = default;
 
+    // Construct a new kd-tree.
     void Construct(const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
                    const std::vector<int32_t> &point_indices,
                    std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr);
+
+    // Extract specified points in kd-tree.
     void ExtractAllPoints(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
                           const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
                           std::vector<int32_t> &point_indices);
@@ -40,6 +43,7 @@ public:
                       const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
                       const Scalar max_radius,
                       std::multimap<float, int32_t> &residual_index_of_points);
+
 
     int32_t GetAxisWithMaxRange(const std::vector<int32_t> &point_indices,
                                 const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points);
