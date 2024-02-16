@@ -58,14 +58,14 @@ public:
     void InformationRecursion();
 
     // Reference for member variables.
-    int32_t &axis() { return axis_; }
+    int32_t &dimension() { return dimension_; }
     Scalar &divider() { return divider_; }
     std::unique_ptr<KdTreeNode<Scalar, Dimension>> &left_ptr() { return left_ptr_; }
     std::unique_ptr<KdTreeNode<Scalar, Dimension>> &right_ptr() { return right_ptr_; }
     std::vector<int32_t> &point_indices() { return point_indices_; }
 
     // Const reference for member variables.
-    const int32_t &axis() const { return axis_; }
+    const int32_t &dimension() const { return dimension_; }
     const Scalar &divider() const { return divider_; }
     const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &left_ptr() const { return left_ptr_; }
     const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &right_ptr() const { return right_ptr_; }
@@ -74,7 +74,7 @@ public:
 private:
     OptionsOfKdTree options_;
 
-    int32_t axis_ = 0;
+    int32_t dimension_ = 0;
     Scalar divider_ = static_cast<Scalar>(0);
     std::unique_ptr<KdTreeNode<Scalar, Dimension>> left_ptr_ = nullptr;
     std::unique_ptr<KdTreeNode<Scalar, Dimension>> right_ptr_ = nullptr;
@@ -94,7 +94,7 @@ void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<Eigen::Matrix<Sc
     // Initialize a new node.
     if (node_ptr == nullptr) {
         node_ptr = std::make_unique<KdTreeNode<Scalar, Dimension>>();
-        node_ptr->axis() = axis;
+        node_ptr->dimension() = axis;
         node_ptr->divider() = points[point_indices.front()][axis];
         node_ptr->left_ptr() = nullptr;
         node_ptr->right_ptr() = nullptr;
@@ -172,14 +172,14 @@ void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::unique_ptr<KdTreeNode<S
     }
 
     // Recursion search.
-    if (target_point(node_ptr->axis()) < node_ptr->divider()) {
+    if (target_point(node_ptr->dimension()) < node_ptr->divider()) {
         SearchKnn(node_ptr->left_ptr(), points, target_point, target_number, residual_index_of_points);
-        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
+        if (std::abs(target_point(node_ptr->dimension()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
             SearchKnn(node_ptr->right_ptr(), points, target_point, target_number, residual_index_of_points);
         }
     } else {
         SearchKnn(node_ptr->right_ptr(), points, target_point, target_number, residual_index_of_points);
-        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
+        if (std::abs(target_point(node_ptr->dimension()) - node_ptr->divider()) < residual_index_of_points.rbegin()->first) {
             SearchKnn(node_ptr->left_ptr(), points, target_point, target_number, residual_index_of_points);
         }
     }
@@ -205,14 +205,14 @@ void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::unique_ptr<KdTreeNod
     }
 
     // Recursion search.
-    if (target_point(node_ptr->axis()) < node_ptr->divider()) {
+    if (target_point(node_ptr->dimension()) < node_ptr->divider()) {
         SearchRadius(node_ptr->left_ptr(), points, target_point, max_radius, residual_index_of_points);
-        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < max_radius) {
+        if (std::abs(target_point(node_ptr->dimension()) - node_ptr->divider()) < max_radius) {
             SearchRadius(node_ptr->right_ptr(), points, target_point, max_radius, residual_index_of_points);
         }
     } else {
         SearchRadius(node_ptr->right_ptr(), points, target_point, max_radius, residual_index_of_points);
-        if (std::abs(target_point(node_ptr->axis()) - node_ptr->divider()) < max_radius) {
+        if (std::abs(target_point(node_ptr->dimension()) - node_ptr->divider()) < max_radius) {
             SearchRadius(node_ptr->left_ptr(), points, target_point, max_radius, residual_index_of_points);
         }
     }
@@ -247,10 +247,10 @@ void KdTreeNode<Scalar, Dimension>::SearchCube(const std::unique_ptr<KdTreeNode<
     }
 
     // Recursion search.
-    if (min_value(node_ptr->axis()) < node_ptr->divider()) {
+    if (min_value(node_ptr->dimension()) < node_ptr->divider()) {
         SearchCube(node_ptr->left_ptr(), points, min_value, max_value, residual_index_of_points);
     }
-    if (max_value(node_ptr->axis()) > node_ptr->divider()) {
+    if (max_value(node_ptr->dimension()) > node_ptr->divider()) {
         SearchCube(node_ptr->right_ptr(), points, min_value, max_value, residual_index_of_points);
     }
 }
@@ -287,7 +287,7 @@ int32_t KdTreeNode<Scalar, Dimension>::GetAxisWithMaxRange(const std::vector<int
 
 template <typename Scalar, int32_t Dimension>
 void KdTreeNode<Scalar, Dimension>::Information() {
-    ReportInfo("[KdTreeNode] Axis [" << axis_ << "], Value [" << divider_ << "], [" << point_indices_.size() << "] points." <<
+    ReportInfo("[KdTreeNode] Axis [" << dimension_ << "], Value [" << divider_ << "], [" << point_indices_.size() << "] points." <<
         " Left child " << LogPtr(left_ptr_.get()) << ", Right child " << LogPtr(right_ptr_.get()));
 }
 
