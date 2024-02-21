@@ -6,6 +6,8 @@
 namespace SLAM_UTILITY {
 
 namespace {
+    constexpr static double kPaiDouble = 3.14159265358979323846;
+    constexpr static float kPaiFloat = 3.14159265358979323846f;
     constexpr static float kRadToDeg = 57.295779579f;
     constexpr static float kDegToRad = 1.0f / kRadToDeg;
     constexpr static float kZero = 1e-8f;
@@ -183,6 +185,40 @@ public:
                              imag_factor * omega.x(),
                              imag_factor * omega.y(),
                              imag_factor * omega.z());
+    }
+
+    /* Compute log of vector3. */
+    template <typename Scalar>
+    static TVec3<Scalar> Logarithm(const TQuat<Scalar> &other) {
+        const Scalar squared_n = other.vec().squaredNorm();
+        const Scalar n = std::sqrt(squared_n);
+        const Scalar w = other.w();
+
+        Scalar two_atan_nbyw_by_n;
+
+        // Atan-based log thanks to
+        //
+        // C. Hertzberg et al.:
+        // "Integrating Generic Sensor Fusion Algorithms with Sound State
+        // Representation through Encapsulation of Manifolds"
+        // Information Fusion, 2011
+
+        if (n < kZero) {
+            const Scalar squared_w = w * w;
+            two_atan_nbyw_by_n = static_cast<Scalar>(2) / w - static_cast<Scalar>(2) * squared_n / (w * squared_w);
+        } else {
+            if (std::abs(w) < kZero) {
+                if (w > static_cast<Scalar> ( 0 )) {
+                    two_atan_nbyw_by_n = kPaiDouble / n;
+                } else {
+                    two_atan_nbyw_by_n = - kPaiDouble / n;
+                }
+            } else {
+                two_atan_nbyw_by_n = static_cast<Scalar>(2) * atan(n / w) / n;
+            }
+        }
+
+        return two_atan_nbyw_by_n * other.vec();
     }
 
     /* Compute one of the basis on the tangent plane of the input vector. */

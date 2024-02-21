@@ -22,11 +22,23 @@ void TestConvertionBetweenEulerAndQuaternion() {
     ReportInfo("pitch, roll, yaw is " << LogVec(pry));
 }
 
+void TestLogAndExp() {
+    ReportInfo(YELLOW ">> Test Utility::Logarithm() and Utility::Exponent()" RESET_COLOR);
+    Quat q = Quat(1, 2, 0, 0).normalized();
+    Vec3 omega = Utility::Logarithm(q);
+    Quat new_q = Utility::Exponent(omega);
+
+    ReportInfo("Truth q is " << LogQuat(q));
+    ReportInfo("omega is " << LogVec(omega));
+    ReportInfo("new q is " << LogQuat(new_q));
+}
+
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test math kinematics." RESET_COLOR);
 
     TestTangentBase();
     TestConvertionBetweenEulerAndQuaternion();
+    TestLogAndExp();
 
     return 0;
 }
