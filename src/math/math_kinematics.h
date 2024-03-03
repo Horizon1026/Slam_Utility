@@ -6,10 +6,12 @@
 namespace SLAM_UTILITY {
 
 namespace {
+    constexpr static float kPai = 3.14159265358979323846f;
     constexpr static double kPaiDouble = 3.14159265358979323846;
-    constexpr static float kPaiFloat = 3.14159265358979323846f;
     constexpr static float kRadToDeg = 57.295779579f;
     constexpr static float kDegToRad = 1.0f / kRadToDeg;
+    constexpr static double kRadToDegDouble = 57.295779579;
+    constexpr static double kDegToRadDouble = 1.0 / kRadToDegDouble;
     constexpr static float kZero = 1e-8f;
     constexpr static int32_t kMaxInt32 = 2147483647;
 }
