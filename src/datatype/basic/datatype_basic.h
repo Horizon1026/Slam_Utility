@@ -77,6 +77,7 @@ using Mat7 = Eigen::Matrix<float, 7, 7>;
 using Mat9 = Eigen::Matrix<float, 9, 9>;
 using Mat15 = Eigen::Matrix<float, 15, 15>;
 using Mat18 = Eigen::Matrix<float, 18, 18>;
+using Mat24 = Eigen::Matrix<float, 24, 24>;
 
 using Vec1 = Eigen::Matrix<float, 1, 1>;
 using Vec2 = Eigen::Matrix<float, 2, 1>;
