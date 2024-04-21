@@ -6,4 +6,5 @@ cd ./build
 ./test_backward
 ./test_math_kinematics
 ./test_kd_tree
+./test_libtorch
 cd ..

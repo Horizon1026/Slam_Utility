@@ -39,6 +39,9 @@ endif()
 if ( NOT TARGET lib_stack_backward )
     add_subdirectory( ${SLAM_UTILITY_PATH}/3rd_libraries/backward ${PROJECT_SOURCE_DIR}/build/lib_stack_backward )
 endif()
+if ( NOT TARGET lib_pytorch_for_cxx )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/3rd_libraries/libtorch ${PROJECT_SOURCE_DIR}/build/lib_pytorch_for_cxx )
+endif()
 
 add_library( lib_slam_utility ${AUX_SRC_SLAM_UTILITY} )
 target_include_directories( lib_slam_utility PUBLIC . )
@@ -56,4 +59,5 @@ target_link_libraries( lib_slam_utility
     lib_kd_tree
 
     lib_stack_backward
+    lib_pytorch_for_cxx
 )
