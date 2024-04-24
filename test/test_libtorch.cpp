@@ -22,11 +22,11 @@ struct Net : torch::nn::Module {
         // conv2 : 26 - 3 + 1 = 24.
         // max_pool : 12 * 12 * 4 = 576.
         x = torch::max_pool2d(torch::relu(conv2->forward(x)), 2);
-        x = torch::dropout(x, 0.25, is_training());
+        x = torch::dropout(x, /*p=*/0.25, is_training());
         x = x.view({-1, 576});
         // w : 128 * 576.
         x = torch::relu(fc1->forward(x));
-        x = torch::dropout(x, 0.5, is_training());
+        x = torch::dropout(x, /*p=*/0.5, is_training());
         // w : 10 * 128.
         x = fc2->forward(x);
         x = torch::log_softmax(x, 1);
@@ -41,15 +41,14 @@ struct Net : torch::nn::Module {
 };
 
 void Train(std::shared_ptr<Net> &net) {
+    const int32_t batch_size = 64;
     auto data_loader = torch::data::make_data_loader(
         torch::data::datasets::MNIST("/mnt/d/My_Github/Datasets/Mnist").map(
-            torch::data::transforms::Stack<>()
-        ), 64
-    );
+            torch::data::transforms::Stack<>()), batch_size);
 
     torch::optim::SGD optimizor(net->parameters(), 0.01);
 
-    for (int32_t epoch = 0; epoch < 20; ++epoch) {
+    for (int32_t epoch = 0; epoch < 10; ++epoch) {
         int32_t batch_index = 0;
 
         for (auto &batch : *data_loader) {
@@ -73,25 +72,31 @@ void Train(std::shared_ptr<Net> &net) {
 }
 
 void Test(std::shared_ptr<Net> &net) {
-    auto data_loader = torch::data::make_data_loader(
-        torch::data::datasets::MNIST("/mnt/d/My_Github/Datasets/Mnist", torch::data::datasets::MNIST::Mode::kTest).map(
-            torch::data::transforms::Stack<>()
-        ), 64
-    );
+    const int32_t batch_size = 64;
+    auto dataset = torch::data::datasets::MNIST("/mnt/d/My_Github/Datasets/Mnist",
+        torch::data::datasets::MNIST::Mode::kTest).map(
+            torch::data::transforms::Stack<>());
+    const auto dataset_size = dataset.size().value();
+    auto data_loader = torch::data::make_data_loader(std::move(dataset), batch_size);
 
-    float total_loss = 0.0;
+    float average_loss = 0.0;
     int32_t correct_cnt = 0;
     for (auto &batch : *data_loader) {
         // Execute the model on the input data.
         torch::Tensor output = net->forward(batch.data);
         // Compute a loss value to judge the output of our model.
-        torch::Tensor loss = torch::nll_loss(output, batch.target);
-        total_loss += loss.item<float>();
+        torch::Tensor loss = torch::nll_loss(output, batch.target, /*weight=*/{}, torch::Reduction::Sum);
+        average_loss += loss.item<float>();
         // Check correction.
         torch::Tensor prediction = output.argmax(1);
         correct_cnt += prediction.eq(batch.target).sum().item<int32_t>();
     }
 
+    average_loss /= static_cast<float>(dataset_size);
+    const float corr_rate = static_cast<float>(correct_cnt) / static_cast<float>(dataset_size);
+
+    ReportInfo("[Test] average loss [" << average_loss << "], correct rate [" << corr_rate <<
+        "], correct cnt [" << correct_cnt << "/" << dataset_size << "]");
 }
 
 int main(int argc, char **argv) {
