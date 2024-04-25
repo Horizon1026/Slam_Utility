@@ -101,6 +101,7 @@ void Test(std::shared_ptr<Net> &net) {
 
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test libtorch." RESET_COLOR);
+    ReportInfo("torch::cuda::is_available() = " << torch::cuda::is_available());
 
     auto net = std::make_shared<Net>();
     Train(net);
