@@ -1,8 +1,8 @@
 #include "log_report.h"
 #include "libtorch.h"
 
-struct Net : torch::nn::Module {
-    Net() :
+struct Model : torch::nn::Module {
+    Model() :
         conv1(torch::nn::Conv2dOptions(1, 2, /*kernel_size=*/3)),
         conv2(torch::nn::Conv2dOptions(2, 4, /*kernel_size=*/3)),
         fc1(576, 128),
@@ -40,24 +40,29 @@ struct Net : torch::nn::Module {
     torch::nn::Linear fc2;
 };
 
-void Train(std::shared_ptr<Net> &net) {
+void Train(std::shared_ptr<Model> &model) {
     const int32_t batch_size = 64;
     auto data_loader = torch::data::make_data_loader(
         torch::data::datasets::MNIST("/mnt/d/My_Github/Datasets/Mnist").map(
             torch::data::transforms::Stack<>()), batch_size);
 
-    torch::optim::SGD optimizor(net->parameters(), 0.01);
+    torch::Device device(torch::cuda::is_available() ? torch::kCUDA : torch::kCPU);
+    model->to(device);
+    torch::optim::SGD optimizor(model->parameters(), 0.01);
 
     for (int32_t epoch = 0; epoch < 10; ++epoch) {
         int32_t batch_index = 0;
 
         for (auto &batch : *data_loader) {
+            // Move data and target to selected device.
+            auto data = batch.data.to(device);
+            auto target = batch.target.to(device);
             // Reset gradients.
             optimizor.zero_grad();
             // Execute the model on the input data.
-            torch::Tensor prediction = net->forward(batch.data);
+            torch::Tensor prediction = model->forward(data);
             // Compute a loss value to judge the prediction of our model.
-            torch::Tensor loss = torch::nll_loss(prediction, batch.target);
+            torch::Tensor loss = torch::nll_loss(prediction, target);
             // Compute gradients of the loss w.r.t. the parameters of our model.
             loss.backward();
             // Update the parameters based on the calculated gradients.
@@ -65,13 +70,13 @@ void Train(std::shared_ptr<Net> &net) {
             // Print the loss and check point.
             if (++batch_index % 100 == 0) {
                 ReportInfo("[Train] epoch [" << epoch << "], batch_idx [" << batch_index << "], loss [" << loss.item<float>() << "].");
-                torch::save(net, "net.pt");
+                torch::save(model, "model.pt");
             }
         }
     }
 }
 
-void Test(std::shared_ptr<Net> &net) {
+void Test(std::shared_ptr<Model> &model) {
     const int32_t batch_size = 64;
     auto dataset = torch::data::datasets::MNIST("/mnt/d/My_Github/Datasets/Mnist",
         torch::data::datasets::MNIST::Mode::kTest).map(
@@ -79,17 +84,23 @@ void Test(std::shared_ptr<Net> &net) {
     const auto dataset_size = dataset.size().value();
     auto data_loader = torch::data::make_data_loader(std::move(dataset), batch_size);
 
+    torch::Device device(torch::cuda::is_available() ? torch::kCUDA : torch::kCPU);
+    model->to(device);
+
     float average_loss = 0.0;
     int32_t correct_cnt = 0;
     for (auto &batch : *data_loader) {
+        // Move data and target to selected device.
+        auto data = batch.data.to(device);
+        auto target = batch.target.to(device);
         // Execute the model on the input data.
-        torch::Tensor output = net->forward(batch.data);
+        torch::Tensor output = model->forward(data);
         // Compute a loss value to judge the output of our model.
-        torch::Tensor loss = torch::nll_loss(output, batch.target, /*weight=*/{}, torch::Reduction::Sum);
+        torch::Tensor loss = torch::nll_loss(output, target, /*weight=*/{}, torch::Reduction::Sum);
         average_loss += loss.item<float>();
         // Check correction.
         torch::Tensor prediction = output.argmax(1);
-        correct_cnt += prediction.eq(batch.target).sum().item<int32_t>();
+        correct_cnt += prediction.eq(target).sum().item<int32_t>();
     }
 
     average_loss /= static_cast<float>(dataset_size);
@@ -102,10 +113,12 @@ void Test(std::shared_ptr<Net> &net) {
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test libtorch." RESET_COLOR);
     ReportInfo("torch::cuda::is_available() = " << torch::cuda::is_available());
+    ReportInfo("torch::cuda::cudnn_is_available() = " << torch::cuda::cudnn_is_available());
+    ReportInfo("torch::cuda::device_count() = " << torch::cuda::device_count());
 
-    auto net = std::make_shared<Net>();
-    Train(net);
-    Test(net);
+    auto model = std::make_shared<Model>();
+    Train(model);
+    Test(model);
 
     return 0;
 }

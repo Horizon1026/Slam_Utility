@@ -1,5 +1,6 @@
 # Find libtorch.
-list( APPEND CMAKE_PREFIX_PATH "/mnt/e/libtorch_cpu" )
+list( APPEND CMAKE_PREFIX_PATH "/mnt/e/libtorch_cuda" )
+find_package( PythonInterp REQUIRED )
 find_package( Torch REQUIRED )
 
 # Package target lib_pytorch_for_cxx.
