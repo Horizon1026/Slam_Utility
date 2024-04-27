@@ -3,9 +3,9 @@
 
 struct Model : torch::nn::Module {
     Model() :
-        conv1(torch::nn::Conv2dOptions(1, 2, /*kernel_size=*/3)),
+        conv1(torch::nn::Conv2dOptions(1, 2, /*kernel_size=*/5)),
         conv2(torch::nn::Conv2dOptions(2, 4, /*kernel_size=*/3)),
-        fc1(576, 128),
+        fc1(484, 128),
         fc2(128, 10) {
         register_module("conv1", conv1);
         register_module("conv2", conv2);
@@ -16,15 +16,15 @@ struct Model : torch::nn::Module {
 
     torch::Tensor forward(torch::Tensor x) {
         // input : 1*28*28.
-        // conv1 : 28 - 3 + 1 = 26.
+        // conv1 : 28 - 5 + 1 = 24.
         x = torch::relu(conv1->forward(x));
-        // input : 26*26*2.
-        // conv2 : 26 - 3 + 1 = 24.
-        // max_pool : 12 * 12 * 4 = 576.
+        // input : 24*24*2.
+        // conv2 : 24 - 3 + 1 = 22.
+        // max_pool : 11 * 11 * 4 = 484.
         x = torch::max_pool2d(torch::relu(conv2->forward(x)), 2);
         x = torch::dropout(x, /*p=*/0.25, is_training());
-        x = x.view({-1, 576});
-        // w : 128 * 576.
+        x = x.view({-1, 484});
+        // w : 128 * 484.
         x = torch::relu(fc1->forward(x));
         x = torch::dropout(x, /*p=*/0.5, is_training());
         // w : 10 * 128.
