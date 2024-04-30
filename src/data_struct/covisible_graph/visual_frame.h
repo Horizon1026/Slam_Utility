@@ -24,7 +24,6 @@ public:
     uint32_t &id() { return id_; }
     Quat &q_wc() { return q_wc_; }
     Vec3 &p_wc() { return p_wc_; }
-    Vec3 &v_w() { return v_w_; }
     float &time_stamp_s() { return time_stamp_s_; }
     std::unordered_map<uint32_t, FeatureType *> &features() { return features_; }
     std::vector<MatImg> &raw_images() { return raw_images_; }
@@ -34,7 +33,6 @@ public:
     const uint32_t &id() const { return id_; }
     const Quat &q_wc() const { return q_wc_; }
     const Vec3 &p_wc() const { return p_wc_; }
-    const Vec3 &v_w() const { return v_w_; }
     const float &time_stamp_s() const { return time_stamp_s_; }
     const std::unordered_map<uint32_t, FeatureType *> &features() const { return features_; }
     const std::vector<MatImg> &raw_images() const { return raw_images_; }
@@ -47,7 +45,6 @@ private:
     // Camera position, velocity and attitude combined with this frame.
     Quat q_wc_ = Quat::Identity();
     Vec3 p_wc_ = Vec3::Zero();
-    Vec3 v_w_ = Vec3::Zero();
     float time_stamp_s_ = 0.0f;
 
     // Features observed by this frame.
@@ -66,9 +63,8 @@ template <typename FeatureType>
 void VisualFrame<FeatureType>::Information() const {
     ReportInfo("[Visual Frame] Information of frame " << id_ << "\n"
         " - time stamp is " << time_stamp_s_ << " s\n"
-        " - q_wc is " << LogQuat(q_wc_) << ""
-        " - p_wc is " << LogVec(p_wc_) << ""
-        " - v_w is " << LogVec(v_w_) << "\n"
+        " - q_wc is " << LogQuat(q_wc_) << "\n"
+        " - p_wc is " << LogVec(p_wc_) << "\n"
         " - number of observed features is " << features_.size()
     );
     ReportText(" - List of features observed in this frame:\n");
@@ -82,9 +78,8 @@ template <typename FeatureType>
 void VisualFrame<FeatureType>::SimpleInformation() const {
     ReportInfo("[Visual Frame] Information of frame " << id_ << "\n"
         " - time stamp is " << time_stamp_s_ << " s\n"
-        " - q_wc is " << LogQuat(q_wc_) << ""
-        " - p_wc is " << LogVec(p_wc_) << ""
-        " - v_w is " << LogVec(v_w_) << "\n"
+        " - q_wc is " << LogQuat(q_wc_) << "\n"
+        " - p_wc is " << LogVec(p_wc_) << "\n"
         " - number of observed features is " << features_.size()
     );
 }
