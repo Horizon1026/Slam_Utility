@@ -47,7 +47,6 @@ public:
                                  const float time_stamp_s,
                                  const Quat &q_wc = Quat::Identity(),
                                  const Vec3 &p_wc = Vec3::Zero(),
-                                 const Vec3 &v_w = Vec3::Zero(),
                                  const std::vector<MatImg> &raw_images = std::vector<MatImg>());
 
     // Remove feature by feature_id.
@@ -251,14 +250,12 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatur
                                                                                    const float time_stamp_s,
                                                                                    const Quat &q_wc,
                                                                                    const Vec3 &p_wc,
-                                                                                   const Vec3 &v_w,
                                                                                    const std::vector<MatImg> &raw_images) {
     RETURN_FALSE_IF_FALSE(AddNewFrameWithFeatures(features_id, features_observe, time_stamp_s, -1, raw_images));
 
     // Set new features' pose param.
     frames_.back().q_wc() = q_wc;
     frames_.back().p_wc() = p_wc;
-    frames_.back().v_w() = v_w;
 
     // Set features param.
     if (features_id.size() == features_param.size()) {
