@@ -1,6 +1,10 @@
-#include "log_report.h"
-#include "3d_gaussian.h"
 #include "datatype_image.h"
+#include "slam_operations.h"
+#include "log_report.h"
+
+#include "2d_gaussian.h"
+#include "3d_gaussian.h"
+
 #include "visualizor.h"
 
 using namespace SLAM_UTILITY;
@@ -32,18 +36,15 @@ void TestShowOne3DGaussian() {
     gaussian_3d.sigma_q() = Quat::Identity();
 
     // Project 3d gaussian to 2d.
-    Vec2 uv_2d = Vec2::Zero();
-    Mat2 sigma_2d = Mat2::Identity();
-    float mid_opacity_2d = 0.0f;
-    gaussian_3d.ProjectTo2D(p_wc, q_wc, uv_2d, sigma_2d, mid_opacity_2d);
-    const Mat2 inv_sigma_2d = sigma_2d.inverse();
+    Gaussian2D gaussian_2d;
+    gaussian_3d.ProjectTo2D(p_wc, q_wc, gaussian_2d);
+    const Mat2 inv_sigma_2d = gaussian_2d.sigma().inverse();
 
     // Iterate each pixel of image.
     for (int32_t row = 0; row < image_rows; ++row) {
         for (int32_t col = 0; col < image_cols; ++col) {
             const Vec2 uv = Vec2((col - cx) / fx, (row - cy) / fy);
-            const Vec2 diff_uv = uv - uv_2d;
-            const float opacity = mid_opacity_2d * std::exp(- 0.5f * diff_uv.transpose() * inv_sigma_2d * diff_uv);
+            const float opacity = gaussian_2d.GetOpacityAt(uv, inv_sigma_2d);
             const RgbPixel pixel_color = RgbPixel{
                 .r = static_cast<uint8_t>(static_cast<float>(gaussian_3d.color().r) * opacity),
                 .g = static_cast<uint8_t>(static_cast<float>(gaussian_3d.color().g) * opacity),
@@ -55,7 +56,6 @@ void TestShowOne3DGaussian() {
 
     Visualizor::ShowImage("show image", show_image);
     Visualizor::WaitKey(0);
-
 }
 
 int main(int argc, char *argv[]) {

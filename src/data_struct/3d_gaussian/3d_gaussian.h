@@ -3,6 +3,7 @@
 
 #include "datatype_basic.h"
 #include "datatype_rgbcolor.h"
+#include "2d_gaussian.h"
 
 namespace SLAM_UTILITY {
 
@@ -15,6 +16,8 @@ public:
 
     void ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc,
                      Vec2 &uv_2d, Mat2 &sigma_2d, float &mid_opacity_2d);
+
+    void ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d);
 
     // Reference for member variables.
     Vec3 &p_w() { return p_w_; }

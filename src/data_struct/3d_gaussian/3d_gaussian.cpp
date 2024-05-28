@@ -29,4 +29,8 @@ void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc,
     mid_opacity_2d = 1.0f - std::exp(- mid_opacity_ / std::sqrt(sigma_3d.determinant()));
 }
 
+void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d) {
+    ProjectTo2D(p_wc, q_wc, gaussian_2d.mid_uv(), gaussian_2d.sigma(), gaussian_2d.mid_opacity());
+}
+
 }
