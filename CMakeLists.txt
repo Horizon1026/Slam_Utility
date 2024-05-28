@@ -87,3 +87,12 @@ add_executable( test_libtorch
 target_link_libraries( test_libtorch
     lib_slam_utility
 )
+
+# Create executable target to test 3d_gaussian.
+add_executable( test_3d_gaussian
+    test/test_3d_gaussian.cpp
+)
+target_link_libraries( test_3d_gaussian
+    lib_slam_utility
+    lib_image_visualizor
+)
