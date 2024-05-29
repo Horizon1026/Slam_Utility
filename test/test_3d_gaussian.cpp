@@ -75,7 +75,7 @@ void TestShowSeveral3DGaussian() {
         gaussian_3d.color() = RgbColor::kGreen;
         gaussian_3d.p_w() = Vec3(i, i * 0.6, 2.5f + i);
         gaussian_3d.mid_opacity() = 1.0f;
-        gaussian_3d.sigma_s() = Vec3(i, i * 0.6, -2.5f + i);
+        gaussian_3d.sigma_s() = Vec3(i + 0.5f, i * 0.6f + 0.8f, 2.5f + i);
         gaussian_3d.sigma_q() = Quat::Identity();
         all_gaussian_3d.emplace_back(gaussian_3d);
     }
@@ -102,24 +102,20 @@ void TestShowSeveral3DGaussian() {
         for (int32_t col = 0; col < image_cols; ++col) {
             const Vec2 uv = Vec2((col - cx) / fx, (row - cy) / fy);
 
-            float multi_opacity = 0.0f;
+            float multi_opacity = 1.0f;
             Vec3 float_color = Vec3::Zero();
             for (const auto &index : indices) {
                 const auto &gaussian_2d = all_gaussian_2d[index];
                 const float opacity = gaussian_2d.GetOpacityAt(uv, gaussian_2d.inv_sigma());
-                if (index == indices.front()) {
-                    float_color.x() = gaussian_2d.color().r * opacity;
-                    float_color.y() = gaussian_2d.color().g * opacity;
-                    float_color.z() = gaussian_2d.color().b * opacity;
-                    multi_opacity = 1.0f - opacity;
-                } else {
-                    float_color.x() = gaussian_2d.color().r * opacity * multi_opacity;
-                    float_color.y() = gaussian_2d.color().g * opacity * multi_opacity;
-                    float_color.z() = gaussian_2d.color().b * opacity * multi_opacity;
-                    multi_opacity *= 1.0f - opacity;
-                }
+                ReportInfo("opacity " << opacity);
+                float_color.x() += gaussian_2d.color().r * opacity * multi_opacity;
+                float_color.y() += gaussian_2d.color().g * opacity * multi_opacity;
+                float_color.z() += gaussian_2d.color().b * opacity * multi_opacity;
+                multi_opacity *= 1.0f - opacity;
+                BREAK_IF(multi_opacity < 0.01f);
             }
 
+            ReportInfo("float_color " << LogVec(float_color));
             const RgbPixel pixel_color = RgbPixel{
                 .r = static_cast<uint8_t>(float_color.x()),
                 .g = static_cast<uint8_t>(float_color.y()),
