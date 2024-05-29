@@ -4,7 +4,7 @@
 
 namespace SLAM_UTILITY {
 
-void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d) {
+void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d) const {
     // Compute mid point for 2d gaussian.
     const Vec3 p_c = q_wc.inverse() * (p_w_ - p_wc);
     RETURN_IF(p_c.z() < kZero);
@@ -13,7 +13,7 @@ void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gau
     gaussian_2d.mid_uv() = p_c.head<2>() * inv_depth;
 
     // Recovery sigma for 3d gaussian.
-    const Mat3 sigma_3d = sigma_q_ * sigma_s_.asDiagonal() * sigma_s_.asDiagonal() * sigma_q_.inverse();
+    const Mat3 sigma_3d = q_wc.inverse() * sigma() * q_wc;
 
     // Compute sigma for 2d gaussian.
     const float inv_depth_2 = inv_depth * inv_depth;

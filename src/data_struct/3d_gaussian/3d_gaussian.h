@@ -14,7 +14,8 @@ public:
     Gaussian3D() = default;
     virtual ~Gaussian3D() = default;
 
-    void ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d);
+    void ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d) const;
+    Mat3 sigma() const { return sigma_q_ * sigma_s_.asDiagonal() * sigma_s_.asDiagonal() * sigma_q_.inverse(); }
 
     // Reference for member variables.
     Vec3 &p_w() { return p_w_; }
