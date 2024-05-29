@@ -68,14 +68,18 @@ void TestShowSeveral3DGaussian() {
     uint8_t *buf = (uint8_t *)malloc(image_rows * image_cols * 3 * sizeof(uint8_t));
     RgbImage show_image(buf, image_rows, image_cols, true);
 
+    // Color of 3d gaussians.
+    std::vector<RgbPixel> all_colors = {RgbColor::kGreen, RgbColor::kRed, RgbColor::kBrown, RgbColor::kGold};
+
     // Create 3d gaussian.
     std::vector<Gaussian3D> all_gaussian_3d;
-    for (int32_t i = 0; i < 5; ++i) {
+    for (uint32_t i = 0; i < all_colors.size(); ++i) {
+        const float step = 0.1f * static_cast<float>(i);
         Gaussian3D gaussian_3d;
-        gaussian_3d.color() = RgbColor::kGreen;
-        gaussian_3d.p_w() = Vec3(i, i * 0.6, 2.5f + i);
+        gaussian_3d.color() = all_colors[i];
+        gaussian_3d.p_w() = Vec3(step, step * 0.6, 2.5f + step);
         gaussian_3d.mid_opacity() = 1.0f;
-        gaussian_3d.sigma_s() = Vec3(i + 0.5f, i * 0.6f + 0.8f, 2.5f + i);
+        gaussian_3d.sigma_s() = Vec3(step + 0.5f, step * 0.6f + 0.8f, 1.5f + step);
         gaussian_3d.sigma_q() = Quat::Identity();
         all_gaussian_3d.emplace_back(gaussian_3d);
     }
@@ -86,6 +90,7 @@ void TestShowSeveral3DGaussian() {
     for (uint32_t i = 0; i < all_gaussian_3d.size(); ++i) {
         Gaussian2D gaussian_2d;
         all_gaussian_3d[i].ProjectTo2D(p_wc, q_wc, gaussian_2d);
+        gaussian_2d.mid_opacity() = 1.0f;
         all_gaussian_2d.emplace_back(gaussian_2d);
         all_gaussian_depth.emplace_back(gaussian_2d.depth());
     }
@@ -94,7 +99,9 @@ void TestShowSeveral3DGaussian() {
     std::vector<int32_t> indices;
     SlamOperation::ArgSort(all_gaussian_depth, indices);
     for (const auto &index : indices) {
-        ReportInfo(all_gaussian_2d[index].depth());
+        const auto &gaussian_2d = all_gaussian_2d[index];
+        ReportInfo(all_gaussian_2d[index].depth() << ", rgb " << static_cast<int32_t>(gaussian_2d.color().r) << " | " <<
+            static_cast<int32_t>(gaussian_2d.color().g) << " | " << static_cast<int32_t>(gaussian_2d.color().b));
     }
 
     // Iterate each pixel of image to compute color.
@@ -107,15 +114,12 @@ void TestShowSeveral3DGaussian() {
             for (const auto &index : indices) {
                 const auto &gaussian_2d = all_gaussian_2d[index];
                 const float opacity = gaussian_2d.GetOpacityAt(uv, gaussian_2d.inv_sigma());
-                ReportInfo("opacity " << opacity);
                 float_color.x() += gaussian_2d.color().r * opacity * multi_opacity;
                 float_color.y() += gaussian_2d.color().g * opacity * multi_opacity;
                 float_color.z() += gaussian_2d.color().b * opacity * multi_opacity;
                 multi_opacity *= 1.0f - opacity;
-                BREAK_IF(multi_opacity < 0.01f);
             }
 
-            ReportInfo("float_color " << LogVec(float_color));
             const RgbPixel pixel_color = RgbPixel{
                 .r = static_cast<uint8_t>(float_color.x()),
                 .g = static_cast<uint8_t>(float_color.y()),
@@ -131,7 +135,7 @@ void TestShowSeveral3DGaussian() {
 
 int main(int argc, char *argv[]) {
     ReportInfo(">> Test 3d gaussian.");
-    TestShowOne3DGaussian();
+    // TestShowOne3DGaussian();
     TestShowSeveral3DGaussian();
     return 0;
 }

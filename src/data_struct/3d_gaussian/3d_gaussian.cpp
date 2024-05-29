@@ -4,14 +4,13 @@
 
 namespace SLAM_UTILITY {
 
-void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc,
-                             Vec2 &uv_2d, Mat2 &sigma_2d, float &mid_opacity_2d, float &depth) {
+void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d) {
     // Compute mid point for 2d gaussian.
     const Vec3 p_c = q_wc.inverse() * (p_w_ - p_wc);
     RETURN_IF(p_c.z() < kZero);
-    depth = p_c.z();
-    const float inv_depth = 1.0f / depth;
-    uv_2d = p_c.head<2>() * inv_depth;
+    gaussian_2d.depth() = p_c.z();
+    const float inv_depth = 1.0f / gaussian_2d.depth();
+    gaussian_2d.mid_uv() = p_c.head<2>() * inv_depth;
 
     // Recovery sigma for 3d gaussian.
     const Mat3 sigma_3d = sigma_q_ * sigma_s_.asDiagonal() * sigma_s_.asDiagonal() * sigma_q_.inverse();
@@ -24,15 +23,13 @@ void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc,
                           0, inv_depth, - p_c(1) * inv_depth_2;
         jacobian_2d_3d = jacobian_2d_3d;
     }
-    sigma_2d = jacobian_2d_3d * sigma_3d * jacobian_2d_3d.transpose();
+    gaussian_2d.sigma() = jacobian_2d_3d * sigma_3d * jacobian_2d_3d.transpose();
+    gaussian_2d.inv_sigma() = gaussian_2d.sigma().inverse();
 
     // Compute mid opacity for 2d gaussian.
-    mid_opacity_2d = 1.0f - std::exp(- mid_opacity_ / std::sqrt(sigma_3d.determinant()));
-}
-
-void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d) {
-    ProjectTo2D(p_wc, q_wc, gaussian_2d.mid_uv(), gaussian_2d.sigma(), gaussian_2d.mid_opacity(), gaussian_2d.depth());
-    gaussian_2d.inv_sigma() = gaussian_2d.sigma().inverse();
+    gaussian_2d.mid_opacity() = 1.0f - std::exp(- mid_opacity_ / std::sqrt(sigma_3d.determinant()));
+    // Inherit color of 3d gaussian.
+    gaussian_2d.color() = color_;
 }
 
 }

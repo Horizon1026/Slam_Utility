@@ -14,9 +14,6 @@ public:
     Gaussian3D() = default;
     virtual ~Gaussian3D() = default;
 
-    void ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc,
-                     Vec2 &uv_2d, Mat2 &sigma_2d, float &mid_opacity_2d, float &depth);
-
     void ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d);
 
     // Reference for member variables.
