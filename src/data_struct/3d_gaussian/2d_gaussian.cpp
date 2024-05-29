@@ -5,13 +5,12 @@
 namespace SLAM_UTILITY {
 
 float Gaussian2D::GetOpacityAt(const Vec2 &uv) const {
-    const Vec2 diff_uv = uv - mid_uv_;
-    return mid_opacity_ * std::exp(- 0.5f * diff_uv.transpose() * sigma_.inverse() * diff_uv);
+    return GetOpacityAt(uv, sigma_.inverse(), 2.0f * kPai * std::sqrt(sigma_.determinant()));
 }
 
-float Gaussian2D::GetOpacityAt(const Vec2 &uv, const Mat2 &inv_sigma) const {
+float Gaussian2D::GetOpacityAt(const Vec2 &uv, const Mat2 &inv_sigma, const float sqrt_sigma_2_pi) const {
     const Vec2 diff_uv = uv - mid_uv_;
-    return mid_opacity_ * std::exp(- 0.5f * diff_uv.transpose() * inv_sigma * diff_uv);
+    return mid_opacity_ * std::exp(- 0.5f * diff_uv.transpose() * inv_sigma * diff_uv) / sqrt_sigma_2_pi;
 }
 
 }

@@ -38,13 +38,12 @@ void TestShowOne3DGaussian() {
     // Project 3d gaussian to 2d.
     Gaussian2D gaussian_2d;
     gaussian_3d.ProjectTo2D(p_wc, q_wc, gaussian_2d);
-    const Mat2 inv_sigma_2d = gaussian_2d.sigma().inverse();
 
     // Iterate each pixel of image to compute color.
     for (int32_t row = 0; row < image_rows; ++row) {
         for (int32_t col = 0; col < image_cols; ++col) {
             const Vec2 uv = Vec2((col - cx) / fx, (row - cy) / fy);
-            const float opacity = gaussian_2d.GetOpacityAt(uv, inv_sigma_2d);
+            const float opacity = gaussian_2d.GetOpacityAt(uv);
             const RgbPixel pixel_color = RgbPixel{
                 .r = static_cast<uint8_t>(static_cast<float>(gaussian_3d.color().r) * opacity),
                 .g = static_cast<uint8_t>(static_cast<float>(gaussian_3d.color().g) * opacity),
@@ -113,7 +112,7 @@ void TestShowSeveral3DGaussian() {
             Vec3 float_color = Vec3::Zero();
             for (const auto &index : indices) {
                 const auto &gaussian_2d = all_gaussian_2d[index];
-                const float opacity = gaussian_2d.GetOpacityAt(uv, gaussian_2d.inv_sigma());
+                const float opacity = gaussian_2d.GetOpacityAt(uv);
                 float_color.x() += gaussian_2d.color().r * opacity * multi_opacity;
                 float_color.y() += gaussian_2d.color().g * opacity * multi_opacity;
                 float_color.z() += gaussian_2d.color().b * opacity * multi_opacity;
