@@ -13,7 +13,8 @@ void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gau
     gaussian_2d.mid_uv() = p_c.head<2>() * inv_depth;
 
     // Recovery sigma for 3d gaussian.
-    const Mat3 sigma_3d = q_wc.inverse() * sigma() * q_wc;
+    const Mat3 sigma_3d_w = sigma();
+    const Mat3 sigma_3d_c = q_wc.inverse() * sigma() * q_wc;
 
     // Compute sigma for 2d gaussian.
     const float inv_depth_2 = inv_depth * inv_depth;
@@ -23,11 +24,11 @@ void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gau
                           0, inv_depth, - p_c(1) * inv_depth_2;
         jacobian_2d_3d = jacobian_2d_3d;
     }
-    gaussian_2d.sigma() = jacobian_2d_3d * sigma_3d * jacobian_2d_3d.transpose();
+    gaussian_2d.sigma() = jacobian_2d_3d * sigma_3d_c * jacobian_2d_3d.transpose();
     gaussian_2d.inv_sigma() = gaussian_2d.sigma().inverse();
 
     // Compute mid opacity for 2d gaussian.
-    gaussian_2d.mid_opacity() = 1.0f - std::exp(- mid_opacity_ / std::sqrt(sigma_3d.determinant()));
+    gaussian_2d.mid_opacity() = 1.0f - std::exp(- mid_opacity_ / std::sqrt(gaussian_2d.sigma().determinant()));
     // Inherit color of 3d gaussian.
     gaussian_2d.color() = color_;
 }
