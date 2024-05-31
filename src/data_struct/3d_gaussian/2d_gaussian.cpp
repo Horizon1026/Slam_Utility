@@ -8,9 +8,9 @@ float Gaussian2D::GetOpacityAt(const Vec2 &uv) const {
     return GetOpacityAt(uv, sigma_.inverse());
 }
 
-float Gaussian2D::GetOpacityAt(const Vec2 &uv, const Mat2 &inv_sigma) const {
+float Gaussian2D::GetOpacityAt(const Vec2 &uv, const Mat2 &inv_sigma, const float sigma_scale) const {
     const Vec2 diff_uv = uv - mid_uv_;
-    const float pdf = std::exp(- 0.5f * diff_uv.transpose() * inv_sigma * diff_uv);
+    const float pdf = std::exp(- 0.5f * sigma_scale * diff_uv.transpose() * inv_sigma * diff_uv);
     return mid_opacity_ * pdf;
 }
 

@@ -14,7 +14,7 @@ public:
     virtual ~Gaussian2D() = default;
 
     float GetOpacityAt(const Vec2 &uv) const;
-    float GetOpacityAt(const Vec2 &uv, const Mat2 &inv_sigma) const;
+    float GetOpacityAt(const Vec2 &uv, const Mat2 &inv_sigma, const float sigma_scale = 9.0f) const;
 
     // Reference for member variables.
     Vec2 &mid_uv() { return mid_uv_; }
