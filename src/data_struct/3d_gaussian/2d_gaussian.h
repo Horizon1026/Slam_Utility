@@ -14,6 +14,7 @@ public:
     virtual ~Gaussian2D() = default;
 
     float GetOpacityAt(const Vec2 &uv) const;
+    // The boundary of gaussian is determined by sigma_scale. 3 sigma means sigma_scale is 9 while probability is 99.7%.
     float GetOpacityAt(const Vec2 &uv, const Mat2 &inv_sigma, const float sigma_scale = 9.0f) const;
 
     // Reference for member variables.
