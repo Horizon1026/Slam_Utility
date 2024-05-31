@@ -14,7 +14,7 @@ void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gau
 
     // Recovery sigma for 3d gaussian.
     const Mat3 sigma_3d_w = sigma();
-    const Mat3 sigma_3d_c = q_wc.inverse() * sigma() * q_wc;
+    const Mat3 sigma_3d_c = q_wc.inverse() * sigma_3d_w * q_wc;
 
     // Compute sigma for 2d gaussian.
     const float inv_depth_2 = inv_depth * inv_depth;
