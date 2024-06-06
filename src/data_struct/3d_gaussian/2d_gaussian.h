@@ -18,7 +18,7 @@ public:
 
     // Reference for member variables.
     Vec2 &mid_uv() { return mid_uv_; }
-    float &depth() { return depth_; }
+    float &depth_in_ray_space() { return depth_in_ray_space_; }
     Mat2 &sigma() { return sigma_; }
     Mat2 &inv_sigma() { return inv_sigma_; }
     float &mid_opacity() { return mid_opacity_; }
@@ -26,7 +26,7 @@ public:
 
     // Const reference for member variables.
     const Vec2 &mid_uv() const { return mid_uv_; }
-    const float &depth() const { return depth_; }
+    const float &depth_in_ray_space() const { return depth_in_ray_space_; }
     const Mat2 &sigma() const { return sigma_; }
     const Mat2 &inv_sigma() const { return inv_sigma_; }
     const float &mid_opacity() const { return mid_opacity_; }
@@ -35,7 +35,7 @@ public:
 private:
     // Position and sigma matrin in world frame.
     Vec2 mid_uv_ = Vec2::Zero();
-    float depth_ = 0.0f;
+    float depth_in_ray_space_ = 0.0f;
     Mat2 sigma_ = Mat2::Ones();
     Mat2 inv_sigma_ = Mat2::Ones();
     // Opacity of mid point.

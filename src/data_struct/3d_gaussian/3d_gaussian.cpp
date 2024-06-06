@@ -8,8 +8,10 @@ void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gau
     // Compute mid point for 2d gaussian.
     const Vec3 p_c = q_wc.inverse() * (p_w_ - p_wc);
     RETURN_IF(p_c.z() < kZero);
-    gaussian_2d.depth() = p_c.z();
-    const float inv_depth = 1.0f / gaussian_2d.depth();
+    gaussian_2d.depth_in_ray_space() = p_c.norm();
+
+    const float depth = p_c.z();
+    const float inv_depth = 1.0f / depth;
     gaussian_2d.mid_uv() = p_c.head<2>() * inv_depth;
 
     // Recovery sigma for 3d gaussian.
