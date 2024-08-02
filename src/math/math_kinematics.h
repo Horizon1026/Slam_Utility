@@ -8,6 +8,8 @@ namespace SLAM_UTILITY {
 namespace {
     constexpr static float kPai = 3.14159265358979323846f;
     constexpr static double kPaiDouble = 3.14159265358979323846;
+    constexpr static float k2Pai = 2.0f * 3.14159265358979323846f;
+    constexpr static double k2PaiDouble = 2.0 * 3.14159265358979323846;
     constexpr static float kRadToDeg = 57.295779579f;
     constexpr static float kDegToRad = 1.0f / kRadToDeg;
     constexpr static double kRadToDegDouble = 57.295779579;
@@ -369,6 +371,16 @@ public:
                         = [R_ij * R_kj.inv  -R_ij * R_kj.inv * t_kj + t_ij] */
         p_ik = - (q_ij * q_kj.inverse() * p_kj) + p_ij;
         q_ik = q_ij * q_kj.inverse();
+    }
+
+    template <typename Scalar>
+    static Scalar AngleDiffInRad(const Scalar &a, const Scalar &b) {
+        const TVec3<Scalar> diff(a - b, a - b + k2Pai, a - b - k2Pai);
+        const TVec3<Scalar> diff_abs = diff.cwiseAbs();
+        int32_t idx = 0;
+        idx = diff_abs(idx) > diff_abs(1) ? 1 : idx;
+        idx = diff_abs(idx) > diff_abs(2) ? 2 : idx;
+        return diff(idx);
     }
 
 };
