@@ -30,7 +30,8 @@ void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gau
     gaussian_2d.inv_sigma() = gaussian_2d.sigma().inverse();
 
     // Compute mid opacity for 2d gaussian.
-    gaussian_2d.mid_opacity() = 1.0f - std::exp(- mid_opacity_ / std::sqrt(sigma().determinant()));
+    // gaussian_2d.mid_opacity() = 1.0f - std::exp(- mid_opacity_ / std::sqrt(sigma().determinant()));
+    gaussian_2d.mid_opacity() = mid_opacity_;
     // Inherit color of 3d gaussian.
     gaussian_2d.color() = color_;
 }
