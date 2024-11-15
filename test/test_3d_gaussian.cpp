@@ -91,7 +91,7 @@ void TestShowSeveral3DGaussian() {
         all_gaussian_3d[i].ProjectTo2D(p_wc, q_wc, gaussian_2d);
         gaussian_2d.mid_opacity() = 1.0f;
         all_gaussian_2d.emplace_back(gaussian_2d);
-        all_gaussian_depth.emplace_back(gaussian_2d.depth_in_ray_space());
+        all_gaussian_depth.emplace_back(gaussian_2d.depth());
     }
 
     // Sort gaussians by depth.
@@ -99,7 +99,7 @@ void TestShowSeveral3DGaussian() {
     SlamOperation::ArgSort(all_gaussian_depth, indices);
     for (const auto &index : indices) {
         const auto &gaussian_2d = all_gaussian_2d[index];
-        ReportInfo(all_gaussian_2d[index].depth_in_ray_space() << ", rgb " << static_cast<int32_t>(gaussian_2d.color().r) << " | " <<
+        ReportInfo(all_gaussian_2d[index].depth() << ", rgb " << static_cast<int32_t>(gaussian_2d.color().r) << " | " <<
             static_cast<int32_t>(gaussian_2d.color().g) << " | " << static_cast<int32_t>(gaussian_2d.color().b));
     }
 

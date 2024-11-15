@@ -32,10 +32,10 @@ public:
     const RgbPixel &color() const { return color_; }
 
 private:
-    // Position and sigma matrin in world frame.
+    // Position and sigma matrix in world frame.
     Vec3 p_w_ = Vec3::Zero();
-    Vec3 sigma_s_ = Vec3::Ones();
-    Quat sigma_q_ = Quat::Identity();
+    Vec3 sigma_s_ = Vec3::Ones();       // Scale of sigma.
+    Quat sigma_q_ = Quat::Identity();   // Rotation of sigma.
     // Opacity of mid point.
     float mid_opacity_ = 0.0f;
     // Color of mid point.
