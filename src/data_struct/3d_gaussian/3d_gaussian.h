@@ -3,6 +3,7 @@
 
 #include "datatype_basic.h"
 #include "datatype_rgbcolor.h"
+#include "spherical_harmonic.h"
 #include "2d_gaussian.h"
 
 namespace SLAM_UTILITY {
@@ -16,6 +17,7 @@ public:
 
     void ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d) const;
     Mat3 sigma() const { return sigma_q_ * sigma_s_.asDiagonal() * sigma_s_.asDiagonal() * sigma_q_.inverse(); }
+    RgbPixel sh_color(const Vec3 &p_wc);
 
     // Reference for member variables.
     Vec3 &p_w() { return p_w_; }
@@ -23,6 +25,7 @@ public:
     Quat &sigma_q() { return sigma_q_; }
     float &mid_opacity() { return mid_opacity_; }
     RgbPixel &color() { return color_; }
+    std::array<SphericalHarmonicFunc<3>, 3> &sh_colors() { return sh_colors_; }
 
     // Const reference for member variables.
     const Vec3 &p_w() const { return p_w_; }
@@ -30,6 +33,7 @@ public:
     const Quat &sigma_q() const { return sigma_q_; }
     const float &mid_opacity() const { return mid_opacity_; }
     const RgbPixel &color() const { return color_; }
+    const std::array<SphericalHarmonicFunc<3>, 3> &sh_colors() const { return sh_colors_; }
 
 private:
     // Position and sigma matrix in world frame.
@@ -40,6 +44,7 @@ private:
     float mid_opacity_ = 0.0f;
     // Color of mid point.
     RgbPixel color_;
+    std::array<SphericalHarmonicFunc<3>, 3> sh_colors_;
 };
 
 }

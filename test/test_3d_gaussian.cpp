@@ -61,7 +61,7 @@ void TestShowSeveral3DGaussian() {
     ReportInfo(">> Test several 3d gaussian rendering.");
     // Camera view.
     const Quat q_wc = Quat::Identity();
-    const Vec3 p_wc = Vec3(0, 0, -10.0f);
+    const Vec3 p_wc = Vec3(6, 5, -20);
 
     // Allocate for show image.
     uint8_t *buf = (uint8_t *)malloc(image_rows * image_cols * 3 * sizeof(uint8_t));
@@ -73,13 +73,15 @@ void TestShowSeveral3DGaussian() {
     // Create 3d gaussian.
     std::vector<Gaussian3D> all_gaussian_3d;
     for (uint32_t i = 0; i < all_colors.size(); ++i) {
-        const float step = 0.1f * static_cast<float>(i);
         Gaussian3D gaussian_3d;
         gaussian_3d.color() = all_colors[i];
-        gaussian_3d.p_w() = Vec3(step, step * 0.6, 2.5f + step);
-        gaussian_3d.mid_opacity() = 1.0f;
-        gaussian_3d.sigma_s() = Vec3(step + 0.5f, step * 0.6f + 0.8f, 1.5f + step);
+        gaussian_3d.p_w() = Vec3(i, i * 4.0f, 2.5f + i * 3.0f);
+        gaussian_3d.mid_opacity() = 1.0f / static_cast<float>(i + 1);
+        gaussian_3d.sigma_s() = Vec3(1, 2, 3);
         gaussian_3d.sigma_q() = Quat::Identity();
+        gaussian_3d.sh_colors()[0].coeff().setRandom();
+        gaussian_3d.sh_colors()[1].coeff().setRandom();
+        gaussian_3d.sh_colors()[2].coeff().setRandom();
         all_gaussian_3d.emplace_back(gaussian_3d);
     }
 
@@ -108,21 +110,23 @@ void TestShowSeveral3DGaussian() {
         for (int32_t col = 0; col < image_cols; ++col) {
             const Vec2 uv = Vec2((col - cx) / fx, (row - cy) / fy);
 
-            float multi_opacity = 1.0f;
+            float occluded_probability = 1.0f;
             Vec3 float_color = Vec3::Zero();
             for (const auto &index : indices) {
                 const auto &gaussian_2d = all_gaussian_2d[index];
-                const float opacity = gaussian_2d.GetOpacityAt(uv);
-                float_color.x() += gaussian_2d.color().r * opacity * multi_opacity;
-                float_color.y() += gaussian_2d.color().g * opacity * multi_opacity;
-                float_color.z() += gaussian_2d.color().b * opacity * multi_opacity;
-                multi_opacity *= 1.0f - opacity;
+                const float powered_alpha = gaussian_2d.GetOpacityAt(uv, gaussian_2d.inv_sigma());
+                CONTINUE_IF(powered_alpha < static_cast<float>(1.0f / 255.0f));
+
+                const Vec3 rgb_color = Vec3(gaussian_2d.color().r, gaussian_2d.color().g, gaussian_2d.color().b);
+                float_color += rgb_color * powered_alpha * occluded_probability;
+                occluded_probability *= 1.0f - powered_alpha;
+                BREAK_IF(occluded_probability < 1e-3f);
             }
 
             const RgbPixel pixel_color = RgbPixel{
-                .r = static_cast<uint8_t>(float_color.x()),
-                .g = static_cast<uint8_t>(float_color.y()),
-                .b = static_cast<uint8_t>(float_color.z()),
+                .r = static_cast<uint8_t>(std::min(255.0f, float_color.x())),
+                .g = static_cast<uint8_t>(std::min(255.0f, float_color.y())),
+                .b = static_cast<uint8_t>(std::min(255.0f, float_color.z())),
             };
             show_image.SetPixelValueNoCheck(row, col, pixel_color);
         }

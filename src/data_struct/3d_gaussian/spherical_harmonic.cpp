@@ -11,14 +11,14 @@ namespace {
 }
 
 template <>
-float SphericalHarmonicFunc<0>::GetColorInFloat(const Vec3 &direction) {
+float SphericalHarmonicFunc<0>::GetColorInFloat(const Vec3 &direction) const {
     // Order 0.
     const float color = kC0[0] * coeff_[0];
     return color;
 }
 
 template <>
-float SphericalHarmonicFunc<1>::GetColorInFloat(const Vec3 &direction) {
+float SphericalHarmonicFunc<1>::GetColorInFloat(const Vec3 &direction) const {
     // Order 0.
     float color = kC0[0] * coeff_[0];
 
@@ -29,7 +29,7 @@ float SphericalHarmonicFunc<1>::GetColorInFloat(const Vec3 &direction) {
 }
 
 template <>
-float SphericalHarmonicFunc<2>::GetColorInFloat(const Vec3 &direction) {
+float SphericalHarmonicFunc<2>::GetColorInFloat(const Vec3 &direction) const {
     // Order 0.
     float color = kC0[0] * coeff_[0];
 
@@ -56,7 +56,7 @@ float SphericalHarmonicFunc<2>::GetColorInFloat(const Vec3 &direction) {
 }
 
 template <>
-float SphericalHarmonicFunc<3>::GetColorInFloat(const Vec3 &direction) {
+float SphericalHarmonicFunc<3>::GetColorInFloat(const Vec3 &direction) const {
     // Order 0.
     float color = kC0[0] * coeff_[0] + 0.5f;
 

@@ -15,8 +15,8 @@ public:
     explicit SphericalHarmonicFunc(const Vec16 &coeff) : coeff_(coeff) {}
     virtual ~SphericalHarmonicFunc() = default;
 
-    float GetColorInFloat(const Vec3 &p_wf, const Vec3 &p_wc);
-    float GetColorInFloat(const Vec3 &direction);
+    float GetColorInFloat(const Vec3 &p_wf, const Vec3 &p_wc) const;
+    float GetColorInFloat(const Vec3 &direction) const;
 
     // Reference for member variables.
     Vec16 &coeff() { return coeff_; }
@@ -29,7 +29,7 @@ private:
 
 /* Class SphericalHarmonicFunc Definition. */
 template <uint32_t Order>
-float SphericalHarmonicFunc<Order>::GetColorInFloat(const Vec3 &p_wf, const Vec3 &p_wc) {
+float SphericalHarmonicFunc<Order>::GetColorInFloat(const Vec3 &p_wf, const Vec3 &p_wc) const {
     const Vec3 dir = p_wf - p_wc;
     return GetColorInFloat(dir.normalized());
 }
