@@ -37,6 +37,9 @@ endif()
 if ( NOT TARGET lib_3d_gaussian )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_struct/3d_gaussian ${PROJECT_SOURCE_DIR}/build/lib_3d_gaussian )
 endif()
+if ( NOT TARGET lib_line_segment )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_struct/line_segment ${PROJECT_SOURCE_DIR}/build/lib_line_segment )
+endif()
 
 # Add all 3rd libraries.
 if ( NOT TARGET lib_stack_backward )
@@ -61,6 +64,7 @@ target_link_libraries( lib_slam_utility
     lib_circular_buffer
     lib_kd_tree
     lib_3d_gaussian
+    lib_line_segment
 
     lib_stack_backward
     lib_pytorch_for_cxx

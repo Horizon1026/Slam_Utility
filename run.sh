@@ -8,4 +8,5 @@ cd ./build
 ./test_kd_tree
 ./test_3d_gaussian
 ./test_libtorch
+./test_line_segment
 cd ..

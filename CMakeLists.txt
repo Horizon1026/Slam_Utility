@@ -96,3 +96,11 @@ target_link_libraries( test_3d_gaussian
     lib_slam_utility
     lib_image_visualizor
 )
+
+# Create executable target to test line_segment.
+add_executable( test_line_segment
+    test/test_line_segment.cpp
+)
+target_link_libraries( test_line_segment
+    lib_slam_utility
+)
