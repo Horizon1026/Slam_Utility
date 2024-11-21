@@ -24,7 +24,7 @@ private:
     Vec4 param_ = Vec4::Zero();
 };
 
-/* Class LinePlucker3D Decalaration. */
+/* Class LinePlucker3D Declaration. */
 class LinePlucker3D {
 
 public:
@@ -41,6 +41,8 @@ public:
     // Operations.
     void Normalize();
     LinePlucker3D TransformTo(const Quat &q_wc, const Vec3 &p_wc);
+    Vec3 ProjectToNormalPlane();
+    Vec3 ProjectToImagePlane(const float fx, const float fy, const float cx, const float cy);
 
     // Reference for member variables.
     Vec6 &param() { return param_; }
@@ -50,6 +52,29 @@ public:
 private:
     Vec6 param_ = Vec6::Ones();
 
+};
+
+/* Class LineOrthonormal3D Declaration. */
+class LineOrthonormal3D {
+
+public:
+    LineOrthonormal3D() = default;
+    explicit LineOrthonormal3D(const Vec4 &param) : param_(param) {}
+    explicit LineOrthonormal3D(const LinePlucker3D &line);
+    LineOrthonormal3D(const Vec3 &vector_u, const Vec1 &vector_w);
+
+    Mat3 matrix_U();
+    Mat2 matrix_W();
+    Vec3 vector_u() { return param_.head<3>(); }
+    Vec1 vector_w() { return param_.tail<1>(); }
+
+    // Reference for member variables.
+    Vec4 &param() { return param_; }
+    // Const reference for member variables.
+    const Vec4 &param() const { return param_; }
+
+private:
+    Vec4 param_ = Vec4::Zero();
 };
 
 }

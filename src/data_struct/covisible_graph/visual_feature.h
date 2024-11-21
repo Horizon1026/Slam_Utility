@@ -12,7 +12,7 @@ enum FeatureSolvedStatus : uint8_t {
     kMarginalized = 2,
 };
 
-/* Class Visual Feature Decalaration. */
+/* Class Visual Feature Declaration. */
 template <typename ParamType, typename ObserveType>
 class VisualFeature {
 

@@ -22,4 +22,17 @@ LinePlucker3D LinePlucker3D::TransformTo(const Quat &q_wc, const Vec3 &p_wc) {
     return LinePlucker3D(normal_vector_in_c, direction_vector_in_c);
 }
 
+Vec3 LinePlucker3D::ProjectToNormalPlane() {
+    return normal_vector();
+}
+
+Vec3 LinePlucker3D::ProjectToImagePlane(const float fx, const float fy, const float cx, const float cy) {
+    Mat3 K = Mat3::Zero();
+    K << fy, 0, 0,
+         0, fx, 0,
+         - fy * cx, - fx * cy, fx * fy;
+    return K * normal_vector();
+}
+
+
 }
