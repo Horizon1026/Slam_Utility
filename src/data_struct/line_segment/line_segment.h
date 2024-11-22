@@ -2,6 +2,7 @@
 #define _LINE_SEGMENT_H_
 
 #include "datatype_basic.h"
+#include "math_kinematics.h"
 
 namespace SLAM_UTILITY {
 
@@ -24,25 +25,30 @@ private:
     Vec4 param_ = Vec4::Zero();
 };
 
+/* Predeclaration for Class LineOrthonormal3D. */
+class LineOrthonormal3D;
+
 /* Class LinePlucker3D Declaration. */
 class LinePlucker3D {
 
 public:
     LinePlucker3D() = default;
-    explicit LinePlucker3D(const Vec6 &param) : param_(param) {}
+    explicit LinePlucker3D(const Vec6 &param) : param_(param.normalized()) {}
+    explicit LinePlucker3D(const LineOrthonormal3D &line);
     LinePlucker3D(const Vec3 &n, const Vec3 &d);
     virtual ~LinePlucker3D() = default;
 
     // Parameters of Plucker Line.
-    Vec3 normal_vector() { return param_.head<3>(); }
-    Vec3 direction_vector() { return param_.tail<3>(); }
-    float distance() { return normal_vector().norm() / direction_vector().norm(); }
+    Vec3 normal_vector() const { return param_.head<3>(); }
+    Vec3 direction_vector() const { return param_.tail<3>(); }
+    float distance() const { return normal_vector().norm() / direction_vector().norm(); }
 
     // Operations.
+    bool SelfCheck() const { return std::fabs(normal_vector().dot(direction_vector())) < kZero; }
     void Normalize();
-    LinePlucker3D TransformTo(const Quat &q_wc, const Vec3 &p_wc);
-    Vec3 ProjectToNormalPlane();
-    Vec3 ProjectToImagePlane(const float fx, const float fy, const float cx, const float cy);
+    LinePlucker3D TransformTo(const Quat &q_wc, const Vec3 &p_wc) const;
+    Vec3 ProjectToNormalPlane() const;
+    Vec3 ProjectToImagePlane(const float fx, const float fy, const float cx, const float cy) const;
 
     // Reference for member variables.
     Vec6 &param() { return param_; }
@@ -63,10 +69,10 @@ public:
     explicit LineOrthonormal3D(const LinePlucker3D &line);
     LineOrthonormal3D(const Vec3 &vector_u, const Vec1 &vector_w);
 
-    Mat3 matrix_U();
-    Mat2 matrix_W();
-    Vec3 vector_u() { return param_.head<3>(); }
-    Vec1 vector_w() { return param_.tail<1>(); }
+    Mat3 matrix_U() const;
+    Mat2 matrix_W() const;
+    Vec3 vector_u() const { return param_.head<3>(); }
+    Vec1 vector_w() const { return param_.tail<1>(); }
 
     // Reference for member variables.
     Vec4 &param() { return param_; }
