@@ -2,7 +2,7 @@
 #define _SENSOR_UTILITY_VISUAL_FRAME_H_
 
 #include "datatype_basic.h"
-#include "log_report.h"
+#include "slam_log_reporter.h"
 
 #include "unordered_map"
 

@@ -2,7 +2,7 @@
 #define _LINE_SEGMENT_H_
 
 #include "datatype_basic.h"
-#include "math_kinematics.h"
+#include "slam_basic_math.h"
 
 namespace SLAM_UTILITY {
 

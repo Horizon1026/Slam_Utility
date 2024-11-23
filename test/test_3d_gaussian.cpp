@@ -1,6 +1,6 @@
 #include "datatype_image.h"
 #include "slam_operations.h"
-#include "log_report.h"
+#include "slam_log_reporter.h"
 
 #include "2d_gaussian.h"
 #include "3d_gaussian.h"

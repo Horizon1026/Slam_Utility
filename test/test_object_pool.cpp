@@ -1,4 +1,4 @@
-#include "log_report.h"
+#include "slam_log_reporter.h"
 #include "object_pool.h"
 #include "datatype_basic.h"
 

@@ -1,4 +1,4 @@
-#include "log_report.h"
+#include "slam_log_reporter.h"
 #include "datatype_basic.h"
 #include "covisible_graph.h"
 

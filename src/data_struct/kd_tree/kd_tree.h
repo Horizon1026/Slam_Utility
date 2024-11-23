@@ -2,7 +2,7 @@
 #define _SLAM_UTILITY_CIRCULAR_BUFFER_H_
 
 #include "datatype_basic.h"
-#include "log_report.h"
+#include "slam_log_reporter.h"
 #include "slam_operations.h"
 
 #include "memory"

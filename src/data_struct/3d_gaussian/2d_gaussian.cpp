@@ -1,6 +1,6 @@
 #include "2d_gaussian.h"
 #include "slam_operations.h"
-#include "math_kinematics.h"
+#include "slam_basic_math.h"
 
 namespace SLAM_UTILITY {
 

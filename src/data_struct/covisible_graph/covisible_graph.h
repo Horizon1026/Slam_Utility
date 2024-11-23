@@ -5,7 +5,7 @@
 #include "visual_feature.h"
 #include "visual_frame.h"
 
-#include "log_report.h"
+#include "slam_log_reporter.h"
 #include "slam_operations.h"
 
 #include "unordered_map"

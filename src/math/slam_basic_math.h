@@ -1,5 +1,5 @@
-#ifndef _MATH_KINEMATICS_H_
-#define _MATH_KINEMATICS_H_
+#ifndef _SLAM_BASIC_MATH_H_
+#define _SLAM_BASIC_MATH_H_
 
 #include "datatype_basic.h"
 
@@ -388,4 +388,4 @@ public:
 
 }
 
-#endif // end of _MATH_KINEMATICS_H_
+#endif // end of _SLAM_BASIC_MATH_H_

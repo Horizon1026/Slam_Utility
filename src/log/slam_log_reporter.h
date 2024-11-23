@@ -1,5 +1,5 @@
-#ifndef _SLAM_LOG_REPORT_H_
-#define _SLAM_LOG_REPORT_H_
+#ifndef _SLAM_LOG_REPORTER_H_
+#define _SLAM_LOG_REPORTER_H_
 
 #include "iostream"
 #include "iomanip"
@@ -63,4 +63,4 @@ namespace SLAM_UTILITY {
 
 using namespace SLAM_UTILITY;
 
-#endif // end of _SLAM_LOG_REPORT_H_
+#endif // end of _SLAM_LOG_REPORTER_H_

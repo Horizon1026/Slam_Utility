@@ -1,4 +1,4 @@
-#include "log_report.h"
+#include "slam_log_reporter.h"
 #include "libtorch.h"
 
 struct Model : torch::nn::Module {
