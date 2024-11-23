@@ -1,7 +1,7 @@
 #ifndef _SLAM_MEMORY_H_
 #define _SLAM_MEMORY_H_
 
-#include "datatype_basic.h"
+#include "basic_type.h"
 #include <memory>
 
 class SlamMemory {

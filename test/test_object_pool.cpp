@@ -1,6 +1,6 @@
 #include "slam_log_reporter.h"
 #include "object_pool.h"
-#include "datatype_basic.h"
+#include "basic_type.h"
 
 using namespace SLAM_UTILITY;
 

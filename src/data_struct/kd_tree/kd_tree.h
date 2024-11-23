@@ -1,7 +1,7 @@
 #ifndef _SLAM_UTILITY_CIRCULAR_BUFFER_H_
 #define _SLAM_UTILITY_CIRCULAR_BUFFER_H_
 
-#include "datatype_basic.h"
+#include "basic_type.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 

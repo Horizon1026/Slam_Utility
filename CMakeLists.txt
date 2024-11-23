@@ -14,8 +14,8 @@ endif()
 
 # Add visualizor.
 set( VISUALIZOR_2D_PATH ${PROJECT_SOURCE_DIR}/../Visualizor2D )
-if ( NOT TARGET lib_image_visualizor )
-    add_subdirectory( ${VISUALIZOR_2D_PATH}/src ${PROJECT_SOURCE_DIR}/build/lib_image_visualizor )
+if ( NOT TARGET lib_2d_visualizor )
+    add_subdirectory( ${VISUALIZOR_2D_PATH}/src ${PROJECT_SOURCE_DIR}/build/lib_2d_visualizor )
 endif()
 set( VISUALIZOR_3D_PATH ${PROJECT_SOURCE_DIR}/../Visualizor3D )
 if ( NOT TARGET lib_3d_visualizor )
@@ -28,7 +28,7 @@ add_executable( test_datatype_image
 )
 target_link_libraries( test_datatype_image
     lib_slam_utility
-    lib_image_visualizor
+    lib_2d_visualizor
 )
 
 # Create executable target to test covisible graph.
@@ -94,7 +94,7 @@ add_executable( test_3d_gaussian
 )
 target_link_libraries( test_3d_gaussian
     lib_slam_utility
-    lib_image_visualizor
+    lib_2d_visualizor
 )
 
 # Create executable target to test line_segment.

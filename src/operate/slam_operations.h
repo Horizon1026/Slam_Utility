@@ -1,7 +1,7 @@
 #ifndef _OPERATIONS_H_
 #define _OPERATIONS_H_
 
-#include "datatype_basic.h"
+#include "basic_type.h"
 
 namespace SLAM_UTILITY {
 

@@ -1,7 +1,7 @@
 #ifndef _SENSOR_UTILITY_VISUAL_FEATURE_H_
 #define _SENSOR_UTILITY_VISUAL_FEATURE_H_
 
-#include "datatype_basic.h"
+#include "basic_type.h"
 #include "slam_log_reporter.h"
 
 namespace SLAM_UTILITY {

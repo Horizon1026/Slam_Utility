@@ -1,7 +1,7 @@
 #ifndef _SLAM_BASIC_MATH_H_
 #define _SLAM_BASIC_MATH_H_
 
-#include "datatype_basic.h"
+#include "basic_type.h"
 
 namespace SLAM_UTILITY {
 

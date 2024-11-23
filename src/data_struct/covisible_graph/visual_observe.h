@@ -1,7 +1,7 @@
 #ifndef _SENSOR_UTILITY_VISUAL_OBSERVE_H_
 #define _SENSOR_UTILITY_VISUAL_OBSERVE_H_
 
-#include "datatype_basic.h"
+#include "basic_type.h"
 #include "unordered_map"
 
 namespace SLAM_UTILITY {

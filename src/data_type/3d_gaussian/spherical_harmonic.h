@@ -1,8 +1,8 @@
 #ifndef _SPHERICAL_HARMONIC_H_
 #define _SPHERICAL_HARMONIC_H_
 
-#include "datatype_basic.h"
-#include "datatype_rgbcolor.h"
+#include "basic_type.h"
+#include "basic_type_rgbcolor.h"
 
 namespace SLAM_UTILITY {
 

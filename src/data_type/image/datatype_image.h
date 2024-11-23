@@ -1,8 +1,8 @@
 #ifndef _DATATYPE_IMAGE_H_
 #define _DATATYPE_IMAGE_H_
 
-#include "datatype_basic.h"
-#include "datatype_rgbcolor.h"
+#include "basic_type.h"
+#include "basic_type_rgbcolor.h"
 #include "cmath"
 
 namespace SLAM_UTILITY {

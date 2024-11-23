@@ -1,7 +1,7 @@
 #ifndef _DATATYPE_IMAGE_PYRAMID_H_
 #define _DATATYPE_IMAGE_PYRAMID_H_
 
-#include "datatype_basic.h"
+#include "basic_type.h"
 #include "datatype_image.h"
 #include <cmath>
 

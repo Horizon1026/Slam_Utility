@@ -1,8 +1,8 @@
 #ifndef _3D_GAUSSIAN_H_
 #define _3D_GAUSSIAN_H_
 
-#include "datatype_basic.h"
-#include "datatype_rgbcolor.h"
+#include "basic_type.h"
+#include "basic_type_rgbcolor.h"
 #include "spherical_harmonic.h"
 #include "2d_gaussian.h"
 

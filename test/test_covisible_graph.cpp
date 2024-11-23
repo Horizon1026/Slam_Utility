@@ -1,5 +1,5 @@
 #include "slam_log_reporter.h"
-#include "datatype_basic.h"
+#include "basic_type.h"
 #include "covisible_graph.h"
 
 constexpr int32_t kCameraFrameNumber = 4;

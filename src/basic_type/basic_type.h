@@ -1,5 +1,5 @@
-#ifndef _DATATYPE_BASIC_H_
-#define _DATATYPE_BASIC_H_
+#ifndef _BASIC_TYPE_H_
+#define _BASIC_TYPE_H_
 
 #include <eigen3/Eigen/Eigen>
 #include <eigen3/Eigen/Eigenvalues>
@@ -116,4 +116,4 @@ using MatImgF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowM
 
 using namespace SLAM_UTILITY;
 
-#endif
+#endif // end of _BASIC_TYPE_H_

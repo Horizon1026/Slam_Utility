@@ -1,7 +1,7 @@
-#ifndef _DATATYPE_RGB_COLOR_H_
-#define _DATATYPE_RGB_COLOR_H_
+#ifndef _BASIC_TYPE_RGBCOLOR_H_
+#define _BASIC_TYPE_RGBCOLOR_H_
 
-#include "datatype_basic.h"
+#include "basic_type.h"
 
 namespace SLAM_UTILITY {
 
@@ -12,6 +12,7 @@ struct RgbPixel {
     uint8_t b = 0;
 };
 
+// Typical rgb color definition.
 namespace RgbColor {
     constexpr RgbPixel kPink = RgbPixel{.r = 255, .g = 192, .b = 203};
     constexpr RgbPixel kHotPink = RgbPixel{.r = 255, .g = 105, .b = 180};
@@ -46,4 +47,4 @@ namespace RgbColor {
 
 }
 
-#endif // end of _DATATYPE_RGB_COLOR_H_
+#endif // end of _BASIC_TYPE_RGBCOLOR_H_
