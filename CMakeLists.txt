@@ -63,11 +63,11 @@ target_link_libraries( test_backward
     lib_slam_utility
 )
 
-# Create executable target to test math kinematics.
-add_executable( test_math_kinematics
-    test/test_math_kinematics.cpp
+# Create executable target to test basic math.
+add_executable( test_basic_math
+    test/test_basic_math.cpp
 )
-target_link_libraries( test_math_kinematics
+target_link_libraries( test_basic_math
     lib_slam_utility
 )
 
@@ -102,5 +102,13 @@ add_executable( test_line_segment
     test/test_line_segment.cpp
 )
 target_link_libraries( test_line_segment
+    lib_slam_utility
+)
+
+# Create executable target to test plane.
+add_executable( test_plane
+    test/test_plane.cpp
+)
+target_link_libraries( test_plane
     lib_slam_utility
 )

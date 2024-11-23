@@ -12,7 +12,7 @@ using namespace SLAM_VISUALIZOR;
 constexpr int32_t kNumOfPointsInOneDimension = 10;
 
 void TestArgSort() {
-    ReportInfo(YELLOW ">> Test arg sort." RESET_COLOR);
+    ReportColorInfo(">> Test arg sort.");
 
     std::vector<int32_t> values;
     for (int32_t i = 0; i < 10; ++i) {
@@ -28,7 +28,7 @@ void TestArgSort() {
 }
 
 void TestArgSortVector() {
-    ReportInfo(YELLOW ">> Test arg sort vector." RESET_COLOR);
+    ReportColorInfo(">> Test arg sort vector.");
 
     std::vector<Vec3> values;
     for (int32_t i = 0; i < 10; ++i) {
@@ -44,7 +44,7 @@ void TestArgSortVector() {
 }
 
 void TestKdTreeConstruction() {
-    ReportInfo(YELLOW ">> Test kd tree construction." RESET_COLOR);
+    ReportColorInfo(">> Test kd tree construction.");
 
     // Create points cloud.
     std::vector<Vec3> raw_points;
@@ -119,7 +119,7 @@ void TestKdTreeConstruction() {
 }
 
 void TestKdTreeSearch() {
-    ReportInfo(YELLOW ">> Test kd tree search knn and radius." RESET_COLOR);
+    ReportColorInfo(">> Test kd tree search knn and radius.");
 
     // Create points cloud.
     std::vector<Vec3> raw_points;
@@ -198,12 +198,10 @@ void TestKdTreeSearch() {
 }
 
 int main(int argc, char **argv) {
-
+    ReportInfo(YELLOW ">> Test kd tree." RESET_COLOR);
     TestArgSort();
     TestArgSortVector();
-
-    // TestKdTreeConstruction();
+    TestKdTreeConstruction();
     TestKdTreeSearch();
-
     return 0;
 }

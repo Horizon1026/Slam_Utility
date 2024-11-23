@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
 
     CircularBuffer<uint32_t, 3> buffer;
 
-    ReportInfo(YELLOW">> Test push_back." RESET_COLOR);
+    ReportColorInfo(">> Test push_back.");
     for (uint32_t i = 0; i < 6; ++i) {
         if (buffer.Full()) {
             ReportInfo("Circular buffer is full. Cannot push back.");
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
         ReportInfo("Pushed item is " << buffer.Back());
     }
 
-    ReportInfo(YELLOW">> Test pop_front." RESET_COLOR);
+    ReportColorInfo(">> Test pop_front.");
     for (uint32_t i = 0; i < 6; ++i) {
         if (buffer.Empty()) {
             ReportInfo("Circular buffer is empty. Cannot pop front.");
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
         buffer.PopFront();
     }
 
-    ReportInfo(YELLOW">> Test push_front." RESET_COLOR);
+    ReportColorInfo(">> Test push_front.");
     for (uint32_t i = 0; i < 6; ++i) {
         if (buffer.Full()) {
             ReportInfo("Circular buffer is full. Cannot push front.");
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
         ReportInfo("Pushed item is " << buffer.Front());
     }
 
-    ReportInfo(YELLOW">> Test pop_back." RESET_COLOR);
+    ReportColorInfo(">> Test pop_back.");
     for (uint32_t i = 0; i < 6; ++i) {
         if (buffer.Empty()) {
             ReportInfo("Circular buffer is empty. Cannot pop back.");

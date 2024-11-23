@@ -246,10 +246,7 @@ public:
         const TMat3<Scalar> C1 = R - TMat3<Scalar>::Identity();
         const TMat3<Scalar> C2 = R + TMat3<Scalar>::Identity();
         const TMat3<Scalar> C = C1 * C2.inverse();
-        return TVec3<Scalar>(
-            - C(1, 2),
-            C(0, 2),
-            - C(0, 1));
+        return TVec3<Scalar>(- C(1, 2), C(0, 2), - C(0, 1));
     }
 
     /* Convert cayley to reduced rotation matrix. */

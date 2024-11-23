@@ -6,14 +6,14 @@
 using namespace SLAM_UTILITY;
 
 void TestTangentBase() {
-    ReportInfo(YELLOW ">> Test Utility::TangentBase()" RESET_COLOR);
+    ReportColorInfo(">> Test Utility::TangentBase()");
     const Vec3 vec(1, 1, 0);
     ReportInfo("vec is " << LogVec(vec));
     ReportInfo("base on tangent of vec is\n" << Utility::TangentBase(vec));
 }
 
 void TestConvertionBetweenEulerAndQuaternion() {
-    ReportInfo(YELLOW ">> Test Utility::EulerToQuaternion() and QuaternionToEuler()" RESET_COLOR);
+    ReportColorInfo(">> Test Utility::EulerToQuaternion() and QuaternionToEuler()");
     Vec3 pry = Vec3(90, 50, 60);
     ReportInfo("Truth pitch, roll, yaw is " << LogVec(pry));
     const Quat q = Utility::EulerToQuaternion(pry);
@@ -23,7 +23,7 @@ void TestConvertionBetweenEulerAndQuaternion() {
 }
 
 void TestLogAndExp() {
-    ReportInfo(YELLOW ">> Test Utility::Logarithm() and Utility::Exponent()" RESET_COLOR);
+    ReportColorInfo(">> Test Utility::Logarithm() and Utility::Exponent()");
     const Quat q = Quat(0, 0.92388, 0.382683, 0).normalized();
     const Vec3 omega = Utility::Logarithm(q);
     const Quat new_q = Utility::Exponent(omega);
@@ -34,10 +34,8 @@ void TestLogAndExp() {
 
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test math kinematics." RESET_COLOR);
-
     TestTangentBase();
     TestConvertionBetweenEulerAndQuaternion();
     TestLogAndExp();
-
     return 0;
 }

@@ -48,7 +48,7 @@ void TestPyramid() {
 }
 
 int main(int argc, char **argv) {
-    ReportInfo("Slam Utility Test.");
+    ReportInfo(YELLOW "Slam Utility Test." RESET_COLOR);
 
     TestImage();
     TestPyramid();

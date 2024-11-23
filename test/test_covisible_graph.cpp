@@ -85,7 +85,7 @@ void PrintCheckResult(CovisibleGraph<Vec3, Vec2> &graph, bool show_information =
 
 void TestCovisibleGraphGeneration(std::vector<Pose> &cameras,
                                   std::vector<Vec3> &points) {
-    ReportInfo(YELLOW ">> Test covisible graph generation." RESET_COLOR);
+    ReportColorInfo(">> Test covisible graph generation.");
     CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
     PrintCheckResult(graph);
 }
@@ -93,7 +93,7 @@ void TestCovisibleGraphGeneration(std::vector<Pose> &cameras,
 void TestCovisibleGraphRemoveFeatures(std::vector<Pose> &cameras,
                                       std::vector<Vec3> &points,
                                       uint32_t removed_feature_id) {
-    ReportInfo(YELLOW ">> Test covisible graph remove features." RESET_COLOR);
+    ReportColorInfo(">> Test covisible graph remove features.");
     CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
     graph.RemoveFeature(removed_feature_id);
     PrintCheckResult(graph);
@@ -102,7 +102,7 @@ void TestCovisibleGraphRemoveFeatures(std::vector<Pose> &cameras,
 void TestCovisibleGraphRemoveFrames(std::vector<Pose> &cameras,
                                     std::vector<Vec3> &points,
                                     uint32_t remove_frame_id) {
-    ReportInfo(YELLOW ">> Test covisible graph remove frames." RESET_COLOR);
+    ReportColorInfo(">> Test covisible graph remove frames.");
     CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
     graph.RemoveFrame(remove_frame_id);
     PrintCheckResult(graph);
@@ -110,7 +110,7 @@ void TestCovisibleGraphRemoveFrames(std::vector<Pose> &cameras,
 
 void TestGettingCovisibleFeatures(std::vector<Pose> &cameras,
                                   std::vector<Vec3> &points) {
-    ReportInfo(YELLOW ">> Test covisible graph get covisible features." RESET_COLOR);
+    ReportColorInfo(">> Test covisible graph get covisible features.");
     CovisibleGraph<Vec3, Vec2> graph = CreateGraph(cameras, points);
 
     VisualFrame<VisualFeature<Vec3, Vec2>> frame_i = graph.frames().front();

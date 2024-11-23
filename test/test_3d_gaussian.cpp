@@ -137,7 +137,7 @@ void TestShowSeveral3DGaussian() {
 }
 
 int main(int argc, char *argv[]) {
-    ReportColorInfo(">> Test 3d gaussian.");
+    ReportInfo(YELLOW ">> Test 3d gaussian." RESET_COLOR);
     TestShowOne3DGaussian();
     TestShowSeveral3DGaussian();
     return 0;

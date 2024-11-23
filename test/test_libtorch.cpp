@@ -108,9 +108,9 @@ void Test(std::shared_ptr<Model> &model) {
 
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test libtorch." RESET_COLOR);
-    ReportInfo("torch::cuda::is_available() = " << torch::cuda::is_available());
-    ReportInfo("torch::cuda::cudnn_is_available() = " << torch::cuda::cudnn_is_available());
-    ReportInfo("torch::cuda::device_count() = " << torch::cuda::device_count());
+    ReportColorInfo("torch::cuda::is_available() = " << torch::cuda::is_available());
+    ReportColorInfo("torch::cuda::cudnn_is_available() = " << torch::cuda::cudnn_is_available());
+    ReportColorInfo("torch::cuda::device_count() = " << torch::cuda::device_count());
 
     auto model = std::make_shared<Model>();
     Train(model);

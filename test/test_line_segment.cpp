@@ -5,7 +5,7 @@
 using namespace SLAM_UTILITY;
 
 void TestTranslationOfPlucker() {
-    ReportInfo(YELLOW ">> Test translation of plucker line." RESET_COLOR);
+    ReportColorInfo(">> Test translation of plucker line.");
 
     LinePlucker3D plucker_w;
     plucker_w.Normalize();
@@ -25,7 +25,7 @@ void TestTranslationOfPlucker() {
 }
 
 void TestTransformBetweenPluckerAndOrthonormal() {
-    ReportInfo(YELLOW ">> Test transform between plucker and orthonormal." RESET_COLOR);
+    ReportColorInfo(">> Test transform between plucker and orthonormal.");
 
     Vec6 param = Vec6::Ones();
     param << 1, 1, 0, 1, -1, 0;
