@@ -16,7 +16,7 @@ void TestConvertionBetweenEulerAndQuaternion() {
     ReportInfo(YELLOW ">> Test Utility::EulerToQuaternion() and QuaternionToEuler()" RESET_COLOR);
     Vec3 pry = Vec3(90, 50, 60);
     ReportInfo("Truth pitch, roll, yaw is " << LogVec(pry));
-    Quat q = Utility::EulerToQuaternion(pry);
+    const Quat q = Utility::EulerToQuaternion(pry);
     ReportInfo("q is " << LogQuat(q));
     pry = Utility::QuaternionToEuler(q);
     ReportInfo("pitch, roll, yaw is " << LogVec(pry));
@@ -24,13 +24,12 @@ void TestConvertionBetweenEulerAndQuaternion() {
 
 void TestLogAndExp() {
     ReportInfo(YELLOW ">> Test Utility::Logarithm() and Utility::Exponent()" RESET_COLOR);
-    Quat q = Quat(1, 2, 0, 0).normalized();
-    Vec3 omega = Utility::Logarithm(q);
-    Quat new_q = Utility::Exponent(omega);
-
+    const Quat q = Quat(0, 0.92388, 0.382683, 0).normalized();
+    const Vec3 omega = Utility::Logarithm(q);
+    const Quat new_q = Utility::Exponent(omega);
     ReportInfo("Truth q is " << LogQuat(q));
     ReportInfo("omega is " << LogVec(omega));
-    ReportInfo("new q is " << LogQuat(new_q));
+    ReportInfo("New q is " << LogQuat(new_q));
 }
 
 int main(int argc, char **argv) {

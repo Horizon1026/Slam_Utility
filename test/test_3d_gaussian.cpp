@@ -18,7 +18,7 @@ constexpr float cx = 400.0f;
 constexpr float cy = 400.0f;
 
 void TestShowOne3DGaussian() {
-    ReportInfo(">> Test only one 3d gaussian rendering.");
+    ReportColorInfo(">> Test only one 3d gaussian rendering.");
     // Camera view.
     const Quat q_wc = Quat::Identity();
     const Vec3 p_wc = Vec3(0, 0, -10.0f);
@@ -58,7 +58,7 @@ void TestShowOne3DGaussian() {
 }
 
 void TestShowSeveral3DGaussian() {
-    ReportInfo(">> Test several 3d gaussian rendering.");
+    ReportColorInfo(">> Test several 3d gaussian rendering.");
     // Camera view.
     const Quat q_wc = Quat::Identity();
     const Vec3 p_wc = Vec3(6, 5, -20);
@@ -137,8 +137,8 @@ void TestShowSeveral3DGaussian() {
 }
 
 int main(int argc, char *argv[]) {
-    ReportInfo(">> Test 3d gaussian.");
-    // TestShowOne3DGaussian();
+    ReportColorInfo(">> Test 3d gaussian.");
+    TestShowOne3DGaussian();
     TestShowSeveral3DGaussian();
     return 0;
 }

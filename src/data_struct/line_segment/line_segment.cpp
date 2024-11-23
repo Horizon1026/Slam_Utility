@@ -66,8 +66,7 @@ LineOrthonormal3D::LineOrthonormal3D(const Vec3 &vector_u, const Vec1 &vector_w)
 }
 
 Mat3 LineOrthonormal3D::matrix_U() const {
-    const float u_norm = vector_u().norm();
-    return Eigen::AngleAxisf(u_norm, vector_u() / u_norm).toRotationMatrix();
+    return Utility::Exponent(vector_u()).toRotationMatrix();
 }
 
 Mat2 LineOrthonormal3D::matrix_W() const {

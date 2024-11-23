@@ -56,6 +56,7 @@ public:
     const Vec6 &param() const { return param_; }
 
 private:
+    // [ (3)normal vector of plane | (3)direction vector of line ].
     Vec6 param_ = Vec6::Ones();
 
 };
@@ -80,6 +81,7 @@ public:
     const Vec4 &param() const { return param_; }
 
 private:
+    // [ (3)rotation vector of U | (1)rotation angle of W ].
     Vec4 param_ = Vec4::Zero();
 };
 

@@ -36,7 +36,7 @@ void TestTransformBetweenPluckerAndOrthonormal() {
     ReportInfo("orthonormal_w is " << LogVec(orthonormal_w.param()));
     ReportInfo("orthonormal_w matrix U is\n" << orthonormal_w.matrix_U());
     ReportInfo("orthonormal_w matrix W is\n" << orthonormal_w.matrix_W());
-    const LinePlucker3D plucker_w_back = LinePlucker3D(orthonormal_w);
+    const LinePlucker3D plucker_w_back(orthonormal_w);
     ReportInfo("plucker_w_back is " << LogVec(plucker_w_back.param()));
 }
 
