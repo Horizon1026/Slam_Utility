@@ -1,11 +1,16 @@
 #include "plane.h"
 #include "slam_basic_math.h"
 #include "slam_operations.h"
+#include "slam_log_reporter.h"
 
 namespace SLAM_UTILITY {
 
 namespace {
     constexpr float kMaxToleranceCosThetaForTwoVectors = 0.996f;
+}
+
+Plane3D::Plane3D(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
+    FitPlaneModel(p1, p2, p3);
 }
 
 bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
@@ -24,18 +29,21 @@ bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
 bool Plane3D::FitPlaneModel(const std::vector<Vec3> &points) {
     RETURN_FALSE_IF(points.size() < 3);
 
-    Mat3 hessian = Mat3::Zero();
-    Vec3 bias = Vec3::Zero();
+    // Compute mid point of all points.
+    Vec3 summary = Vec3::Zero();
     for (const auto &point : points) {
-        const Vec3 vector = Vec3(point.x(), point.y(), 1);
-        hessian += vector * vector.transpose();
-        bias += vector * point.z();
+        summary += point;
     }
-
-    RETURN_FALSE_IF(hessian.determinant() < kZero);
-    const Vec3 coeff = hessian.ldlt().solve(bias);
-    param_ = Vec4(coeff(0), coeff(1), -1, coeff(2));
-    param_ /= normal_vector().norm();
+    const Vec3 mid_point = summary / static_cast<float>(points.size());
+    // Construct matrix A to solve normal vector of plane.
+    Mat matrix_A = Mat::Ones(points.size(), 3);
+    for (uint32_t i = 0; i < points.size(); ++i) {
+        const auto point = points[i] - mid_point;
+        matrix_A.row(i) = point.transpose();
+    }
+    // Generate plane parameters.
+    param_.head<3>() = matrix_A.jacobiSvd(Eigen::ComputeFullV).matrixV().rightCols<1>();
+    param_(3) = - mid_point.dot(param_.head<3>());
     return true;
 }
 

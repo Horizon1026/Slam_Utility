@@ -6,9 +6,9 @@ using namespace SLAM_UTILITY;
 
 void TestComputePlaneModelWithThreePoints() {
     ReportColorInfo(">> Test plane fitting with three points.");
-    const Vec3 p1_w = Vec3(1, 0, 0);
-    const Vec3 p2_w = Vec3(0, 1, 0);
-    const Vec3 p3_w = Vec3(0, 0, 1);
+    const Vec3 p1_w = Vec3(1, 1, 0);
+    const Vec3 p2_w = Vec3(1, 1, 1);
+    const Vec3 p3_w = Vec3(0, 0, 0);
     Plane3D plane;
     plane.FitPlaneModel(p1_w, p2_w, p3_w);
     ReportInfo("   Plane model is " << LogVec(plane.param()));
@@ -20,10 +20,10 @@ void TestComputePlaneModelWithThreePoints() {
 void TestComputePlaneModelWithSeveralPoints() {
     ReportColorInfo(">> Test plane fitting with several points.");
     const std::vector<Vec3> points = std::vector<Vec3>{
-        Vec3(1, 0, 0),
-        Vec3(0, 1, 0),
+        Vec3(1, 1, 0),
+        Vec3(1, 1, 1),
+        Vec3(0, 0, 0),
         Vec3(0, 0, 1),
-        Vec3(0.5, 0.5, 0.5)
     };
 
     Plane3D plane;
