@@ -4,7 +4,7 @@
 #include "slam_basic_math.h"
 #include "slam_operations.h"
 #include "slam_memory.h"
-#include "visualizor.h"
+#include "visualizor_2d.h"
 
 using namespace SLAM_VISUALIZOR;
 

@@ -5,7 +5,7 @@
 #include "2d_gaussian.h"
 #include "3d_gaussian.h"
 
-#include "visualizor.h"
+#include "visualizor_2d.h"
 
 using namespace SLAM_UTILITY;
 using namespace SLAM_VISUALIZOR;
