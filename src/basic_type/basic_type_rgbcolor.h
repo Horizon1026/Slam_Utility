@@ -12,38 +12,65 @@ struct RgbPixel {
     uint8_t b = 0;
 };
 
-// Typical rgb color definition.
-namespace RgbColor {
-    constexpr RgbPixel kPink = RgbPixel{.r = 255, .g = 192, .b = 203};
-    constexpr RgbPixel kHotPink = RgbPixel{.r = 255, .g = 105, .b = 180};
-    constexpr RgbPixel kViolet = RgbPixel{.r = 238, .g = 130, .b = 238};
-    constexpr RgbPixel kMagenta = RgbPixel{.r = 255, .g = 0, .b = 255};
-    constexpr RgbPixel kPurple = RgbPixel{.r = 128, .g = 0, .b = 128};
-    constexpr RgbPixel kLavender = RgbPixel{.r = 230, .g = 230, .b = 250};
-    constexpr RgbPixel kBlue = RgbPixel{.r = 0, .g = 0, .b = 255};
-    constexpr RgbPixel kRoyalBlue = RgbPixel{.r = 65, .g = 105, .b = 225};
-    constexpr RgbPixel kAliceBlue = RgbPixel{.r = 240, .g = 248, .b = 255};
-    constexpr RgbPixel kLightSkyBlue = RgbPixel{.r = 135, .g = 206, .b = 250};
-    constexpr RgbPixel kDeepSkyBlue = RgbPixel{.r = 0, .g = 191, .b = 255};
-    constexpr RgbPixel kCyan = RgbPixel{.r = 0, .g = 255, .b = 255};
-    constexpr RgbPixel kWhite = RgbPixel{.r = 255, .g = 255, .b = 255};
-    constexpr RgbPixel kFloralWhite = RgbPixel{.r = 255, .g = 250, .b = 240};
-    constexpr RgbPixel kBlack = RgbPixel{.r = 0, .g = 0, .b = 0};
-    constexpr RgbPixel kSlateGray = RgbPixel{.r = 112, .g = 128, .b = 144};
-    constexpr RgbPixel kGreen = RgbPixel{.r = 0, .g = 255, .b = 0};
-    constexpr RgbPixel kLightGreen = RgbPixel{.r = 144, .g = 238, .b = 144};
-    constexpr RgbPixel kLaunGreen = RgbPixel{.r = 124, .g = 252, .b = 0};
-    constexpr RgbPixel kYellow = RgbPixel{.r = 255, .g = 255, .b = 0};
-    constexpr RgbPixel kKhaki = RgbPixel{.r = 240, .g = 230, .b = 140};
-    constexpr RgbPixel kGold = RgbPixel{.r = 255, .g = 215, .b = 0};
-    constexpr RgbPixel kOrange = RgbPixel{.r = 255, .g = 165, .b = 0};
-    constexpr RgbPixel kDrakOrange = RgbPixel{.r = 255, .g = 140, .b = 0};
-    constexpr RgbPixel kChocolate = RgbPixel{.r = 210, .g = 105, .b = 30};
-    constexpr RgbPixel kOrangeRed = RgbPixel{.r = 255, .g = 69, .b = 0};
-    constexpr RgbPixel kRed = RgbPixel{.r = 255, .g = 0, .b = 0};
-    constexpr RgbPixel kDarkRed = RgbPixel{.r = 139, .g = 0, .b = 0};
-    constexpr RgbPixel kBrown = RgbPixel{.r = 165, .g = 42, .b = 42};
-}
+/* Class RgbColor Declaration. */
+class RgbColor {
+
+public:
+    // Typical color definition.
+    static RgbPixel kPink;
+    static RgbPixel kHotPink;
+    static RgbPixel kViolet;
+    static RgbPixel kMagenta;
+    static RgbPixel kPurple;
+    static RgbPixel kLavender;
+    static RgbPixel kBlue;
+    static RgbPixel kRoyalBlue;
+    static RgbPixel kAliceBlue;
+    static RgbPixel kLightSkyBlue;
+    static RgbPixel kDeepSkyBlue;
+    static RgbPixel kCyan;
+    static RgbPixel kWhite;
+    static RgbPixel kFloralWhite;
+    static RgbPixel kBlack;
+    static RgbPixel kSlateGray;
+    static RgbPixel kGreen;
+    static RgbPixel kLightGreen;
+    static RgbPixel kLaunGreen;
+    static RgbPixel kYellow;
+    static RgbPixel kKhaki;
+    static RgbPixel kGold;
+    static RgbPixel kOrange;
+    static RgbPixel kDrakOrange;
+    static RgbPixel kChocolate;
+    static RgbPixel kOrangeRed;
+    static RgbPixel kRed;
+    static RgbPixel kDarkRed;
+    static RgbPixel kBrown;
+
+public:
+    RgbColor() = default;
+    virtual ~RgbColor() = default;
+
+    // Return random rgb color.
+    static RgbPixel Random() {
+        return RgbPixel{
+            .r = static_cast<uint8_t>(std::rand() % 255),
+            .g = static_cast<uint8_t>(std::rand() % 255),
+            .b = static_cast<uint8_t>(std::rand() % 255),
+        };
+    }
+
+    // Weight [0, 1] means [cold, warm] color.
+    static RgbPixel ColdWarm(const float weight) {
+        const uint8_t warm = static_cast<uint8_t>(std::min(0.0f, std::max(255.0f, weight * 255.0f)));
+        return RgbPixel{
+            .r = warm,
+            .g = 0,
+            .b = static_cast<uint8_t>(255 - warm),
+        };
+    }
+
+};
 
 }
 
