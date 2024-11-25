@@ -11,6 +11,7 @@ class LineSegment2D {
 
 public:
     LineSegment2D() = default;
+    explicit LineSegment2D(const Vec4 &param) : param_(param) {}
     LineSegment2D(const Vec2 &xy1, const Vec2 &xy2);
     virtual ~LineSegment2D() = default;
 
