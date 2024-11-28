@@ -24,11 +24,12 @@ LinePlucker3D::LinePlucker3D(const LineSegment3D &line) {
 LinePlucker3D::LinePlucker3D(const LineOrthonormal3D &line) {
     const Mat3 U = line.matrix_U();
     const Mat2 W = line.matrix_W();
-    const float cos_phi = W(0, 0);
-    const float sin_phi = W(1, 0);
-    param_.head<3>() = cos_phi * U.col(0);
-    param_.tail<3>() = sin_phi * U.col(1);
-    Normalize();
+    const Vec3 u1 = U.col(0);
+    const Vec3 u2 = U.col(1);
+    const float w1 = W(0, 0);
+    const float w2 = W(1, 0);
+    param_.head<3>() = w1 * u1;
+    param_.tail<3>() = w2 * u2;
 }
 
 LinePlucker3D::LinePlucker3D(const Mat4 &dual_plucker_matrix) {
@@ -97,36 +98,67 @@ LineOrthonormal3D::LineOrthonormal3D(const LinePlucker3D &line) {
     U.col(0) = line.normal_vector() / n_norm;
     U.col(1) = line.direction_vector() / d_norm;
     U.col(2) = (line.normal_vector().cross(line.direction_vector())).normalized();
-    param_.head<3>() = Utility::Logarithm(Quat(U));
-    param_.tail<1>().setConstant(std::asin(d_norm / (d_norm + n_norm)));
+    param_.head<3>() = Vec3(
+        std::atan2(U.col(1)(2), U.col(2)(2)),
+        std::asin(- U.col(0)(2)),
+        std::atan2(U.col(0)(1), U.col(0)(0)));
+
+    const Vec2 w = Vec2(n_norm, d_norm).normalized();
+    param_(3) = std::asin(w(1));
 }
 
-LineOrthonormal3D::LineOrthonormal3D(const Vec3 &vector_u, const Vec1 &vector_w) {
-    param_.head<3>() = vector_u;
-    param_.tail<1>() = vector_w;
+LineOrthonormal3D::LineOrthonormal3D(const Vec3 &theta, const float &phi) {
+    param_.head<3>() = theta;
+    param_.tail<1>().setConstant(phi);
 }
 
 void LineOrthonormal3D::UpdateParameters(const Vec4 &dx) {
-    const Quat q(matrix_U());
-    const Quat dq(Utility::Exponent(Vec3(dx.head<3>())));
-    const Quat new_q = q * dq;
-    param_.head<3>() = Utility::Logarithm(new_q);
+    const Mat3 U = matrix_U();
+    const Vec3 delta_theta = dx.head<3>();
+    Mat3 Rz = Mat3::Zero();
+    Rz << cos(delta_theta(2)), -sin(delta_theta(2)), 0.0f,
+          sin(delta_theta(2)), cos(delta_theta(2)), 0.0f,
+          0.0f, 0.0f, 1.0f;
+    Mat3 Ry = Mat3::Zero();
+    Ry << cos(delta_theta(1)), 0.0f, sin(delta_theta(1)),
+          0.0f, 1.0f, 0.0f,
+          -sin(delta_theta(1)), 0.0f, cos(delta_theta(1));
+    Mat3 Rx = Mat3::Zero();
+    Rx << 1.0f, 0.0f, 0.0f,
+          0.0f, cos(delta_theta(0)), -sin(delta_theta(0)),
+          0.0f, sin(delta_theta(0)), cos(delta_theta(0));
+    const Mat3 new_U = U * Rx * Ry * Rz;
+    param_.head<3>() = Vec3(
+        std::atan2(U.col(1)(2), U.col(2)(2)),
+        std::asin(- U.col(0)(2)),
+        std::atan2(U.col(0)(1), U.col(0)(0)));
 
-    const Mat2 w(matrix_W());
-    const float cos_phi = std::cos(dx(3));
-    const float sin_phi = std::sin(dx(3));
-    Mat2 dw = Mat2::Zero();
-    dw << cos_phi, - sin_phi, sin_phi, cos_phi;
-    const Mat2 new_w = w * dw;
-    param_.tail<1>().setConstant(std::asin(new_w(1, 0)));
+    const Mat2 W = matrix_W();
+    const float delta_phi = dx(3);
+    const float cos_delta_phi = std::cos(delta_phi);
+    const float sin_delta_phi = std::sin(delta_phi);
+    Mat2 delta_W = Mat2::Zero();
+    delta_W << cos_delta_phi, - sin_delta_phi, sin_delta_phi, cos_delta_phi;
+    const Mat2 new_W = W * delta_W;
+    param_(3) = std::asin(w(1));
 }
 
 Mat3 LineOrthonormal3D::matrix_U() const {
-    return Utility::Exponent(vector_u()).toRotationMatrix();
+    const float s1 = std::sin(param_[0]);
+    const float c1 = std::cos(param_[0]);
+    const float s2 = std::sin(param_[1]);
+    const float c2 = std::cos(param_[1]);
+    const float s3 = std::sin(param_[2]);
+    const float c3 = std::cos(param_[2]);
+    Mat3 U = Mat3::Zero();
+    U << c2 * c3,   s1 * s2 * c3 - c1 * s3,   c1 * s2 * c3 + s1 * s3,
+         c2 * s3,   s1 * s2 * s3 + c1 * c3,   c1 * s2 * s3 - s1 * c3,
+         -s2,       s1 * c2,                  c1 * c2;
+    return U;
 }
 
 Mat2 LineOrthonormal3D::matrix_W() const {
-    const float phi = param_.tail<1>().value();
+    const float phi = param_(3);
     const float cos_phi = std::cos(phi);
     const float sin_phi = std::sin(phi);
     Mat2 W = Mat2::Zero();

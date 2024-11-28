@@ -101,7 +101,7 @@ public:
     LineOrthonormal3D() = default;
     explicit LineOrthonormal3D(const Vec4 &param) : param_(param) {}
     explicit LineOrthonormal3D(const LinePlucker3D &line);
-    LineOrthonormal3D(const Vec3 &vector_u, const Vec1 &vector_w);
+    LineOrthonormal3D(const Vec3 &theta, const float &phi);
 
     // Operations.
     void UpdateParameters(const Vec4 &dx);
@@ -109,8 +109,8 @@ public:
     // Parameters of Orthonormal Line.
     Mat3 matrix_U() const;
     Mat2 matrix_W() const;
-    Vec3 vector_u() const { return param_.head<3>(); }
-    Vec1 vector_w() const { return param_.tail<1>(); }
+    Vec3 theta() const { return param_.head<3>(); }
+    float phi() const { return param_(3); }
 
     // Reference for member variables.
     Vec4 &param() { return param_; }
