@@ -71,8 +71,9 @@ public:
     Mat4 dual_plucker_matrix() const;
 
     // Operations.
-    bool SelfCheck() const { return std::fabs(normal_vector().dot(direction_vector())) < kZero; }
+    bool SelfCheck() const { return std::fabs(normal_vector().dot(direction_vector())) < 1e-3f; }
     void Normalize();
+    LinePlucker3D Normalized() const;
     Vec3 GetPointOnLine(const float offset) const;
     LinePlucker3D TransformTo(const Quat &q_wc, const Vec3 &p_wc) const;
     Vec3 ProjectToNormalPlane() const;
@@ -102,6 +103,10 @@ public:
     explicit LineOrthonormal3D(const LinePlucker3D &line);
     LineOrthonormal3D(const Vec3 &vector_u, const Vec1 &vector_w);
 
+    // Operations.
+    void UpdateParameters(const Vec4 &dx);
+
+    // Parameters of Orthonormal Line.
     Mat3 matrix_U() const;
     Mat2 matrix_W() const;
     Vec3 vector_u() const { return param_.head<3>(); }

@@ -165,7 +165,6 @@ public:
     /* Compute exp of vector3. */
     template <typename Scalar>
     static TQuat<Scalar> Exponent(const TVec3<Scalar> &omega) {
-        // TODO: Is anything wrong here?
         const Scalar theta_sq = omega.squaredNorm();
         const Scalar theta = std::sqrt(theta_sq);
         const Scalar half_theta = static_cast<Scalar>(0.5) * theta;
