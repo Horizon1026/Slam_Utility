@@ -129,9 +129,9 @@ void LineOrthonormal3D::UpdateParameters(const Vec4 &dx) {
           0.0f, sin(delta_theta(0)), cos(delta_theta(0));
     const Mat3 new_U = U * Rx * Ry * Rz;
     param_.head<3>() = Vec3(
-        std::atan2(U.col(1)(2), U.col(2)(2)),
-        std::asin(- U.col(0)(2)),
-        std::atan2(U.col(0)(1), U.col(0)(0)));
+        std::atan2(new_U.col(1)(2), new_U.col(2)(2)),
+        std::asin(- new_U.col(0)(2)),
+        std::atan2(new_U.col(0)(1), new_U.col(0)(0)));
 
     const Mat2 W = matrix_W();
     const float delta_phi = dx(3);
@@ -140,7 +140,7 @@ void LineOrthonormal3D::UpdateParameters(const Vec4 &dx) {
     Mat2 delta_W = Mat2::Zero();
     delta_W << cos_delta_phi, - sin_delta_phi, sin_delta_phi, cos_delta_phi;
     const Mat2 new_W = W * delta_W;
-    param_(3) = std::asin(w(1));
+    param_(3) = std::asin(new_W(1, 0));
 }
 
 Mat3 LineOrthonormal3D::matrix_U() const {
