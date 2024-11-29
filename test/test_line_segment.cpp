@@ -18,9 +18,9 @@ void TestTranslationOfPlucker() {
 
     const Quat q_wc1 = Quat::Identity();
     const Vec3 p_wc1 = Vec3::Random();
-    const LinePlucker3D plucker_c1 = plucker_w.TransformTo(q_wc1, p_wc1);
+    const LinePlucker3D plucker_c1 = plucker_w.TransformTo(p_wc1, q_wc1);
     ReportInfo("plucker_c1 is " << LogVec(plucker_c1.param()));
-    const LinePlucker3D plucker_w_back = plucker_c1.TransformTo(q_wc1.inverse(), -(q_wc1.inverse() * p_wc1));
+    const LinePlucker3D plucker_w_back = plucker_c1.TransformTo(- (q_wc1.inverse() * p_wc1), q_wc1.inverse());
     ReportInfo("plucker_w_back is " << LogVec(plucker_w_back.param()));
 }
 

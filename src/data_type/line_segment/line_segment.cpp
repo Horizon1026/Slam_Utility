@@ -67,7 +67,7 @@ Vec3 LinePlucker3D::GetPointOnLine(const float offset) const {
     return nearest_point + offset * direction_vector().normalized();
 }
 
-LinePlucker3D LinePlucker3D::TransformTo(const Quat &q_wc, const Vec3 &p_wc) const {
+LinePlucker3D LinePlucker3D::TransformTo(const Vec3 &p_wc, const Quat &q_wc) const {
     /* L_c = [ n_c ] = T_cw * L_w = [ R_cw  skew(p_cw) * R_cw ] * L_w
              [ d_c ]                [  0           R_cw       ] */
     const Mat3 R_cw(q_wc.inverse());
@@ -89,6 +89,14 @@ Vec3 LinePlucker3D::ProjectToImagePlane(const float fx, const float fy, const fl
     return K * normal_vector();
 }
 
+void LinePlucker3D::UpdateParameters(const Vec4 &delta_param) {
+    // Divide 4-dof to a 1-dof update for dir_vector, and a 3-dof update for norm_vector.
+    // To dir_vector, update by d' = exp((n/n_norm) * delta_d) * d, where delta_d is 1-dof.
+    param_.tail<3>() = Utility::Exponent(Vec3(normal_vector().normalized() * delta_param(3))) * direction_vector();
+    // To norm_vector, update it as a common 3-dof vector.
+    param_.head<3>() = normal_vector() + delta_param.head<3>();
+}
+
 LineOrthonormal3D::LineOrthonormal3D(const LinePlucker3D &line) {
     RETURN_IF(!line.SelfCheck());
     const float n_norm = line.normal_vector().norm();
@@ -98,10 +106,7 @@ LineOrthonormal3D::LineOrthonormal3D(const LinePlucker3D &line) {
     U.col(0) = line.normal_vector() / n_norm;
     U.col(1) = line.direction_vector() / d_norm;
     U.col(2) = (line.normal_vector().cross(line.direction_vector())).normalized();
-    param_.head<3>() = Vec3(
-        std::atan2(U.col(1)(2), U.col(2)(2)),
-        std::asin(- U.col(0)(2)),
-        std::atan2(U.col(0)(1), U.col(0)(0)));
+    param_.head<3>() = Utility::Logarithm(Quat(U));
 
     const Vec2 w = Vec2(n_norm, d_norm).normalized();
     param_(3) = std::asin(w(1));
@@ -115,23 +120,8 @@ LineOrthonormal3D::LineOrthonormal3D(const Vec3 &theta, const float &phi) {
 void LineOrthonormal3D::UpdateParameters(const Vec4 &dx) {
     const Mat3 U = matrix_U();
     const Vec3 delta_theta = dx.head<3>();
-    Mat3 Rz = Mat3::Zero();
-    Rz << cos(delta_theta(2)), -sin(delta_theta(2)), 0.0f,
-          sin(delta_theta(2)), cos(delta_theta(2)), 0.0f,
-          0.0f, 0.0f, 1.0f;
-    Mat3 Ry = Mat3::Zero();
-    Ry << cos(delta_theta(1)), 0.0f, sin(delta_theta(1)),
-          0.0f, 1.0f, 0.0f,
-          -sin(delta_theta(1)), 0.0f, cos(delta_theta(1));
-    Mat3 Rx = Mat3::Zero();
-    Rx << 1.0f, 0.0f, 0.0f,
-          0.0f, cos(delta_theta(0)), -sin(delta_theta(0)),
-          0.0f, sin(delta_theta(0)), cos(delta_theta(0));
-    const Mat3 new_U = U * Rx * Ry * Rz;
-    param_.head<3>() = Vec3(
-        std::atan2(new_U.col(1)(2), new_U.col(2)(2)),
-        std::asin(- new_U.col(0)(2)),
-        std::atan2(new_U.col(0)(1), new_U.col(0)(0)));
+    const Mat3 new_U = U * Utility::Exponent(delta_theta).toRotationMatrix();
+    param_.head<3>() = Utility::Logarithm(Quat(new_U));
 
     const Mat2 W = matrix_W();
     const float delta_phi = dx(3);
@@ -144,17 +134,7 @@ void LineOrthonormal3D::UpdateParameters(const Vec4 &dx) {
 }
 
 Mat3 LineOrthonormal3D::matrix_U() const {
-    const float s1 = std::sin(param_[0]);
-    const float c1 = std::cos(param_[0]);
-    const float s2 = std::sin(param_[1]);
-    const float c2 = std::cos(param_[1]);
-    const float s3 = std::sin(param_[2]);
-    const float c3 = std::cos(param_[2]);
-    Mat3 U = Mat3::Zero();
-    U << c2 * c3,   s1 * s2 * c3 - c1 * s3,   c1 * s2 * c3 + s1 * s3,
-         c2 * s3,   s1 * s2 * s3 + c1 * c3,   c1 * s2 * s3 - s1 * c3,
-         -s2,       s1 * c2,                  c1 * c2;
-    return U;
+    return Utility::Exponent(theta()).toRotationMatrix();
 }
 
 Mat2 LineOrthonormal3D::matrix_W() const {
