@@ -40,9 +40,27 @@ void TestTransformBetweenPluckerAndOrthonormal() {
     ReportInfo("plucker_w_back is " << LogVec(plucker_w_back.param()));
 }
 
+void TestProjectPointOnLine() {
+    ReportColorInfo(">> Test project point on line.");
+
+    Vec6 param = Vec6::Ones();
+    param << 1, 1, 0, 1, -1, 0;
+    LinePlucker3D plucker_w(param);
+    ReportInfo("plucker_w is " << LogVec(plucker_w.param()) << ", self check " << plucker_w.SelfCheck());
+
+    const Vec3 truth_p_on_line = plucker_w.GetPointOnLine(-3);
+    const Vec3 p_w = truth_p_on_line + plucker_w.normal_vector();
+    const Vec3 p_on_line = plucker_w.ProjectPointOnLine(p_w);
+
+    ReportInfo("truth_p_on_line " << LogVec(truth_p_on_line));
+    ReportInfo("p_w " << LogVec(p_w));
+    ReportInfo("p_on_line " << LogVec(p_on_line));
+}
+
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test line segment." RESET_COLOR);
     TestTranslationOfPlucker();
     TestTransformBetweenPluckerAndOrthonormal();
+    TestProjectPointOnLine();
     return 0;
 }

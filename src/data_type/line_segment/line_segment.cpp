@@ -30,6 +30,7 @@ LinePlucker3D::LinePlucker3D(const LineOrthonormal3D &line) {
     const float w2 = W(1, 0);
     param_.head<3>() = w1 * u1;
     param_.tail<3>() = w2 * u2;
+    Normalize();
 }
 
 LinePlucker3D::LinePlucker3D(const Mat4 &dual_plucker_matrix) {
@@ -65,6 +66,13 @@ LinePlucker3D LinePlucker3D::Normalized() const {
 Vec3 LinePlucker3D::GetPointOnLine(const float offset) const {
     const Vec3 nearest_point = direction_vector().cross(normal_vector()).normalized() * distance();
     return nearest_point + offset * direction_vector().normalized();
+}
+
+Vec3 LinePlucker3D::ProjectPointOnLine(const Vec3 &p_w) const {
+    const Vec3 nearest_point = direction_vector().cross(normal_vector()).normalized() * distance();
+    const Vec3 a = p_w - nearest_point;
+    const float offset = a.dot(direction_vector().normalized());
+    return GetPointOnLine(offset);
 }
 
 LinePlucker3D LinePlucker3D::TransformTo(const Vec3 &p_wc, const Quat &q_wc) const {

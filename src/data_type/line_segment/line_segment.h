@@ -75,6 +75,7 @@ public:
     void Normalize();
     LinePlucker3D Normalized() const;
     Vec3 GetPointOnLine(const float offset) const;
+    Vec3 ProjectPointOnLine(const Vec3 &p_w) const;
     LinePlucker3D TransformTo(const Vec3 &p_wc, const Quat &q_wc) const;
     Vec3 ProjectToNormalPlane() const;
     Vec3 ProjectToImagePlane(const float fx, const float fy, const float cx, const float cy) const;
