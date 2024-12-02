@@ -108,14 +108,8 @@ Vec3 LinePlucker3D::ProjectToImagePlane(const float fx, const float fy, const fl
 void LinePlucker3D::UpdateParameters(const Vec4 &delta_param) {
     const Vec3 omega = delta_param.head<3>();
     const float angle = delta_param(3);
-    const float theta = omega.norm();
-    const Mat3 omega_skew = Utility::SkewSymmetricMatrix(omega);
 
-    Mat3 R = Mat3::Identity() + omega_skew + omega_skew * omega_skew;
-    if (theta >= 1e-5f) {
-        R = Mat3::Identity() + std::sin(theta) / theta * omega_skew +
-            (1.0f - std::cos(theta)) / (theta * theta) * omega_skew * omega_skew;
-    }
+    Mat3 R = Mat3(Utility::Exponent(omega));
     const Mat3 new_U = R * matrix_U();
 
     Mat2 W = Mat2::Zero();
