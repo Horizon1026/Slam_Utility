@@ -114,10 +114,10 @@ void LinePlucker3D::UpdateParameters(const Vec4 &delta_param) {
 
     Mat2 W = Mat2::Zero();
     W << std::cos(angle), - std::sin(angle), std::sin(angle), std::cos(angle);
-    const Mat2 new_W = W * matrix_W().block<2, 2>(0, 0);
+    const Vec2 new_W = W * vector_W();
 
-    const Vec3 new_normal_vector = new_W(0, 0) * new_U.col(0);
-    const Vec3 new_direction_vector = new_W(1, 0) * new_U.col(1);
+    const Vec3 new_normal_vector = new_W.x() * new_U.col(0);
+    const Vec3 new_direction_vector = new_W.y() * new_U.col(1);
     SetNormalVector(new_normal_vector);
     SetDirectionVector(new_direction_vector);
     Normalize();
