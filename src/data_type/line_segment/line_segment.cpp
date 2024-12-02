@@ -16,20 +16,8 @@ LineSegment3D::LineSegment3D(const Vec3 &xyz1, const Vec3 &xyz2) {
 }
 
 LinePlucker3D::LinePlucker3D(const LineSegment3D &line) {
-    param_.head<3>() = line.start_point().cross(line.end_point());
-    param_.tail<3>() = line.end_point() - line.start_point();
-    Normalize();
-}
-
-LinePlucker3D::LinePlucker3D(const LineOrthonormal3D &line) {
-    const Mat3 U = line.matrix_U();
-    const Mat2 W = line.matrix_W();
-    const Vec3 u1 = U.col(0);
-    const Vec3 u2 = U.col(1);
-    const float w1 = W(0, 0);
-    const float w2 = W(1, 0);
-    param_.head<3>() = w1 * u1;
-    param_.tail<3>() = w2 * u2;
+    SetNormalVector(line.start_point().cross(line.end_point()));
+    SetDirectionVector(line.end_point() - line.start_point());
     Normalize();
 }
 
@@ -40,8 +28,8 @@ LinePlucker3D::LinePlucker3D(const Mat4 &dual_plucker_matrix) {
 }
 
 LinePlucker3D::LinePlucker3D(const Vec3 &normal_vector, const Vec3 &direction_vector) {
-    param_.head<3>() = normal_vector;
-    param_.tail<3>() = direction_vector;
+    SetNormalVector(normal_vector);
+    SetDirectionVector(direction_vector);
     Normalize();
 }
 
@@ -51,6 +39,26 @@ Mat4 LinePlucker3D::dual_plucker_matrix() const {
     L.topRightCorner<3, 1>() = normal_vector();
     L.bottomLeftCorner<1, 3>() = - normal_vector().transpose();
     return L;
+}
+
+Mat3 LinePlucker3D::matrix_U() const {
+    Mat3 U = Mat3::Zero();
+    U.col(0) = normal_vector().normalized();
+    U.col(1) = direction_vector().normalized();
+    U.col(2) = U.col(0).cross(U.col(1));
+    return U;
+}
+
+Mat3x2 LinePlucker3D::matrix_W() const {
+    Mat3x2 W = Mat3x2::Zero();
+    W(0, 0) = normal_vector().norm();
+    W(1, 1) = direction_vector().norm();
+    return W;
+}
+
+Vec2 LinePlucker3D::vector_W() const {
+    const Vec2 W = Vec2(normal_vector().norm(), direction_vector().norm());
+    return W.normalized();
 }
 
 void LinePlucker3D::Normalize() {
@@ -98,60 +106,27 @@ Vec3 LinePlucker3D::ProjectToImagePlane(const float fx, const float fy, const fl
 }
 
 void LinePlucker3D::UpdateParameters(const Vec4 &delta_param) {
-    // Divide 4-dof to a 1-dof update for dir_vector, and a 3-dof update for norm_vector.
-    // To dir_vector, update by d' = exp((n/n_norm) * delta_d) * d, where delta_d is 1-dof.
-    param_.tail<3>() = Utility::Exponent(Vec3(normal_vector().normalized() * delta_param(3))) * direction_vector();
-    // To norm_vector, update it as a common 3-dof vector.
-    param_.head<3>() = normal_vector() + delta_param.head<3>();
-}
+    const Vec3 omega = delta_param.head<3>();
+    const float angle = delta_param(3);
+    const float theta = omega.norm();
+    const Mat3 omega_skew = Utility::SkewSymmetricMatrix(omega);
 
-LineOrthonormal3D::LineOrthonormal3D(const LinePlucker3D &line) {
-    RETURN_IF(!line.SelfCheck());
-    const float n_norm = line.normal_vector().norm();
-    const float d_norm = line.direction_vector().norm();
+    Mat3 R = Mat3::Identity() + omega_skew + omega_skew * omega_skew;
+    if (theta >= 1e-5f) {
+        R = Mat3::Identity() + std::sin(theta) / theta * omega_skew +
+            (1.0f - std::cos(theta)) / (theta * theta) * omega_skew * omega_skew;
+    }
+    const Mat3 new_U = R * matrix_U();
 
-    Mat3 U = Mat3::Zero();
-    U.col(0) = line.normal_vector() / n_norm;
-    U.col(1) = line.direction_vector() / d_norm;
-    U.col(2) = (line.normal_vector().cross(line.direction_vector())).normalized();
-    param_.head<3>() = Utility::Logarithm(Quat(U));
-
-    const Vec2 w = Vec2(n_norm, d_norm).normalized();
-    param_(3) = std::asin(w(1));
-}
-
-LineOrthonormal3D::LineOrthonormal3D(const Vec3 &theta, const float &phi) {
-    param_.head<3>() = theta;
-    param_.tail<1>().setConstant(phi);
-}
-
-void LineOrthonormal3D::UpdateParameters(const Vec4 &dx) {
-    const Mat3 U = matrix_U();
-    const Vec3 delta_theta = dx.head<3>();
-    const Mat3 new_U = U * Utility::Exponent(delta_theta).toRotationMatrix();
-    param_.head<3>() = Utility::Logarithm(Quat(new_U));
-
-    const Mat2 W = matrix_W();
-    const float delta_phi = dx(3);
-    const float cos_delta_phi = std::cos(delta_phi);
-    const float sin_delta_phi = std::sin(delta_phi);
-    Mat2 delta_W = Mat2::Zero();
-    delta_W << cos_delta_phi, - sin_delta_phi, sin_delta_phi, cos_delta_phi;
-    const Mat2 new_W = W * delta_W;
-    param_(3) = std::asin(new_W(1, 0));
-}
-
-Mat3 LineOrthonormal3D::matrix_U() const {
-    return Utility::Exponent(theta()).toRotationMatrix();
-}
-
-Mat2 LineOrthonormal3D::matrix_W() const {
-    const float phi = param_(3);
-    const float cos_phi = std::cos(phi);
-    const float sin_phi = std::sin(phi);
     Mat2 W = Mat2::Zero();
-    W << cos_phi, - sin_phi, sin_phi, cos_phi;
-    return W;
+    W << std::cos(angle), - std::sin(angle), std::sin(angle), std::cos(angle);
+    const Vec2 new_W = W * vector_W();
+
+    const Vec3 new_normal_vector = new_W.x() * new_U.col(0);
+    const Vec3 new_direction_vector = new_W.y() * new_U.col(1);
+    SetNormalVector(new_normal_vector);
+    SetDirectionVector(new_direction_vector);
+    Normalize();
 }
 
 }

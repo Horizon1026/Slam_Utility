@@ -49,9 +49,6 @@ private:
     Vec6 param_ = Vec6::Zero();
 };
 
-/* Predeclaration for Class LineOrthonormal3D. */
-class LineOrthonormal3D;
-
 /* Class LinePlucker3D Declaration. */
 class LinePlucker3D {
 
@@ -59,7 +56,6 @@ public:
     LinePlucker3D() = default;
     explicit LinePlucker3D(const Vec6 &param) : param_(param.normalized()) {}
     explicit LinePlucker3D(const LineSegment3D &line);
-    explicit LinePlucker3D(const LineOrthonormal3D &line);
     explicit LinePlucker3D(const Mat4 &dual_plucker_matrix);
     LinePlucker3D(const Vec3 &normal_vector, const Vec3 &direction_vector);
     virtual ~LinePlucker3D() = default;
@@ -69,6 +65,9 @@ public:
     Vec3 direction_vector() const { return param_.tail<3>(); }
     float distance() const { return normal_vector().norm() / direction_vector().norm(); }
     Mat4 dual_plucker_matrix() const;
+    Mat3 matrix_U() const;
+    Mat3x2 matrix_W() const;
+    Vec2 vector_W() const;
 
     // Operations.
     bool SelfCheck() const { return std::fabs(normal_vector().dot(direction_vector())) < 1e-3f; }
@@ -94,34 +93,6 @@ private:
     // [ (3)normal vector of plane | (3)direction vector of line ].
     Vec6 param_ = Vec6::Ones();
 
-};
-
-/* Class LineOrthonormal3D Declaration. */
-class LineOrthonormal3D {
-
-public:
-    LineOrthonormal3D() = default;
-    explicit LineOrthonormal3D(const Vec4 &param) : param_(param) {}
-    explicit LineOrthonormal3D(const LinePlucker3D &line);
-    LineOrthonormal3D(const Vec3 &theta, const float &phi);
-
-    // Operations.
-    void UpdateParameters(const Vec4 &dx);
-
-    // Parameters of Orthonormal Line.
-    Mat3 matrix_U() const;
-    Mat2 matrix_W() const;
-    Vec3 theta() const { return param_.head<3>(); }
-    float phi() const { return param_(3); }
-
-    // Reference for member variables.
-    Vec4 &param() { return param_; }
-    // Const reference for member variables.
-    const Vec4 &param() const { return param_; }
-
-private:
-    // [ (3)rotation vector of U | (1)rotation angle of W ].
-    Vec4 param_ = Vec4::Zero();
 };
 
 }
