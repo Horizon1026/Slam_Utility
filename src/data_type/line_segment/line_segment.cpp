@@ -105,16 +105,68 @@ Vec3 LinePlucker3D::ProjectToImagePlane(const float fx, const float fy, const fl
     return K * normal_vector();
 }
 
-void LinePlucker3D::UpdateParameters(const Vec4 &delta_param) {
-    const Vec3 omega = delta_param.head<3>();
-    const float angle = delta_param(3);
+template <> Mat6x4 LinePlucker3D::LinearizeTo4Dof<true>() const {
+    const Mat3 U = matrix_U();
+    const Mat3x2 W = matrix_W();
+    const Vec3 u1 = U.col(0);
+    const Vec3 u2 = U.col(1);
+    const float w1 = W(0, 0);
+    const float w2 = W(1, 1);
+    // Compute jacobian of d_plucker_in_w to d_orthonormal_in_w.
+    Mat6x4 jacobian_plucker_to_orthonormal = Mat6x4::Zero();
+    jacobian_plucker_to_orthonormal.block<3, 3>(0, 0) = - Utility::SkewSymmetricMatrix(w1 * u1);
+    jacobian_plucker_to_orthonormal.block<3, 3>(3, 0) = - Utility::SkewSymmetricMatrix(w2 * u2);
+    jacobian_plucker_to_orthonormal.block<3, 1>(0, 3) = - w2 * u1;
+    jacobian_plucker_to_orthonormal.block<3, 1>(3, 3) = w1 * u2;
+    return jacobian_plucker_to_orthonormal;
+}
 
+template <> void LinePlucker3D::UpdateParameters<true>(const Vec4 &delta_param) {
+    // Update part of rotation.
+    const Vec3 omega = delta_param.head<3>();
     Mat3 R = Mat3(Utility::Exponent(omega));
     const Mat3 new_U = R * matrix_U();
 
+    // Update part of scale.
+    const float angle = delta_param(3);
     Mat2 W = Mat2::Zero();
     W << std::cos(angle), - std::sin(angle), std::sin(angle), std::cos(angle);
     const Vec2 new_W = W * vector_W();
+
+    const Vec3 new_normal_vector = new_W.x() * new_U.col(0);
+    const Vec3 new_direction_vector = new_W.y() * new_U.col(1);
+    SetNormalVector(new_normal_vector);
+    SetDirectionVector(new_direction_vector);
+    Normalize();
+}
+
+template <> Mat6x4 LinePlucker3D::LinearizeTo4Dof<false>() const {
+    const Mat3 U = matrix_U();
+    const Mat3x2 W = matrix_W();
+    const Vec3 u1 = U.col(0);
+    const Vec3 u2 = U.col(1);
+    const float w1 = W(0, 0);
+    const float w2 = W(1, 1);
+    // Compute jacobian of d_plucker_in_w to d_orthonormal_in_w.
+    Mat6x4 jacobian_plucker_to_orthonormal = Mat6x4::Zero();
+    jacobian_plucker_to_orthonormal.block<3, 3>(0, 0) = - w1 * U * Utility::SkewSymmetricMatrix(Vec3(1, 0, 0));
+    jacobian_plucker_to_orthonormal.block<3, 3>(3, 0) = - w2 * U * Utility::SkewSymmetricMatrix(Vec3(0, 1, 0));
+    jacobian_plucker_to_orthonormal.block<3, 1>(0, 3) = w2 * u1;
+    jacobian_plucker_to_orthonormal.block<3, 1>(3, 3) = - w1 * u2;
+    return jacobian_plucker_to_orthonormal;
+}
+
+template <> void LinePlucker3D::UpdateParameters<false>(const Vec4 &delta_param) {
+    // Update part of rotation.
+    const Vec3 omega = delta_param.head<3>();
+    Mat3 R = Mat3(Utility::Exponent(omega));
+    const Mat3 new_U = matrix_U() * R;
+
+    // Update part of scale.
+    const float angle = delta_param(3);
+    Mat2 W = Mat2::Zero();
+    W << std::cos(angle), - std::sin(angle), std::sin(angle), std::cos(angle);
+    const Vec2 new_W = vector_W().transpose() * W;
 
     const Vec3 new_normal_vector = new_W.x() * new_U.col(0);
     const Vec3 new_direction_vector = new_W.y() * new_U.col(1);
