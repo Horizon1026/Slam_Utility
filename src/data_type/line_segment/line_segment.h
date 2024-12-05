@@ -54,7 +54,7 @@ class LinePlucker3D {
 
 public:
     LinePlucker3D() = default;
-    explicit LinePlucker3D(const Vec6 &param) : param_(param.normalized()) {}
+    explicit LinePlucker3D(const Vec6 &param) : param_(param) { Normalize(); }
     explicit LinePlucker3D(const LineSegment3D &line);
     explicit LinePlucker3D(const Mat4 &dual_plucker_matrix);
     LinePlucker3D(const Vec3 &normal_vector, const Vec3 &direction_vector);
