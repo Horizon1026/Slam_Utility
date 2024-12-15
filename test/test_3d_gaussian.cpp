@@ -53,8 +53,8 @@ void TestShowOne3DGaussian() {
         }
     }
 
-    Visualizor::ShowImage("show image", show_image);
-    Visualizor::WaitKey(0);
+    Visualizor2D::ShowImage("show image", show_image);
+    Visualizor2D::WaitKey(0);
 }
 
 void TestShowSeveral3DGaussian() {
@@ -132,8 +132,8 @@ void TestShowSeveral3DGaussian() {
         }
     }
 
-    Visualizor::ShowImage("show image", show_image);
-    Visualizor::WaitKey(0);
+    Visualizor2D::ShowImage("show image", show_image);
+    Visualizor2D::WaitKey(0);
 }
 
 int main(int argc, char *argv[]) {

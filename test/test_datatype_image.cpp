@@ -12,7 +12,7 @@ std::string test_image_file_name = "../example/image.png";
 
 void TestImage() {
     GrayImage image;
-    Visualizor::LoadImage(test_image_file_name, image);
+    Visualizor2D::LoadImage(test_image_file_name, image);
     std::cout << image.rows() << std::endl;
     std::cout << image.cols() << std::endl;
 
@@ -26,13 +26,13 @@ void TestImage() {
         }
     }
 
-    Visualizor::ShowImage("Loaded png image", image);
-    Visualizor::WaitKey(0);
+    Visualizor2D::ShowImage("Loaded png image", image);
+    Visualizor2D::WaitKey(0);
 }
 
 void TestPyramid() {
     GrayImage image;
-    Visualizor::LoadImage(test_image_file_name, image);
+    Visualizor2D::LoadImage(test_image_file_name, image);
 
     ImagePyramid pyramid;
     pyramid.SetPyramidBuff((uint8_t *)malloc(sizeof(uint8_t) * image.rows() * image.cols()));
@@ -41,10 +41,10 @@ void TestPyramid() {
 
     for (uint32_t i = 0; i < pyramid.level(); ++i) {
         GrayImage one_level = pyramid.GetImage(i);
-        Visualizor::ShowImage(std::to_string(i), one_level);
-        Visualizor::WaitKey(1);
+        Visualizor2D::ShowImage(std::to_string(i), one_level);
+        Visualizor2D::WaitKey(1);
     }
-    Visualizor::WaitKey(0);
+    Visualizor2D::WaitKey(0);
 }
 
 int main(int argc, char **argv) {
