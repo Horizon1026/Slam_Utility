@@ -70,6 +70,14 @@ public:
         };
     }
 
+    static uint8_t ConvertFromFloat(const float value) {
+        const float temp = std::max(std::min(value * 255.0f, 255.0f), 0.0f);
+        return static_cast<uint8_t>(temp);
+    }
+    static float ConvertFromUint8(const uint8_t value) {
+        return static_cast<float>(value) / 255.0f;
+    }
+
 };
 
 }
