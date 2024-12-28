@@ -60,6 +60,17 @@ public:
         };
     }
 
+    // Return bright random rgb color.
+    static RgbPixel BrightRandom() {
+        Vec3 float_color = Vec3::Random().cwiseAbs();
+        float_color /= float_color.maxCoeff();
+        return RgbPixel{
+            .r = ConvertFromFloat(float_color.x()),
+            .g = ConvertFromFloat(float_color.y()),
+            .b = ConvertFromFloat(float_color.z()),
+        };
+    }
+
     // Weight [0, 1] means [cold, warm] color.
     static RgbPixel ColdWarm(const float weight) {
         const uint8_t warm = static_cast<uint8_t>(std::min(0.0f, std::max(255.0f, weight * 255.0f)));
