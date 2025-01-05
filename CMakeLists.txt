@@ -2,7 +2,7 @@ cmake_minimum_required( VERSION 3.0 )
 
 project( slam_utility )
 
-set( CMAKE_BUILD_TYPE "RelWithDegInfo" )
+set( CMAKE_BUILD_TYPE "Debug" )
 set( CMAKE_CXX_FLAGS "-std=c++17 -O3 -g -Wall -pthread" )
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set( CMAKE_CXX_STANDARD 20 )
@@ -78,14 +78,6 @@ add_executable( test_kd_tree
 target_link_libraries( test_kd_tree
     lib_slam_utility
     lib_3d_visualizor
-)
-
-# Create executable target to test libtorch.
-add_executable( test_libtorch
-    test/test_libtorch.cpp
-)
-target_link_libraries( test_libtorch
-    lib_slam_utility
 )
 
 # Create executable target to test 3d_gaussian.

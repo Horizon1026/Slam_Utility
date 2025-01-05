@@ -52,7 +52,7 @@ if ( NOT TARGET lib_kd_tree )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_struct/kd_tree ${PROJECT_SOURCE_DIR}/build/lib_kd_tree )
 endif()
 
-# Add all 3rd libraries.
+# Add all relative 3rd libraries.
 if ( NOT TARGET lib_stack_backward )
     add_subdirectory( ${SLAM_UTILITY_PATH}/3rd_libraries/backward ${PROJECT_SOURCE_DIR}/build/lib_stack_backward )
 endif()
