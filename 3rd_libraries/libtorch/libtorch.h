@@ -6,6 +6,7 @@
 
 #include "basic_type.h"
 #include "datatype_image.h"
+#include "slam_operations.h"
 
 /* Class LibTorch Declaration. */
 class LibTorch {
