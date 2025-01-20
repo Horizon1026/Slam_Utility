@@ -40,6 +40,31 @@ public:
         }
     }
 
+    // tensor_data : [batch_size, channel, height, width].
+    // image_mat : output image matrix.
+    static void ConvertToMatImgF(const torch::Tensor &tensor_data, MatImgF &image_mat) {
+        image_mat.setZero(tensor_data.size(2), tensor_data.size(3));
+        for (int32_t i = 0; i < tensor_data.size(2); ++i) {
+            for (int32_t j = 0; j < tensor_data.size(3); ++j) {
+                image_mat(i, j) = tensor_data[0][0][i][j].item<float>();
+            }
+        }
+    }
+
+    // tensor_data : [batch_size, channel, height, width].
+    // image_mat : output image matrix.
+    static void ConvertToMatImgF(const torch::Tensor &tensor_data, std::array<MatImgF, 3> &image_mats) {
+        for (int32_t c = 0; c < 3; ++c) {
+            BREAK_IF(tensor_data.size(1) <= c);
+            image_mats[c].setZero(tensor_data.size(2), tensor_data.size(3));
+            for (int32_t i = 0; i < tensor_data.size(2); ++i) {
+                for (int32_t j = 0; j < tensor_data.size(3); ++j) {
+                    image_mats[c](i, j) = tensor_data[0][c][i][j].item<float>();
+                }
+            }
+        }
+    }
+
 };
 
 #endif // end of _LIB_TORCH_H_
