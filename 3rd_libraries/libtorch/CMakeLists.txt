@@ -1,5 +1,6 @@
 # Find libtorch.
-list( APPEND CMAKE_PREFIX_PATH "/mnt/e/libtorch_cuda" )
+# list( APPEND CMAKE_PREFIX_PATH "/home/horizon_msi_wsl2/dependence/libtorch_linux_cpu_2.5.1" )
+list( APPEND CMAKE_PREFIX_PATH "/home/horizon_msi_wsl2/dependence/libtorch_linux_cuda12.4_2.5.1" )
 find_package( PythonInterp REQUIRED )
 find_package( Torch REQUIRED )
 
