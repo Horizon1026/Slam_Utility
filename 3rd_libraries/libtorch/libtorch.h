@@ -17,51 +17,24 @@ public:
 
     // tensor_data : [batch_size, channel, height, width].
     // image_mat : output image matrix.
-    static void ConvertToMatImg(const torch::Tensor &tensor_data, MatImg &image_mat) {
-        image_mat.setZero(tensor_data.size(2), tensor_data.size(3));
-        for (int32_t i = 0; i < tensor_data.size(2); ++i) {
-            for (int32_t j = 0; j < tensor_data.size(3); ++j) {
-                image_mat(i, j) = static_cast<uint8_t>(tensor_data[0][0][i][j].item<float>() * 255.0f);
-            }
-        }
-    }
-
-    // tensor_data : [batch_size, channel, height, width].
-    // image_mat : output image matrix.
-    static void ConvertToMatImg(const torch::Tensor &tensor_data, std::array<MatImg, 3> &image_mats) {
-        for (int32_t c = 0; c < 3; ++c) {
-            BREAK_IF(tensor_data.size(1) <= c);
-            image_mats[c].setZero(tensor_data.size(2), tensor_data.size(3));
-            for (int32_t i = 0; i < tensor_data.size(2); ++i) {
-                for (int32_t j = 0; j < tensor_data.size(3); ++j) {
-                    image_mats[c](i, j) = static_cast<uint8_t>(tensor_data[0][c][i][j].item<float>() * 255.0f);
-                }
-            }
-        }
-    }
-
-    // tensor_data : [batch_size, channel, height, width].
-    // image_mat : output image matrix.
     static void ConvertToMatImgF(const torch::Tensor &tensor_data, MatImgF &image_mat) {
-        image_mat.setZero(tensor_data.size(2), tensor_data.size(3));
-        for (int32_t i = 0; i < tensor_data.size(2); ++i) {
-            for (int32_t j = 0; j < tensor_data.size(3); ++j) {
-                image_mat(i, j) = tensor_data[0][0][i][j].item<float>();
-            }
-        }
+        const int32_t rows = tensor_data.size(2);
+        const int32_t cols = tensor_data.size(3);
+        image_mat.setZero(rows, cols);
+        const auto tensor_data_ptr = tensor_data[0][0].data_ptr<float>();
+        std::copy_n(tensor_data_ptr, rows * cols, image_mat.data());
     }
 
     // tensor_data : [batch_size, channel, height, width].
     // image_mat : output image matrix.
     static void ConvertToMatImgF(const torch::Tensor &tensor_data, std::array<MatImgF, 3> &image_mats) {
+        const int32_t rows = tensor_data.size(2);
+        const int32_t cols = tensor_data.size(3);
         for (int32_t c = 0; c < 3; ++c) {
             BREAK_IF(tensor_data.size(1) <= c);
-            image_mats[c].setZero(tensor_data.size(2), tensor_data.size(3));
-            for (int32_t i = 0; i < tensor_data.size(2); ++i) {
-                for (int32_t j = 0; j < tensor_data.size(3); ++j) {
-                    image_mats[c](i, j) = tensor_data[0][c][i][j].item<float>();
-                }
-            }
+            image_mats[c].setZero(rows, cols);
+            const auto tensor_data_ptr = tensor_data[0][c].data_ptr<float>();
+            std::copy_n(tensor_data_ptr, rows * cols, image_mats[c].data());
         }
     }
 
