@@ -4,6 +4,7 @@
 #include <eigen3/Eigen/Eigen>
 #include <eigen3/Eigen/Eigenvalues>
 #include <eigen3/unsupported/Eigen/Polynomials>
+#include <eigen3/unsupported/Eigen/FFT>
 
 namespace SLAM_UTILITY {
 
