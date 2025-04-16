@@ -20,6 +20,11 @@ int main(int argc, char **argv) {
         ReportInfo("Pushed item is " << buffer.Back());
     }
 
+    ReportColorInfo(">> Test index operator.");
+    for (uint32_t i = 0; i < buffer.Size(); ++i) {
+        ReportInfo("Item at index " << i << " is " << buffer[i]);
+    }
+
     ReportColorInfo(">> Test pop_front.");
     for (uint32_t i = 0; i < 6; ++i) {
         if (buffer.Empty()) {

@@ -24,8 +24,20 @@ public:
     // Got item in buffer.
     T &Back() { return buffer_[tail_]; }
     T &Front() { return buffer_[head_]; }
+    T &operator[](uint32_t index) {
+        if (index >= size_) {
+            throw std::out_of_range("Index out of range");
+        }
+        return buffer_[(head_ + index) % MaxSize];
+    }
     const T &Back() const { return buffer_[tail_]; }
     const T &Front() const { return buffer_[head_]; }
+    const T &operator[](uint32_t index) const {
+        if (index >= size_) {
+            throw std::out_of_range("Index out of range");
+        }
+        return buffer_[(head_ + index) % MaxSize];
+    }
 
     // Status of buffer.
     bool Full() const { return size_ && (tail_ + 1) % MaxSize == head_; }
