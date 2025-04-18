@@ -381,6 +381,17 @@ public:
         return diff(idx);
     }
 
+    template <typename Scalar>
+    static TQuat<Scalar> ConvertGravityToAttitude(const TVec3<Scalar> &gravity_i) {
+        const TVec3<Scalar> g_w = TVec3<Scalar>(0, 0, 1);
+        const TVec3<Scalar> g_i = gravity_i.normalized();
+        const Scalar norm = (g_i.cross(g_w)).norm();
+        const TVec3<Scalar> vec = g_i.cross(g_w) / norm;
+        const Scalar theta = std::atan2(norm, g_i.dot(g_w));
+        const TVec3<Scalar> axis_angle = vec * theta;
+        return Exponent(axis_angle);
+    }
+
 };
 
 }
