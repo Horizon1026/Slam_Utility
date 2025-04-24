@@ -11,10 +11,12 @@ template <typename T, uint32_t MaxSize>
 class CircularBuffer {
 
 public:
-    CircularBuffer();
+    CircularBuffer() = default;
     virtual ~CircularBuffer() = default;
 
     // Operate buffer.
+    void PushFront(T &element);
+    void PushBack(T &element);
     void PushFront(const T &element);
     void PushBack(const T &element);
     void PopFront();
@@ -53,11 +55,7 @@ private:
 
 /* Class Circular Buffer Definition. */
 template <typename T, uint32_t MaxSize>
-CircularBuffer<T, MaxSize>::CircularBuffer() :
-    head_(0), tail_(MaxSize - 1), size_(0) {}
-
-template <typename T, uint32_t MaxSize>
-void CircularBuffer<T, MaxSize>::PushFront(const T &element) {
+void CircularBuffer<T, MaxSize>::PushFront(T &element) {
     if (size_ == MaxSize) {
         return;
     }
@@ -67,12 +65,32 @@ void CircularBuffer<T, MaxSize>::PushFront(const T &element) {
 }
 
 template <typename T, uint32_t MaxSize>
-void CircularBuffer<T, MaxSize>::PushBack(const T &element) {
+void CircularBuffer<T, MaxSize>::PushBack(T &element) {
     if (size_ == MaxSize) {
         return;
     }
     tail_ = (tail_ + 1) % MaxSize;
     buffer_[tail_] = std::move(element);
+    ++size_;
+}
+
+template <typename T, uint32_t MaxSize>
+void CircularBuffer<T, MaxSize>::PushFront(const T &element) {
+    if (size_ == MaxSize) {
+        return;
+    }
+    head_ = head_ ? head_ - 1 : MaxSize - 1;
+    buffer_[head_] = element;
+    ++size_;
+}
+
+template <typename T, uint32_t MaxSize>
+void CircularBuffer<T, MaxSize>::PushBack(const T &element) {
+    if (size_ == MaxSize) {
+        return;
+    }
+    tail_ = (tail_ + 1) % MaxSize;
+    buffer_[tail_] = element;
     ++size_;
 }
 
