@@ -24,16 +24,20 @@ public:
     void Clear();
 
     // Got item in buffer.
-    T &Back(uint32_t offset = 0) { return buffer_[tail_ - offset]; }
-    T &Front(uint32_t offset = 0) { return buffer_[head_ + offset]; }
+    T &Back() { return buffer_[tail_]; }
+    T &Front() { return buffer_[head_]; }
+    T &Back(uint32_t offset) { return buffer_[(tail_ + MaxSize - offset) % MaxSize]; }
+    T &Front(uint32_t offset) { return buffer_[(head_ + offset) % MaxSize]; }
     T &operator[](uint32_t index) {
         if (index >= size_) {
             throw std::out_of_range("Index out of range");
         }
         return buffer_[(head_ + index) % MaxSize];
     }
-    const T &Back(uint32_t offset = 0) const { return buffer_[tail_ - offset]; }
-    const T &Front(uint32_t offset = 0) const { return buffer_[head_ + offset]; }
+    const T &Back() const { return buffer_[tail_]; }
+    const T &Front() const { return buffer_[head_]; }
+    const T &Back(uint32_t offset) const { return buffer_[(tail_ + MaxSize - offset) % MaxSize]; }
+    const T &Front(uint32_t offset) const { return buffer_[(head_ + offset) % MaxSize]; }
     const T &operator[](uint32_t index) const {
         if (index >= size_) {
             throw std::out_of_range("Index out of range");
