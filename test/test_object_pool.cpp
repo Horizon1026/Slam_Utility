@@ -8,6 +8,7 @@ int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test object pool." RESET_COLOR);
 
     ObjectPool<Mat> pool(10);
+
     {
     	std::vector<ObjectPtr<Mat>> objects;
 		for (int32_t i = 0; i < 10; ++i) {
