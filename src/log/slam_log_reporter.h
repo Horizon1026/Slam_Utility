@@ -30,6 +30,7 @@ namespace SLAM_UTILITY {
     #define LogQuat(q) "[wxyz][" << q.w() << ", " << q.x() << ", " << q.y() << ", " << q.z() << "]"
     #define LogVec(v) "[vec][" << v.transpose() << "]"
     #define LogMat(m) "[matrix][" << m.rows() << " | " << m.cols() << "]:\n" << m
+    #define LogTime(t) "[" << t << "s]"
 
     #define LogFixPercision(x) std::cout << std::fixed << std::setprecision(x)
     #define LogWriteToFile(...) std::cout.rdbuf(std::ofstream(__VA_ARGS__).rdbuf())
