@@ -8,17 +8,17 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set( CMAKE_CXX_STANDARD 20 )
 
 # Add slam utility.
-if ( NOT TARGET lib_slam_utility )
+if( NOT TARGET lib_slam_utility )
     add_subdirectory( src ${PROJECT_SOURCE_DIR}/build/lib_slam_utility )
 endif()
 
 # Add visualizor.
 set( VISUALIZOR_2D_PATH ${PROJECT_SOURCE_DIR}/../Visualizor2D )
-if ( NOT TARGET lib_2d_visualizor )
+if( NOT TARGET lib_2d_visualizor )
     add_subdirectory( ${VISUALIZOR_2D_PATH}/src ${PROJECT_SOURCE_DIR}/build/lib_2d_visualizor )
 endif()
 set( VISUALIZOR_3D_PATH ${PROJECT_SOURCE_DIR}/../Visualizor3D )
-if ( NOT TARGET lib_3d_visualizor )
+if( NOT TARGET lib_3d_visualizor )
     add_subdirectory( ${VISUALIZOR_3D_PATH}/src ${PROJECT_SOURCE_DIR}/build/lib_3d_visualizor )
 endif()
 
