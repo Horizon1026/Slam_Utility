@@ -60,6 +60,11 @@ public:
         };
     }
 
+    static RgbPixel Palette(uint32_t index) {
+        const uint32_t idx = index % colors_pool_.size();
+        return colors_pool_[idx];
+    }
+
     // Return bright random rgb color.
     static RgbPixel BrightRandom() {
         Vec3 float_color = Vec3::Random().cwiseAbs();
@@ -88,6 +93,9 @@ public:
     static float ConvertFromUint8(const uint8_t value) {
         return static_cast<float>(value) / 255.0f;
     }
+
+private:
+    static std::vector<RgbPixel> colors_pool_;
 
 };
 

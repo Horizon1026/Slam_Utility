@@ -33,4 +33,35 @@ RgbPixel RgbColor::kRed = RgbPixel{.r = 255, .g = 0, .b = 0};
 RgbPixel RgbColor::kDarkRed = RgbPixel{.r = 139, .g = 0, .b = 0};
 RgbPixel RgbColor::kBrown = RgbPixel{.r = 165, .g = 42, .b = 42};
 
+std::vector<RgbPixel> RgbColor::colors_pool_ = std::vector<RgbPixel>{
+    RgbColor::kGold,
+    RgbColor::kPink,
+    RgbColor::kViolet,
+    RgbColor::kMagenta,
+    RgbColor::kDeepSkyBlue,
+    RgbColor::kPurple,
+    RgbColor::kLavender,
+    RgbColor::kBlue,
+    RgbColor::kRoyalBlue,
+    RgbColor::kAliceBlue,
+    RgbColor::kLightSkyBlue,
+    RgbColor::kHotPink,
+    RgbColor::kCyan,
+    RgbColor::kWhite,
+    RgbColor::kFloralWhite,
+    RgbColor::kSlateGray,
+    RgbColor::kGreen,
+    RgbColor::kLightGreen,
+    RgbColor::kLaunGreen,
+    RgbColor::kYellow,
+    RgbColor::kKhaki,
+    RgbColor::kOrange,
+    RgbColor::kDrakOrange,
+    RgbColor::kChocolate,
+    RgbColor::kOrangeRed,
+    RgbColor::kRed,
+    RgbColor::kDarkRed,
+    RgbColor::kBrown,
+};
+
 }
