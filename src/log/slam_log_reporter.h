@@ -27,7 +27,7 @@ namespace SLAM_UTILITY {
     #define BOLD_WHITE      "\033[1m\033[37m"
 
     #define LogPtr(p) "[ptr][" << reinterpret_cast<void *>(p) << "]"
-    #define LogQuat(q) "[wxyz][" << q.coeffs().transpose() << "]"
+    #define LogQuat(q) "[wxyz][" << q.w() << " " << q.x() << " " << q.y() << " " << q.z() << "]"
     #define LogVec(v) "[vec][" << v.transpose() << "]"
     #define LogMat(m) "[matrix][" << m.rows() << " | " << m.cols() << "]:\n" << m
     #define LogTime(t) "[" << t << "s]"
