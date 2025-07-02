@@ -13,6 +13,7 @@ class CircularBuffer {
 public:
     CircularBuffer() = default;
     virtual ~CircularBuffer() = default;
+    CircularBuffer(const CircularBuffer &v) {}
 
     // Operate buffer.
     void MovePushFront(T &element);
