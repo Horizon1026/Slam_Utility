@@ -1,5 +1,5 @@
-#ifndef _SLAM_UTILITY_CIRCULAR_BUFFER_H_
-#define _SLAM_UTILITY_CIRCULAR_BUFFER_H_
+#ifndef _SLAM_UTILITY_KD_TREE_H_
+#define _SLAM_UTILITY_KD_TREE_H_
 
 #include "basic_type.h"
 #include "slam_log_reporter.h"
@@ -324,4 +324,4 @@ void KdTreeNode<Scalar, Dimension>::InformationRecursion() {
 
 }
 
-#endif // end of _SLAM_UTILITY_CIRCULAR_BUFFER_H_
+#endif // end of _SLAM_UTILITY_KD_TREE_H_
