@@ -42,13 +42,17 @@ bool Plane3D::FitPlaneModel(const std::vector<Vec3> &points) {
         matrix_A.row(i) = point.transpose();
     }
     // Generate plane parameters.
-    param_.head<3>() = matrix_A.jacobiSvd(Eigen::ComputeFullV).matrixV().rightCols<1>();
+    const Eigen::JacobiSVD<Mat> svd(matrix_A, Eigen::ComputeFullV);
+    if (svd.singularValues()[1] < svd.singularValues()[2] * 1e3f) {
+        return false;
+    }
+    param_.head<3>() = svd.matrixV().rightCols<1>();
     param_(3) = - mid_point.dot(param_.head<3>());
     return true;
 }
 
 float Plane3D::GetDistanceToPlane(const Vec3 &p_w) const {
-    return std::fabs(p_w.dot(normal_vector()) + distance_to_origin());
+    return p_w.dot(normal_vector()) + distance_to_origin();
 }
 
 }
