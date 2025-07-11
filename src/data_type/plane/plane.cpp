@@ -31,7 +31,7 @@ bool Plane3D::FitPlaneModel(const std::vector<Vec3> &points) {
 
     // Compute mid point of all points.
     Vec3 summary = Vec3::Zero();
-    for (const auto &point : points) {
+    for (const auto &point: points) {
         summary += point;
     }
     const Vec3 mid_point = summary / static_cast<float>(points.size());

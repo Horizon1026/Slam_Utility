@@ -52,7 +52,7 @@ private:
 template <typename T>
 ObjectPool<T>::ObjectPool(uint32_t initial_size) : objects_(initial_size) {
     free_objects_list_.reserve(initial_size);
-    for (auto &obj : objects_) {
+    for (auto &obj: objects_) {
         free_objects_list_.emplace_back(&obj);
     }
 }

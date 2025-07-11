@@ -68,7 +68,7 @@ void VisualFrame<FeatureType>::Information() const {
         " - number of observed features is " << features_.size()
     );
     ReportText(" - List of features observed in this frame:\n");
-    for (const auto &item : features_) {
+    for (const auto &item: features_) {
         ReportText("   - id/id " << item.first << "/" << item.second->id() << ", " << LogPtr(item.second) << "\n");
     }
     ReportText("\n");

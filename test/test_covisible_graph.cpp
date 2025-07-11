@@ -117,7 +117,7 @@ void TestGettingCovisibleFeatures(std::vector<Pose> &cameras,
     VisualFrame<VisualFeature<Vec3, Vec2>> frame_j = graph.frames().back();
     std::vector<VisualFeature<Vec3, Vec2> *> covisible_features;
     graph.GetCovisibleFeatures(frame_i, frame_j, covisible_features);
-    for (auto &feature : covisible_features) {
+    for (auto &feature: covisible_features) {
         ReportInfo(" - feature " << feature->id() << " is covisible, ptr is " << LogPtr(feature));
     }
     PrintCheckResult(graph, true);

@@ -139,7 +139,7 @@ void KdTreeNode<Scalar, Dimension>::ExtractAllPoints(const std::unique_ptr<KdTre
 
     if (node_ptr->IsLeafNode()) {
         // Add all points in this node.
-        for (const auto &index : node_ptr->point_indices()) {
+        for (const auto &index: node_ptr->point_indices()) {
             point_indices.emplace_back(index);
         }
     }
@@ -158,7 +158,7 @@ void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::unique_ptr<KdTreeNode<S
 
     if (node_ptr->IsLeafNode()) {
         // Add all points in this node.
-        for (const auto &index : node_ptr->point_indices()) {
+        for (const auto &index: node_ptr->point_indices()) {
             const Scalar distance = (target_point - points[index]).norm();
             residual_index_of_points.insert(std::make_pair(distance, index));
         }
@@ -196,7 +196,7 @@ void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::unique_ptr<KdTreeNod
 
     // Add all points in this node.
     if (node_ptr->IsLeafNode()) {
-        for (const auto &index : node_ptr->point_indices()) {
+        for (const auto &index: node_ptr->point_indices()) {
             const Scalar distance = (target_point - points[index]).norm();
             CONTINUE_IF(distance > max_radius);
             residual_index_of_points.insert(std::make_pair(distance, index));
@@ -229,7 +229,7 @@ void KdTreeNode<Scalar, Dimension>::SearchCube(const std::unique_ptr<KdTreeNode<
 
     // Add all points in this node.
     if (node_ptr->IsLeafNode()) {
-        for (const auto &index : node_ptr->point_indices()) {
+        for (const auto &index: node_ptr->point_indices()) {
             // Check if this point is inside cube.
             bool is_inside = true;
             for (uint32_t dim = 0; dim < Dimension; ++dim) {
@@ -271,7 +271,7 @@ int32_t KdTreeNode<Scalar, Dimension>::GetAxisWithMaxRange(const std::vector<int
         Scalar max_value = points[point_indices.front()](i);
         Scalar min_value = max_value;
 
-        for (const auto &index : point_indices) {
+        for (const auto &index: point_indices) {
             max_value = std::max(points[index](i), max_value);
             min_value = std::min(points[index](i), min_value);
         }

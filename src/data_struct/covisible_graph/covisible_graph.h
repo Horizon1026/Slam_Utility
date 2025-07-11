@@ -103,10 +103,10 @@ void CovisibleGraph<FeatureParamType, FeatureObserveType>::Clear() {
 
 template <typename FeatureParamType, typename FeatureObserveType>
 void CovisibleGraph<FeatureParamType, FeatureObserveType>::Information() const {
-    // for (const auto &frame : frames_) {
+    // for (const auto &frame: frames_) {
     //     frame.Information();
     // }
-    for (const auto &item : features_) {
+    for (const auto &item: features_) {
         item.second.Information();
     }
 }
@@ -114,7 +114,7 @@ void CovisibleGraph<FeatureParamType, FeatureObserveType>::Information() const {
 template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::SelfCheck() {
     // Traversal all features, check if their observal frame is exist.
-    for (auto &item : features_) {
+    for (auto &item: features_) {
         auto &feature = item.second;
         if (feature.observes().empty()) {
             continue;
@@ -131,8 +131,8 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::SelfCheck() {
     }
 
     // Traversal all frames, check if their observal feature is exist.
-    for (auto &frame : frames_) {
-        for (const auto &item : frame.features()) {
+    for (auto &frame: frames_) {
+        for (const auto &item: frame.features()) {
             if (feature(item.first) == nullptr) {
                 ReportError("[Covisible Graph] Feature observed by frame does not exist.");
                 return false;
@@ -281,7 +281,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFeature(uint32_
     }
 
     // Traversal all frames, remove their correspondence with the feature to be removed.
-    for (auto &frame : frames_) {
+    for (auto &frame: frames_) {
         frame.features().erase(feature_id);
         if (frame.features().empty()) {
             frame.need_remove() = true;
@@ -324,7 +324,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrame(uint32_t 
     // Traversal all features, remove their correspondence with the frame to be removed.
     std::vector<uint32_t> empty_features_id;
     empty_features_id.reserve(50);
-    for (auto &item : features_) {
+    for (auto &item: features_) {
         auto &feature = item.second;
 
         if (feature.final_frame_id() < frame_id) {
@@ -361,7 +361,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrame(uint32_t 
 
     // Remove frame and empty features.
     frames_.erase(frame_to_be_removed);
-    for (const auto &id : empty_features_id) {
+    for (const auto &id: empty_features_id) {
         features_.erase(id);
     }
 
@@ -395,7 +395,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(
     }
     covisible_features.clear();
 
-    for (const auto &item : frame_i.features()) {
+    for (const auto &item: frame_i.features()) {
         if (frame_j.features().find(item.first) != frame_j.features().end()) {
             covisible_features.emplace_back(item.second);
         }

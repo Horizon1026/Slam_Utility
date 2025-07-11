@@ -99,7 +99,7 @@ void TestShowSeveral3DGaussian() {
     // Sort gaussians by depth.
     std::vector<int32_t> indices;
     SlamOperation::ArgSort(all_gaussian_depth, indices);
-    for (const auto &index : indices) {
+    for (const auto &index: indices) {
         const auto &gaussian_2d = all_gaussian_2d[index];
         ReportInfo(all_gaussian_2d[index].depth() << ", rgb " << static_cast<int32_t>(gaussian_2d.color().r) << " | " <<
             static_cast<int32_t>(gaussian_2d.color().g) << " | " << static_cast<int32_t>(gaussian_2d.color().b));
@@ -112,7 +112,7 @@ void TestShowSeveral3DGaussian() {
 
             float occluded_probability = 1.0f;
             Vec3 float_color = Vec3::Zero();
-            for (const auto &index : indices) {
+            for (const auto &index: indices) {
                 const auto &gaussian_2d = all_gaussian_2d[index];
                 const float powered_alpha = gaussian_2d.GetOpacityAt(uv, gaussian_2d.inv_sigma());
                 CONTINUE_IF(powered_alpha < static_cast<float>(1.0f / 255.0f));
