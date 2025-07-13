@@ -26,7 +26,7 @@ bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
     return true;
 }
 
-bool Plane3D::FitPlaneModel(const std::vector<Vec3> &points) {
+bool Plane3D::FitPlaneModelLse(const std::vector<Vec3> &points) {
     RETURN_FALSE_IF(points.size() < 3);
 
     // Compute mid point of all points.
@@ -36,7 +36,7 @@ bool Plane3D::FitPlaneModel(const std::vector<Vec3> &points) {
     }
     const Vec3 mid_point = summary / static_cast<float>(points.size());
     // Construct matrix A to solve normal vector of plane.
-    Mat matrix_A = Mat::Ones(points.size(), 3);
+    Mat matrix_A = Mat::Zero(points.size(), 3);
     for (uint32_t i = 0; i < points.size(); ++i) {
         const auto point = points[i] - mid_point;
         matrix_A.row(i) = point.transpose();
@@ -48,6 +48,26 @@ bool Plane3D::FitPlaneModel(const std::vector<Vec3> &points) {
     }
     param_.head<3>() = svd.matrixV().rightCols<1>();
     param_(3) = - mid_point.dot(param_.head<3>());
+    return true;
+}
+
+bool Plane3D::FitPlaneModelPca(const std::vector<Vec3> &points) {
+    RETURN_FALSE_IF(points.size() < 3);
+
+    // Construct matrix A to solve normal vector of plane.
+    Mat matrix_A = Mat::Zero(points.size(), 3);
+    const Vec vector_b = Mat::Ones(points.size(), 1);
+    for (uint32_t i = 0; i < points.size(); ++i) {
+        const auto point = points[i];
+        matrix_A.row(i) = point.transpose();
+    }
+    // Generate plane parameters.
+    param_.head<3>() = matrix_A.colPivHouseholderQr().solve(- vector_b);
+    param_(3) = 1.0f;
+
+    const float norm_of_normal_vector = param_.head<3>().norm();
+    RETURN_FALSE_IF(norm_of_normal_vector < kZerofloat);
+    param_ = param_ / norm_of_normal_vector;
     return true;
 }
 

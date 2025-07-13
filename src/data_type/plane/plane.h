@@ -16,7 +16,8 @@ public:
 
     // Operations.
     bool FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3);
-    bool FitPlaneModel(const std::vector<Vec3> &points);
+    bool FitPlaneModelLse(const std::vector<Vec3> &points);
+    bool FitPlaneModelPca(const std::vector<Vec3> &points);
     float GetDistanceToPlane(const Vec3 &p_w) const;
 
     // Parameters of plane.

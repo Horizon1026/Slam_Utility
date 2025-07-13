@@ -27,7 +27,7 @@ void TestComputePlaneModelWithSeveralPoints() {
     };
 
     Plane3D plane;
-    plane.FitPlaneModel(points);
+    plane.FitPlaneModelLse(points);
     ReportInfo("   Plane model is " << LogVec(plane.param()));
     for (const auto &point: points) {
         ReportInfo("   Distance of point to plane is " << plane.GetDistanceToPlane(point));
