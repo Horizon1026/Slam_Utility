@@ -52,7 +52,7 @@ bool Plane3D::FitPlaneModel(const std::vector<Vec3> &points) {
 }
 
 float Plane3D::GetDistanceToPlane(const Vec3 &p_w) const {
-    return p_w.dot(normal_vector()) + distance_to_origin();
+    return normal_vector().dot(p_w) + distance_to_origin();
 }
 
 }
