@@ -13,6 +13,10 @@ Plane3D::Plane3D(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
     FitPlaneModel(p1, p2, p3);
 }
 
+Plane3D::Plane3D(const std::vector<Vec3> &points) {
+    FitPlaneModelLse(points);
+}
+
 bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
     const Vec3 p1p2 = (p1 - p2).normalized();
     const Vec3 p1p3 = (p1 - p3).normalized();
@@ -28,13 +32,9 @@ bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
 
 bool Plane3D::FitPlaneModelLse(const std::vector<Vec3> &points) {
     RETURN_FALSE_IF(points.size() < 3);
+    Vec3 mid_point = Vec3::Zero();
+    RETURN_FALSE_IF(!ComputeMidPoint(points, mid_point));
 
-    // Compute mid point of all points.
-    Vec3 summary = Vec3::Zero();
-    for (const auto &point: points) {
-        summary += point;
-    }
-    const Vec3 mid_point = summary / static_cast<float>(points.size());
     // Construct matrix A to solve normal vector of plane.
     Mat matrix_A = Mat::Zero(points.size(), 3);
     for (uint32_t i = 0; i < points.size(); ++i) {
@@ -50,26 +50,34 @@ bool Plane3D::FitPlaneModelLse(const std::vector<Vec3> &points) {
 
 bool Plane3D::FitPlaneModelPca(const std::vector<Vec3> &points) {
     RETURN_FALSE_IF(points.size() < 3);
+    Vec3 mid_point = Vec3::Zero();
+    RETURN_FALSE_IF(!ComputeMidPoint(points, mid_point));
 
-    // Construct matrix A to solve normal vector of plane.
-    Mat matrix_A = Mat::Zero(points.size(), 3);
-    const Vec vector_b = Mat::Ones(points.size(), 1);
-    for (uint32_t i = 0; i < points.size(); ++i) {
-        const auto point = points[i];
-        matrix_A.row(i) = point.transpose();
+    // Construct covariance matrix.
+    Mat3 cov = Mat3::Zero();
+    for (const Vec3 &point: points) {
+        const Vec3 p = point - mid_point;
+        cov += p * p.transpose();
     }
     // Generate plane parameters.
-    param_.head<3>() = matrix_A.colPivHouseholderQr().solve(- vector_b);
-    param_(3) = 1.0f;
-
-    const float norm_of_normal_vector = param_.head<3>().norm();
-    RETURN_FALSE_IF(norm_of_normal_vector < kZerofloat);
-    param_ = param_ / norm_of_normal_vector;
+    const Eigen::SelfAdjointEigenSolver<Mat3> eig(cov);
+    param_.head<3>() = eig.eigenvectors().col(0);
+    param_(3) = - param_.head<3>().dot(mid_point);
     return true;
 }
 
 float Plane3D::GetDistanceToPlane(const Vec3 &p_w) const {
     return normal_vector().dot(p_w) + distance_to_origin();
+}
+
+bool Plane3D::ComputeMidPoint(const std::vector<Vec3> &points, Vec3 &mid_point) {
+    RETURN_FALSE_IF(points.empty());
+    Vec3 summary = Vec3::Zero();
+    for (const Vec3 &point: points) {
+        summary += point;
+    }
+    mid_point = summary / static_cast<float>(points.size());
+    return true;
 }
 
 }

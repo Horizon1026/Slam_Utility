@@ -17,8 +17,8 @@ void TestComputePlaneModelWithThreePoints() {
     ReportInfo("   Distance of p3_w to plane is " << plane.GetDistanceToPlane(p3_w));
 }
 
-void TestComputePlaneModelWithSeveralPoints() {
-    ReportColorInfo(">> Test plane fitting with several points.");
+void TestComputePlaneModelLseWithSeveralPoints() {
+    ReportColorInfo(">> Test plane fitting(LSE) with several points.");
     const std::vector<Vec3> points = std::vector<Vec3>{
         Vec3(1, 1, 0),
         Vec3(1, 1, 1),
@@ -34,9 +34,27 @@ void TestComputePlaneModelWithSeveralPoints() {
     }
 }
 
+void TestComputePlaneModelPcaWithSeveralPoints() {
+    ReportColorInfo(">> Test plane fitting(PCA) with several points.");
+    const std::vector<Vec3> points = std::vector<Vec3>{
+        Vec3(1, 1, 0),
+        Vec3(1, 1, 1),
+        Vec3(0, 0, 0),
+        Vec3(0, 0, 1),
+    };
+
+    Plane3D plane;
+    plane.FitPlaneModelPca(points);
+    ReportInfo("   Plane model is " << LogVec(plane.param()));
+    for (const auto &point: points) {
+        ReportInfo("   Distance of point to plane is " << plane.GetDistanceToPlane(point));
+    }
+}
+
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test plane." RESET_COLOR);
     TestComputePlaneModelWithThreePoints();
-    TestComputePlaneModelWithSeveralPoints();
+    TestComputePlaneModelLseWithSeveralPoints();
+    TestComputePlaneModelPcaWithSeveralPoints();
     return 0;
 }

@@ -11,6 +11,7 @@ class Plane3D {
 public:
     Plane3D() = default;
     explicit Plane3D(const Vec4 &param) : param_(param) {}
+    explicit Plane3D(const std::vector<Vec3> &points);
     Plane3D(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3);
     virtual ~Plane3D() = default;
 
@@ -28,6 +29,9 @@ public:
     Vec4 &param() { return param_; }
     // Const reference for member variables.
     const Vec4 &param() const { return param_; }
+
+private:
+    bool ComputeMidPoint(const std::vector<Vec3> &points, Vec3 &mid_point);
 
 private:
     Vec4 param_ = Vec4::Ones();
