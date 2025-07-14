@@ -27,6 +27,9 @@ public:
     bool TryToOccupy(const Vec3 &position, const T &value);
     bool IsOccupied(const Vec3 &position, const T &value);
 
+    void GeneratePointCloud(const Vec3 &mid_p_w, std::vector<Vec3> &all_p_w);
+    void GeneratePointCloud(const Vec3 &mid_p_w, const T &value, std::vector<Vec3> &all_p_w);
+
     uint32_t size() { return buffer_.size(); }
     T &voxel(int32_t x, int32_t y, int32_t z) { return buffer_[z * sq_cube_length_ + y * cube_length_ + x]; }
 
@@ -90,6 +93,41 @@ bool BasicVoxels<T>::IsOccupied(const Vec3 &position, const T &value) {
         return true;
     }
     return false;
+}
+
+template <typename T>
+void BasicVoxels<T>::GeneratePointCloud(const Vec3 &mid_p_w, std::vector<Vec3> &all_p_w) {
+    all_p_w.clear();
+    all_p_w.reserve(buffer_.size());
+    for (int32_t x = 0; x < cube_length_; ++x) {
+        for (int32_t y = 0; y < cube_length_; ++y) {
+            for (int32_t z = 0; z < cube_length_; ++z) {
+                const Vec3 position = Vec3(
+                    (x - half_cube_length_) * options_.kStep,
+                    (y - half_cube_length_) * options_.kStep,
+                    (z - half_cube_length_) * options_.kStep);
+                all_p_w.emplace_back(position + mid_p_w);
+            }
+        }
+    }
+}
+
+template <typename T>
+void BasicVoxels<T>::GeneratePointCloud(const Vec3 &mid_p_w, const T &value, std::vector<Vec3> &all_p_w) {
+    all_p_w.clear();
+    all_p_w.reserve(buffer_.size());
+    for (int32_t x = 0; x < cube_length_; ++x) {
+        for (int32_t y = 0; y < cube_length_; ++y) {
+            for (int32_t z = 0; z < cube_length_; ++z) {
+                CONTINUE_IF(voxel(x, y, z) != value);
+                const Vec3 position = Vec3(
+                    (x - half_cube_length_) * options_.kStep,
+                    (y - half_cube_length_) * options_.kStep,
+                    (z - half_cube_length_) * options_.kStep);
+                all_p_w.emplace_back(position + mid_p_w);
+            }
+        }
+    }
 }
 
 }
