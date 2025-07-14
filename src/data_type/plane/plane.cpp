@@ -43,9 +43,6 @@ bool Plane3D::FitPlaneModelLse(const std::vector<Vec3> &points) {
     }
     // Generate plane parameters.
     const Eigen::JacobiSVD<Mat> svd(matrix_A, Eigen::ComputeFullV);
-    if (svd.singularValues()[1] < svd.singularValues()[2] * 1e3f) {
-        return false;
-    }
     param_.head<3>() = svd.matrixV().rightCols<1>();
     param_(3) = - mid_point.dot(param_.head<3>());
     return true;
