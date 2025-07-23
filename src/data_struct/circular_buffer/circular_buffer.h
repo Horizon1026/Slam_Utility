@@ -50,6 +50,7 @@ public:
     bool Full() const { return size_ && (tail_ + 1) % MaxSize == head_; }
     bool Empty() const { return !size_; }
     uint32_t Size() const { return size_; }
+    uint32_t Capacity() const { return MaxSize; }
 
 private:
     std::array<T, MaxSize> buffer_;
