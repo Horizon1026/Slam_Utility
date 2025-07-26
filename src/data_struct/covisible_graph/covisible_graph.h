@@ -206,7 +206,6 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatur
 
     // Add new features or new observations for exist features.
     const int32_t max_size = features_id.size();
-    int32_t num_of_discarded_observe = 0;
     for (int32_t i = 0; i < max_size; ++i) {
         auto &id = features_id[i];
         auto &obv = features_observe[i];
@@ -231,13 +230,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatur
             feature_ptr->observes().emplace_back(obv);
             // Add this new feature into new frame.
             frames_.back().features().insert(std::make_pair(id, feature_ptr));
-        } else {
-            ++num_of_discarded_observe;
         }
-    }
-
-    if (num_of_discarded_observe) {
-        ReportWarn("[CovisibleGraph] [" << num_of_discarded_observe << "] invalid observation is discarded.");
     }
 
     return true;
