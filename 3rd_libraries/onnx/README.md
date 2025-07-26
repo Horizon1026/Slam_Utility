@@ -4,13 +4,17 @@
 ```bash
 git clone --recursive https://github.com/Microsoft/onnxruntime
 cd onnxruntime/
-# not use cuda
+# 目前有两个互不兼容的版本，1.15.0和1.8.0，选更新的先
+git checkout v1.8.0
+# 不使用cuda
 ./build.sh --skip_tests --config Release --build_shared_lib --parallel
-# use cuda
+# 使用cuda
 ./build.sh --skip_tests --use_cuda --config Release --build_shared_lib --parallel --cuda_home /usr/local/cuda-12.5 --cudnn_home /usr/local/cuda-12.5
 ```
 
 在这个过程中可能会遇到报cmake版本不对的问题，可以在这里获取到最新版本的cmake：https://github.com/Kitware/CMake/releases/
+
+但是建议先不要更换cmake版本，否则可能会遇到一堆关于cmake_minimun_version的报错，很离谱。
 
 ```bash
 sudo bash ./cmake-4.0.3-linux-x86_64.sh --skip-license --prefix=/usr
