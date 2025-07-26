@@ -14,12 +14,12 @@ git checkout v1.8.0
 
 在这个过程中可能会遇到报cmake版本不对的问题，可以在这里获取到最新版本的cmake：https://github.com/Kitware/CMake/releases/
 
-但是建议先不要更换cmake版本，否则可能会遇到一堆关于cmake_minimun_version的报错，很离谱。
+但是建议先不要更换cmake版本到3.30以上，否则可能会遇到一堆关于cmake_minimun_version的报错，很离谱。
 
 ```bash
-sudo bash ./cmake-4.0.3-linux-x86_64.sh --skip-license --prefix=/usr
+sudo bash ./cmake-3.28.6-linux-x86_64.sh --skip-license --prefix=/usr
 # 上述过程完成，就是安装完成了，输入以下命令查看版本
 cmake --version
 ```
 
-在更新cmake之后，重新执行onnx的build脚本，第一次还是会报错，再执行一次就可以了。
+在更新cmake之后，重新执行onnx的build脚本即可。
