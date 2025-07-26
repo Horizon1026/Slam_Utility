@@ -9,4 +9,6 @@ cd ./build
 ./test_3d_gaussian
 ./test_line_segment
 ./test_plane
+
+./test_onnx
 cd ..

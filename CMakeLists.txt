@@ -12,6 +12,14 @@ if( NOT TARGET lib_slam_utility )
     add_subdirectory( src ${PROJECT_SOURCE_DIR}/build/lib_slam_utility )
 endif()
 
+# Add 3rd libraries.
+if( NOT TARGET lib_pytorch_for_cxx )
+    add_subdirectory( 3rd_libraries/libtorch ${PROJECT_SOURCE_DIR}/build/lib_pytorch_for_cxx )
+endif()
+if( NOT TARGET lib_onnx_run_time_for_cxx )
+    add_subdirectory( 3rd_libraries/onnx ${PROJECT_SOURCE_DIR}/build/lib_onnx_run_time_for_cxx )
+endif()
+
 # Add visualizor.
 set( VISUALIZOR_2D_PATH ${PROJECT_SOURCE_DIR}/../Visualizor2D )
 if( NOT TARGET lib_2d_visualizor )
@@ -22,85 +30,37 @@ if( NOT TARGET lib_3d_visualizor )
     add_subdirectory( ${VISUALIZOR_3D_PATH}/src ${PROJECT_SOURCE_DIR}/build/lib_3d_visualizor )
 endif()
 
-# Create executable target to test datatype image and pyramid.
-add_executable( test_datatype_image
-    test/test_datatype_image.cpp
+# Compile all targets without 3rd_libraries.
+set( UNIT_TEST_OF_SLAM_UTILITY_LIST
+    test_datatype_image
+    test_covisible_graph
+    test_object_pool
+    test_circular_buffer
+    test_backward
+    test_basic_math
+    test_kd_tree
+    test_3d_gaussian
+    test_line_segment
+    test_plane
 )
-target_link_libraries( test_datatype_image
+foreach( unit_test_src ${UNIT_TEST_OF_SLAM_UTILITY_LIST} )
+    add_executable( ${unit_test_src}
+        test/${unit_test_src}.cpp
+    )
+    target_link_libraries( ${unit_test_src}
+        lib_slam_utility
+        lib_2d_visualizor
+        lib_3d_visualizor
+    )
+endforeach()
+
+# Compile all targets with 3rd_libraries.
+add_executable( test_onnx
+    test/test_onnx.cpp
+)
+target_link_libraries( test_onnx
     lib_slam_utility
     lib_2d_visualizor
-)
-
-# Create executable target to test covisible graph.
-add_executable( test_covisible_graph
-    test/test_covisible_graph.cpp
-)
-target_link_libraries( test_covisible_graph
-    lib_slam_utility
-)
-
-# Create executable target to test object pool.
-add_executable( test_object_pool
-    test/test_object_pool.cpp
-)
-target_link_libraries( test_object_pool
-    lib_slam_utility
-)
-
-# Create executable target to test circular buffer.
-add_executable( test_circular_buffer
-    test/test_circular_buffer.cpp
-)
-target_link_libraries( test_circular_buffer
-    lib_slam_utility
-)
-
-# Create executable target to test stack trace back.
-add_executable( test_backward
-    test/test_backward.cpp
-)
-target_link_libraries( test_backward
-    lib_slam_utility
-)
-
-# Create executable target to test basic math.
-add_executable( test_basic_math
-    test/test_basic_math.cpp
-)
-target_link_libraries( test_basic_math
-    lib_slam_utility
-)
-
-# Create executable target to test kd tree.
-add_executable( test_kd_tree
-    test/test_kd_tree.cpp
-)
-target_link_libraries( test_kd_tree
-    lib_slam_utility
     lib_3d_visualizor
-)
-
-# Create executable target to test 3d_gaussian.
-add_executable( test_3d_gaussian
-    test/test_3d_gaussian.cpp
-)
-target_link_libraries( test_3d_gaussian
-    lib_slam_utility
-    lib_2d_visualizor
-)
-
-# Create executable target to test line_segment.
-add_executable( test_line_segment
-    test/test_line_segment.cpp
-)
-target_link_libraries( test_line_segment
-    lib_slam_utility
-)
-
-# Create executable target to test plane.
-add_executable( test_plane
-    test/test_plane.cpp
-)
-target_link_libraries( test_plane
-    lib_slam_utility
+    lib_onnx_run_time_for_cxx
 )

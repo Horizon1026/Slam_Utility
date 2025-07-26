@@ -42,6 +42,8 @@ target_link_libraries( lib_onnx_run_time_for_cxx
 
     lib_image
     lib_image_pyramid
+
+    -lonnxruntime
 )
 target_include_directories( lib_onnx_run_time_for_cxx PUBLIC
     .
