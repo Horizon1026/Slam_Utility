@@ -14,7 +14,7 @@ namespace {
     constexpr static float kDegToRad = 1.0f / kRadToDeg;
     constexpr static double kRadToDegDouble = 57.295779579;
     constexpr static double kDegToRadDouble = 1.0 / kRadToDegDouble;
-    constexpr static float kZerofloat = 1e-6f;
+    constexpr static float kZeroFloat = 1e-6f;
     constexpr static float kZeroDouble = 1e-10f;
     constexpr static int32_t kMaxInt32 = 2147483647;
 }
@@ -148,7 +148,7 @@ public:
     static TMat<Scalar> Inverse(const TMat<Scalar> &A) {
         Eigen::SelfAdjointEigenSolver<TMat<Scalar>> saes(A);
         TMat<Scalar> Ainv = saes.eigenvectors() * TVec<Scalar>(
-            (saes.eigenvalues().array() > kZerofloat).select(
+            (saes.eigenvalues().array() > kZeroFloat).select(
                 saes.eigenvalues().array().inverse(), 0
             )).asDiagonal() * saes.eigenvectors().transpose();
         return Ainv;
@@ -172,7 +172,7 @@ public:
 
         Scalar imag_factor;
         Scalar real_factor;
-        if (theta < kZerofloat) {
+        if (theta < kZeroFloat) {
             const Scalar theta_po4 = theta_sq * theta_sq;
             imag_factor = static_cast<Scalar>(0.5)
                           - static_cast<Scalar>(1.0 / 48.0) * theta_sq
@@ -208,11 +208,11 @@ public:
         // Representation through Encapsulation of Manifolds"
         // Information Fusion, 2011
 
-        if (n < kZerofloat) {
+        if (n < kZeroFloat) {
             const Scalar squared_w = w * w;
             two_atan_nbyw_by_n = static_cast<Scalar>(2) / w - static_cast<Scalar>(2) * squared_n / (w * squared_w);
         } else {
-            if (std::abs(w) < kZerofloat) {
+            if (std::abs(w) < kZeroFloat) {
                 if (w > static_cast<Scalar> ( 0 )) {
                     two_atan_nbyw_by_n = kPaiDouble / n;
                 } else {

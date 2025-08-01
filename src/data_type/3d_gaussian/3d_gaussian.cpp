@@ -7,7 +7,7 @@ namespace SLAM_UTILITY {
 void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d) const {
     // Compute mid point for 2d gaussian.
     const Vec3 p_c = q_wc.inverse() * (p_w_ - p_wc);
-    RETURN_IF(p_c.z() < kZerofloat);
+    RETURN_IF(p_c.z() < kZeroFloat);
     gaussian_2d.depth() = p_c.z();
     const float inv_depth = 1.0f / gaussian_2d.depth();
     gaussian_2d.mid_uv() = p_c.head<2>() * inv_depth;
