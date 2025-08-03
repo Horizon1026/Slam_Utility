@@ -13,9 +13,9 @@ if( NOT TARGET lib_slam_utility )
 endif()
 
 # Add 3rd libraries.
-if( NOT TARGET lib_pytorch_for_cxx )
-    add_subdirectory( 3rd_libraries/libtorch ${PROJECT_SOURCE_DIR}/build/lib_pytorch_for_cxx )
-endif()
+# if( NOT TARGET lib_pytorch_for_cxx )
+#     add_subdirectory( 3rd_libraries/libtorch ${PROJECT_SOURCE_DIR}/build/lib_pytorch_for_cxx )
+# endif()
 if( NOT TARGET lib_onnx_run_time_for_cxx )
     add_subdirectory( 3rd_libraries/onnx ${PROJECT_SOURCE_DIR}/build/lib_onnx_run_time_for_cxx )
 endif()
