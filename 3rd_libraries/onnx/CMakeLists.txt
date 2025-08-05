@@ -27,6 +27,9 @@ if( NOT TARGET lib_image_pyramid )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_type/image_pyramid ${PROJECT_SOURCE_DIR}/build/lib_image_pyramid )
 endif()
 
+# Set root path of onnxruntime.
+set( ONNXRUNTIME_ROOT_PATH "/home/ubuntu24_msi/dependence/onnxruntime-linux-x64-gpu-1.20.1" )
+
 # Package target lib_onnx_run_time_for_cxx.
 aux_source_directory( . AUX_SRC_LIB_ONNX_RUN_TIME_FOR_CXX )
 add_library( lib_onnx_run_time_for_cxx
@@ -45,7 +48,6 @@ target_link_libraries( lib_onnx_run_time_for_cxx
 
     -lonnxruntime
 )
-set( ONNXRUNTIME_ROOT_PATH "/home/ubuntu24_msi/dependence/onnxruntime" )
 target_link_directories( lib_onnx_run_time_for_cxx PUBLIC
     ${ONNXRUNTIME_ROOT_PATH}/lib
 )
