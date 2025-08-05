@@ -1,7 +1,7 @@
 #ifndef _ONNX_RUN_TIME_H_
 #define _ONNX_RUN_TIME_H_
 
-#include "onnxruntime/core/session/onnxruntime_cxx_api.h"
+#include "onnxruntime_cxx_api.h"
 
 #include "basic_type.h"
 #include "datatype_image.h"

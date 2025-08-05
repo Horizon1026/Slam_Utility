@@ -45,6 +45,11 @@ target_link_libraries( lib_onnx_run_time_for_cxx
 
     -lonnxruntime
 )
+set( ONNXRUNTIME_ROOT_PATH "/home/ubuntu24_msi/dependence/onnxruntime" )
+target_link_directories( lib_onnx_run_time_for_cxx PUBLIC
+    ${ONNXRUNTIME_ROOT_PATH}/lib
+)
 target_include_directories( lib_onnx_run_time_for_cxx PUBLIC
     .
+    ${ONNXRUNTIME_ROOT_PATH}/include
 )
