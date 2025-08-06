@@ -8,7 +8,7 @@
 
 using namespace SLAM_VISUALIZOR;
 
-std::string test_image_file_name = "../example/image.png";
+std::string test_image_file_name = "../examples/image.png";
 
 void TestImage() {
     GrayImage image;
