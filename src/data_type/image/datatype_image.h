@@ -23,6 +23,8 @@ public:
 
     void Clear();
     void SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
+    bool ToMatImg(MatImg &matrix_image) const;
+    bool ToMatImgF(MatImgF &matrix_image) const;
 
     inline bool SetPixelValue(int32_t row, int32_t col, uint8_t value) {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {

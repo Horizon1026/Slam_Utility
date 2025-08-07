@@ -1,7 +1,11 @@
 #include "basic_type.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
+#include "tick_tock.h"
+#include "visualizor_2d.h"
 #include "onnx_run_time.h"
+
+using namespace SLAM_VISUALIZOR;
 
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test onnx run time." RESET_COLOR);
@@ -54,6 +58,32 @@ int main(int argc, char **argv) {
         }
         ReportText("\n");
     }
+
+    // Load image.
+    GrayImage gray_image;
+    Visualizor2D::LoadImage("../examples/image.png", gray_image);
+    MatImgF matrix_image;
+    if (!gray_image.ToMatImgF(matrix_image)) {
+        ReportError("Failed to convert grayimage to float image matrix.");
+    }
+
+    // Prepare input tensor.
+    auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
+    std::vector<int64_t> input_tensor_shape = {1, 1, gray_image.rows(), gray_image.cols()};
+    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info,
+        const_cast<float *>(matrix_image.data()), matrix_image.rows() * matrix_image.cols(),
+        input_tensor_shape.data(), input_tensor_shape.size()
+    );
+
+    // Inference.
+    const char *input_names[] = {"input"};
+    const char *output_names[] = {"scores", "descriptors"};
+    TickTock timer;
+    std::vector<Ort::Value> output_tensors = session.Run(Ort::RunOptions{nullptr},
+        input_names, &input_tensor, input_dims.size(),
+        output_names, output_dims.size()
+    );
+    ReportInfo("Infer model cost " << timer.TockTickInMillisecond() << " ms.");
 
     return 0;
 }

@@ -34,6 +34,23 @@ void GrayImage::SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owne
     memory_owner_ = is_owner;
 }
 
+bool GrayImage::ToMatImg(MatImg &matrix_image) const {
+    if (data_ == nullptr) {
+        return false;
+    }
+    matrix_image.resize(rows_, cols_);
+    std::copy_n(data_, rows_ * cols_, matrix_image.data());
+    return true;
+}
+bool GrayImage::ToMatImgF(MatImgF &matrix_image) const {
+    MatImg int_image_matrix;
+    if (!ToMatImg(int_image_matrix)) {
+        return false;
+    }
+    matrix_image = int_image_matrix.cast<float>() / 255.0f;
+    return true;
+}
+
 RgbImage::RgbImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner) {
     SetImage(data, rows, cols, is_owner);
 }

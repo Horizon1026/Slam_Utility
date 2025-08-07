@@ -34,3 +34,5 @@ cmake --version
 ```bash
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 ```
+
+对于onnx模型的结构，以及输入输出的name，可以在这里用netron工具查看：https://github.com/lutzroeder/netron/releases
