@@ -20,9 +20,15 @@ public:
     OnnxRuntime() = default;
     virtual ~OnnxRuntime() = default;
 
+    static void ReportInformationOfSession(const Ort::Session &session);
+
     static bool ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
     static bool ConvertImageToTensor(const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
 
+    static bool ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<MatImgF> &image_matrices);
+
+private:
+    static void ReportInformationOfTensor(const Ort::TypeInfo &type_info, const std::string &name);
 };
 
 #endif // end of _ONNX_RUN_TIME_H_
