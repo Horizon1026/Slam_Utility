@@ -11,8 +11,17 @@
 class OnnxRuntime {
 
 public:
+    struct ImageTensor {
+        MatImgF mat;
+        Ort::Value value = Ort::Value(nullptr);
+    };
+
+public:
     OnnxRuntime() = default;
     virtual ~OnnxRuntime() = default;
+
+    static bool ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
+    static bool ConvertImageToTensor(const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
 
 };
 

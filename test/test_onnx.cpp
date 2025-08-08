@@ -5,6 +5,7 @@
 #include "visualizor_2d.h"
 #include "onnx_run_time.h"
 
+using namespace SLAM_UTILITY;
 using namespace SLAM_VISUALIZOR;
 
 int main(int argc, char **argv) {
@@ -16,7 +17,7 @@ int main(int argc, char **argv) {
     // Initialize session options if needed.
     Ort::SessionOptions session_options;
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
-    session_options.SetIntraOpNumThreads(1);
+    session_options.SetIntraOpNumThreads(8);
     session_options.SetInterOpNumThreads(1);
 
     // Create session.
@@ -59,31 +60,48 @@ int main(int argc, char **argv) {
         ReportText("\n");
     }
 
-    // Load image.
+    // Prepare input tensor.
     GrayImage gray_image;
     Visualizor2D::LoadImage("../examples/image.png", gray_image);
-    MatImgF matrix_image;
-    if (!gray_image.ToMatImgF(matrix_image)) {
-        ReportError("Failed to convert grayimage to float image matrix.");
-    }
-
-    // Prepare input tensor.
     auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
-    std::vector<int64_t> input_tensor_shape = {1, 1, gray_image.rows(), gray_image.cols()};
-    Ort::Value input_tensor = Ort::Value::CreateTensor<float>(memory_info,
-        const_cast<float *>(matrix_image.data()), matrix_image.rows() * matrix_image.cols(),
-        input_tensor_shape.data(), input_tensor_shape.size()
-    );
+    OnnxRuntime::ImageTensor input_tensor;
+    OnnxRuntime::ConvertImageToTensor(gray_image, memory_info, input_tensor);
 
     // Inference.
     const char *input_names[] = {"input"};
     const char *output_names[] = {"scores", "descriptors"};
     TickTock timer;
     std::vector<Ort::Value> output_tensors = session.Run(Ort::RunOptions{nullptr},
-        input_names, &input_tensor, input_dims.size(),
+        input_names, &input_tensor.value, input_dims.size(),
         output_names, output_dims.size()
     );
     ReportInfo("Infer model cost " << timer.TockTickInMillisecond() << " ms.");
 
+    // Report information of scores output.
+    const auto &scores_tensor = output_tensors[0];
+    const auto &scores_tensor_info = scores_tensor.GetTensorTypeAndShapeInfo();
+    if (scores_tensor_info.GetElementType() != ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT) {
+        ReportError("Data type of scores is not float.");
+        return 0;
+    }
+    const std::vector<int64_t> scores_tensor_dims = scores_tensor_info.GetShape();
+    const MatImgF scores_matrix = Eigen::Map<const MatImgF>(scores_tensor.GetTensorData<float>(),
+        scores_tensor_dims[scores_tensor_dims.size() - 2],
+        scores_tensor_dims[scores_tensor_dims.size() - 1]);
+    Visualizor2D::ShowMatrix("scores", scores_matrix, 1, 1.0f, 1);
+
+    // Report information of descriptors output.
+    const auto &descriptors_tensor = output_tensors[1];
+    const auto &descriptors_tensor_info = descriptors_tensor.GetTensorTypeAndShapeInfo();
+    if (descriptors_tensor_info.GetElementType() != ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT) {
+        ReportError("Data type of descriptors is not float.");
+        return 0;
+    }
+    const std::vector<int64_t> descriptors_tensor_dims = descriptors_tensor_info.GetShape();
+    const MatImgF descriptors_matrix = Eigen::Map<const MatImgF>(descriptors_tensor.GetTensorData<float>(),
+        descriptors_tensor_dims[descriptors_tensor_dims.size() - 2],
+        descriptors_tensor_dims[descriptors_tensor_dims.size() - 1]);
+    Visualizor2D::ShowMatrix("descriptors", descriptors_matrix, 1, 1.0f, 8);
+    Visualizor2D::WaitKey(0);
     return 0;
 }
