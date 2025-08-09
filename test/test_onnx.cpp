@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
     // Initialize session options if needed.
     Ort::SessionOptions session_options;
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+    session_options.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
 
     // For onnxruntime of version 1.20, enable GPU.
     OnnxRuntime::TryToEnableCuda(session_options);
@@ -33,19 +34,19 @@ int main(int argc, char **argv) {
     GrayImage gray_image;
     Visualizor2D::LoadImage("../examples/image.png", gray_image);
     Visualizor2D::ShowImage("raw image", gray_image);
-    auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
+    auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeDefault);
     OnnxRuntime::ImageTensor input_tensor;
     OnnxRuntime::ConvertImageToTensor(gray_image, memory_info, input_tensor);
 
     // Inference.
-    const char *input_names[] = {"input"};
-    const char *output_names[] = {"scores", "descriptors"};
+    std::vector<const char *> input_names = {"input"};
+    std::vector<const char *> output_names = {"scores", "descriptors"};
     Ort::RunOptions run_options;
     run_options.SetRunLogVerbosityLevel(ORT_LOGGING_LEVEL_WARNING);
     TickTock timer;
     std::vector<Ort::Value> output_tensors = session.Run(run_options,
-        input_names, &input_tensor.value, session.GetInputCount(),
-        output_names, session.GetOutputCount()
+        input_names.data(), &input_tensor.value, input_names.size(),
+        output_names.data(), output_names.size()
     );
     ReportInfo("Infer model cost " << timer.TockTickInMillisecond() << " ms.");
 

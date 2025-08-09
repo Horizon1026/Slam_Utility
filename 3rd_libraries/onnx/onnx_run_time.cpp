@@ -103,6 +103,9 @@ bool OnnxRuntime::TryToEnableCuda(Ort::SessionOptions &session_options) {
     bool use_gpu = false;
     OrtCUDAProviderOptions cuda_options;
     cuda_options.device_id = 0;
+    cuda_options.arena_extend_strategy = 0;
+    cuda_options.cudnn_conv_algo_search = OrtCudnnConvAlgoSearchExhaustive;
+    cuda_options.do_copy_in_default_stream = 1;
 
     try {
         session_options.AppendExecutionProvider_CUDA(cuda_options);
