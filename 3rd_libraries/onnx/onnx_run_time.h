@@ -21,6 +21,7 @@ public:
     virtual ~OnnxRuntime() = default;
 
     static void ReportInformationOfSession(const Ort::Session &session);
+    static bool TryToEnableCuda(Ort::SessionOptions &session_options);
 
     static bool ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
     static bool ConvertImageToTensor(const Ort::MemoryInfo &memory_info, ImageTensor &tensor);

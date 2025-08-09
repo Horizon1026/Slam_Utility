@@ -49,7 +49,7 @@ bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, st
 
 void OnnxRuntime::ReportInformationOfSession(const Ort::Session &session) {
     Ort::AllocatorWithDefaultOptions allocator;
-    ReportInfo("Information of session:");
+    ReportInfo("[OnnxRuntime] Information of session:");
 
     const uint32_t num_of_inputs = session.GetInputCount();
     ReportInfo(">> Session has " << num_of_inputs << " inputs:");
@@ -96,4 +96,30 @@ void OnnxRuntime::ReportInformationOfTensor(const Ort::TypeInfo &type_info, cons
         ReportText(dims[j] << ", ");
     }
     ReportText(dims.back() << "]\n");
+}
+
+bool OnnxRuntime::TryToEnableCuda(Ort::SessionOptions &session_options) {
+    // Enable GPU for ONNX Runtime 1.20.
+    bool use_gpu = false;
+    OrtCUDAProviderOptions cuda_options;
+    cuda_options.device_id = 0;
+
+    try {
+        session_options.AppendExecutionProvider_CUDA(cuda_options);
+        use_gpu = true;
+        ReportInfo("[OnnxRuntime] Succeed to enable CUDA GPU acceleration.");
+
+        // Set thread number to be 1 for GPU is better.
+        session_options.SetIntraOpNumThreads(1);
+        session_options.SetInterOpNumThreads(1);
+    } catch (const Ort::Exception& e) {
+        ReportError("[OnnxRuntime] Failed to enable CUDA: " << e.what() << ". Falling back to CPU execution.");
+        use_gpu = false;
+
+        // Set default thread number for CPU using.
+        session_options.SetIntraOpNumThreads(0);
+        session_options.SetInterOpNumThreads(0);
+    }
+
+    return use_gpu;
 }

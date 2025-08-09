@@ -17,8 +17,9 @@ int main(int argc, char **argv) {
     // Initialize session options if needed.
     Ort::SessionOptions session_options;
     session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
-    session_options.SetIntraOpNumThreads(8);
-    session_options.SetInterOpNumThreads(1);
+
+    // For onnxruntime of version 1.20, enable GPU.
+    OnnxRuntime::TryToEnableCuda(session_options);
 
     // Create session.
     const std::string path_to_model = "../examples/superpoint.onnx";
@@ -39,8 +40,10 @@ int main(int argc, char **argv) {
     // Inference.
     const char *input_names[] = {"input"};
     const char *output_names[] = {"scores", "descriptors"};
+    Ort::RunOptions run_options;
+    run_options.SetRunLogVerbosityLevel(ORT_LOGGING_LEVEL_WARNING);
     TickTock timer;
-    std::vector<Ort::Value> output_tensors = session.Run(Ort::RunOptions{nullptr},
+    std::vector<Ort::Value> output_tensors = session.Run(run_options,
         input_names, &input_tensor.value, session.GetInputCount(),
         output_names, session.GetOutputCount()
     );
