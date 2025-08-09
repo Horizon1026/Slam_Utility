@@ -30,6 +30,26 @@ endif()
 # Set root path of onnxruntime.
 set( ONNXRUNTIME_ROOT_PATH "/home/ubuntu24_msi/dependence/onnxruntime-linux-x64-gpu-1.20.1" )
 
+# Check and try to enable CUDA support.
+find_package( CUDAToolkit REQUIRED )
+if( EXISTS "${ONNXRUNTIME_ROOT_PATH}/lib/libonnxruntime_providers_cuda.so" )
+    # Try to find cudnn.
+    find_library( CUDNN_LIBRARY
+        NAMES cudnn libcudnn.so.9 libcudnn.so.8 libcudnn.so.7
+        HINTS
+            ${CUDAToolkit_LIBRARY_DIR}
+            ${CUDAToolkit_ROOT_DIR}/lib64
+            /usr/lib/x86_64-linux-gnu
+        REQUIRED
+    )
+    message( STATUS ">> ONNX Runtime GPU support detected." )
+    set( USE_CUDA_ACCELERATION ON )
+
+else()
+    message( WARNING ">> ONNX Runtime GPU libraries not found - falling back to CPU." )
+    set( USE_CUDA_ACCELERATION OFF )
+endif()
+
 # Package target lib_onnx_run_time_for_cxx.
 aux_source_directory( . AUX_SRC_LIB_ONNX_RUN_TIME_FOR_CXX )
 add_library( lib_onnx_run_time_for_cxx
@@ -42,10 +62,8 @@ target_link_libraries( lib_onnx_run_time_for_cxx
     lib_slam_utility_log
     lib_slam_utility_memory
     lib_slam_utility_tick_tock
-
     lib_image
     lib_image_pyramid
-
     -lonnxruntime
 )
 target_link_directories( lib_onnx_run_time_for_cxx PUBLIC
@@ -55,3 +73,18 @@ target_include_directories( lib_onnx_run_time_for_cxx PUBLIC
     .
     ${ONNXRUNTIME_ROOT_PATH}/include
 )
+if( USE_CUDA_ACCELERATION )
+    target_link_libraries( lib_onnx_run_time_for_cxx
+        ${ONNXRUNTIME_ROOT_PATH}/lib/libonnxruntime_providers_cuda.so
+        ${ONNXRUNTIME_ROOT_PATH}/lib/libonnxruntime_providers_shared.so
+        CUDA::cudart
+        CUDA::cublas
+        ${CUDNN_LIBRARY}
+    )
+    target_link_directories( lib_onnx_run_time_for_cxx PUBLIC
+        ${CUDAToolkit_LIBRARY_DIR}
+    )
+    target_include_directories( lib_onnx_run_time_for_cxx PUBLIC
+        ${CUDAToolkit_INCLUDE_DIRS}
+    )
+endif()

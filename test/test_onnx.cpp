@@ -49,6 +49,13 @@ int main(int argc, char **argv) {
         output_names.data(), output_names.size()
     );
     ReportInfo("Infer model cost " << timer.TockTickInMillisecond() << " ms.");
+    for (uint32_t i = 0; i < 5; ++i) {
+        session.Run(run_options,
+            input_names.data(), &input_tensor.value, input_names.size(),
+            output_names.data(), output_names.size()
+        );
+        ReportInfo("Infer model cost " << timer.TockTickInMillisecond() << " ms.");
+    }
 
     // Report information of scores output.
     const auto &scores_tensor = output_tensors[0];
