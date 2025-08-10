@@ -22,7 +22,6 @@ bool OnnxRuntime::ConvertImageToTensor(const Ort::MemoryInfo &memory_info, Image
 }
 
 bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<Eigen::Map<const MatImgF>> &image_matrices) {
-    TickTock timer;
     const auto &tensor_info = tensor_value.GetTensorTypeAndShapeInfo();
     const auto &element_type = tensor_info.GetElementType();
     RETURN_FALSE_IF(element_type != ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT);
@@ -46,6 +45,25 @@ bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, st
         image_matrices.emplace_back(data + step * idx, rows, cols);
     }
 
+    return true;
+}
+
+bool OnnxRuntime::GetSessionIO(const Ort::Session &session,
+                               std::vector<std::string> &inputs_name,
+                               std::vector<std::string> &outputs_name) {
+    RETURN_FALSE_IF(!session);
+    Ort::AllocatorWithDefaultOptions allocator;
+    const uint32_t num_of_inputs = session.GetInputCount();
+    inputs_name.clear();
+    for (uint32_t i = 0; i < num_of_inputs; ++i) {
+        inputs_name.emplace_back(session.GetInputNameAllocated(i, allocator).get());
+    }
+
+    const uint32_t num_of_outputs = session.GetOutputCount();
+    outputs_name.clear();
+    for (uint32_t i = 0; i < num_of_outputs; ++i) {
+        outputs_name.emplace_back(session.GetOutputNameAllocated(i, allocator).get());
+    }
     return true;
 }
 

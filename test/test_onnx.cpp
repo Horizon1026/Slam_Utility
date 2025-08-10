@@ -29,6 +29,17 @@ int main(int argc, char **argv) {
 
     // Get information of model input and output.
     OnnxRuntime::ReportInformationOfSession(session);
+    std::vector<std::string> input_names;
+    std::vector<std::string> output_names;
+    OnnxRuntime::GetSessionIO(session, input_names, output_names);
+    std::vector<const char *> input_names_ptr;
+    std::vector<const char *> output_names_ptr;
+    for (const auto &name: input_names) {
+        input_names_ptr.emplace_back(name.c_str());
+    }
+    for (const auto &name: output_names) {
+        output_names_ptr.emplace_back(name.c_str());
+    }
 
     // Prepare input tensor.
     GrayImage gray_image;
@@ -39,20 +50,18 @@ int main(int argc, char **argv) {
     OnnxRuntime::ConvertImageToTensor(gray_image, memory_info, input_tensor);
 
     // Inference.
-    std::vector<const char *> input_names = {"input"};
-    std::vector<const char *> output_names = {"scores", "descriptors"};
     Ort::RunOptions run_options;
     run_options.SetRunLogVerbosityLevel(ORT_LOGGING_LEVEL_WARNING);
     TickTock timer;
     std::vector<Ort::Value> output_tensors = session.Run(run_options,
-        input_names.data(), &input_tensor.value, input_names.size(),
-        output_names.data(), output_names.size()
+        input_names_ptr.data(), &input_tensor.value, input_names_ptr.size(),
+        output_names_ptr.data(), output_names_ptr.size()
     );
     ReportInfo("Infer model cost " << timer.TockTickInMillisecond() << " ms.");
     for (uint32_t i = 0; i < 5; ++i) {
         session.Run(run_options,
-            input_names.data(), &input_tensor.value, input_names.size(),
-            output_names.data(), output_names.size()
+            input_names_ptr.data(), &input_tensor.value, input_names_ptr.size(),
+            output_names_ptr.data(), output_names_ptr.size()
         );
         ReportInfo("Infer model cost " << timer.TockTickInMillisecond() << " ms.");
     }
