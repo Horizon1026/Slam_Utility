@@ -1,6 +1,7 @@
 #include "onnx_run_time.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
+#include "tick_tock.h"
 
 bool OnnxRuntime::ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor) {
     RETURN_FALSE_IF(!image.ToMatImgF(tensor.mat));
@@ -20,7 +21,8 @@ bool OnnxRuntime::ConvertImageToTensor(const Ort::MemoryInfo &memory_info, Image
     return true;
 }
 
-bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<MatImgF> &image_matrices) {
+bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<Eigen::Map<const MatImgF>> &image_matrices) {
+    TickTock timer;
     const auto &tensor_info = tensor_value.GetTensorTypeAndShapeInfo();
     const auto &element_type = tensor_info.GetElementType();
     RETURN_FALSE_IF(element_type != ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT);
@@ -41,7 +43,7 @@ bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, st
     const int32_t cols = tensor_dims[tensor_dims.size() - 1];
     const int32_t step = rows * cols;
     for (uint32_t idx = 0; idx < num_of_images; ++idx) {
-        image_matrices.emplace_back(Eigen::Map<const MatImgF>(data + step * idx, rows, cols));
+        image_matrices.emplace_back(data + step * idx, rows, cols);
     }
 
     return true;

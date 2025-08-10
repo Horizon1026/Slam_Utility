@@ -26,7 +26,7 @@ public:
     static bool ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
     static bool ConvertImageToTensor(const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
 
-    static bool ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<MatImgF> &image_matrices);
+    static bool ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<Eigen::Map<const MatImgF>> &image_matrices);
 
 private:
     static void ReportInformationOfTensor(const Ort::TypeInfo &type_info, const std::string &name);

@@ -59,8 +59,8 @@ int main(int argc, char **argv) {
 
     // Report information of scores output.
     const auto &scores_tensor = output_tensors[0];
-    std::vector<MatImgF> scores_matrices;
-    timer.TockInSecond();
+    std::vector<Eigen::Map<const MatImgF>> scores_matrices;
+    timer.TockTickInSecond();
     if (!OnnxRuntime::ConvertTensorToImageMatrice(scores_tensor, scores_matrices)) {
         ReportError("Failed to convert tensor value to image matrices.");
     } else {
@@ -70,8 +70,8 @@ int main(int argc, char **argv) {
 
     // Report information of descriptors output.
     const auto &descriptors_tensor = output_tensors[1];
-    std::vector<MatImgF> descriptors_matrices;
-    timer.TockInSecond();
+    std::vector<Eigen::Map<const MatImgF>> descriptors_matrices;
+    timer.TockTickInSecond();
     if (!OnnxRuntime::ConvertTensorToImageMatrice(descriptors_tensor, descriptors_matrices)) {
         ReportError("Failed to convert tensor value to image matrices.");
     } else {
