@@ -117,7 +117,7 @@ bool OnnxRuntime::TryToEnableCuda(Ort::SessionOptions &session_options) {
         // Set thread number to be 1 for GPU is better.
         session_options.SetIntraOpNumThreads(1);
         session_options.SetInterOpNumThreads(1);
-    } catch (const Ort::Exception& e) {
+    } catch (const Ort::Exception &e) {
         ReportError("[OnnxRuntime] Failed to enable CUDA: " << e.what() << ". Falling back to CPU execution.");
         use_gpu = false;
 
