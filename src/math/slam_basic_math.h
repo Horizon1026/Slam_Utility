@@ -199,21 +199,17 @@ public:
         const Scalar n = std::sqrt(squared_n);
         const Scalar w = other.w();
 
-        Scalar two_atan_nbyw_by_n;
-
-        // Atan-based log thanks to
-        //
-        // C. Hertzberg et al.:
+        // Atan-based log thanks to C. Hertzberg et al.:
         // "Integrating Generic Sensor Fusion Algorithms with Sound State
         // Representation through Encapsulation of Manifolds"
         // Information Fusion, 2011
-
+        Scalar two_atan_nbyw_by_n;
         if (n < kZeroFloat) {
             const Scalar squared_w = w * w;
             two_atan_nbyw_by_n = static_cast<Scalar>(2) / w - static_cast<Scalar>(2) * squared_n / (w * squared_w);
         } else {
             if (std::abs(w) < kZeroFloat) {
-                if (w > static_cast<Scalar> ( 0 )) {
+                if (w > static_cast<Scalar>(0)) {
                     two_atan_nbyw_by_n = kPaiDouble / n;
                 } else {
                     two_atan_nbyw_by_n = - kPaiDouble / n;
@@ -224,6 +220,27 @@ public:
         }
 
         return two_atan_nbyw_by_n * other.vec();
+    }
+
+    /* Compute left jacobian of vector3. */
+    template <typename Scalar>
+    static TMat3<Scalar> LeftJacobian(const TVec3<Scalar> &omega) {
+        const Scalar theta = omega.norm();
+        if (theta < kZeroFloat) {
+            return TMat3<Scalar>::Identity();
+        } else {
+            const TVec3<Scalar> a = omega / theta;
+            const TMat3<Scalar> jacobian = std::sin(theta) / theta * TMat3<Scalar>::Identity() +
+                (static_cast<Scalar>(1) - std::sin(theta) / theta) * a * a.transpose() +
+                ((static_cast<Scalar>(1) - std::cos(theta)) / theta) * Utility::SkewSymmetricMatrix(a);
+            return jacobian;
+        }
+    }
+
+    /* Compute right jacobian of vector3. */
+    template <typename Scalar>
+    static TMat3<Scalar> RightJacobian(const TVec3<Scalar> &omega) {
+        return Utility::LeftJacobian(Vec3(-omega));
     }
 
     /* Compute one of the basis on the tangent plane of the input vector. */

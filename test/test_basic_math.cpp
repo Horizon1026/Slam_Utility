@@ -74,6 +74,15 @@ void TestExtrinsicRotateAlignAxis() {
     ReportInfo("q_ic1 " << LogQuat(q_ic1));
 }
 
+void TestLeftAndRightJacobian() {
+    ReportColorInfo(">> Test left/right jacobian.");
+    const Vec3 omega = Vec3::Random();
+    const Mat3 Jr = Utility::RightJacobian(omega);
+    const Mat3 Jl = Utility::LeftJacobian(omega);
+    ReportInfo("Jr " << LogMat(Jr));
+    ReportInfo("Jl " << LogMat(Jl));
+}
+
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test math kinematics." RESET_COLOR);
     TestTangentBase();
@@ -81,5 +90,6 @@ int main(int argc, char **argv) {
     TestLogAndExp();
     TestTransformToTranslationAndRotation();
     TestExtrinsicRotateAlignAxis();
+    TestLeftAndRightJacobian();
     return 0;
 }
