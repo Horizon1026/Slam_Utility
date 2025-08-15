@@ -29,7 +29,8 @@ namespace SLAM_UTILITY {
     #define LogPtr(p) "[ptr][" << reinterpret_cast<void *>(p) << "]"
     #define LogQuat(q) "[wxyz][" << q.w() << " " << q.x() << " " << q.y() << " " << q.z() << "]"
     #define LogVec(v) "[vec][" << v.transpose() << "]"
-    #define LogMat(m) "[matrix][" << m.rows() << " | " << m.cols() << "]:\n" << m
+    #define LogMat(m) "[matrix][" << #m << "]: [" << m.rows() << " | " << m.cols() << "]:\n" << m
+    #define LogMatSize(m) "[matrix][" << #m << "]: [" << m.rows() << " | " << m.cols() << "]"
     #define LogTime(t) "[" << t << "s]"
     #define LogItem(v) "[" << #v << "]: " << v << "."
 

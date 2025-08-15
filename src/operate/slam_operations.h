@@ -66,30 +66,40 @@ public:
     template <typename T>
     static void ArgSort(const std::vector<T> &array, std::vector<int32_t> &indices) {
         RETURN_IF(array.empty());
-
         if (array.size() < indices.size() || indices.empty()) {
             indices.resize(array.size());
             for (uint32_t i = 0; i < array.size(); ++i) {
                 indices[i] = i;
             }
         }
-
         std::sort(indices.begin(), indices.end(), [&array](int32_t idx_1, int32_t idx_2) {
             return array[idx_1] < array[idx_2];
         });
     }
 
     template <typename T>
+    static void ArgSort(const T *data_ptr, const uint32_t data_size, std::vector<int32_t> &indices) {
+        RETURN_IF(data_size < 1);
+        if (data_size < indices.size() || indices.empty()) {
+            indices.resize(data_size);
+            for (uint32_t i = 0; i < data_size; ++i) {
+                indices[i] = i;
+            }
+        }
+        std::sort(indices.begin(), indices.end(), [&data_ptr](int32_t idx_1, int32_t idx_2) {
+            return data_ptr[idx_1] < data_ptr[idx_2];
+        });
+    }
+
+    template <typename T>
     static void ArgSortVector(const std::vector<T> &array, const int32_t axis, std::vector<int32_t> &indices) {
         RETURN_IF(array.empty());
-
         if (array.size() < indices.size() || indices.empty()) {
             indices.resize(array.size());
             for (uint32_t i = 0; i < array.size(); ++i) {
                 indices[i] = i;
             }
         }
-
         std::sort(indices.begin(), indices.end(), [&array, &axis](int32_t idx_1, int32_t idx_2) {
             return array[idx_1][axis] < array[idx_2][axis];
         });
