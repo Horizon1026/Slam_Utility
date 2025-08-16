@@ -36,6 +36,7 @@ namespace SLAM_UTILITY {
 
     #define LogFixPercision(x) std::cout << std::fixed << std::setprecision(x)
     #define LogWriteToFile(...) std::cout.rdbuf(std::ofstream(__VA_ARGS__).rdbuf())
+    #define LogBackToPreviousLine() std::cout << "\033[A"
 
     #if STD_COUT_INFO
         #define ReportText(...)  std::cout << __VA_ARGS__
