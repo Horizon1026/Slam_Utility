@@ -7,6 +7,9 @@ set( CMAKE_CXX_FLAGS "-std=c++17 -O3 -g -Wall -pthread" )
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set( CMAKE_CXX_STANDARD 20 )
 
+# 设置位置无关代码，解决链接时的 -fPIC 问题
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # Add slam utility.
 if( NOT TARGET lib_slam_utility )
     add_subdirectory( src ${PROJECT_SOURCE_DIR}/build/lib_slam_utility )
