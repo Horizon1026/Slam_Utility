@@ -45,6 +45,7 @@ set( UNIT_TEST_OF_SLAM_UTILITY_LIST
     test_3d_gaussian
     test_line_segment
     test_plane
+    test_yaml_parser
 )
 foreach( unit_test_src ${UNIT_TEST_OF_SLAM_UTILITY_LIST} )
     add_executable( ${unit_test_src}

@@ -20,6 +20,9 @@ endif()
 if( NOT TARGET lib_slam_utility_tick_tock )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/tick_tock ${PROJECT_SOURCE_DIR}/build/lib_slam_utility_tick_tock )
 endif()
+if( NOT TARGET lib_slam_utility_yaml_parser )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/src/yaml_parser ${PROJECT_SOURCE_DIR}/build/lib_slam_utility_yaml_parser )
+endif()
 
 # Add all relative components of slam utility data type.
 if( NOT TARGET lib_image )
@@ -69,6 +72,7 @@ target_link_libraries( lib_slam_utility
     lib_slam_utility_memory
     lib_slam_utility_operate
     lib_slam_utility_tick_tock
+    lib_slam_utility_yaml_parser
 
     lib_image
     lib_image_pyramid

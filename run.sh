@@ -9,5 +9,6 @@ cd ./build
 ./test_3d_gaussian
 ./test_line_segment
 ./test_plane
+./test_yaml_parser
 ./test_onnx
 cd ..
