@@ -8,6 +8,7 @@
 
 namespace SLAM_UTILITY {
 
+/* Class YamlParser Declaration. */
 class YamlParser final {
 
 public:
@@ -27,12 +28,11 @@ private:
     static std::string RemoveMeaninglessCharacters(const std::string &str);
     static std::string RemoveStringInQuotes(const std::string &str);
     static std::string GetStringInBrackets(const std::string &str);
-    static bool IsComment(const std::string &str);
-    static bool ToBool(const std::string &str);
-    static int ToInt(const std::string &str);
-    static float ToFloat(const std::string &str);
-    static double ToDouble(const std::string &str);
-    static bool IsEmpty(const std::string &str);
+    static std::string GetKey(const std::string &str);
+    static std::string GetValue(const std::string &str);
+    static std::string GetRootKey(const std::vector<std::string> &root_keys);
+    static uint32_t GetKeyLevel(const std::string &str);
+    static std::vector<std::string> GetArrayValue(const std::string &str);
 
 };
 

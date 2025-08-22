@@ -1,3 +1,6 @@
+# This is a example of the yaml file with ugly format.
+# The parser can handle this kind of format.
+
 # Single value configuration.
 app_name: "Slam_Utility"
 version: "1.0.0"
@@ -11,21 +14,23 @@ feature_types: ["[SIFT", "ORB",
 camera_resolution: [1920, 1080]
 calibration_params: [
     "fx", "fy", "cx", "cy",
-    "k1", "k]2", "p1", "p2"]
+    "k1", "k]2",
+         "p1", "p2",     ]
+
+sensor:
+    imu:
+        frequency: 200
+        noise_std: [0.01, 0.01, 0.01
+        ]
+    gps:
+        enabled: false
+        update_rate: 1
 
 # Root node and sub-node relationship.
 camera:
     model: pinhole
     resolution: [640, 480]
     fps: 30
-
-sensor:
-    imu:
-        frequency: 200
-        noise_std: [0.01, 0.01, 0.01]
-    gps:
-        enabled: false
-        update_rate: 1
 
 algorithm:
     slam:

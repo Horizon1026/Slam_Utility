@@ -28,7 +28,8 @@ YamlParser::ConfigMap YamlParser::ParseString(const std::string &content) {
     std::istringstream stream(content);
     std::string current_line;
     std::string string_to_be_parsed = "";
-    std::string full_key = "";
+    std::vector<std::string> root_keys;
+    bool need_to_pop_root_key = false;
     while (std::getline(stream, current_line)) {
         // Remove comments. If the line is totally commented, skip it.
         current_line = RemoveComments(current_line);
@@ -44,18 +45,60 @@ YamlParser::ConfigMap YamlParser::ParseString(const std::string &content) {
             continue;
         }
 
+        // Get level of the key.
+        const uint32_t key_level = GetKeyLevel(string_to_be_parsed);
+
         // Remove meaningless characters.
         string_to_be_parsed = RemoveMeaninglessCharacters(string_to_be_parsed);
         if (string_to_be_parsed.empty()) {
             continue;
         }
-        ReportDebug(string_to_be_parsed);
-        const std::string string_in_brackets = GetStringInBrackets(string_to_be_parsed);
-        ReportDebug(string_in_brackets);
 
-        // TODO:
+        // Get the key and value.
+        const std::string key = GetKey(string_to_be_parsed);
+        if (key.empty()) {
+            string_to_be_parsed = "";
+            continue;
+        }
 
-        // Clear the string after parsing.
+        // Process root keys according to the key level.
+        if (need_to_pop_root_key) {
+            while (key_level < root_keys.size()) {
+                root_keys.pop_back();
+            }
+            need_to_pop_root_key = false;
+        }
+
+        // Add current key to the root keys.
+        root_keys.emplace_back(key);
+
+        // Get the value.
+        const std::string value = GetValue(string_to_be_parsed);
+        if (value.empty()) {
+            string_to_be_parsed = "";
+            continue;
+        } else {
+            need_to_pop_root_key = true;
+        }
+
+        // Add key and value to the config map.
+        const std::string full_key = GetRootKey(root_keys);
+        if (value[0] == '[') {
+            // Array value.
+            const std::vector<std::string> array_values = GetArrayValue(value);
+            config_map[full_key] = array_values;
+        } else if (value[0] == '"') {
+            // String value.
+            config_map[full_key] = {value};
+        } else {
+            // Single value.
+            config_map[full_key] = {value};
+        }
+
+        // Prepare for the next line.
+        if (!root_keys.empty()) {
+            root_keys.pop_back();
+        }
         string_to_be_parsed = "";
     }
     return config_map;
@@ -68,11 +111,11 @@ void YamlParser::PrintConfigMap(const ConfigMap &config_map) {
         }
 
         if (values.size() == 1) {
-            ReportInfo(key << " : " << values[0]);
+            ReportInfo(key << ": " << values[0]);
             continue;
         }
 
-        ReportInfo(key << " : [");
+        ReportInfo(key << ": [");
         for (const auto &value : values) {
             ReportInfo("    " << value);
         }
@@ -156,11 +199,74 @@ std::string YamlParser::GetStringInBrackets(const std::string &str) {
     return result;
 }
 
-bool YamlParser::IsComment(const std::string &str) {
-    if (str.empty()) {
-        return false;
+std::string YamlParser::GetKey(const std::string &str) {
+    std::string result = "";
+    for (const char &c : str) {
+        if (c == ':') {
+            break;
+        }
+        result += c;
     }
-    return str.front() == '#';
+    return result;
+}
+
+std::string YamlParser::GetValue(const std::string &str) {
+    std::string result = "";
+    bool is_key_name = true;
+    for (const char &c : str) {
+        if (is_key_name && c == ':') {
+            is_key_name = false;
+            continue;
+        }
+        if (is_key_name) {
+            continue;
+        }
+        result += c;
+    }
+    return result;
+}
+
+std::string YamlParser::GetRootKey(const std::vector<std::string> &root_keys) {
+    std::string result = "";
+    for (const auto &key : root_keys) {
+        result += key + ":";
+    }
+
+    if (!result.empty()) {
+        result.pop_back();
+    }
+    return result;
+}
+
+uint32_t YamlParser::GetKeyLevel(const std::string &str) {
+    uint32_t result = 0;
+    for (const char &c : str) {
+        if (c == ' ') {
+            ++result;
+        }
+        if (c == ':') {
+            break;
+        }
+    }
+    return result / 4;
+}
+
+std::vector<std::string> YamlParser::GetArrayValue(const std::string &str) {
+    const std::string string_in_brackets = GetStringInBrackets(str);
+    std::vector<std::string> result;
+    std::string current_value = "";
+    for (const char &c : string_in_brackets) {
+        if (c == ',') {
+            result.emplace_back(current_value);
+            current_value = "";
+            continue;
+        }
+        current_value += c;
+    }
+    if (!current_value.empty()) {
+        result.emplace_back(current_value);
+    }
+    return result;
 }
 
 } // namespace SLAM_UTILITY
