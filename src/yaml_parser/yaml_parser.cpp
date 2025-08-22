@@ -89,10 +89,10 @@ YamlParser::ConfigMap YamlParser::ParseString(const std::string &content) {
             config_map[full_key] = array_values;
         } else if (value[0] == '"') {
             // String value.
-            config_map[full_key] = {value};
+            config_map[full_key] = {GetStringInQuotes(value)};
         } else {
             // Single value.
-            config_map[full_key] = {value};
+            config_map[full_key] = {GetStringInQuotes(value)};
         }
 
         // Prepare for the next line.
@@ -171,6 +171,16 @@ std::string YamlParser::RemoveStringInQuotes(const std::string &str) {
         result += c;
     }
     return result;
+}
+
+std::string YamlParser::GetStringInQuotes(const std::string &str) {
+    if (str.empty()) {
+        return "";
+    }
+    if (str[0] != '"') {
+        return str;
+    }
+    return str.substr(1, str.size() - 2);
 }
 
 std::string YamlParser::GetStringInBrackets(const std::string &str) {
@@ -257,14 +267,14 @@ std::vector<std::string> YamlParser::GetArrayValue(const std::string &str) {
     std::string current_value = "";
     for (const char &c : string_in_brackets) {
         if (c == ',') {
-            result.emplace_back(current_value);
+            result.emplace_back(GetStringInQuotes(current_value));
             current_value = "";
             continue;
         }
         current_value += c;
     }
     if (!current_value.empty()) {
-        result.emplace_back(current_value);
+        result.emplace_back(GetStringInQuotes(current_value));
     }
     return result;
 }

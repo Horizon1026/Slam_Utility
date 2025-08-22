@@ -13,6 +13,7 @@ Defined some basic datatype or operations for slam algorithm.
     - [x] Circular queue.
     - [x] Kd tree.
 - [x] Tick tock timer.
+- [x] Simple yaml parser.
 - [x] Scripts for all repos based on Slam_Utility.
 
 # Dependence

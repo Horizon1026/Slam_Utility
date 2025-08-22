@@ -27,6 +27,7 @@ private:
     static std::string RemoveComments(const std::string &str);
     static std::string RemoveMeaninglessCharacters(const std::string &str);
     static std::string RemoveStringInQuotes(const std::string &str);
+    static std::string GetStringInQuotes(const std::string &str);
     static std::string GetStringInBrackets(const std::string &str);
     static std::string GetKey(const std::string &str);
     static std::string GetValue(const std::string &str);
