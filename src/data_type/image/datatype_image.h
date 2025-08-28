@@ -7,13 +7,14 @@
 
 namespace SLAM_UTILITY {
 
-// Class GrayImage Declaration.
+/* Class GrayImage Declaration */
 class GrayImage {
 
 public:
     explicit GrayImage() = default;
     explicit GrayImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
     explicit GrayImage(MatImg &matrix_image);
+    explicit GrayImage(const MatImgF &matrix_image);
     virtual ~GrayImage();
 
     uint8_t *data() const { return data_; }
@@ -87,12 +88,14 @@ private:
     bool memory_owner_ = false;
 };
 
-// Class RgbImage Declaration.
+/* Class RgbImage Declaration */
 class RgbImage {
 
 public:
     explicit RgbImage() = default;
     explicit RgbImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
+    explicit RgbImage(MatImg &matrix_image);
+    explicit RgbImage(const MatImgF &matrix_image);
     virtual ~RgbImage();
 
     uint8_t *data() const { return data_; }
@@ -102,6 +105,8 @@ public:
 
     void Clear();
     void SetImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner = false);
+    bool ToMatImg(MatImg &matrix_image) const;
+    bool ToMatImgF(MatImgF &matrix_image) const;
 
     inline bool SetPixelValue(int32_t row, int32_t col, RgbPixel value) {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {

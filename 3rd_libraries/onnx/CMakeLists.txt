@@ -49,6 +49,7 @@ target_link_libraries( lib_onnx_run_time_for_cxx
 set( ONNXRUNTIME_ROOT_PATHS
     "/home/ubuntu24_msi/dependence/onnxruntime-linux-x64-gpu-1.20.1"
     "/home/horizon/Desktop/dependence/onnxruntime-linux-x64-gpu-1.20.1"
+    "/home/jiapengli/Desktop/dependence/onnxruntime-linux-x64-gpu-1.20.0"
 )
 foreach( ONNXRUNTIME_ROOT_PATH ${ONNXRUNTIME_ROOT_PATHS} )
     # If patch exits, then add it to the target.

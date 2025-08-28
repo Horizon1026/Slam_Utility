@@ -5,14 +5,33 @@
 
 bool OnnxRuntime::ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor) {
     RETURN_FALSE_IF(!image.ToMatImgF(tensor.mat));
-    return ConvertImageToTensor(memory_info, tensor);
+    const int32_t channel = 1;
+    return ConvertImageToTensor(memory_info, channel, tensor);
 }
 
-bool OnnxRuntime::ConvertImageToTensor(const Ort::MemoryInfo &memory_info, ImageTensor &tensor) {
+bool OnnxRuntime::ConvertImageToTensor(const RgbImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor) {
+    MatImgF img_sorted_by_pixel;
+    RETURN_FALSE_IF(!image.ToMatImgF(img_sorted_by_pixel));
+    tensor.mat.setZero(img_sorted_by_pixel.rows(), img_sorted_by_pixel.cols());
+    const int32_t channel_step = img_sorted_by_pixel.rows() / 3 * img_sorted_by_pixel.cols();
+    for (int32_t row = 0; row < image.rows() / 3; ++row) {
+        for (int32_t col = 0; col < image.cols() / 3; ++col) {
+            const int32_t base_idx_1 = row * image.cols() + col;
+            const int32_t base_idx_2 = base_idx_1 * 3;
+            tensor.mat.data()[base_idx_1] = img_sorted_by_pixel.data()[base_idx_2];
+            tensor.mat.data()[base_idx_1 + channel_step] = img_sorted_by_pixel.data()[base_idx_2 + 1];
+            tensor.mat.data()[base_idx_1 + 2 * channel_step] = img_sorted_by_pixel.data()[base_idx_2 + 2];
+        }
+    }
+    const int32_t channel = 3;
+    return ConvertImageToTensor(memory_info, channel, tensor);
+}
+
+bool OnnxRuntime::ConvertImageToTensor(const Ort::MemoryInfo &memory_info, const int32_t channel, ImageTensor &tensor) {
     const std::vector<int64_t> input_tensor_shape = {
         static_cast<int64_t>(1),
-        static_cast<int64_t>(1),
-        static_cast<int64_t>(tensor.mat.rows()),
+        static_cast<int64_t>(channel),
+        static_cast<int64_t>(tensor.mat.rows() / channel),
         static_cast<int64_t>(tensor.mat.cols())};
     tensor.value = Ort::Value::CreateTensor<float>(memory_info,
         const_cast<float *>(tensor.mat.data()), tensor.mat.rows() * tensor.mat.cols(),
@@ -117,6 +136,20 @@ void OnnxRuntime::ReportInformationOfTensor(const Ort::TypeInfo &type_info, cons
     }
     ReportText(dims.back() << "]\n");
 }
+
+void OnnxRuntime::ReportInformationOfOrtValue(const Ort::Value &value) {
+    const auto &tensor_info = value.GetTensorTypeAndShapeInfo();
+    const auto &element_type = tensor_info.GetElementType();
+    const std::vector<int64_t> &dims = tensor_info.GetShape();
+
+    std::string tensor_dims_str = "[";
+    for (uint32_t j = 0; j < dims.size() - 1; ++j) {
+        tensor_dims_str += std::to_string(dims[j]) + ", ";
+    }
+    tensor_dims_str += std::to_string(dims.back()) + "]";
+    ReportInfo("[OnnxRuntime] Value tensor type: " << element_type << ". Dimensions: " << tensor_dims_str);
+}
+
 
 bool OnnxRuntime::TryToEnableCuda(Ort::SessionOptions &session_options) {
     // Enable GPU for ONNX Runtime 1.20.

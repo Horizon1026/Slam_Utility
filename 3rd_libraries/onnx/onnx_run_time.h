@@ -21,13 +21,15 @@ public:
     virtual ~OnnxRuntime() = default;
 
     static void ReportInformationOfSession(const Ort::Session &session);
+    static void ReportInformationOfOrtValue(const Ort::Value &value);
     static bool GetSessionIO(const Ort::Session &session,
                              std::vector<std::string> &inputs_name,
                              std::vector<std::string> &outputs_name);
     static bool TryToEnableCuda(Ort::SessionOptions &session_options);
 
     static bool ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
-    static bool ConvertImageToTensor(const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
+    static bool ConvertImageToTensor(const RgbImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
+    static bool ConvertImageToTensor(const Ort::MemoryInfo &memory_info, const int32_t channel, ImageTensor &tensor);
 
     static bool ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<Eigen::Map<const MatImgF>> &image_matrices);
 
