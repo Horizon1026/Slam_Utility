@@ -30,6 +30,7 @@ public:
     static bool ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
     static bool ConvertImageToTensor(const RgbImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
     static bool ConvertImageToTensor(const Ort::MemoryInfo &memory_info, const int32_t channel, ImageTensor &tensor);
+    static bool ConvertGrayImageToRgbTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
 
     template <typename T>
     static bool ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<T>>> &image_matrices);

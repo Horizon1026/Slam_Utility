@@ -44,6 +44,17 @@ bool OnnxRuntime::ConvertImageToTensor(const Ort::MemoryInfo &memory_info, const
     return true;
 }
 
+bool OnnxRuntime::ConvertGrayImageToRgbTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor) {
+    MatImgF img_per_channel;
+    RETURN_FALSE_IF(!image.ToMatImgF(img_per_channel));
+    tensor.mat.setZero(img_per_channel.rows() * 3, img_per_channel.cols());
+    for (int32_t i = 0; i < 3; ++i) {
+        tensor.mat.block(i * img_per_channel.rows(), 0, img_per_channel.rows(), img_per_channel.cols()) = img_per_channel;
+    }
+    const int32_t channel = 3;
+    return ConvertImageToTensor(memory_info, channel, tensor);
+}
+
 template bool OnnxRuntime::ConvertTensorToImageMatrice<float>(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<float>>> &image_matrices);
 template bool OnnxRuntime::ConvertTensorToImageMatrice<double>(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<double>>> &image_matrices);
 template bool OnnxRuntime::ConvertTensorToImageMatrice<int32_t>(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<int32_t>>> &image_matrices);
