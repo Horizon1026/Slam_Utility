@@ -31,7 +31,8 @@ public:
     static bool ConvertImageToTensor(const RgbImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor);
     static bool ConvertImageToTensor(const Ort::MemoryInfo &memory_info, const int32_t channel, ImageTensor &tensor);
 
-    static bool ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<Eigen::Map<const MatImgF>> &image_matrices);
+    template <typename T>
+    static bool ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<T>>> &image_matrices);
 
 private:
     static void ReportInformationOfTensor(const Ort::TypeInfo &type_info, const std::string &name);

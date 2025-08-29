@@ -27,6 +27,7 @@ using int64_t = long int;
 template <typename T> using TQuat = Eigen::Quaternion<T>;
 template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic> using TMat = Eigen::Matrix<T, Row, Col>;
 template <typename T, int32_t Row = Eigen::Dynamic> using TVec = Eigen::Matrix<T, Row, 1>;
+template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic> using TMatImg = Eigen::Matrix<T, Row, Col, Eigen::RowMajor>;
 
 template <typename T> using TMat1 = Eigen::Matrix<T, 1, 1>;
 template <typename T> using TMat2 = Eigen::Matrix<T, 2, 2>;
@@ -2219,6 +2220,7 @@ using Mat32x32 = Eigen::Matrix<float, 32, 32>;
 using Pixel = Eigen::Matrix<int32_t, 2, 1>;
 using PixelLine = Eigen::Matrix<int32_t, 4, 1>;
 using MatInt = Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic>;
+using MatLong = Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic>;
 using MatImg = Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 using MatImgF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 

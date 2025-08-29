@@ -44,10 +44,13 @@ bool OnnxRuntime::ConvertImageToTensor(const Ort::MemoryInfo &memory_info, const
     return true;
 }
 
-bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<Eigen::Map<const MatImgF>> &image_matrices) {
+template bool OnnxRuntime::ConvertTensorToImageMatrice<float>(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<float>>> &image_matrices);
+template bool OnnxRuntime::ConvertTensorToImageMatrice<double>(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<double>>> &image_matrices);
+template bool OnnxRuntime::ConvertTensorToImageMatrice<int32_t>(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<int32_t>>> &image_matrices);
+template bool OnnxRuntime::ConvertTensorToImageMatrice<int64_t>(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<int64_t>>> &image_matrices);
+template <typename T>
+bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, std::vector<Eigen::Map<const TMatImg<T>>> &image_matrices) {
     const auto &tensor_info = tensor_value.GetTensorTypeAndShapeInfo();
-    const auto &element_type = tensor_info.GetElementType();
-    RETURN_FALSE_IF(element_type != ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT);
     const std::vector<int64_t> &tensor_dims = tensor_info.GetShape();
 
     RETURN_FALSE_IF(tensor_dims.size() < 2);
@@ -60,7 +63,7 @@ bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, st
         image_matrices.reserve(num_of_images);
     }
 
-    const float *data = reinterpret_cast<const float *>(tensor_value.GetTensorRawData());
+    const T *data = reinterpret_cast<const T *>(tensor_value.GetTensorRawData());
     const int32_t rows = tensor_dims[tensor_dims.size() - 2];
     const int32_t cols = tensor_dims[tensor_dims.size() - 1];
     const int32_t step = rows * cols;
