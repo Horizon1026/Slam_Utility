@@ -35,6 +35,9 @@ public:
 
 private:
     static void ReportInformationOfTensor(const Ort::TypeInfo &type_info, const std::string &name);
+    static std::string GetTensorDataTypeName(const ONNXTensorElementDataType &type);
+    static std::string GetTensorDataTypeName(const int32_t &type_idx);
+
 };
 
 #endif // end of _ONNX_RUN_TIME_H_

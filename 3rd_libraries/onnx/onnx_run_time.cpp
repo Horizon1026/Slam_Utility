@@ -12,11 +12,15 @@ bool OnnxRuntime::ConvertImageToTensor(const GrayImage &image, const Ort::Memory
 bool OnnxRuntime::ConvertImageToTensor(const RgbImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor) {
     MatImgF img_sorted_by_pixel;
     RETURN_FALSE_IF(!image.ToMatImgF(img_sorted_by_pixel));
+
+    // Resort rgb image matrix by channel.
     tensor.mat.setZero(img_sorted_by_pixel.rows(), img_sorted_by_pixel.cols());
-    const int32_t channel_step = img_sorted_by_pixel.rows() / 3 * img_sorted_by_pixel.cols();
-    for (int32_t row = 0; row < image.rows() / 3; ++row) {
-        for (int32_t col = 0; col < image.cols() / 3; ++col) {
-            const int32_t base_idx_1 = row * image.cols() + col;
+    const int32_t image_rows = image.rows();
+    const int32_t image_cols = image.cols();
+    const int32_t channel_step = image_rows * image_cols;
+    for (int32_t row = 0; row < image_rows; ++row) {
+        for (int32_t col = 0; col < image_cols; ++col) {
+            const int32_t base_idx_1 = row * image_cols + col;
             const int32_t base_idx_2 = base_idx_1 * 3;
             tensor.mat.data()[base_idx_1] = img_sorted_by_pixel.data()[base_idx_2];
             tensor.mat.data()[base_idx_1 + channel_step] = img_sorted_by_pixel.data()[base_idx_2 + 1];
@@ -111,24 +115,7 @@ void OnnxRuntime::ReportInformationOfTensor(const Ort::TypeInfo &type_info, cons
     const Ort::ConstTensorTypeAndShapeInfo tensor_info = type_info.GetTensorTypeAndShapeInfo();
     const std::vector<int64_t> dims = tensor_info.GetShape();
     const ONNXTensorElementDataType type = tensor_info.GetElementType();
-
-    std::string type_name;
-    switch (type) {
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT: type_name = "FLOAT"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8: type_name = "UINT8"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8: type_name = "INT8"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT16: type_name = "UINT16"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16: type_name = "INT16"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32: type_name = "INT32"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64: type_name = "INT64"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_STRING: type_name = "STRING"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL: type_name = "BOOL"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16: type_name = "FLOAT16"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE: type_name = "DOUBLE"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT32: type_name = "UINT32"; break;
-        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT64: type_name = "UINT64"; break;
-        default: type_name = "UNKNOWN(" + std::to_string(type) + ")"; break;
-    }
+    const std::string type_name = GetTensorDataTypeName(type);
 
     ReportText(std::setw(12) << "   [" << type_name << "] - [" GREEN << name << RESET_COLOR "] - [");
     for (uint32_t j = 0; j < dims.size() - 1; ++j) {
@@ -147,7 +134,8 @@ void OnnxRuntime::ReportInformationOfOrtValue(const Ort::Value &value) {
         tensor_dims_str += std::to_string(dims[j]) + ", ";
     }
     tensor_dims_str += std::to_string(dims.back()) + "]";
-    ReportInfo("[OnnxRuntime] Value tensor type: " << element_type << ". Dimensions: " << tensor_dims_str);
+    const std::string type_name = GetTensorDataTypeName(element_type);
+    ReportInfo("[OnnxRuntime] Value tensor type: [" << type_name << "]. Dimensions: " << tensor_dims_str);
 }
 
 
@@ -178,4 +166,29 @@ bool OnnxRuntime::TryToEnableCuda(Ort::SessionOptions &session_options) {
     }
 
     return use_gpu;
+}
+
+std::string OnnxRuntime::GetTensorDataTypeName(const ONNXTensorElementDataType &type) {
+    std::string type_name;
+    switch (type) {
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT: type_name = "FLOAT"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8: type_name = "UINT8"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8: type_name = "INT8"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT16: type_name = "UINT16"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16: type_name = "INT16"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32: type_name = "INT32"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64: type_name = "INT64"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_STRING: type_name = "STRING"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_BOOL: type_name = "BOOL"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT16: type_name = "FLOAT16"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_DOUBLE: type_name = "DOUBLE"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT32: type_name = "UINT32"; break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT64: type_name = "UINT64"; break;
+        default: type_name = "UNKNOWN(" + std::to_string(type) + ")"; break;
+    }
+    return type_name;
+}
+
+std::string OnnxRuntime::GetTensorDataTypeName(const int32_t &type_idx) {
+    return GetTensorDataTypeName(static_cast<ONNXTensorElementDataType>(type_idx));
 }
