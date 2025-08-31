@@ -30,7 +30,7 @@ endif()
 
 # Package target lib_onnx_run_time_for_cxx.
 aux_source_directory( . AUX_SRC_LIB_ONNX_RUN_TIME_FOR_CXX )
-add_library( lib_onnx_run_time_for_cxx
+add_library( lib_onnx_run_time_for_cxx STATIC
     ${AUX_SRC_LIB_ONNX_RUN_TIME_FOR_CXX}
 )
 target_link_libraries( lib_onnx_run_time_for_cxx
