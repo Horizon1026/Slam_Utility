@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     Visualizor2D::LoadImage("../examples/image.png", input_image);
     Visualizor2D::ShowImage("raw image", input_image);
     auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeDefault);
-    OnnxRuntime::ImageTensor input_tensor;
+    OnnxRuntime::MatrixTensor input_tensor;
     OnnxRuntime::ConvertImageToTensor(input_image, memory_info, input_tensor);
 
     // Inference.

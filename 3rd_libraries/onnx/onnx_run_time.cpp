@@ -3,13 +3,29 @@
 #include "slam_operations.h"
 #include "tick_tock.h"
 
-bool OnnxRuntime::ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor) {
+bool OnnxRuntime::ConvertMatrixToTensor(const Ort::MemoryInfo &memory_info, MatrixTensor &tensor) {
+    return ConvertMatrixToTensor(tensor.mat, memory_info, tensor.value);
+}
+
+bool OnnxRuntime::ConvertMatrixToTensor(const MatImgF &matrix, const Ort::MemoryInfo &memory_info, Ort::Value &tensor) {
+    const std::vector<int64_t> input_tensor_shape = {
+        static_cast<int64_t>(1),
+        static_cast<int64_t>(matrix.rows()),
+        static_cast<int64_t>(matrix.cols())};
+    tensor = Ort::Value::CreateTensor<float>(memory_info,
+        const_cast<float *>(matrix.data()), matrix.rows() * matrix.cols(),
+        input_tensor_shape.data(), input_tensor_shape.size()
+    );
+    return true;
+}
+
+bool OnnxRuntime::ConvertImageToTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, MatrixTensor &tensor) {
     RETURN_FALSE_IF(!image.ToMatImgF(tensor.mat));
     const int32_t channel = 1;
     return ConvertImageToTensor(memory_info, channel, tensor);
 }
 
-bool OnnxRuntime::ConvertImageToTensor(const RgbImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor) {
+bool OnnxRuntime::ConvertImageToTensor(const RgbImage &image, const Ort::MemoryInfo &memory_info, MatrixTensor &tensor) {
     MatImgF img_sorted_by_pixel;
     RETURN_FALSE_IF(!image.ToMatImgF(img_sorted_by_pixel));
 
@@ -31,7 +47,7 @@ bool OnnxRuntime::ConvertImageToTensor(const RgbImage &image, const Ort::MemoryI
     return ConvertImageToTensor(memory_info, channel, tensor);
 }
 
-bool OnnxRuntime::ConvertImageToTensor(const Ort::MemoryInfo &memory_info, const int32_t channel, ImageTensor &tensor) {
+bool OnnxRuntime::ConvertImageToTensor(const Ort::MemoryInfo &memory_info, const int32_t channel, MatrixTensor &tensor) {
     const std::vector<int64_t> input_tensor_shape = {
         static_cast<int64_t>(1),
         static_cast<int64_t>(channel),
@@ -44,7 +60,7 @@ bool OnnxRuntime::ConvertImageToTensor(const Ort::MemoryInfo &memory_info, const
     return true;
 }
 
-bool OnnxRuntime::ConvertGrayImageToRgbTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, ImageTensor &tensor) {
+bool OnnxRuntime::ConvertGrayImageToRgbTensor(const GrayImage &image, const Ort::MemoryInfo &memory_info, MatrixTensor &tensor) {
     MatImgF img_per_channel;
     RETURN_FALSE_IF(!image.ToMatImgF(img_per_channel));
     tensor.mat.setZero(img_per_channel.rows() * 3, img_per_channel.cols());
@@ -64,21 +80,22 @@ bool OnnxRuntime::ConvertTensorToImageMatrice(const Ort::Value &tensor_value, st
     const auto &tensor_info = tensor_value.GetTensorTypeAndShapeInfo();
     const std::vector<int64_t> &tensor_dims = tensor_info.GetShape();
 
-    RETURN_FALSE_IF(tensor_dims.size() < 2);
-    uint32_t num_of_images = 1;
-    for (uint32_t i = 0; i < tensor_dims.size() - 2; ++i) {
-        num_of_images *= tensor_dims[i];
+    uint32_t num_of_matrices = 1;
+    if (tensor_dims.size() >= 2) {
+        for (uint32_t i = 0; i < tensor_dims.size() - 2; ++i) {
+            num_of_matrices *= tensor_dims[i];
+        }
     }
     image_matrices.clear();
-    if (image_matrices.capacity() < num_of_images) {
-        image_matrices.reserve(num_of_images);
+    if (image_matrices.capacity() < num_of_matrices) {
+        image_matrices.reserve(num_of_matrices);
     }
 
     const T *data = reinterpret_cast<const T *>(tensor_value.GetTensorRawData());
-    const int32_t rows = tensor_dims[tensor_dims.size() - 2];
+    const int32_t rows = tensor_dims.size() < 2 ? 1 : tensor_dims[tensor_dims.size() - 2];
     const int32_t cols = tensor_dims[tensor_dims.size() - 1];
     const int32_t step = rows * cols;
-    for (uint32_t idx = 0; idx < num_of_images; ++idx) {
+    for (uint32_t idx = 0; idx < num_of_matrices; ++idx) {
         image_matrices.emplace_back(data + step * idx, rows, cols);
     }
 

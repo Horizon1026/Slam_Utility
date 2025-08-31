@@ -2219,8 +2219,8 @@ using Mat32x32 = Eigen::Matrix<float, 32, 32>;
 
 using Pixel = Eigen::Matrix<int32_t, 2, 1>;
 using PixelLine = Eigen::Matrix<int32_t, 4, 1>;
-using MatInt = Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic>;
-using MatLong = Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic>;
+using MatInt = Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+using MatLong = Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 using MatImg = Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 using MatImgF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
