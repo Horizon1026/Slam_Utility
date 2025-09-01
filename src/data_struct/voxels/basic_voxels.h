@@ -27,8 +27,10 @@ public:
 
     bool TryToOccupy(const Vec3 &position, const T &value);
     bool IsOccupied(const Vec3 &position, const T &value);
+    void ClearVoxel(const Vec3 &position);
     bool TryToOccupy(const std::array<int32_t, 3> &indices, const T &value);
     bool IsOccupied(const std::array<int32_t, 3> &indices, const T &value);
+    void ClearVoxel(const std::array<int32_t, 3> &indices);
 
     void GeneratePointCloud(const Vec3 &mid_p_w, std::vector<Vec3> &all_p_w);
     void GeneratePointCloud(const Vec3 &mid_p_w, const T &value, std::vector<Vec3> &all_p_w);
@@ -37,6 +39,7 @@ public:
     uint32_t GetBufferIndex(int32_t x, int32_t y, int32_t z) const { return static_cast<uint32_t>(z * sq_cube_length_ + y * cube_length_ + x); }
     uint32_t GetBufferIndex(const std::array<int32_t, 3> &indices) const { return GetBufferIndex(indices[0], indices[1], indices[2]); }
     T &GetVoxel(int32_t x, int32_t y, int32_t z) { return buffer_[GetBufferIndex(x, y, z)]; }
+    T &GetVoxel(const std::array<int32_t, 3> &indices) { return buffer_[GetBufferIndex(indices)]; }
     T &GetVoxel(uint32_t index) { return buffer_[index]; }
 
 private:
@@ -102,6 +105,13 @@ bool BasicVoxels<T>::IsOccupied(const Vec3 &position, const T &value) {
 }
 
 template <typename T>
+void BasicVoxels<T>::ClearVoxel(const Vec3 &position) {
+    std::array<int32_t, 3> indices;
+    RETURN_IF(!ConvertPositionTo3DofIndices(position, indices));
+    ClearVoxel(indices);
+}
+
+template <typename T>
 bool BasicVoxels<T>::TryToOccupy(const std::array<int32_t, 3> &indices, const T &value) {
     const uint32_t index = GetBufferIndex(indices);
     auto &v = GetVoxel(index);
@@ -113,8 +123,13 @@ bool BasicVoxels<T>::TryToOccupy(const std::array<int32_t, 3> &indices, const T 
 
 template <typename T>
 bool BasicVoxels<T>::IsOccupied(const std::array<int32_t, 3> &indices, const T &value) {
-    auto &v = GetVoxel(indices[0], indices[1], indices[2]);
+    auto &v = GetVoxel(indices);
     return v == value;
+}
+
+template <typename T>
+void BasicVoxels<T>::ClearVoxel(const std::array<int32_t, 3> &indices) {
+    GetVoxel(indices) = default_value_;
 }
 
 template <typename T>
