@@ -2224,6 +2224,9 @@ using MatLong = Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::Ro
 using MatImg = Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 using MatImgF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
+using SuperpointDescriptorType = Eigen::Matrix<float, 256, 1>;
+using DiskDescriptorType = Eigen::Matrix<float, 128, 1>;
+
 }
 
 using namespace SLAM_UTILITY;
