@@ -41,6 +41,7 @@ public:
     T &GetVoxel(int32_t x, int32_t y, int32_t z) { return buffer_[GetBufferIndex(x, y, z)]; }
     T &GetVoxel(const std::array<int32_t, 3> &indices) { return buffer_[GetBufferIndex(indices)]; }
     T &GetVoxel(uint32_t index) { return buffer_[index]; }
+    uint32_t GetNumberOfProcessedVoxels() const { return changed_items_indices_.size(); }
 
 private:
     Options options_;
