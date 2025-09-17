@@ -22,6 +22,18 @@ public:
     static ConfigMap ParseString(const std::string &content);
     static void PrintConfigMap(const ConfigMap &config_map);
 
+    static bool ToBool(const std::string &str);
+    static uint8_t ToUint8(const std::string &str);
+    static uint16_t ToUint16(const std::string &str);
+    static uint32_t ToUint32(const std::string &str);
+    static uint64_t ToUint64(const std::string &str);
+    static int8_t ToInt8(const std::string &str);
+    static int16_t ToInt16(const std::string &str);
+    static int32_t ToInt32(const std::string &str);
+    static int64_t ToInt64(const std::string &str);
+    static float ToFloat(const std::string &str);
+    static double ToDouble(const std::string &str);
+
 private:
     static bool HasPairsOfBrackets(const std::string &str);
     static std::string RemoveComments(const std::string &str);

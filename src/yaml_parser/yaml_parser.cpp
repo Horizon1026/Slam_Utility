@@ -279,4 +279,98 @@ std::vector<std::string> YamlParser::GetArrayValue(const std::string &str) {
     return result;
 }
 
+bool YamlParser::ToBool(const std::string &str) {
+    return str == "true";
+}
+
+uint8_t YamlParser::ToUint8(const std::string &str) {
+    try {
+        return static_cast<uint8_t>(std::stoi(str));
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to uint8_t: " << str);
+        return 0;
+    }
+}
+
+uint16_t YamlParser::ToUint16(const std::string &str) {
+    try {
+        return static_cast<uint16_t>(std::stoi(str));
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to uint16_t: " << str);
+        return 0;
+    }
+}
+
+uint32_t YamlParser::ToUint32(const std::string &str) {
+    try {
+        return static_cast<uint32_t>(std::stoi(str));
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to uint32_t: " << str);
+        return 0;
+    }
+}
+
+uint64_t YamlParser::ToUint64(const std::string &str) {
+    try {
+        return static_cast<uint64_t>(std::stoi(str));
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to uint64_t: " << str);
+        return 0;
+    }
+}
+
+int8_t YamlParser::ToInt8(const std::string &str) {
+    try {
+        return static_cast<int8_t>(std::stoi(str));
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to int8_t: " << str);
+        return 0;
+    }
+}
+
+int16_t YamlParser::ToInt16(const std::string &str) {
+    try {
+        return static_cast<int16_t>(std::stoi(str));
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to int16_t: " << str);
+        return 0;
+    }
+}
+
+int32_t YamlParser::ToInt32(const std::string &str) {
+    try {
+        return static_cast<int32_t>(std::stoi(str));
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to int32_t: " << str);
+        return 0;
+    }
+}
+
+int64_t YamlParser::ToInt64(const std::string &str) {
+    try {
+        return static_cast<int64_t>(std::stoi(str));
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to int64_t: " << str);
+        return 0;
+    }
+}
+
+float YamlParser::ToFloat(const std::string &str) {
+    try {
+        return std::stof(str);
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to float: " << str);
+        return 0.0f;
+    }
+}
+
+double YamlParser::ToDouble(const std::string &str) {
+    try {
+        return std::stod(str);
+    } catch (const std::invalid_argument &e) {
+        ReportError("Failed to convert string to double: " << str);
+        return 0.0;
+    }
+}
+
 } // namespace SLAM_UTILITY
