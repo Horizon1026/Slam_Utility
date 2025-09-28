@@ -14,15 +14,16 @@ class HashVoxels: public Voxels<T> {
 
 public:
     struct Options {
-        float kRadius = 0.0f;
-        float kStep = 0.0f;
+        Vec3 kRadius = Vec3::Zero();
+        Vec3 kStep = Vec3::Zero();
     };
 
 public:
     HashVoxels() = default;
     virtual ~HashVoxels() = default;
 
-    void InitializeBuffer(const float radius, const float step);
+    using Voxels<T>::InitializeBuffer;
+    virtual void InitializeBuffer() override;
     void RefreshBuffer(const T &value);
     virtual void ResetBuffer() override;
 
@@ -36,37 +37,28 @@ public:
     virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices) override;
 
     using Voxels<T>::GetBufferIndex;
-    virtual uint32_t GetBufferIndex(int32_t x, int32_t y, int32_t z) const override { return static_cast<uint32_t>(z * sq_cube_length_ + y * cube_length_ + x); }
-
     using Voxels<T>::GetVoxel;
     virtual T &GetVoxel(uint32_t index) override { return buffer_[index]; }
 
     uint32_t GetNumberOfProcessedVoxels() const { return buffer_.size(); }
 
 private:
-    Options options_;
-
-    T default_value_;
     std::unordered_map<uint32_t, T> buffer_;
-    int32_t cube_length_ = 0;
-    int32_t half_cube_length_ = 0;
-    int32_t sq_cube_length_ = 0;
 };
 
 /* Class HashVoxels Definition. */
 template <typename T>
-void HashVoxels<T>::InitializeBuffer(const float radius, const float step) {
-    options_.kRadius = radius;
-    options_.kStep = step;
-    cube_length_ = static_cast<int32_t>(options_.kRadius * 2.0f / options_.kStep) + 1;
-    half_cube_length_ = cube_length_ >> 1;
-    sq_cube_length_ = cube_length_ * cube_length_;
+void HashVoxels<T>::InitializeBuffer() {
+    for (uint32_t i = 0; i < 3; ++i) {
+        this->voxel_length()[i] = static_cast<int32_t>(this->options().kRadius[i] * 2.0f / this->options().kStep[i]) + 1;
+        this->half_voxel_length()[i] = this->voxel_length()[i] / 2;
+    }
     buffer_.clear();
 }
 
 template <typename T>
 void HashVoxels<T>::RefreshBuffer(const T &value) {
-    default_value_ = value;
+    this->default_value() = value;
     buffer_.clear();
 }
 
@@ -78,15 +70,15 @@ void HashVoxels<T>::ResetBuffer() {
 template <typename T>
 bool HashVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices) {
     for (uint32_t i = 0; i < indices.size(); ++i) {
-        indices[i] = static_cast<int32_t>(position[i] / options_.kStep) + half_cube_length_;
-        RETURN_FALSE_IF(indices[i] < 0 || indices[i] >= cube_length_);
+        indices[i] = static_cast<int32_t>(position[i] / this->options().kStep[i]) + this->half_voxel_length()[i];
+        RETURN_FALSE_IF(indices[i] < 0 || indices[i] >= this->voxel_length()[i]);
     }
     return true;
 }
 
 template <typename T>
 bool HashVoxels<T>::TryToOccupy(const std::array<int32_t, 3> &indices, const T &value) {
-    const uint32_t index = GetBufferIndex(indices[0], indices[1], indices[2]);
+    const uint32_t index = this->GetBufferIndex(indices[0], indices[1], indices[2]);
     auto &v = GetVoxel(index);
     RETURN_FALSE_IF(v == value);
     v = value;
@@ -95,15 +87,15 @@ bool HashVoxels<T>::TryToOccupy(const std::array<int32_t, 3> &indices, const T &
 
 template <typename T>
 bool HashVoxels<T>::IsOccupied(const std::array<int32_t, 3> &indices, const T &value) {
-    const uint32_t index = GetBufferIndex(indices[0], indices[1], indices[2]);
+    const uint32_t index = this->GetBufferIndex(indices[0], indices[1], indices[2]);
     auto &v = GetVoxel(index);
     return v == value;
 }
 
 template <typename T>
 void HashVoxels<T>::ClearVoxel(const std::array<int32_t, 3> &indices) {
-    const uint32_t index = GetBufferIndex(indices[0], indices[1], indices[2]);
-    GetVoxel(index) = default_value_;
+    const uint32_t index = this->GetBufferIndex(indices[0], indices[1], indices[2]);
+    GetVoxel(index) = this->default_value();
 }
 
 }
