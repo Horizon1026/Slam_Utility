@@ -24,7 +24,6 @@ public:
     void InitializeBuffer(const Vec3 &radius, const Vec3 &step);
     void InitializeBuffer(const float radius, const float step);
     virtual void InitializeBuffer() = 0;
-
     virtual void ResetBuffer() = 0;
 
     bool TryToOccupy(const Vec3 &position, const T &value);
@@ -34,7 +33,8 @@ public:
     virtual bool IsOccupied(const std::array<int32_t, 3> &indices, const T &value) = 0;
     virtual void ClearVoxel(const std::array<int32_t, 3> &indices) = 0;
 
-    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices) = 0;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices) const = 0;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices, std::array<int32_t, 3> &map_indices) const = 0;
 
     uint32_t GetBufferIndex(const std::array<int32_t, 3> &indices) const { return this->GetBufferIndex(indices[0], indices[1], indices[2]); }
     uint32_t GetBufferIndex(int32_t x, int32_t y, int32_t z) const { return static_cast<uint32_t>(z * voxel_length_[0] * voxel_length_[1] + y * voxel_length_[0] + x); }

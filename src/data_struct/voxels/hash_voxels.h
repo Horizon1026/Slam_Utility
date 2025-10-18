@@ -34,7 +34,8 @@ public:
     virtual bool IsOccupied(const std::array<int32_t, 3> &indices, const T &value) override;
     virtual void ClearVoxel(const std::array<int32_t, 3> &indices) override;
 
-    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices) override;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices) const override;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices, std::array<int32_t, 3> &map_indices) const override;
 
     using Voxels<T>::GetBufferIndex;
     using Voxels<T>::GetVoxel;
@@ -68,10 +69,20 @@ void HashVoxels<T>::ResetBuffer() {
 }
 
 template <typename T>
-bool HashVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices) {
+bool HashVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices) const {
     for (uint32_t i = 0; i < indices.size(); ++i) {
         indices[i] = static_cast<int32_t>(position[i] / this->options().kStep[i]) + this->half_voxel_length()[i];
         RETURN_FALSE_IF(indices[i] < 0 || indices[i] >= this->voxel_length()[i]);
+    }
+    return true;
+}
+
+template <typename T>
+bool HashVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices, std::array<int32_t, 3> &map_indices) const {
+    for (uint32_t i = 0; i < indices.size(); ++i) {
+        indices[i] = static_cast<int32_t>(position[i] / this->options().kStep[i]) + this->half_voxel_length()[i];
+        map_indices[i] = indices[i] / this->voxel_length()[i];
+        indices[i] %= this->voxel_length()[i];
     }
     return true;
 }
