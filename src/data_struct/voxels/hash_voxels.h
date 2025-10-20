@@ -81,8 +81,12 @@ template <typename T>
 bool HashVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices, std::array<int32_t, 3> &map_indices) const {
     for (uint32_t i = 0; i < indices.size(); ++i) {
         indices[i] = static_cast<int32_t>(position[i] / this->options().kStep[i]) + this->half_voxel_length()[i];
-        map_indices[i] = indices[i] / this->voxel_length()[i];
-        indices[i] %= this->voxel_length()[i];
+        const int32_t voxel_length = this->voxel_length()[i];
+        map_indices[i] = indices[i] / voxel_length;
+        if (indices[i] < 0) {
+            --map_indices[i];
+        }
+        indices[i] = (indices[i] % voxel_length + voxel_length) % voxel_length;
     }
     return true;
 }

@@ -43,6 +43,8 @@ public:
     T &GetVoxel(const std::array<int32_t, 3> &indices) { return this->GetVoxel(this->GetBufferIndex(indices)); }
     virtual T &GetVoxel(uint32_t index) = 0;
 
+    static bool IsSameIndices(const std::array<int32_t, 3> &indices1, const std::array<int32_t, 3> &indices2) { return indices1[0] == indices2[0] && indices1[1] == indices2[1] && indices1[2] == indices2[2]; }
+
     // Reference for member variables.
     Options &options() { return options_; }
     T &default_value() { return default_value_; }

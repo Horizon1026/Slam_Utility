@@ -5,6 +5,7 @@
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 #include "voxels.h"
+#include "unordered_set"
 
 namespace SLAM_UTILITY {
 
@@ -43,9 +44,16 @@ public:
 
     uint32_t GetNumberOfProcessedVoxels() const { return changed_items_indices_.size(); }
 
+    // Reference for member variables.
+    std::vector<T> &buffer() { return buffer_; }
+    std::unordered_set<uint32_t> &changed_items_indices() { return changed_items_indices_; }
+    // Const reference for member variables.
+    const std::vector<T> &buffer() const { return buffer_; }
+    const std::unordered_set<uint32_t> &changed_items_indices() const { return changed_items_indices_; }
+
 private:
     std::vector<T> buffer_;
-    std::vector<uint32_t> changed_items_indices_;
+    std::unordered_set<uint32_t> changed_items_indices_;
 };
 
 /* Class BasicVoxels Definition. */
@@ -56,7 +64,6 @@ void BasicVoxels<T>::InitializeBuffer() {
         this->half_voxel_length()[i] = this->voxel_length()[i] / 2;
     }
     buffer_.resize(this->voxel_length()[0] * this->voxel_length()[1] * this->voxel_length()[2]);
-    changed_items_indices_.reserve(buffer_.size());
     changed_items_indices_.clear();
 }
 
@@ -88,8 +95,12 @@ template <typename T>
 bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices, std::array<int32_t, 3> &map_indices) const {
     for (uint32_t i = 0; i < indices.size(); ++i) {
         indices[i] = static_cast<int32_t>(position[i] / this->options().kStep[i]) + this->half_voxel_length()[i];
-        map_indices[i] = indices[i] / this->voxel_length()[i];
-        indices[i] %= this->voxel_length()[i];
+        const int32_t voxel_length = this->voxel_length()[i];
+        map_indices[i] = indices[i] / voxel_length;
+        if (indices[i] < 0) {
+            --map_indices[i];
+        }
+        indices[i] = (indices[i] % voxel_length + voxel_length) % voxel_length;
     }
     return true;
 }
@@ -100,7 +111,7 @@ bool BasicVoxels<T>::TryToOccupy(const std::array<int32_t, 3> &indices, const T 
     auto &v = GetVoxel(index);
     RETURN_FALSE_IF(v == value);
     v = value;
-    changed_items_indices_.emplace_back(index);
+    changed_items_indices_.insert(index);
     return true;
 }
 

@@ -51,6 +51,27 @@ void TestComputePlaneModelPcaWithSeveralPoints() {
     }
 }
 
+void TestUpdatePlaneModel() {
+    ReportColorInfo(">> Test update plane model.");
+    const std::vector<Vec3> points = std::vector<Vec3>{
+        Vec3(1, 1, 0),
+        Vec3(1, 1, 1),
+        Vec3(0, 0, 0),
+        Vec3(0, 0, 1),
+    };
+
+    Plane3D plane;
+    plane.FitPlaneModelPca(points);
+    for (const auto &point: points) {
+        plane.AddNewPointToFitPlaneModel(point);
+    }
+    plane.GeneratePlaneModelParameters();
+    ReportInfo("   Plane model is " << LogVec(plane.param()));
+    for (const auto &point: points) {
+        ReportInfo("   Distance of point to plane is " << plane.GetDistanceToPlane(point));
+    }
+}
+
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test plane." RESET_COLOR);
     TestComputePlaneModelWithThreePoints();
