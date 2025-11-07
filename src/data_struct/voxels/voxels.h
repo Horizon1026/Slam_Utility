@@ -29,18 +29,19 @@ public:
     bool TryToOccupy(const Vec3 &position, const T &value);
     bool IsOccupied(const Vec3 &position, const T &value);
     void ClearVoxel(const Vec3 &position);
-    virtual bool TryToOccupy(const std::array<int32_t, 3> &indices, const T &value) = 0;
-    virtual bool IsOccupied(const std::array<int32_t, 3> &indices, const T &value) = 0;
-    virtual void ClearVoxel(const std::array<int32_t, 3> &indices) = 0;
+    virtual bool TryToOccupy(const std::array<int32_t, 3> &voxel_indices, const T &value) = 0;
+    virtual bool IsOccupied(const std::array<int32_t, 3> &voxel_indices, const T &value) = 0;
+    virtual void ClearVoxel(const std::array<int32_t, 3> &voxel_indices) = 0;
 
-    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices) const = 0;
-    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &indices, std::array<int32_t, 3> &map_indices) const = 0;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices) const = 0;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices, std::array<int32_t, 3> &map_indices) const = 0;
+    void ConvertLocalIndicesToGlobalIndices(const std::array<int32_t, 3> &voxel_indices, const std::array<int32_t, 3> &map_index, std::array<int32_t, 3> &global_voxel_indices) const;
 
-    uint32_t GetBufferIndex(const std::array<int32_t, 3> &indices) const { return this->GetBufferIndex(indices[0], indices[1], indices[2]); }
+    uint32_t GetBufferIndex(const std::array<int32_t, 3> &voxel_indices) const { return this->GetBufferIndex(voxel_indices[0], voxel_indices[1], voxel_indices[2]); }
     uint32_t GetBufferIndex(int32_t x, int32_t y, int32_t z) const { return static_cast<uint32_t>(z * voxel_length_[0] * voxel_length_[1] + y * voxel_length_[0] + x); }
 
     T &GetVoxel(int32_t x, int32_t y, int32_t z) { return this->GetVoxel(this->GetBufferIndex(x, y, z)); }
-    T &GetVoxel(const std::array<int32_t, 3> &indices) { return this->GetVoxel(this->GetBufferIndex(indices)); }
+    T &GetVoxel(const std::array<int32_t, 3> &voxel_indices) { return this->GetVoxel(this->GetBufferIndex(voxel_indices)); }
     virtual T &GetVoxel(uint32_t index) = 0;
 
     static bool IsSameIndices(const std::array<int32_t, 3> &indices1, const std::array<int32_t, 3> &indices2) { return indices1[0] == indices2[0] && indices1[1] == indices2[1] && indices1[2] == indices2[2]; }
@@ -78,23 +79,30 @@ void Voxels<T>::InitializeBuffer(const float radius, const float step) {
 
 template <typename T>
 bool Voxels<T>::TryToOccupy(const Vec3 &position, const T &value) {
-    std::array<int32_t, 3> indices;
-    RETURN_FALSE_IF(!this->ConvertPositionTo3DofIndices(position, indices));
-    return this->TryToOccupy(indices, value);
+    std::array<int32_t, 3> voxel_indices;
+    RETURN_FALSE_IF(!this->ConvertPositionTo3DofIndices(position, voxel_indices));
+    return this->TryToOccupy(voxel_indices, value);
 }
 
 template <typename T>
 bool Voxels<T>::IsOccupied(const Vec3 &position, const T &value) {
-    std::array<int32_t, 3> indices;
-    RETURN_FALSE_IF(!this->ConvertPositionTo3DofIndices(position, indices));
-    return this->IsOccupied(indices, value);
+    std::array<int32_t, 3> voxel_indices;
+    RETURN_FALSE_IF(!this->ConvertPositionTo3DofIndices(position, voxel_indices));
+    return this->IsOccupied(voxel_indices, value);
 }
 
 template <typename T>
 void Voxels<T>::ClearVoxel(const Vec3 &position) {
-    std::array<int32_t, 3> indices;
-    RETURN_IF(!this->ConvertPositionTo3DofIndices(position, indices));
-    this->ClearVoxel(indices);
+    std::array<int32_t, 3> voxel_indices;
+    RETURN_IF(!this->ConvertPositionTo3DofIndices(position, voxel_indices));
+    this->ClearVoxel(voxel_indices);
+}
+
+template <typename T>
+void Voxels<T>::ConvertLocalIndicesToGlobalIndices(const std::array<int32_t, 3> &voxel_indices, const std::array<int32_t, 3> &map_index, std::array<int32_t, 3> &global_voxel_indices) const {
+    for (uint32_t i = 0; i < voxel_indices.size(); ++i) {
+        global_voxel_indices[i] = map_index[i] * voxel_length_[i] + voxel_indices[i];
+    }
 }
 
 }

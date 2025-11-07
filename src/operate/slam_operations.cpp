@@ -11,8 +11,12 @@ bool SlamOperation::GetFilesNameInDirectory(const std::string &dir, std::vector<
     }
 
     while ((ptr = readdir(ptr_dir)) != 0) {
-        if (strcmp(ptr->d_name, ".") != 0 && strcmp(ptr->d_name, "..") != 0) {
+        CONTINUE_IF(strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0);
+        CONTINUE_IF(dir.empty());
+        if (dir.back() != '/') {
             filenames.emplace_back(dir + "/" + ptr->d_name);
+        } else {
+            filenames.emplace_back(dir + ptr->d_name);
         }
     }
 
