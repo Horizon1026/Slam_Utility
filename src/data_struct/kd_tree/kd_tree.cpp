@@ -1,5 +1,3 @@
 #include "kd_tree.h"
 
-namespace SLAM_UTILITY {
-
-}
+namespace SLAM_UTILITY {}

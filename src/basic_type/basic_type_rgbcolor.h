@@ -53,7 +53,7 @@ public:
 
     // Return random rgb color.
     static RgbPixel Random() {
-        return RgbPixel{
+        return RgbPixel {
             .r = static_cast<uint8_t>(std::rand() % 255),
             .g = static_cast<uint8_t>(std::rand() % 255),
             .b = static_cast<uint8_t>(std::rand() % 255),
@@ -69,7 +69,7 @@ public:
     static RgbPixel BrightRandom() {
         Vec3 float_color = Vec3::Random().cwiseAbs();
         float_color /= float_color.maxCoeff();
-        return RgbPixel{
+        return RgbPixel {
             .r = ConvertFromFloat(float_color.x()),
             .g = ConvertFromFloat(float_color.y()),
             .b = ConvertFromFloat(float_color.z()),
@@ -79,7 +79,7 @@ public:
     // Weight [0, 1] means [cold, warm] color.
     static RgbPixel ColdWarm(const float weight) {
         const uint8_t warm = static_cast<uint8_t>(std::min(0.0f, std::max(255.0f, weight * 255.0f)));
-        return RgbPixel{
+        return RgbPixel {
             .r = warm,
             .g = 0,
             .b = static_cast<uint8_t>(255 - warm),
@@ -90,15 +90,12 @@ public:
         const float temp = std::max(std::min(value * 255.0f, 255.0f), 0.0f);
         return static_cast<uint8_t>(temp);
     }
-    static float ConvertFromUint8(const uint8_t value) {
-        return static_cast<float>(value) / 255.0f;
-    }
+    static float ConvertFromUint8(const uint8_t value) { return static_cast<float>(value) / 255.0f; }
 
 private:
     static std::vector<RgbPixel> colors_pool_;
-
 };
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _BASIC_TYPE_RGBCOLOR_H_
+#endif  // end of _BASIC_TYPE_RGBCOLOR_H_

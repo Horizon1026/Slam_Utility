@@ -14,6 +14,6 @@ using VisualPointFeatureObserveMultiView = std::unordered_map<int32_t, Vec2>;
 using VisualLineFeatureObserve = Vec6;
 using VisualLineFeatureObserveMultiView = std::unordered_map<int32_t, Vec6>;
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _SENSOR_UTILITY_VISUAL_OBSERVE_H_
+#endif  // end of _SENSOR_UTILITY_VISUAL_OBSERVE_H_

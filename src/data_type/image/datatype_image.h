@@ -36,11 +36,9 @@ public:
         return true;
     }
 
-    inline void SetPixelValueNoCheck(int32_t row, int32_t col, uint8_t value) {
-        data_[row * cols_ + col] = value;
-    }
+    inline void SetPixelValueNoCheck(int32_t row, int32_t col, uint8_t value) { data_[row * cols_ + col] = value; }
 
-    template<typename T>
+    template <typename T>
     inline bool GetPixelValue(int32_t row, int32_t col, T *value) const {
         if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
             *value = 0;
@@ -60,14 +58,12 @@ public:
         return true;
     }
 
-    template<typename T>
+    template <typename T>
     inline T GetPixelValueNoCheck(int32_t row, int32_t col) const {
         return static_cast<T>(data_[row * cols_ + col]);
     }
 
-    inline uint8_t GetPixelValueNoCheck(int32_t row, int32_t col) const {
-        return data_[row * cols_ + col];
-    }
+    inline uint8_t GetPixelValueNoCheck(int32_t row, int32_t col) const { return data_[row * cols_ + col]; }
 
     inline float GetPixelValueNoCheck(float row, float col) const {
         const uint8_t *values = &data_[static_cast<int32_t>(row) * cols_ + static_cast<int32_t>(col)];
@@ -76,9 +72,8 @@ public:
         const float inv_sub_row = 1.0f - sub_row;
         const float inv_sub_col = 1.0f - sub_col;
 
-        return static_cast<float>(
-            inv_sub_col * inv_sub_row * values[0] + sub_col * inv_sub_row * values[1] +
-            inv_sub_col * sub_row * values[cols_] + sub_col * sub_row * values[cols_ + 1]);
+        return static_cast<float>(inv_sub_col * inv_sub_row * values[0] + sub_col * inv_sub_row * values[1] + inv_sub_col * sub_row * values[cols_] +
+                                  sub_col * sub_row * values[cols_ + 1]);
     }
 
 private:
@@ -152,6 +147,6 @@ private:
     bool memory_owner_ = false;
 };
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _DATATYPE_IMAGE_H_
+#endif  // end of _DATATYPE_IMAGE_H_

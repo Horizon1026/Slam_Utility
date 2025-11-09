@@ -1,6 +1,6 @@
-#include "slam_log_reporter.h"
-#include "plane.h"
 #include "basic_type.h"
+#include "plane.h"
+#include "slam_log_reporter.h"
 
 using namespace SLAM_UTILITY;
 
@@ -19,7 +19,7 @@ void TestComputePlaneModelWithThreePoints() {
 
 void TestComputePlaneModelLseWithSeveralPoints() {
     ReportColorInfo(">> Test plane fitting(LSE) with several points.");
-    const std::vector<Vec3> points = std::vector<Vec3>{
+    const std::vector<Vec3> points = std::vector<Vec3> {
         Vec3(1, 1, 0),
         Vec3(1, 1, 1),
         Vec3(0, 0, 0),
@@ -36,7 +36,7 @@ void TestComputePlaneModelLseWithSeveralPoints() {
 
 void TestComputePlaneModelPcaWithSeveralPoints() {
     ReportColorInfo(">> Test plane fitting(PCA) with several points.");
-    const std::vector<Vec3> points = std::vector<Vec3>{
+    const std::vector<Vec3> points = std::vector<Vec3> {
         Vec3(1, 1, 0),
         Vec3(1, 1, 1),
         Vec3(0, 0, 0),
@@ -53,7 +53,7 @@ void TestComputePlaneModelPcaWithSeveralPoints() {
 
 void TestUpdatePlaneModel() {
     ReportColorInfo(">> Test update plane model.");
-    const std::vector<Vec3> points = std::vector<Vec3>{
+    const std::vector<Vec3> points = std::vector<Vec3> {
         Vec3(1, 1, 0),
         Vec3(1, 1, 1),
         Vec3(0, 0, 0),

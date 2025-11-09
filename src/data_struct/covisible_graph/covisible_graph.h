@@ -1,15 +1,15 @@
 #ifndef _SLAM_UTILITY_COVISIBLE_GRAPH_H_
 #define _SLAM_UTILITY_COVISIBLE_GRAPH_H_
 
-#include "visual_observe.h"
 #include "visual_feature.h"
 #include "visual_frame.h"
+#include "visual_observe.h"
 
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 
-#include "unordered_map"
 #include "deque"
+#include "unordered_map"
 
 namespace SLAM_UTILITY {
 
@@ -17,8 +17,8 @@ namespace SLAM_UTILITY {
 template <typename FeatureParamType, typename FeatureObserveType>
 class CovisibleGraph {
 
-using FeatureType = VisualFeature<FeatureParamType, FeatureObserveType>;
-using FrameType = VisualFrame<FeatureType>;
+    using FeatureType = VisualFeature<FeatureParamType, FeatureObserveType>;
+    using FrameType = VisualFrame<FeatureType>;
 
 public:
     CovisibleGraph() = default;
@@ -34,20 +34,13 @@ public:
     void Information() const;
 
     // Add new frame and new features in it.
-    bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
-                                 const std::vector<FeatureObserveType> &features_observe,
-                                 const float time_stamp_s,
-                                 const int32_t new_frame_id = -1,
-                                 const std::vector<MatImg> &raw_images = std::vector<MatImg>());
+    bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id, const std::vector<FeatureObserveType> &features_observe, const float time_stamp_s,
+                                 const int32_t new_frame_id = -1, const std::vector<MatImg> &raw_images = std::vector<MatImg>());
 
     // Add new frame and new features in it.
-    bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
-                                 const std::vector<FeatureObserveType> &features_observe,
-                                 const std::vector<FeatureParamType> &features_param,
-                                 const float time_stamp_s,
-                                 const Quat &q_wc = Quat::Identity(),
-                                 const Vec3 &p_wc = Vec3::Zero(),
-                                 const std::vector<MatImg> &raw_images = std::vector<MatImg>());
+    bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id, const std::vector<FeatureObserveType> &features_observe,
+                                 const std::vector<FeatureParamType> &features_param, const float time_stamp_s, const Quat &q_wc = Quat::Identity(),
+                                 const Vec3 &p_wc = Vec3::Zero(), const std::vector<MatImg> &raw_images = std::vector<MatImg>());
 
     // Remove feature by feature_id.
     bool RemoveFeature(uint32_t feature_id);
@@ -61,14 +54,10 @@ public:
     float ComputeResidual();
 
     // Get covisible features between two frames.
-    bool GetCovisibleFeatures(const uint32_t frame_i_id,
-                              const uint32_t frame_j_id,
-                              std::vector<FeatureType *> &covisible_features);
+    bool GetCovisibleFeatures(const uint32_t frame_i_id, const uint32_t frame_j_id, std::vector<FeatureType *> &covisible_features);
 
     // Get covisible features between two frames.
-    bool GetCovisibleFeatures(const FrameType &frame_i,
-                              const FrameType &frame_j,
-                              std::vector<FeatureType *> &covisible_features);
+    bool GetCovisibleFeatures(const FrameType &frame_i, const FrameType &frame_j, std::vector<FeatureType *> &covisible_features);
 
 
     // Find frame or feature by id.
@@ -91,7 +80,6 @@ private:
     // Frames and features in this covisible graph.
     std::deque<FrameType> frames_;
     std::unordered_map<uint32_t, FeatureType> features_;
-
 };
 
 /* Class Covisible Graph Definition. */
@@ -183,8 +171,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::SelfCheck() {
 template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                                                                    const std::vector<FeatureObserveType> &features_observe,
-                                                                                   const float time_stamp_s,
-                                                                                   const int32_t new_frame_id,
+                                                                                   const float time_stamp_s, const int32_t new_frame_id,
                                                                                    const std::vector<MatImg> &raw_images) {
     if (features_id.size() != features_observe.size()) {
         return false;
@@ -240,9 +227,7 @@ template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                                                                    const std::vector<FeatureObserveType> &features_observe,
                                                                                    const std::vector<FeatureParamType> &features_param,
-                                                                                   const float time_stamp_s,
-                                                                                   const Quat &q_wc,
-                                                                                   const Vec3 &p_wc,
+                                                                                   const float time_stamp_s, const Quat &q_wc, const Vec3 &p_wc,
                                                                                    const std::vector<MatImg> &raw_images) {
     RETURN_FALSE_IF_FALSE(AddNewFrameWithFeatures(features_id, features_observe, time_stamp_s, -1, raw_images));
 
@@ -362,8 +347,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrame(uint32_t 
 }
 
 template <typename FeatureParamType, typename FeatureObserveType>
-bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(const uint32_t frame_i_id,
-                                                                                const uint32_t frame_j_id,
+bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(const uint32_t frame_i_id, const uint32_t frame_j_id,
                                                                                 std::vector<FeatureType *> &covisible_features) {
     auto frame_i_ptr = frame(frame_i_id);
     auto frame_j_ptr = frame(frame_j_id);
@@ -375,8 +359,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(
 }
 
 template <typename FeatureParamType, typename FeatureObserveType>
-bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(const FrameType &frame_i,
-                                                                                const FrameType &frame_j,
+bool CovisibleGraph<FeatureParamType, FeatureObserveType>::GetCovisibleFeatures(const FrameType &frame_i, const FrameType &frame_j,
                                                                                 std::vector<FeatureType *> &covisible_features) {
     const uint32_t max_size = std::min(frame_i.features().size(), frame_j.features().size());
     if (max_size == 0) {
@@ -403,11 +386,11 @@ typename CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType *Covisi
     CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType temp_frame;
     temp_frame.id() = id;
 
-    auto iter = std::lower_bound(frames_.begin(), frames_.end(), temp_frame, [&] (
-        CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType frame_i,
-        CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType frame_j) {
-        return frame_i.id() < frame_j.id();
-    });
+    auto iter = std::lower_bound(
+        frames_.begin(), frames_.end(), temp_frame,
+        [&](CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType frame_i, CovisibleGraph<FeatureParamType, FeatureObserveType>::FrameType frame_j) {
+            return frame_i.id() < frame_j.id();
+        });
 
     if (iter != frames_.end() && iter->id() == id) {
         return &(*iter);
@@ -430,7 +413,7 @@ typename CovisibleGraph<FeatureParamType, FeatureObserveType>::FeatureType *Covi
 // Remove frame in std::list by check 'need_remove' flag.
 template <typename FeatureParamType, typename FeatureObserveType>
 void CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrameNeedRemove() {
-    for (auto it = frames_.begin(); it != frames_.end(); ) {
+    for (auto it = frames_.begin(); it != frames_.end();) {
         if (it->need_remove()) {
             RemoveFrame(it->id());
             it = frames_.begin();
@@ -440,6 +423,6 @@ void CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrameNeedRemove
     }
 }
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _SLAM_UTILITY_COVISIBLE_GRAPH_H_
+#endif  // end of _SLAM_UTILITY_COVISIBLE_GRAPH_H_

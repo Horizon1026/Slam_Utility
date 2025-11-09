@@ -1,6 +1,6 @@
-#include "slam_log_reporter.h"
-#include "circular_buffer.h"
 #include "basic_type.h"
+#include "circular_buffer.h"
+#include "slam_log_reporter.h"
 
 using namespace SLAM_UTILITY;
 

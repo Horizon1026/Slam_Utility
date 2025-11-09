@@ -20,9 +20,8 @@ public:
 
 private:
     std::chrono::time_point<std::chrono::system_clock> time_point_ = std::chrono::system_clock::now();
-
 };
 
-}
+}  // namespace SLAM_UTILITY
 
 #endif

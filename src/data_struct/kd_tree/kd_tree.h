@@ -5,9 +5,9 @@
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 
+#include "map"
 #include "memory"
 #include "vector"
-#include "map"
 
 namespace SLAM_UTILITY {
 
@@ -25,32 +25,23 @@ public:
     virtual ~KdTreeNode() = default;
 
     // Construct a new kd-tree.
-    void Construct(const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-                   const std::vector<int32_t> &point_indices,
+    void Construct(const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points, const std::vector<int32_t> &point_indices,
                    std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr);
 
     // Extract specified points in kd-tree.
-    void ExtractAllPoints(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
-                          const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+    void ExtractAllPoints(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr, const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
                           std::vector<int32_t> &point_indices);
-    void SearchKnn(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
-                   const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-                   const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
-                   const uint32_t target_number,
+    void SearchKnn(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr, const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                   const Eigen::Matrix<Scalar, Dimension, 1> &target_point, const uint32_t target_number,
                    std::multimap<float, int32_t> &residual_index_of_points);
-    void SearchRadius(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
-                      const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-                      const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
-                      const Scalar max_radius,
+    void SearchRadius(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr, const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                      const Eigen::Matrix<Scalar, Dimension, 1> &target_point, const Scalar max_radius,
                       std::multimap<float, int32_t> &residual_index_of_points);
-    void SearchCube(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
-                    const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-                    const Eigen::Matrix<Scalar, Dimension, 1> &min_value,
-                    const Eigen::Matrix<Scalar, Dimension, 1> &max_value,
+    void SearchCube(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr, const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
+                    const Eigen::Matrix<Scalar, Dimension, 1> &min_value, const Eigen::Matrix<Scalar, Dimension, 1> &max_value,
                     std::multimap<float, int32_t> &residual_index_of_points);
 
-    int32_t GetAxisWithMaxRange(const std::vector<int32_t> &point_indices,
-                                const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points);
+    int32_t GetAxisWithMaxRange(const std::vector<int32_t> &point_indices, const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points);
     int32_t GetDepth(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr);
 
     bool IsLeafNode() const { return !point_indices_.empty(); }
@@ -84,8 +75,7 @@ private:
 
 /* Class KD-Tree Definition. */
 template <typename Scalar, int32_t Dimension>
-void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-                                              const std::vector<int32_t> &point_indices,
+void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points, const std::vector<int32_t> &point_indices,
                                               std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr) {
     RETURN_IF(points.empty() || point_indices.empty());
 
@@ -133,8 +123,7 @@ void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<Eigen::Matrix<Sc
 
 template <typename Scalar, int32_t Dimension>
 void KdTreeNode<Scalar, Dimension>::ExtractAllPoints(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
-                                                     const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-                                                     std::vector<int32_t> &point_indices) {
+                                                     const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points, std::vector<int32_t> &point_indices) {
     RETURN_IF(node_ptr == nullptr || points.empty());
 
     if (node_ptr->IsLeafNode()) {
@@ -151,8 +140,7 @@ void KdTreeNode<Scalar, Dimension>::ExtractAllPoints(const std::unique_ptr<KdTre
 template <typename Scalar, int32_t Dimension>
 void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
                                               const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-                                              const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
-                                              const uint32_t target_number,
+                                              const Eigen::Matrix<Scalar, Dimension, 1> &target_point, const uint32_t target_number,
                                               std::multimap<float, int32_t> &residual_index_of_points) {
     RETURN_IF(node_ptr == nullptr || points.empty() || target_number == 0);
 
@@ -189,8 +177,7 @@ void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::unique_ptr<KdTreeNode<S
 template <typename Scalar, int32_t Dimension>
 void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
                                                  const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-                                                 const Eigen::Matrix<Scalar, Dimension, 1> &target_point,
-                                                 const Scalar max_radius,
+                                                 const Eigen::Matrix<Scalar, Dimension, 1> &target_point, const Scalar max_radius,
                                                  std::multimap<float, int32_t> &residual_index_of_points) {
     RETURN_IF(node_ptr == nullptr || points.empty());
 
@@ -222,8 +209,7 @@ void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::unique_ptr<KdTreeNod
 template <typename Scalar, int32_t Dimension>
 void KdTreeNode<Scalar, Dimension>::SearchCube(const std::unique_ptr<KdTreeNode<Scalar, Dimension>> &node_ptr,
                                                const std::vector<Eigen::Matrix<Scalar, Dimension, 1>> &points,
-                                               const Eigen::Matrix<Scalar, Dimension, 1> &min_value,
-                                               const Eigen::Matrix<Scalar, Dimension, 1> &max_value,
+                                               const Eigen::Matrix<Scalar, Dimension, 1> &min_value, const Eigen::Matrix<Scalar, Dimension, 1> &max_value,
                                                std::multimap<float, int32_t> &residual_index_of_points) {
     RETURN_IF(node_ptr == nullptr || points.empty());
 
@@ -307,8 +293,8 @@ int32_t KdTreeNode<Scalar, Dimension>::GetDepth(const std::unique_ptr<KdTreeNode
 
 template <typename Scalar, int32_t Dimension>
 void KdTreeNode<Scalar, Dimension>::Information() {
-    ReportInfo("[KdTreeNode] Axis [" << dimension_ << "], Value [" << divider_ << "], [" << point_indices_.size() << "] points." <<
-        " Left child " << LogPtr(left_ptr_.get()) << ", Right child " << LogPtr(right_ptr_.get()));
+    ReportInfo("[KdTreeNode] Axis [" << dimension_ << "], Value [" << divider_ << "], [" << point_indices_.size() << "] points." << " Left child "
+                                     << LogPtr(left_ptr_.get()) << ", Right child " << LogPtr(right_ptr_.get()));
 }
 
 template <typename Scalar, int32_t Dimension>
@@ -322,6 +308,6 @@ void KdTreeNode<Scalar, Dimension>::InformationRecursion() {
     }
 }
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _SLAM_UTILITY_KD_TREE_H_
+#endif  // end of _SLAM_UTILITY_KD_TREE_H_

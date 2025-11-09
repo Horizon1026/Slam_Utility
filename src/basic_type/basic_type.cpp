@@ -17,4 +17,4 @@ void PrintBasicType() {
     }
 }
 
-}
+}  // namespace SLAM_UTILITY

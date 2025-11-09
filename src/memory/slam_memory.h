@@ -11,18 +11,14 @@ public:
     virtual ~SlamMemory() = default;
 
 public:
-    static void *Malloc(uint32_t size) {
-        return malloc(size);
-    }
+    static void *Malloc(uint32_t size) { return malloc(size); }
 
     static void Free(void *ptr) {
         free(ptr);
         ptr = nullptr;
     }
 
-    static void MemorySet(void *ptr, uint8_t data, uint32_t size) {
-        memset(ptr, data, size);
-    }
+    static void MemorySet(void *ptr, uint8_t data, uint32_t size) { memset(ptr, data, size); }
 };
 
-#endif // end of _SLAM_MEMORY_H_
+#endif  // end of _SLAM_MEMORY_H_

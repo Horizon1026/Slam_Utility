@@ -1,9 +1,9 @@
 #include "yaml_parser.h"
-#include "slam_log_reporter.h"
-#include "fstream"
-#include "sstream"
 #include "algorithm"
 #include "cctype"
+#include "fstream"
+#include "slam_log_reporter.h"
+#include "sstream"
 #include "stdexcept"
 
 namespace SLAM_UTILITY {
@@ -105,7 +105,7 @@ YamlParser::ConfigMap YamlParser::ParseString(const std::string &content) {
 }
 
 void YamlParser::PrintConfigMap(const ConfigMap &config_map) {
-    for (const auto &[key, values] : config_map) {
+    for (const auto &[key, values]: config_map) {
         if (values.empty()) {
             continue;
         }
@@ -116,7 +116,7 @@ void YamlParser::PrintConfigMap(const ConfigMap &config_map) {
         }
 
         ReportInfo(key << ": [");
-        for (const auto &value : values) {
+        for (const auto &value: values) {
             ReportInfo("    " << value);
         }
         ReportInfo("]");
@@ -126,7 +126,7 @@ void YamlParser::PrintConfigMap(const ConfigMap &config_map) {
 bool YamlParser::HasPairsOfBrackets(const std::string &str) {
     int32_t num_of_left_brackets = 0;
     int32_t num_of_right_brackets = 0;
-    for (const char &c : str) {
+    for (const char &c: str) {
         if (c == '[') {
             ++num_of_left_brackets;
         } else if (c == ']') {
@@ -138,7 +138,7 @@ bool YamlParser::HasPairsOfBrackets(const std::string &str) {
 
 std::string YamlParser::RemoveComments(const std::string &str) {
     std::string result = "";
-    for (const char &c : str) {
+    for (const char &c: str) {
         if (c == '#') {
             break;
         }
@@ -148,7 +148,7 @@ std::string YamlParser::RemoveComments(const std::string &str) {
 }
 std::string YamlParser::RemoveMeaninglessCharacters(const std::string &str) {
     std::string result = "";
-    for (const char &c : str) {
+    for (const char &c: str) {
         if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
             continue;
         }
@@ -160,7 +160,7 @@ std::string YamlParser::RemoveMeaninglessCharacters(const std::string &str) {
 std::string YamlParser::RemoveStringInQuotes(const std::string &str) {
     std::string result = "";
     bool is_in_quotes = false;
-    for (const char &c : str) {
+    for (const char &c: str) {
         if (c == '"') {
             is_in_quotes = !is_in_quotes;
             continue;
@@ -187,7 +187,7 @@ std::string YamlParser::GetStringInBrackets(const std::string &str) {
     std::string result = "";
     bool is_in_brackets = false;
     bool is_in_quotes = false;
-    for (const char &c : str) {
+    for (const char &c: str) {
         if (c == '"') {
             is_in_quotes = !is_in_quotes;
         }
@@ -211,7 +211,7 @@ std::string YamlParser::GetStringInBrackets(const std::string &str) {
 
 std::string YamlParser::GetKey(const std::string &str) {
     std::string result = "";
-    for (const char &c : str) {
+    for (const char &c: str) {
         if (c == ':') {
             break;
         }
@@ -223,7 +223,7 @@ std::string YamlParser::GetKey(const std::string &str) {
 std::string YamlParser::GetValue(const std::string &str) {
     std::string result = "";
     bool is_key_name = true;
-    for (const char &c : str) {
+    for (const char &c: str) {
         if (is_key_name && c == ':') {
             is_key_name = false;
             continue;
@@ -238,7 +238,7 @@ std::string YamlParser::GetValue(const std::string &str) {
 
 std::string YamlParser::GetRootKey(const std::vector<std::string> &root_keys) {
     std::string result = "";
-    for (const auto &key : root_keys) {
+    for (const auto &key: root_keys) {
         result += key + ":";
     }
 
@@ -250,7 +250,7 @@ std::string YamlParser::GetRootKey(const std::vector<std::string> &root_keys) {
 
 uint32_t YamlParser::GetKeyLevel(const std::string &str) {
     uint32_t result = 0;
-    for (const char &c : str) {
+    for (const char &c: str) {
         if (c == ' ') {
             ++result;
         }
@@ -265,7 +265,7 @@ std::vector<std::string> YamlParser::GetArrayValue(const std::string &str) {
     const std::string string_in_brackets = GetStringInBrackets(str);
     std::vector<std::string> result;
     std::string current_value = "";
-    for (const char &c : string_in_brackets) {
+    for (const char &c: string_in_brackets) {
         if (c == ',') {
             result.emplace_back(GetStringInQuotes(current_value));
             current_value = "";
@@ -279,9 +279,7 @@ std::vector<std::string> YamlParser::GetArrayValue(const std::string &str) {
     return result;
 }
 
-bool YamlParser::ToBool(const std::string &str) {
-    return str == "true";
-}
+bool YamlParser::ToBool(const std::string &str) { return str == "true"; }
 
 uint8_t YamlParser::ToUint8(const std::string &str) {
     try {
@@ -373,4 +371,4 @@ double YamlParser::ToDouble(const std::string &str) {
     }
 }
 
-} // namespace SLAM_UTILITY
+}  // namespace SLAM_UTILITY

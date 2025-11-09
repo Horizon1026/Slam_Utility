@@ -1,7 +1,8 @@
 #include "datatype_image_pyramid.h"
 #include "slam_memory.h"
 
-ImagePyramid::ImagePyramid(uint32_t level, GrayImage *raw_image) : level_(level) {
+ImagePyramid::ImagePyramid(uint32_t level, GrayImage *raw_image)
+    : level_(level) {
     level_ = std::min(std::max(level, static_cast<uint32_t>(0)), kPyramidMaxLevel - 1);
     SetRawImage(raw_image);
 }
@@ -61,12 +62,12 @@ bool ImagePyramid::CreateImagePyramid(uint32_t level) {
             for (int32_t col = 0; col < images_[idx].cols(); ++col) {
                 const int32_t idx_row = row << 1;
                 const int32_t idx_col = col << 1;
-                images_[idx].SetPixelValueNoCheck(row, col, static_cast<uint8_t>((
-                    images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row, idx_col)
-                    + images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row + 1, idx_col)
-                    + images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row, idx_col + 1)
-                    + images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row + 1, idx_col + 1)
-                ) >> 2));
+                images_[idx].SetPixelValueNoCheck(row, col,
+                                                  static_cast<uint8_t>((images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row, idx_col) +
+                                                                        images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row + 1, idx_col) +
+                                                                        images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row, idx_col + 1) +
+                                                                        images_[idx - 1].GetPixelValueNoCheck<uint16_t>(idx_row + 1, idx_col + 1)) >>
+                                                                       2));
             }
         }
     }

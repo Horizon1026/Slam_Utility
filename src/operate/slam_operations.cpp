@@ -24,4 +24,4 @@ bool SlamOperation::GetFilesNameInDirectory(const std::string &dir, std::vector<
     return true;
 }
 
-}
+}  // namespace SLAM_UTILITY

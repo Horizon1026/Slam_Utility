@@ -35,10 +35,7 @@ void TestLogAndExp() {
 void TestTransformToTranslationAndRotation() {
     ReportColorInfo(">> Test T to R/t");
     Mat4 T = Mat4::Identity();
-    T << 1, 0, 0, 1,
-         0, 1, 0, 2,
-         0, 0, 1, 3,
-         0, 0, 0, 1;
+    T << 1, 0, 0, 1, 0, 1, 0, 2, 0, 0, 1, 3, 0, 0, 0, 1;
     const Mat3 R = T.topLeftCorner<3, 3>();
     const Vec3 p = T.topRightCorner<3, 1>();
     const Quat q = Quat(R);
@@ -60,9 +57,7 @@ void TestTransformToTranslationAndRotation() {
 void TestExtrinsicRotateAlignAxis() {
     ReportColorInfo(">> Test extrinsic rotating align axis.");
     Mat3 R_ic0 = Mat3::Identity();
-    R_ic0 << 1,        0,        0,
-             0, 0.866025,     -0.5,
-             0,      0.5, 0.866025;
+    R_ic0 << 1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025;
     const Quat q_ic0 = Quat(R_ic0);
     const float angle_deg = 30.0f;
     const Mat3 R_c0c1 = Eigen::AngleAxisf(angle_deg * kDegToRad, Vec3::UnitY()).toRotationMatrix();

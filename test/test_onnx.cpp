@@ -1,9 +1,9 @@
 #include "basic_type.h"
+#include "onnx_run_time.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 #include "tick_tock.h"
 #include "visualizor_2d.h"
-#include "onnx_run_time.h"
 
 using namespace SLAM_UTILITY;
 using namespace SLAM_VISUALIZOR;
@@ -53,16 +53,11 @@ int main(int argc, char **argv) {
     Ort::RunOptions run_options;
     run_options.SetRunLogVerbosityLevel(ORT_LOGGING_LEVEL_WARNING);
     TickTock timer;
-    std::vector<Ort::Value> output_tensors = session.Run(run_options,
-        input_names_ptr.data(), &input_tensor.value, input_names_ptr.size(),
-        output_names_ptr.data(), output_names_ptr.size()
-    );
+    std::vector<Ort::Value> output_tensors =
+        session.Run(run_options, input_names_ptr.data(), &input_tensor.value, input_names_ptr.size(), output_names_ptr.data(), output_names_ptr.size());
     ReportInfo("Infer model cost " << timer.TockTickInMillisecond() << " ms.");
     for (uint32_t i = 0; i < 5; ++i) {
-        session.Run(run_options,
-            input_names_ptr.data(), &input_tensor.value, input_names_ptr.size(),
-            output_names_ptr.data(), output_names_ptr.size()
-        );
+        session.Run(run_options, input_names_ptr.data(), &input_tensor.value, input_names_ptr.size(), output_names_ptr.data(), output_names_ptr.size());
         ReportInfo("Infer model cost " << timer.TockTickInMillisecond() << " ms.");
     }
 

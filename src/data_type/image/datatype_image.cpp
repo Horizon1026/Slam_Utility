@@ -1,13 +1,9 @@
 #include "datatype_image.h"
 #include "slam_memory.h"
 
-GrayImage::GrayImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner) {
-    SetImage(data, rows, cols, is_owner);
-}
+GrayImage::GrayImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner) { SetImage(data, rows, cols, is_owner); }
 
-GrayImage::GrayImage(MatImg &matrix_image) {
-    SetImage(matrix_image.data(), matrix_image.rows(), matrix_image.cols(), false);
-}
+GrayImage::GrayImage(MatImg &matrix_image) { SetImage(matrix_image.data(), matrix_image.rows(), matrix_image.cols(), false); }
 
 GrayImage::GrayImage(const MatImgF &matrix_image) {
     uint8_t *buffer = static_cast<uint8_t *>(SlamMemory::Malloc(matrix_image.rows() * matrix_image.cols() * sizeof(uint8_t)));
@@ -59,13 +55,9 @@ bool GrayImage::ToMatImgF(MatImgF &matrix_image) const {
     return true;
 }
 
-RgbImage::RgbImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner) {
-    SetImage(data, rows, cols, is_owner);
-}
+RgbImage::RgbImage(uint8_t *data, int32_t rows, int32_t cols, bool is_owner) { SetImage(data, rows, cols, is_owner); }
 
-RgbImage::RgbImage(MatImg &matrix_image) {
-    SetImage(matrix_image.data(), matrix_image.rows() / 3, matrix_image.cols(), false);
-}
+RgbImage::RgbImage(MatImg &matrix_image) { SetImage(matrix_image.data(), matrix_image.rows() / 3, matrix_image.cols(), false); }
 
 RgbImage::RgbImage(const MatImgF &matrix_image) {
     uint8_t *buffer = static_cast<uint8_t *>(SlamMemory::Malloc(matrix_image.rows() * matrix_image.cols() * 3 * sizeof(uint8_t)));

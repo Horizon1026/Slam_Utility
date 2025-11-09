@@ -14,7 +14,8 @@ class VisualFrame {
 
 public:
     VisualFrame() = default;
-    explicit VisualFrame(uint32_t id) : id_(id) {}
+    explicit VisualFrame(uint32_t id)
+        : id_(id) {}
     virtual ~VisualFrame() = default;
 
     void Information() const;
@@ -55,18 +56,24 @@ private:
 
     // Flag for erase in std::list.
     bool need_remove_ = false;
-
 };
 
 /* Class Visual Frame Definition. */
 template <typename FeatureType>
 void VisualFrame<FeatureType>::Information() const {
-    ReportInfo("[Visual Frame] Information of frame " << id_ << "\n"
-        " - time stamp is " << time_stamp_s_ << " s\n"
-        " - q_wc is " << LogQuat(q_wc_) << "\n"
-        " - p_wc is " << LogVec(p_wc_) << "\n"
-        " - number of observed features is " << features_.size()
-    );
+    ReportInfo("[Visual Frame] Information of frame " << id_
+                                                      << "\n"
+                                                         " - time stamp is "
+                                                      << time_stamp_s_
+                                                      << " s\n"
+                                                         " - q_wc is "
+                                                      << LogQuat(q_wc_)
+                                                      << "\n"
+                                                         " - p_wc is "
+                                                      << LogVec(p_wc_)
+                                                      << "\n"
+                                                         " - number of observed features is "
+                                                      << features_.size());
     ReportText(" - List of features observed in this frame:\n");
     for (const auto &item: features_) {
         ReportText("   - id/id " << item.first << "/" << item.second->id() << ", " << LogPtr(item.second) << "\n");
@@ -76,14 +83,21 @@ void VisualFrame<FeatureType>::Information() const {
 
 template <typename FeatureType>
 void VisualFrame<FeatureType>::SimpleInformation() const {
-    ReportInfo("[Visual Frame] Information of frame " << id_ << "\n"
-        " - time stamp is " << time_stamp_s_ << " s\n"
-        " - q_wc is " << LogQuat(q_wc_) << "\n"
-        " - p_wc is " << LogVec(p_wc_) << "\n"
-        " - number of observed features is " << features_.size()
-    );
+    ReportInfo("[Visual Frame] Information of frame " << id_
+                                                      << "\n"
+                                                         " - time stamp is "
+                                                      << time_stamp_s_
+                                                      << " s\n"
+                                                         " - q_wc is "
+                                                      << LogQuat(q_wc_)
+                                                      << "\n"
+                                                         " - p_wc is "
+                                                      << LogVec(p_wc_)
+                                                      << "\n"
+                                                         " - number of observed features is "
+                                                      << features_.size());
 }
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _SENSOR_UTILITY_VISUAL_FRAME_H_
+#endif  // end of _SENSOR_UTILITY_VISUAL_FRAME_H_

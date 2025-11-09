@@ -12,7 +12,8 @@ class SphericalHarmonicFunc {
 
 public:
     SphericalHarmonicFunc() = default;
-    explicit SphericalHarmonicFunc(const Vec16 &coeff) : coeff_(coeff) {}
+    explicit SphericalHarmonicFunc(const Vec16 &coeff)
+        : coeff_(coeff) {}
     virtual ~SphericalHarmonicFunc() = default;
 
     float GetColorInFloat(const Vec3 &p_wf, const Vec3 &p_wc) const;
@@ -34,6 +35,6 @@ float SphericalHarmonicFunc<Order>::GetColorInFloat(const Vec3 &p_wf, const Vec3
     return GetColorInFloat(dir.normalized());
 }
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _SPHERICAL_HARMONIC_H_
+#endif  // end of _SPHERICAL_HARMONIC_H_

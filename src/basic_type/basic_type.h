@@ -3,8 +3,8 @@
 
 #include <eigen3/Eigen/Eigen>
 #include <eigen3/Eigen/Eigenvalues>
-#include <eigen3/unsupported/Eigen/Polynomials>
 #include <eigen3/unsupported/Eigen/FFT>
+#include <eigen3/unsupported/Eigen/Polynomials>
 
 namespace SLAM_UTILITY {
 
@@ -24,1101 +24,2193 @@ using uint64_t = unsigned long int;
 using int64_t = long int;
 #endif
 
-template <typename T> using TQuat = Eigen::Quaternion<T>;
-template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic> using TMat = Eigen::Matrix<T, Row, Col>;
-template <typename T, int32_t Row = Eigen::Dynamic> using TVec = Eigen::Matrix<T, Row, 1>;
-template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic> using TMatImg = Eigen::Matrix<T, Row, Col, Eigen::RowMajor>;
+template <typename T>
+using TQuat = Eigen::Quaternion<T>;
+template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic>
+using TMat = Eigen::Matrix<T, Row, Col>;
+template <typename T, int32_t Row = Eigen::Dynamic>
+using TVec = Eigen::Matrix<T, Row, 1>;
+template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic>
+using TMatImg = Eigen::Matrix<T, Row, Col, Eigen::RowMajor>;
 
-template <typename T> using TMat1 = Eigen::Matrix<T, 1, 1>;
-template <typename T> using TMat2 = Eigen::Matrix<T, 2, 2>;
-template <typename T> using TMat3 = Eigen::Matrix<T, 3, 3>;
-template <typename T> using TMat4 = Eigen::Matrix<T, 4, 4>;
-template <typename T> using TMat5 = Eigen::Matrix<T, 5, 5>;
-template <typename T> using TMat6 = Eigen::Matrix<T, 6, 6>;
-template <typename T> using TMat7 = Eigen::Matrix<T, 7, 7>;
-template <typename T> using TMat8 = Eigen::Matrix<T, 8, 8>;
-template <typename T> using TMat9 = Eigen::Matrix<T, 9, 9>;
-template <typename T> using TMat10 = Eigen::Matrix<T, 10, 10>;
-template <typename T> using TMat11 = Eigen::Matrix<T, 11, 11>;
-template <typename T> using TMat12 = Eigen::Matrix<T, 12, 12>;
-template <typename T> using TMat13 = Eigen::Matrix<T, 13, 13>;
-template <typename T> using TMat14 = Eigen::Matrix<T, 14, 14>;
-template <typename T> using TMat15 = Eigen::Matrix<T, 15, 15>;
-template <typename T> using TMat16 = Eigen::Matrix<T, 16, 16>;
-template <typename T> using TMat17 = Eigen::Matrix<T, 17, 17>;
-template <typename T> using TMat18 = Eigen::Matrix<T, 18, 18>;
-template <typename T> using TMat19 = Eigen::Matrix<T, 19, 19>;
-template <typename T> using TMat20 = Eigen::Matrix<T, 20, 20>;
-template <typename T> using TMat21 = Eigen::Matrix<T, 21, 21>;
-template <typename T> using TMat22 = Eigen::Matrix<T, 22, 22>;
-template <typename T> using TMat23 = Eigen::Matrix<T, 23, 23>;
-template <typename T> using TMat24 = Eigen::Matrix<T, 24, 24>;
-template <typename T> using TMat25 = Eigen::Matrix<T, 25, 25>;
-template <typename T> using TMat26 = Eigen::Matrix<T, 26, 26>;
-template <typename T> using TMat27 = Eigen::Matrix<T, 27, 27>;
-template <typename T> using TMat28 = Eigen::Matrix<T, 28, 28>;
-template <typename T> using TMat29 = Eigen::Matrix<T, 29, 29>;
-template <typename T> using TMat30 = Eigen::Matrix<T, 30, 30>;
-template <typename T> using TMat31 = Eigen::Matrix<T, 31, 31>;
-template <typename T> using TMat32 = Eigen::Matrix<T, 32, 32>;
+template <typename T>
+using TMat1 = Eigen::Matrix<T, 1, 1>;
+template <typename T>
+using TMat2 = Eigen::Matrix<T, 2, 2>;
+template <typename T>
+using TMat3 = Eigen::Matrix<T, 3, 3>;
+template <typename T>
+using TMat4 = Eigen::Matrix<T, 4, 4>;
+template <typename T>
+using TMat5 = Eigen::Matrix<T, 5, 5>;
+template <typename T>
+using TMat6 = Eigen::Matrix<T, 6, 6>;
+template <typename T>
+using TMat7 = Eigen::Matrix<T, 7, 7>;
+template <typename T>
+using TMat8 = Eigen::Matrix<T, 8, 8>;
+template <typename T>
+using TMat9 = Eigen::Matrix<T, 9, 9>;
+template <typename T>
+using TMat10 = Eigen::Matrix<T, 10, 10>;
+template <typename T>
+using TMat11 = Eigen::Matrix<T, 11, 11>;
+template <typename T>
+using TMat12 = Eigen::Matrix<T, 12, 12>;
+template <typename T>
+using TMat13 = Eigen::Matrix<T, 13, 13>;
+template <typename T>
+using TMat14 = Eigen::Matrix<T, 14, 14>;
+template <typename T>
+using TMat15 = Eigen::Matrix<T, 15, 15>;
+template <typename T>
+using TMat16 = Eigen::Matrix<T, 16, 16>;
+template <typename T>
+using TMat17 = Eigen::Matrix<T, 17, 17>;
+template <typename T>
+using TMat18 = Eigen::Matrix<T, 18, 18>;
+template <typename T>
+using TMat19 = Eigen::Matrix<T, 19, 19>;
+template <typename T>
+using TMat20 = Eigen::Matrix<T, 20, 20>;
+template <typename T>
+using TMat21 = Eigen::Matrix<T, 21, 21>;
+template <typename T>
+using TMat22 = Eigen::Matrix<T, 22, 22>;
+template <typename T>
+using TMat23 = Eigen::Matrix<T, 23, 23>;
+template <typename T>
+using TMat24 = Eigen::Matrix<T, 24, 24>;
+template <typename T>
+using TMat25 = Eigen::Matrix<T, 25, 25>;
+template <typename T>
+using TMat26 = Eigen::Matrix<T, 26, 26>;
+template <typename T>
+using TMat27 = Eigen::Matrix<T, 27, 27>;
+template <typename T>
+using TMat28 = Eigen::Matrix<T, 28, 28>;
+template <typename T>
+using TMat29 = Eigen::Matrix<T, 29, 29>;
+template <typename T>
+using TMat30 = Eigen::Matrix<T, 30, 30>;
+template <typename T>
+using TMat31 = Eigen::Matrix<T, 31, 31>;
+template <typename T>
+using TMat32 = Eigen::Matrix<T, 32, 32>;
 
-template <typename T> using TVec1 = Eigen::Matrix<T, 1, 1>;
-template <typename T> using TVec2 = Eigen::Matrix<T, 2, 1>;
-template <typename T> using TVec3 = Eigen::Matrix<T, 3, 1>;
-template <typename T> using TVec4 = Eigen::Matrix<T, 4, 1>;
-template <typename T> using TVec5 = Eigen::Matrix<T, 5, 1>;
-template <typename T> using TVec6 = Eigen::Matrix<T, 6, 1>;
-template <typename T> using TVec7 = Eigen::Matrix<T, 7, 1>;
-template <typename T> using TVec8 = Eigen::Matrix<T, 8, 1>;
-template <typename T> using TVec9 = Eigen::Matrix<T, 9, 1>;
-template <typename T> using TVec10 = Eigen::Matrix<T, 10, 1>;
-template <typename T> using TVec11 = Eigen::Matrix<T, 11, 1>;
-template <typename T> using TVec12 = Eigen::Matrix<T, 12, 1>;
-template <typename T> using TVec13 = Eigen::Matrix<T, 13, 1>;
-template <typename T> using TVec14 = Eigen::Matrix<T, 14, 1>;
-template <typename T> using TVec15 = Eigen::Matrix<T, 15, 1>;
-template <typename T> using TVec16 = Eigen::Matrix<T, 16, 1>;
-template <typename T> using TVec17 = Eigen::Matrix<T, 17, 1>;
-template <typename T> using TVec18 = Eigen::Matrix<T, 18, 1>;
-template <typename T> using TVec19 = Eigen::Matrix<T, 19, 1>;
-template <typename T> using TVec20 = Eigen::Matrix<T, 20, 1>;
-template <typename T> using TVec21 = Eigen::Matrix<T, 21, 1>;
-template <typename T> using TVec22 = Eigen::Matrix<T, 22, 1>;
-template <typename T> using TVec23 = Eigen::Matrix<T, 23, 1>;
-template <typename T> using TVec24 = Eigen::Matrix<T, 24, 1>;
-template <typename T> using TVec25 = Eigen::Matrix<T, 25, 1>;
-template <typename T> using TVec26 = Eigen::Matrix<T, 26, 1>;
-template <typename T> using TVec27 = Eigen::Matrix<T, 27, 1>;
-template <typename T> using TVec28 = Eigen::Matrix<T, 28, 1>;
-template <typename T> using TVec29 = Eigen::Matrix<T, 29, 1>;
-template <typename T> using TVec30 = Eigen::Matrix<T, 30, 1>;
-template <typename T> using TVec31 = Eigen::Matrix<T, 31, 1>;
-template <typename T> using TVec32 = Eigen::Matrix<T, 32, 1>;
+template <typename T>
+using TVec1 = Eigen::Matrix<T, 1, 1>;
+template <typename T>
+using TVec2 = Eigen::Matrix<T, 2, 1>;
+template <typename T>
+using TVec3 = Eigen::Matrix<T, 3, 1>;
+template <typename T>
+using TVec4 = Eigen::Matrix<T, 4, 1>;
+template <typename T>
+using TVec5 = Eigen::Matrix<T, 5, 1>;
+template <typename T>
+using TVec6 = Eigen::Matrix<T, 6, 1>;
+template <typename T>
+using TVec7 = Eigen::Matrix<T, 7, 1>;
+template <typename T>
+using TVec8 = Eigen::Matrix<T, 8, 1>;
+template <typename T>
+using TVec9 = Eigen::Matrix<T, 9, 1>;
+template <typename T>
+using TVec10 = Eigen::Matrix<T, 10, 1>;
+template <typename T>
+using TVec11 = Eigen::Matrix<T, 11, 1>;
+template <typename T>
+using TVec12 = Eigen::Matrix<T, 12, 1>;
+template <typename T>
+using TVec13 = Eigen::Matrix<T, 13, 1>;
+template <typename T>
+using TVec14 = Eigen::Matrix<T, 14, 1>;
+template <typename T>
+using TVec15 = Eigen::Matrix<T, 15, 1>;
+template <typename T>
+using TVec16 = Eigen::Matrix<T, 16, 1>;
+template <typename T>
+using TVec17 = Eigen::Matrix<T, 17, 1>;
+template <typename T>
+using TVec18 = Eigen::Matrix<T, 18, 1>;
+template <typename T>
+using TVec19 = Eigen::Matrix<T, 19, 1>;
+template <typename T>
+using TVec20 = Eigen::Matrix<T, 20, 1>;
+template <typename T>
+using TVec21 = Eigen::Matrix<T, 21, 1>;
+template <typename T>
+using TVec22 = Eigen::Matrix<T, 22, 1>;
+template <typename T>
+using TVec23 = Eigen::Matrix<T, 23, 1>;
+template <typename T>
+using TVec24 = Eigen::Matrix<T, 24, 1>;
+template <typename T>
+using TVec25 = Eigen::Matrix<T, 25, 1>;
+template <typename T>
+using TVec26 = Eigen::Matrix<T, 26, 1>;
+template <typename T>
+using TVec27 = Eigen::Matrix<T, 27, 1>;
+template <typename T>
+using TVec28 = Eigen::Matrix<T, 28, 1>;
+template <typename T>
+using TVec29 = Eigen::Matrix<T, 29, 1>;
+template <typename T>
+using TVec30 = Eigen::Matrix<T, 30, 1>;
+template <typename T>
+using TVec31 = Eigen::Matrix<T, 31, 1>;
+template <typename T>
+using TVec32 = Eigen::Matrix<T, 32, 1>;
 
-template <typename T> using TMat1x1 = Eigen::Matrix<T, 1, 1>;
-template <typename T> using TMat1x2 = Eigen::Matrix<T, 1, 2>;
-template <typename T> using TMat1x3 = Eigen::Matrix<T, 1, 3>;
-template <typename T> using TMat1x4 = Eigen::Matrix<T, 1, 4>;
-template <typename T> using TMat1x5 = Eigen::Matrix<T, 1, 5>;
-template <typename T> using TMat1x6 = Eigen::Matrix<T, 1, 6>;
-template <typename T> using TMat1x7 = Eigen::Matrix<T, 1, 7>;
-template <typename T> using TMat1x8 = Eigen::Matrix<T, 1, 8>;
-template <typename T> using TMat1x9 = Eigen::Matrix<T, 1, 9>;
-template <typename T> using TMat1x10 = Eigen::Matrix<T, 1, 10>;
-template <typename T> using TMat1x11 = Eigen::Matrix<T, 1, 11>;
-template <typename T> using TMat1x12 = Eigen::Matrix<T, 1, 12>;
-template <typename T> using TMat1x13 = Eigen::Matrix<T, 1, 13>;
-template <typename T> using TMat1x14 = Eigen::Matrix<T, 1, 14>;
-template <typename T> using TMat1x15 = Eigen::Matrix<T, 1, 15>;
-template <typename T> using TMat1x16 = Eigen::Matrix<T, 1, 16>;
-template <typename T> using TMat1x17 = Eigen::Matrix<T, 1, 17>;
-template <typename T> using TMat1x18 = Eigen::Matrix<T, 1, 18>;
-template <typename T> using TMat1x19 = Eigen::Matrix<T, 1, 19>;
-template <typename T> using TMat1x20 = Eigen::Matrix<T, 1, 20>;
-template <typename T> using TMat1x21 = Eigen::Matrix<T, 1, 21>;
-template <typename T> using TMat1x22 = Eigen::Matrix<T, 1, 22>;
-template <typename T> using TMat1x23 = Eigen::Matrix<T, 1, 23>;
-template <typename T> using TMat1x24 = Eigen::Matrix<T, 1, 24>;
-template <typename T> using TMat1x25 = Eigen::Matrix<T, 1, 25>;
-template <typename T> using TMat1x26 = Eigen::Matrix<T, 1, 26>;
-template <typename T> using TMat1x27 = Eigen::Matrix<T, 1, 27>;
-template <typename T> using TMat1x28 = Eigen::Matrix<T, 1, 28>;
-template <typename T> using TMat1x29 = Eigen::Matrix<T, 1, 29>;
-template <typename T> using TMat1x30 = Eigen::Matrix<T, 1, 30>;
-template <typename T> using TMat1x31 = Eigen::Matrix<T, 1, 31>;
-template <typename T> using TMat1x32 = Eigen::Matrix<T, 1, 32>;
-template <typename T> using TMat2x1 = Eigen::Matrix<T, 2, 1>;
-template <typename T> using TMat2x2 = Eigen::Matrix<T, 2, 2>;
-template <typename T> using TMat2x3 = Eigen::Matrix<T, 2, 3>;
-template <typename T> using TMat2x4 = Eigen::Matrix<T, 2, 4>;
-template <typename T> using TMat2x5 = Eigen::Matrix<T, 2, 5>;
-template <typename T> using TMat2x6 = Eigen::Matrix<T, 2, 6>;
-template <typename T> using TMat2x7 = Eigen::Matrix<T, 2, 7>;
-template <typename T> using TMat2x8 = Eigen::Matrix<T, 2, 8>;
-template <typename T> using TMat2x9 = Eigen::Matrix<T, 2, 9>;
-template <typename T> using TMat2x10 = Eigen::Matrix<T, 2, 10>;
-template <typename T> using TMat2x11 = Eigen::Matrix<T, 2, 11>;
-template <typename T> using TMat2x12 = Eigen::Matrix<T, 2, 12>;
-template <typename T> using TMat2x13 = Eigen::Matrix<T, 2, 13>;
-template <typename T> using TMat2x14 = Eigen::Matrix<T, 2, 14>;
-template <typename T> using TMat2x15 = Eigen::Matrix<T, 2, 15>;
-template <typename T> using TMat2x16 = Eigen::Matrix<T, 2, 16>;
-template <typename T> using TMat2x17 = Eigen::Matrix<T, 2, 17>;
-template <typename T> using TMat2x18 = Eigen::Matrix<T, 2, 18>;
-template <typename T> using TMat2x19 = Eigen::Matrix<T, 2, 19>;
-template <typename T> using TMat2x20 = Eigen::Matrix<T, 2, 20>;
-template <typename T> using TMat2x21 = Eigen::Matrix<T, 2, 21>;
-template <typename T> using TMat2x22 = Eigen::Matrix<T, 2, 22>;
-template <typename T> using TMat2x23 = Eigen::Matrix<T, 2, 23>;
-template <typename T> using TMat2x24 = Eigen::Matrix<T, 2, 24>;
-template <typename T> using TMat2x25 = Eigen::Matrix<T, 2, 25>;
-template <typename T> using TMat2x26 = Eigen::Matrix<T, 2, 26>;
-template <typename T> using TMat2x27 = Eigen::Matrix<T, 2, 27>;
-template <typename T> using TMat2x28 = Eigen::Matrix<T, 2, 28>;
-template <typename T> using TMat2x29 = Eigen::Matrix<T, 2, 29>;
-template <typename T> using TMat2x30 = Eigen::Matrix<T, 2, 30>;
-template <typename T> using TMat2x31 = Eigen::Matrix<T, 2, 31>;
-template <typename T> using TMat2x32 = Eigen::Matrix<T, 2, 32>;
-template <typename T> using TMat3x1 = Eigen::Matrix<T, 3, 1>;
-template <typename T> using TMat3x2 = Eigen::Matrix<T, 3, 2>;
-template <typename T> using TMat3x3 = Eigen::Matrix<T, 3, 3>;
-template <typename T> using TMat3x4 = Eigen::Matrix<T, 3, 4>;
-template <typename T> using TMat3x5 = Eigen::Matrix<T, 3, 5>;
-template <typename T> using TMat3x6 = Eigen::Matrix<T, 3, 6>;
-template <typename T> using TMat3x7 = Eigen::Matrix<T, 3, 7>;
-template <typename T> using TMat3x8 = Eigen::Matrix<T, 3, 8>;
-template <typename T> using TMat3x9 = Eigen::Matrix<T, 3, 9>;
-template <typename T> using TMat3x10 = Eigen::Matrix<T, 3, 10>;
-template <typename T> using TMat3x11 = Eigen::Matrix<T, 3, 11>;
-template <typename T> using TMat3x12 = Eigen::Matrix<T, 3, 12>;
-template <typename T> using TMat3x13 = Eigen::Matrix<T, 3, 13>;
-template <typename T> using TMat3x14 = Eigen::Matrix<T, 3, 14>;
-template <typename T> using TMat3x15 = Eigen::Matrix<T, 3, 15>;
-template <typename T> using TMat3x16 = Eigen::Matrix<T, 3, 16>;
-template <typename T> using TMat3x17 = Eigen::Matrix<T, 3, 17>;
-template <typename T> using TMat3x18 = Eigen::Matrix<T, 3, 18>;
-template <typename T> using TMat3x19 = Eigen::Matrix<T, 3, 19>;
-template <typename T> using TMat3x20 = Eigen::Matrix<T, 3, 20>;
-template <typename T> using TMat3x21 = Eigen::Matrix<T, 3, 21>;
-template <typename T> using TMat3x22 = Eigen::Matrix<T, 3, 22>;
-template <typename T> using TMat3x23 = Eigen::Matrix<T, 3, 23>;
-template <typename T> using TMat3x24 = Eigen::Matrix<T, 3, 24>;
-template <typename T> using TMat3x25 = Eigen::Matrix<T, 3, 25>;
-template <typename T> using TMat3x26 = Eigen::Matrix<T, 3, 26>;
-template <typename T> using TMat3x27 = Eigen::Matrix<T, 3, 27>;
-template <typename T> using TMat3x28 = Eigen::Matrix<T, 3, 28>;
-template <typename T> using TMat3x29 = Eigen::Matrix<T, 3, 29>;
-template <typename T> using TMat3x30 = Eigen::Matrix<T, 3, 30>;
-template <typename T> using TMat3x31 = Eigen::Matrix<T, 3, 31>;
-template <typename T> using TMat3x32 = Eigen::Matrix<T, 3, 32>;
-template <typename T> using TMat4x1 = Eigen::Matrix<T, 4, 1>;
-template <typename T> using TMat4x2 = Eigen::Matrix<T, 4, 2>;
-template <typename T> using TMat4x3 = Eigen::Matrix<T, 4, 3>;
-template <typename T> using TMat4x4 = Eigen::Matrix<T, 4, 4>;
-template <typename T> using TMat4x5 = Eigen::Matrix<T, 4, 5>;
-template <typename T> using TMat4x6 = Eigen::Matrix<T, 4, 6>;
-template <typename T> using TMat4x7 = Eigen::Matrix<T, 4, 7>;
-template <typename T> using TMat4x8 = Eigen::Matrix<T, 4, 8>;
-template <typename T> using TMat4x9 = Eigen::Matrix<T, 4, 9>;
-template <typename T> using TMat4x10 = Eigen::Matrix<T, 4, 10>;
-template <typename T> using TMat4x11 = Eigen::Matrix<T, 4, 11>;
-template <typename T> using TMat4x12 = Eigen::Matrix<T, 4, 12>;
-template <typename T> using TMat4x13 = Eigen::Matrix<T, 4, 13>;
-template <typename T> using TMat4x14 = Eigen::Matrix<T, 4, 14>;
-template <typename T> using TMat4x15 = Eigen::Matrix<T, 4, 15>;
-template <typename T> using TMat4x16 = Eigen::Matrix<T, 4, 16>;
-template <typename T> using TMat4x17 = Eigen::Matrix<T, 4, 17>;
-template <typename T> using TMat4x18 = Eigen::Matrix<T, 4, 18>;
-template <typename T> using TMat4x19 = Eigen::Matrix<T, 4, 19>;
-template <typename T> using TMat4x20 = Eigen::Matrix<T, 4, 20>;
-template <typename T> using TMat4x21 = Eigen::Matrix<T, 4, 21>;
-template <typename T> using TMat4x22 = Eigen::Matrix<T, 4, 22>;
-template <typename T> using TMat4x23 = Eigen::Matrix<T, 4, 23>;
-template <typename T> using TMat4x24 = Eigen::Matrix<T, 4, 24>;
-template <typename T> using TMat4x25 = Eigen::Matrix<T, 4, 25>;
-template <typename T> using TMat4x26 = Eigen::Matrix<T, 4, 26>;
-template <typename T> using TMat4x27 = Eigen::Matrix<T, 4, 27>;
-template <typename T> using TMat4x28 = Eigen::Matrix<T, 4, 28>;
-template <typename T> using TMat4x29 = Eigen::Matrix<T, 4, 29>;
-template <typename T> using TMat4x30 = Eigen::Matrix<T, 4, 30>;
-template <typename T> using TMat4x31 = Eigen::Matrix<T, 4, 31>;
-template <typename T> using TMat4x32 = Eigen::Matrix<T, 4, 32>;
-template <typename T> using TMat5x1 = Eigen::Matrix<T, 5, 1>;
-template <typename T> using TMat5x2 = Eigen::Matrix<T, 5, 2>;
-template <typename T> using TMat5x3 = Eigen::Matrix<T, 5, 3>;
-template <typename T> using TMat5x4 = Eigen::Matrix<T, 5, 4>;
-template <typename T> using TMat5x5 = Eigen::Matrix<T, 5, 5>;
-template <typename T> using TMat5x6 = Eigen::Matrix<T, 5, 6>;
-template <typename T> using TMat5x7 = Eigen::Matrix<T, 5, 7>;
-template <typename T> using TMat5x8 = Eigen::Matrix<T, 5, 8>;
-template <typename T> using TMat5x9 = Eigen::Matrix<T, 5, 9>;
-template <typename T> using TMat5x10 = Eigen::Matrix<T, 5, 10>;
-template <typename T> using TMat5x11 = Eigen::Matrix<T, 5, 11>;
-template <typename T> using TMat5x12 = Eigen::Matrix<T, 5, 12>;
-template <typename T> using TMat5x13 = Eigen::Matrix<T, 5, 13>;
-template <typename T> using TMat5x14 = Eigen::Matrix<T, 5, 14>;
-template <typename T> using TMat5x15 = Eigen::Matrix<T, 5, 15>;
-template <typename T> using TMat5x16 = Eigen::Matrix<T, 5, 16>;
-template <typename T> using TMat5x17 = Eigen::Matrix<T, 5, 17>;
-template <typename T> using TMat5x18 = Eigen::Matrix<T, 5, 18>;
-template <typename T> using TMat5x19 = Eigen::Matrix<T, 5, 19>;
-template <typename T> using TMat5x20 = Eigen::Matrix<T, 5, 20>;
-template <typename T> using TMat5x21 = Eigen::Matrix<T, 5, 21>;
-template <typename T> using TMat5x22 = Eigen::Matrix<T, 5, 22>;
-template <typename T> using TMat5x23 = Eigen::Matrix<T, 5, 23>;
-template <typename T> using TMat5x24 = Eigen::Matrix<T, 5, 24>;
-template <typename T> using TMat5x25 = Eigen::Matrix<T, 5, 25>;
-template <typename T> using TMat5x26 = Eigen::Matrix<T, 5, 26>;
-template <typename T> using TMat5x27 = Eigen::Matrix<T, 5, 27>;
-template <typename T> using TMat5x28 = Eigen::Matrix<T, 5, 28>;
-template <typename T> using TMat5x29 = Eigen::Matrix<T, 5, 29>;
-template <typename T> using TMat5x30 = Eigen::Matrix<T, 5, 30>;
-template <typename T> using TMat5x31 = Eigen::Matrix<T, 5, 31>;
-template <typename T> using TMat5x32 = Eigen::Matrix<T, 5, 32>;
-template <typename T> using TMat6x1 = Eigen::Matrix<T, 6, 1>;
-template <typename T> using TMat6x2 = Eigen::Matrix<T, 6, 2>;
-template <typename T> using TMat6x3 = Eigen::Matrix<T, 6, 3>;
-template <typename T> using TMat6x4 = Eigen::Matrix<T, 6, 4>;
-template <typename T> using TMat6x5 = Eigen::Matrix<T, 6, 5>;
-template <typename T> using TMat6x6 = Eigen::Matrix<T, 6, 6>;
-template <typename T> using TMat6x7 = Eigen::Matrix<T, 6, 7>;
-template <typename T> using TMat6x8 = Eigen::Matrix<T, 6, 8>;
-template <typename T> using TMat6x9 = Eigen::Matrix<T, 6, 9>;
-template <typename T> using TMat6x10 = Eigen::Matrix<T, 6, 10>;
-template <typename T> using TMat6x11 = Eigen::Matrix<T, 6, 11>;
-template <typename T> using TMat6x12 = Eigen::Matrix<T, 6, 12>;
-template <typename T> using TMat6x13 = Eigen::Matrix<T, 6, 13>;
-template <typename T> using TMat6x14 = Eigen::Matrix<T, 6, 14>;
-template <typename T> using TMat6x15 = Eigen::Matrix<T, 6, 15>;
-template <typename T> using TMat6x16 = Eigen::Matrix<T, 6, 16>;
-template <typename T> using TMat6x17 = Eigen::Matrix<T, 6, 17>;
-template <typename T> using TMat6x18 = Eigen::Matrix<T, 6, 18>;
-template <typename T> using TMat6x19 = Eigen::Matrix<T, 6, 19>;
-template <typename T> using TMat6x20 = Eigen::Matrix<T, 6, 20>;
-template <typename T> using TMat6x21 = Eigen::Matrix<T, 6, 21>;
-template <typename T> using TMat6x22 = Eigen::Matrix<T, 6, 22>;
-template <typename T> using TMat6x23 = Eigen::Matrix<T, 6, 23>;
-template <typename T> using TMat6x24 = Eigen::Matrix<T, 6, 24>;
-template <typename T> using TMat6x25 = Eigen::Matrix<T, 6, 25>;
-template <typename T> using TMat6x26 = Eigen::Matrix<T, 6, 26>;
-template <typename T> using TMat6x27 = Eigen::Matrix<T, 6, 27>;
-template <typename T> using TMat6x28 = Eigen::Matrix<T, 6, 28>;
-template <typename T> using TMat6x29 = Eigen::Matrix<T, 6, 29>;
-template <typename T> using TMat6x30 = Eigen::Matrix<T, 6, 30>;
-template <typename T> using TMat6x31 = Eigen::Matrix<T, 6, 31>;
-template <typename T> using TMat6x32 = Eigen::Matrix<T, 6, 32>;
-template <typename T> using TMat7x1 = Eigen::Matrix<T, 7, 1>;
-template <typename T> using TMat7x2 = Eigen::Matrix<T, 7, 2>;
-template <typename T> using TMat7x3 = Eigen::Matrix<T, 7, 3>;
-template <typename T> using TMat7x4 = Eigen::Matrix<T, 7, 4>;
-template <typename T> using TMat7x5 = Eigen::Matrix<T, 7, 5>;
-template <typename T> using TMat7x6 = Eigen::Matrix<T, 7, 6>;
-template <typename T> using TMat7x7 = Eigen::Matrix<T, 7, 7>;
-template <typename T> using TMat7x8 = Eigen::Matrix<T, 7, 8>;
-template <typename T> using TMat7x9 = Eigen::Matrix<T, 7, 9>;
-template <typename T> using TMat7x10 = Eigen::Matrix<T, 7, 10>;
-template <typename T> using TMat7x11 = Eigen::Matrix<T, 7, 11>;
-template <typename T> using TMat7x12 = Eigen::Matrix<T, 7, 12>;
-template <typename T> using TMat7x13 = Eigen::Matrix<T, 7, 13>;
-template <typename T> using TMat7x14 = Eigen::Matrix<T, 7, 14>;
-template <typename T> using TMat7x15 = Eigen::Matrix<T, 7, 15>;
-template <typename T> using TMat7x16 = Eigen::Matrix<T, 7, 16>;
-template <typename T> using TMat7x17 = Eigen::Matrix<T, 7, 17>;
-template <typename T> using TMat7x18 = Eigen::Matrix<T, 7, 18>;
-template <typename T> using TMat7x19 = Eigen::Matrix<T, 7, 19>;
-template <typename T> using TMat7x20 = Eigen::Matrix<T, 7, 20>;
-template <typename T> using TMat7x21 = Eigen::Matrix<T, 7, 21>;
-template <typename T> using TMat7x22 = Eigen::Matrix<T, 7, 22>;
-template <typename T> using TMat7x23 = Eigen::Matrix<T, 7, 23>;
-template <typename T> using TMat7x24 = Eigen::Matrix<T, 7, 24>;
-template <typename T> using TMat7x25 = Eigen::Matrix<T, 7, 25>;
-template <typename T> using TMat7x26 = Eigen::Matrix<T, 7, 26>;
-template <typename T> using TMat7x27 = Eigen::Matrix<T, 7, 27>;
-template <typename T> using TMat7x28 = Eigen::Matrix<T, 7, 28>;
-template <typename T> using TMat7x29 = Eigen::Matrix<T, 7, 29>;
-template <typename T> using TMat7x30 = Eigen::Matrix<T, 7, 30>;
-template <typename T> using TMat7x31 = Eigen::Matrix<T, 7, 31>;
-template <typename T> using TMat7x32 = Eigen::Matrix<T, 7, 32>;
-template <typename T> using TMat8x1 = Eigen::Matrix<T, 8, 1>;
-template <typename T> using TMat8x2 = Eigen::Matrix<T, 8, 2>;
-template <typename T> using TMat8x3 = Eigen::Matrix<T, 8, 3>;
-template <typename T> using TMat8x4 = Eigen::Matrix<T, 8, 4>;
-template <typename T> using TMat8x5 = Eigen::Matrix<T, 8, 5>;
-template <typename T> using TMat8x6 = Eigen::Matrix<T, 8, 6>;
-template <typename T> using TMat8x7 = Eigen::Matrix<T, 8, 7>;
-template <typename T> using TMat8x8 = Eigen::Matrix<T, 8, 8>;
-template <typename T> using TMat8x9 = Eigen::Matrix<T, 8, 9>;
-template <typename T> using TMat8x10 = Eigen::Matrix<T, 8, 10>;
-template <typename T> using TMat8x11 = Eigen::Matrix<T, 8, 11>;
-template <typename T> using TMat8x12 = Eigen::Matrix<T, 8, 12>;
-template <typename T> using TMat8x13 = Eigen::Matrix<T, 8, 13>;
-template <typename T> using TMat8x14 = Eigen::Matrix<T, 8, 14>;
-template <typename T> using TMat8x15 = Eigen::Matrix<T, 8, 15>;
-template <typename T> using TMat8x16 = Eigen::Matrix<T, 8, 16>;
-template <typename T> using TMat8x17 = Eigen::Matrix<T, 8, 17>;
-template <typename T> using TMat8x18 = Eigen::Matrix<T, 8, 18>;
-template <typename T> using TMat8x19 = Eigen::Matrix<T, 8, 19>;
-template <typename T> using TMat8x20 = Eigen::Matrix<T, 8, 20>;
-template <typename T> using TMat8x21 = Eigen::Matrix<T, 8, 21>;
-template <typename T> using TMat8x22 = Eigen::Matrix<T, 8, 22>;
-template <typename T> using TMat8x23 = Eigen::Matrix<T, 8, 23>;
-template <typename T> using TMat8x24 = Eigen::Matrix<T, 8, 24>;
-template <typename T> using TMat8x25 = Eigen::Matrix<T, 8, 25>;
-template <typename T> using TMat8x26 = Eigen::Matrix<T, 8, 26>;
-template <typename T> using TMat8x27 = Eigen::Matrix<T, 8, 27>;
-template <typename T> using TMat8x28 = Eigen::Matrix<T, 8, 28>;
-template <typename T> using TMat8x29 = Eigen::Matrix<T, 8, 29>;
-template <typename T> using TMat8x30 = Eigen::Matrix<T, 8, 30>;
-template <typename T> using TMat8x31 = Eigen::Matrix<T, 8, 31>;
-template <typename T> using TMat8x32 = Eigen::Matrix<T, 8, 32>;
-template <typename T> using TMat9x1 = Eigen::Matrix<T, 9, 1>;
-template <typename T> using TMat9x2 = Eigen::Matrix<T, 9, 2>;
-template <typename T> using TMat9x3 = Eigen::Matrix<T, 9, 3>;
-template <typename T> using TMat9x4 = Eigen::Matrix<T, 9, 4>;
-template <typename T> using TMat9x5 = Eigen::Matrix<T, 9, 5>;
-template <typename T> using TMat9x6 = Eigen::Matrix<T, 9, 6>;
-template <typename T> using TMat9x7 = Eigen::Matrix<T, 9, 7>;
-template <typename T> using TMat9x8 = Eigen::Matrix<T, 9, 8>;
-template <typename T> using TMat9x9 = Eigen::Matrix<T, 9, 9>;
-template <typename T> using TMat9x10 = Eigen::Matrix<T, 9, 10>;
-template <typename T> using TMat9x11 = Eigen::Matrix<T, 9, 11>;
-template <typename T> using TMat9x12 = Eigen::Matrix<T, 9, 12>;
-template <typename T> using TMat9x13 = Eigen::Matrix<T, 9, 13>;
-template <typename T> using TMat9x14 = Eigen::Matrix<T, 9, 14>;
-template <typename T> using TMat9x15 = Eigen::Matrix<T, 9, 15>;
-template <typename T> using TMat9x16 = Eigen::Matrix<T, 9, 16>;
-template <typename T> using TMat9x17 = Eigen::Matrix<T, 9, 17>;
-template <typename T> using TMat9x18 = Eigen::Matrix<T, 9, 18>;
-template <typename T> using TMat9x19 = Eigen::Matrix<T, 9, 19>;
-template <typename T> using TMat9x20 = Eigen::Matrix<T, 9, 20>;
-template <typename T> using TMat9x21 = Eigen::Matrix<T, 9, 21>;
-template <typename T> using TMat9x22 = Eigen::Matrix<T, 9, 22>;
-template <typename T> using TMat9x23 = Eigen::Matrix<T, 9, 23>;
-template <typename T> using TMat9x24 = Eigen::Matrix<T, 9, 24>;
-template <typename T> using TMat9x25 = Eigen::Matrix<T, 9, 25>;
-template <typename T> using TMat9x26 = Eigen::Matrix<T, 9, 26>;
-template <typename T> using TMat9x27 = Eigen::Matrix<T, 9, 27>;
-template <typename T> using TMat9x28 = Eigen::Matrix<T, 9, 28>;
-template <typename T> using TMat9x29 = Eigen::Matrix<T, 9, 29>;
-template <typename T> using TMat9x30 = Eigen::Matrix<T, 9, 30>;
-template <typename T> using TMat9x31 = Eigen::Matrix<T, 9, 31>;
-template <typename T> using TMat9x32 = Eigen::Matrix<T, 9, 32>;
-template <typename T> using TMat10x1 = Eigen::Matrix<T, 10, 1>;
-template <typename T> using TMat10x2 = Eigen::Matrix<T, 10, 2>;
-template <typename T> using TMat10x3 = Eigen::Matrix<T, 10, 3>;
-template <typename T> using TMat10x4 = Eigen::Matrix<T, 10, 4>;
-template <typename T> using TMat10x5 = Eigen::Matrix<T, 10, 5>;
-template <typename T> using TMat10x6 = Eigen::Matrix<T, 10, 6>;
-template <typename T> using TMat10x7 = Eigen::Matrix<T, 10, 7>;
-template <typename T> using TMat10x8 = Eigen::Matrix<T, 10, 8>;
-template <typename T> using TMat10x9 = Eigen::Matrix<T, 10, 9>;
-template <typename T> using TMat10x10 = Eigen::Matrix<T, 10, 10>;
-template <typename T> using TMat10x11 = Eigen::Matrix<T, 10, 11>;
-template <typename T> using TMat10x12 = Eigen::Matrix<T, 10, 12>;
-template <typename T> using TMat10x13 = Eigen::Matrix<T, 10, 13>;
-template <typename T> using TMat10x14 = Eigen::Matrix<T, 10, 14>;
-template <typename T> using TMat10x15 = Eigen::Matrix<T, 10, 15>;
-template <typename T> using TMat10x16 = Eigen::Matrix<T, 10, 16>;
-template <typename T> using TMat10x17 = Eigen::Matrix<T, 10, 17>;
-template <typename T> using TMat10x18 = Eigen::Matrix<T, 10, 18>;
-template <typename T> using TMat10x19 = Eigen::Matrix<T, 10, 19>;
-template <typename T> using TMat10x20 = Eigen::Matrix<T, 10, 20>;
-template <typename T> using TMat10x21 = Eigen::Matrix<T, 10, 21>;
-template <typename T> using TMat10x22 = Eigen::Matrix<T, 10, 22>;
-template <typename T> using TMat10x23 = Eigen::Matrix<T, 10, 23>;
-template <typename T> using TMat10x24 = Eigen::Matrix<T, 10, 24>;
-template <typename T> using TMat10x25 = Eigen::Matrix<T, 10, 25>;
-template <typename T> using TMat10x26 = Eigen::Matrix<T, 10, 26>;
-template <typename T> using TMat10x27 = Eigen::Matrix<T, 10, 27>;
-template <typename T> using TMat10x28 = Eigen::Matrix<T, 10, 28>;
-template <typename T> using TMat10x29 = Eigen::Matrix<T, 10, 29>;
-template <typename T> using TMat10x30 = Eigen::Matrix<T, 10, 30>;
-template <typename T> using TMat10x31 = Eigen::Matrix<T, 10, 31>;
-template <typename T> using TMat10x32 = Eigen::Matrix<T, 10, 32>;
-template <typename T> using TMat11x1 = Eigen::Matrix<T, 11, 1>;
-template <typename T> using TMat11x2 = Eigen::Matrix<T, 11, 2>;
-template <typename T> using TMat11x3 = Eigen::Matrix<T, 11, 3>;
-template <typename T> using TMat11x4 = Eigen::Matrix<T, 11, 4>;
-template <typename T> using TMat11x5 = Eigen::Matrix<T, 11, 5>;
-template <typename T> using TMat11x6 = Eigen::Matrix<T, 11, 6>;
-template <typename T> using TMat11x7 = Eigen::Matrix<T, 11, 7>;
-template <typename T> using TMat11x8 = Eigen::Matrix<T, 11, 8>;
-template <typename T> using TMat11x9 = Eigen::Matrix<T, 11, 9>;
-template <typename T> using TMat11x10 = Eigen::Matrix<T, 11, 10>;
-template <typename T> using TMat11x11 = Eigen::Matrix<T, 11, 11>;
-template <typename T> using TMat11x12 = Eigen::Matrix<T, 11, 12>;
-template <typename T> using TMat11x13 = Eigen::Matrix<T, 11, 13>;
-template <typename T> using TMat11x14 = Eigen::Matrix<T, 11, 14>;
-template <typename T> using TMat11x15 = Eigen::Matrix<T, 11, 15>;
-template <typename T> using TMat11x16 = Eigen::Matrix<T, 11, 16>;
-template <typename T> using TMat11x17 = Eigen::Matrix<T, 11, 17>;
-template <typename T> using TMat11x18 = Eigen::Matrix<T, 11, 18>;
-template <typename T> using TMat11x19 = Eigen::Matrix<T, 11, 19>;
-template <typename T> using TMat11x20 = Eigen::Matrix<T, 11, 20>;
-template <typename T> using TMat11x21 = Eigen::Matrix<T, 11, 21>;
-template <typename T> using TMat11x22 = Eigen::Matrix<T, 11, 22>;
-template <typename T> using TMat11x23 = Eigen::Matrix<T, 11, 23>;
-template <typename T> using TMat11x24 = Eigen::Matrix<T, 11, 24>;
-template <typename T> using TMat11x25 = Eigen::Matrix<T, 11, 25>;
-template <typename T> using TMat11x26 = Eigen::Matrix<T, 11, 26>;
-template <typename T> using TMat11x27 = Eigen::Matrix<T, 11, 27>;
-template <typename T> using TMat11x28 = Eigen::Matrix<T, 11, 28>;
-template <typename T> using TMat11x29 = Eigen::Matrix<T, 11, 29>;
-template <typename T> using TMat11x30 = Eigen::Matrix<T, 11, 30>;
-template <typename T> using TMat11x31 = Eigen::Matrix<T, 11, 31>;
-template <typename T> using TMat11x32 = Eigen::Matrix<T, 11, 32>;
-template <typename T> using TMat12x1 = Eigen::Matrix<T, 12, 1>;
-template <typename T> using TMat12x2 = Eigen::Matrix<T, 12, 2>;
-template <typename T> using TMat12x3 = Eigen::Matrix<T, 12, 3>;
-template <typename T> using TMat12x4 = Eigen::Matrix<T, 12, 4>;
-template <typename T> using TMat12x5 = Eigen::Matrix<T, 12, 5>;
-template <typename T> using TMat12x6 = Eigen::Matrix<T, 12, 6>;
-template <typename T> using TMat12x7 = Eigen::Matrix<T, 12, 7>;
-template <typename T> using TMat12x8 = Eigen::Matrix<T, 12, 8>;
-template <typename T> using TMat12x9 = Eigen::Matrix<T, 12, 9>;
-template <typename T> using TMat12x10 = Eigen::Matrix<T, 12, 10>;
-template <typename T> using TMat12x11 = Eigen::Matrix<T, 12, 11>;
-template <typename T> using TMat12x12 = Eigen::Matrix<T, 12, 12>;
-template <typename T> using TMat12x13 = Eigen::Matrix<T, 12, 13>;
-template <typename T> using TMat12x14 = Eigen::Matrix<T, 12, 14>;
-template <typename T> using TMat12x15 = Eigen::Matrix<T, 12, 15>;
-template <typename T> using TMat12x16 = Eigen::Matrix<T, 12, 16>;
-template <typename T> using TMat12x17 = Eigen::Matrix<T, 12, 17>;
-template <typename T> using TMat12x18 = Eigen::Matrix<T, 12, 18>;
-template <typename T> using TMat12x19 = Eigen::Matrix<T, 12, 19>;
-template <typename T> using TMat12x20 = Eigen::Matrix<T, 12, 20>;
-template <typename T> using TMat12x21 = Eigen::Matrix<T, 12, 21>;
-template <typename T> using TMat12x22 = Eigen::Matrix<T, 12, 22>;
-template <typename T> using TMat12x23 = Eigen::Matrix<T, 12, 23>;
-template <typename T> using TMat12x24 = Eigen::Matrix<T, 12, 24>;
-template <typename T> using TMat12x25 = Eigen::Matrix<T, 12, 25>;
-template <typename T> using TMat12x26 = Eigen::Matrix<T, 12, 26>;
-template <typename T> using TMat12x27 = Eigen::Matrix<T, 12, 27>;
-template <typename T> using TMat12x28 = Eigen::Matrix<T, 12, 28>;
-template <typename T> using TMat12x29 = Eigen::Matrix<T, 12, 29>;
-template <typename T> using TMat12x30 = Eigen::Matrix<T, 12, 30>;
-template <typename T> using TMat12x31 = Eigen::Matrix<T, 12, 31>;
-template <typename T> using TMat12x32 = Eigen::Matrix<T, 12, 32>;
-template <typename T> using TMat13x1 = Eigen::Matrix<T, 13, 1>;
-template <typename T> using TMat13x2 = Eigen::Matrix<T, 13, 2>;
-template <typename T> using TMat13x3 = Eigen::Matrix<T, 13, 3>;
-template <typename T> using TMat13x4 = Eigen::Matrix<T, 13, 4>;
-template <typename T> using TMat13x5 = Eigen::Matrix<T, 13, 5>;
-template <typename T> using TMat13x6 = Eigen::Matrix<T, 13, 6>;
-template <typename T> using TMat13x7 = Eigen::Matrix<T, 13, 7>;
-template <typename T> using TMat13x8 = Eigen::Matrix<T, 13, 8>;
-template <typename T> using TMat13x9 = Eigen::Matrix<T, 13, 9>;
-template <typename T> using TMat13x10 = Eigen::Matrix<T, 13, 10>;
-template <typename T> using TMat13x11 = Eigen::Matrix<T, 13, 11>;
-template <typename T> using TMat13x12 = Eigen::Matrix<T, 13, 12>;
-template <typename T> using TMat13x13 = Eigen::Matrix<T, 13, 13>;
-template <typename T> using TMat13x14 = Eigen::Matrix<T, 13, 14>;
-template <typename T> using TMat13x15 = Eigen::Matrix<T, 13, 15>;
-template <typename T> using TMat13x16 = Eigen::Matrix<T, 13, 16>;
-template <typename T> using TMat13x17 = Eigen::Matrix<T, 13, 17>;
-template <typename T> using TMat13x18 = Eigen::Matrix<T, 13, 18>;
-template <typename T> using TMat13x19 = Eigen::Matrix<T, 13, 19>;
-template <typename T> using TMat13x20 = Eigen::Matrix<T, 13, 20>;
-template <typename T> using TMat13x21 = Eigen::Matrix<T, 13, 21>;
-template <typename T> using TMat13x22 = Eigen::Matrix<T, 13, 22>;
-template <typename T> using TMat13x23 = Eigen::Matrix<T, 13, 23>;
-template <typename T> using TMat13x24 = Eigen::Matrix<T, 13, 24>;
-template <typename T> using TMat13x25 = Eigen::Matrix<T, 13, 25>;
-template <typename T> using TMat13x26 = Eigen::Matrix<T, 13, 26>;
-template <typename T> using TMat13x27 = Eigen::Matrix<T, 13, 27>;
-template <typename T> using TMat13x28 = Eigen::Matrix<T, 13, 28>;
-template <typename T> using TMat13x29 = Eigen::Matrix<T, 13, 29>;
-template <typename T> using TMat13x30 = Eigen::Matrix<T, 13, 30>;
-template <typename T> using TMat13x31 = Eigen::Matrix<T, 13, 31>;
-template <typename T> using TMat13x32 = Eigen::Matrix<T, 13, 32>;
-template <typename T> using TMat14x1 = Eigen::Matrix<T, 14, 1>;
-template <typename T> using TMat14x2 = Eigen::Matrix<T, 14, 2>;
-template <typename T> using TMat14x3 = Eigen::Matrix<T, 14, 3>;
-template <typename T> using TMat14x4 = Eigen::Matrix<T, 14, 4>;
-template <typename T> using TMat14x5 = Eigen::Matrix<T, 14, 5>;
-template <typename T> using TMat14x6 = Eigen::Matrix<T, 14, 6>;
-template <typename T> using TMat14x7 = Eigen::Matrix<T, 14, 7>;
-template <typename T> using TMat14x8 = Eigen::Matrix<T, 14, 8>;
-template <typename T> using TMat14x9 = Eigen::Matrix<T, 14, 9>;
-template <typename T> using TMat14x10 = Eigen::Matrix<T, 14, 10>;
-template <typename T> using TMat14x11 = Eigen::Matrix<T, 14, 11>;
-template <typename T> using TMat14x12 = Eigen::Matrix<T, 14, 12>;
-template <typename T> using TMat14x13 = Eigen::Matrix<T, 14, 13>;
-template <typename T> using TMat14x14 = Eigen::Matrix<T, 14, 14>;
-template <typename T> using TMat14x15 = Eigen::Matrix<T, 14, 15>;
-template <typename T> using TMat14x16 = Eigen::Matrix<T, 14, 16>;
-template <typename T> using TMat14x17 = Eigen::Matrix<T, 14, 17>;
-template <typename T> using TMat14x18 = Eigen::Matrix<T, 14, 18>;
-template <typename T> using TMat14x19 = Eigen::Matrix<T, 14, 19>;
-template <typename T> using TMat14x20 = Eigen::Matrix<T, 14, 20>;
-template <typename T> using TMat14x21 = Eigen::Matrix<T, 14, 21>;
-template <typename T> using TMat14x22 = Eigen::Matrix<T, 14, 22>;
-template <typename T> using TMat14x23 = Eigen::Matrix<T, 14, 23>;
-template <typename T> using TMat14x24 = Eigen::Matrix<T, 14, 24>;
-template <typename T> using TMat14x25 = Eigen::Matrix<T, 14, 25>;
-template <typename T> using TMat14x26 = Eigen::Matrix<T, 14, 26>;
-template <typename T> using TMat14x27 = Eigen::Matrix<T, 14, 27>;
-template <typename T> using TMat14x28 = Eigen::Matrix<T, 14, 28>;
-template <typename T> using TMat14x29 = Eigen::Matrix<T, 14, 29>;
-template <typename T> using TMat14x30 = Eigen::Matrix<T, 14, 30>;
-template <typename T> using TMat14x31 = Eigen::Matrix<T, 14, 31>;
-template <typename T> using TMat14x32 = Eigen::Matrix<T, 14, 32>;
-template <typename T> using TMat15x1 = Eigen::Matrix<T, 15, 1>;
-template <typename T> using TMat15x2 = Eigen::Matrix<T, 15, 2>;
-template <typename T> using TMat15x3 = Eigen::Matrix<T, 15, 3>;
-template <typename T> using TMat15x4 = Eigen::Matrix<T, 15, 4>;
-template <typename T> using TMat15x5 = Eigen::Matrix<T, 15, 5>;
-template <typename T> using TMat15x6 = Eigen::Matrix<T, 15, 6>;
-template <typename T> using TMat15x7 = Eigen::Matrix<T, 15, 7>;
-template <typename T> using TMat15x8 = Eigen::Matrix<T, 15, 8>;
-template <typename T> using TMat15x9 = Eigen::Matrix<T, 15, 9>;
-template <typename T> using TMat15x10 = Eigen::Matrix<T, 15, 10>;
-template <typename T> using TMat15x11 = Eigen::Matrix<T, 15, 11>;
-template <typename T> using TMat15x12 = Eigen::Matrix<T, 15, 12>;
-template <typename T> using TMat15x13 = Eigen::Matrix<T, 15, 13>;
-template <typename T> using TMat15x14 = Eigen::Matrix<T, 15, 14>;
-template <typename T> using TMat15x15 = Eigen::Matrix<T, 15, 15>;
-template <typename T> using TMat15x16 = Eigen::Matrix<T, 15, 16>;
-template <typename T> using TMat15x17 = Eigen::Matrix<T, 15, 17>;
-template <typename T> using TMat15x18 = Eigen::Matrix<T, 15, 18>;
-template <typename T> using TMat15x19 = Eigen::Matrix<T, 15, 19>;
-template <typename T> using TMat15x20 = Eigen::Matrix<T, 15, 20>;
-template <typename T> using TMat15x21 = Eigen::Matrix<T, 15, 21>;
-template <typename T> using TMat15x22 = Eigen::Matrix<T, 15, 22>;
-template <typename T> using TMat15x23 = Eigen::Matrix<T, 15, 23>;
-template <typename T> using TMat15x24 = Eigen::Matrix<T, 15, 24>;
-template <typename T> using TMat15x25 = Eigen::Matrix<T, 15, 25>;
-template <typename T> using TMat15x26 = Eigen::Matrix<T, 15, 26>;
-template <typename T> using TMat15x27 = Eigen::Matrix<T, 15, 27>;
-template <typename T> using TMat15x28 = Eigen::Matrix<T, 15, 28>;
-template <typename T> using TMat15x29 = Eigen::Matrix<T, 15, 29>;
-template <typename T> using TMat15x30 = Eigen::Matrix<T, 15, 30>;
-template <typename T> using TMat15x31 = Eigen::Matrix<T, 15, 31>;
-template <typename T> using TMat15x32 = Eigen::Matrix<T, 15, 32>;
-template <typename T> using TMat16x1 = Eigen::Matrix<T, 16, 1>;
-template <typename T> using TMat16x2 = Eigen::Matrix<T, 16, 2>;
-template <typename T> using TMat16x3 = Eigen::Matrix<T, 16, 3>;
-template <typename T> using TMat16x4 = Eigen::Matrix<T, 16, 4>;
-template <typename T> using TMat16x5 = Eigen::Matrix<T, 16, 5>;
-template <typename T> using TMat16x6 = Eigen::Matrix<T, 16, 6>;
-template <typename T> using TMat16x7 = Eigen::Matrix<T, 16, 7>;
-template <typename T> using TMat16x8 = Eigen::Matrix<T, 16, 8>;
-template <typename T> using TMat16x9 = Eigen::Matrix<T, 16, 9>;
-template <typename T> using TMat16x10 = Eigen::Matrix<T, 16, 10>;
-template <typename T> using TMat16x11 = Eigen::Matrix<T, 16, 11>;
-template <typename T> using TMat16x12 = Eigen::Matrix<T, 16, 12>;
-template <typename T> using TMat16x13 = Eigen::Matrix<T, 16, 13>;
-template <typename T> using TMat16x14 = Eigen::Matrix<T, 16, 14>;
-template <typename T> using TMat16x15 = Eigen::Matrix<T, 16, 15>;
-template <typename T> using TMat16x16 = Eigen::Matrix<T, 16, 16>;
-template <typename T> using TMat16x17 = Eigen::Matrix<T, 16, 17>;
-template <typename T> using TMat16x18 = Eigen::Matrix<T, 16, 18>;
-template <typename T> using TMat16x19 = Eigen::Matrix<T, 16, 19>;
-template <typename T> using TMat16x20 = Eigen::Matrix<T, 16, 20>;
-template <typename T> using TMat16x21 = Eigen::Matrix<T, 16, 21>;
-template <typename T> using TMat16x22 = Eigen::Matrix<T, 16, 22>;
-template <typename T> using TMat16x23 = Eigen::Matrix<T, 16, 23>;
-template <typename T> using TMat16x24 = Eigen::Matrix<T, 16, 24>;
-template <typename T> using TMat16x25 = Eigen::Matrix<T, 16, 25>;
-template <typename T> using TMat16x26 = Eigen::Matrix<T, 16, 26>;
-template <typename T> using TMat16x27 = Eigen::Matrix<T, 16, 27>;
-template <typename T> using TMat16x28 = Eigen::Matrix<T, 16, 28>;
-template <typename T> using TMat16x29 = Eigen::Matrix<T, 16, 29>;
-template <typename T> using TMat16x30 = Eigen::Matrix<T, 16, 30>;
-template <typename T> using TMat16x31 = Eigen::Matrix<T, 16, 31>;
-template <typename T> using TMat16x32 = Eigen::Matrix<T, 16, 32>;
-template <typename T> using TMat17x1 = Eigen::Matrix<T, 17, 1>;
-template <typename T> using TMat17x2 = Eigen::Matrix<T, 17, 2>;
-template <typename T> using TMat17x3 = Eigen::Matrix<T, 17, 3>;
-template <typename T> using TMat17x4 = Eigen::Matrix<T, 17, 4>;
-template <typename T> using TMat17x5 = Eigen::Matrix<T, 17, 5>;
-template <typename T> using TMat17x6 = Eigen::Matrix<T, 17, 6>;
-template <typename T> using TMat17x7 = Eigen::Matrix<T, 17, 7>;
-template <typename T> using TMat17x8 = Eigen::Matrix<T, 17, 8>;
-template <typename T> using TMat17x9 = Eigen::Matrix<T, 17, 9>;
-template <typename T> using TMat17x10 = Eigen::Matrix<T, 17, 10>;
-template <typename T> using TMat17x11 = Eigen::Matrix<T, 17, 11>;
-template <typename T> using TMat17x12 = Eigen::Matrix<T, 17, 12>;
-template <typename T> using TMat17x13 = Eigen::Matrix<T, 17, 13>;
-template <typename T> using TMat17x14 = Eigen::Matrix<T, 17, 14>;
-template <typename T> using TMat17x15 = Eigen::Matrix<T, 17, 15>;
-template <typename T> using TMat17x16 = Eigen::Matrix<T, 17, 16>;
-template <typename T> using TMat17x17 = Eigen::Matrix<T, 17, 17>;
-template <typename T> using TMat17x18 = Eigen::Matrix<T, 17, 18>;
-template <typename T> using TMat17x19 = Eigen::Matrix<T, 17, 19>;
-template <typename T> using TMat17x20 = Eigen::Matrix<T, 17, 20>;
-template <typename T> using TMat17x21 = Eigen::Matrix<T, 17, 21>;
-template <typename T> using TMat17x22 = Eigen::Matrix<T, 17, 22>;
-template <typename T> using TMat17x23 = Eigen::Matrix<T, 17, 23>;
-template <typename T> using TMat17x24 = Eigen::Matrix<T, 17, 24>;
-template <typename T> using TMat17x25 = Eigen::Matrix<T, 17, 25>;
-template <typename T> using TMat17x26 = Eigen::Matrix<T, 17, 26>;
-template <typename T> using TMat17x27 = Eigen::Matrix<T, 17, 27>;
-template <typename T> using TMat17x28 = Eigen::Matrix<T, 17, 28>;
-template <typename T> using TMat17x29 = Eigen::Matrix<T, 17, 29>;
-template <typename T> using TMat17x30 = Eigen::Matrix<T, 17, 30>;
-template <typename T> using TMat17x31 = Eigen::Matrix<T, 17, 31>;
-template <typename T> using TMat17x32 = Eigen::Matrix<T, 17, 32>;
-template <typename T> using TMat18x1 = Eigen::Matrix<T, 18, 1>;
-template <typename T> using TMat18x2 = Eigen::Matrix<T, 18, 2>;
-template <typename T> using TMat18x3 = Eigen::Matrix<T, 18, 3>;
-template <typename T> using TMat18x4 = Eigen::Matrix<T, 18, 4>;
-template <typename T> using TMat18x5 = Eigen::Matrix<T, 18, 5>;
-template <typename T> using TMat18x6 = Eigen::Matrix<T, 18, 6>;
-template <typename T> using TMat18x7 = Eigen::Matrix<T, 18, 7>;
-template <typename T> using TMat18x8 = Eigen::Matrix<T, 18, 8>;
-template <typename T> using TMat18x9 = Eigen::Matrix<T, 18, 9>;
-template <typename T> using TMat18x10 = Eigen::Matrix<T, 18, 10>;
-template <typename T> using TMat18x11 = Eigen::Matrix<T, 18, 11>;
-template <typename T> using TMat18x12 = Eigen::Matrix<T, 18, 12>;
-template <typename T> using TMat18x13 = Eigen::Matrix<T, 18, 13>;
-template <typename T> using TMat18x14 = Eigen::Matrix<T, 18, 14>;
-template <typename T> using TMat18x15 = Eigen::Matrix<T, 18, 15>;
-template <typename T> using TMat18x16 = Eigen::Matrix<T, 18, 16>;
-template <typename T> using TMat18x17 = Eigen::Matrix<T, 18, 17>;
-template <typename T> using TMat18x18 = Eigen::Matrix<T, 18, 18>;
-template <typename T> using TMat18x19 = Eigen::Matrix<T, 18, 19>;
-template <typename T> using TMat18x20 = Eigen::Matrix<T, 18, 20>;
-template <typename T> using TMat18x21 = Eigen::Matrix<T, 18, 21>;
-template <typename T> using TMat18x22 = Eigen::Matrix<T, 18, 22>;
-template <typename T> using TMat18x23 = Eigen::Matrix<T, 18, 23>;
-template <typename T> using TMat18x24 = Eigen::Matrix<T, 18, 24>;
-template <typename T> using TMat18x25 = Eigen::Matrix<T, 18, 25>;
-template <typename T> using TMat18x26 = Eigen::Matrix<T, 18, 26>;
-template <typename T> using TMat18x27 = Eigen::Matrix<T, 18, 27>;
-template <typename T> using TMat18x28 = Eigen::Matrix<T, 18, 28>;
-template <typename T> using TMat18x29 = Eigen::Matrix<T, 18, 29>;
-template <typename T> using TMat18x30 = Eigen::Matrix<T, 18, 30>;
-template <typename T> using TMat18x31 = Eigen::Matrix<T, 18, 31>;
-template <typename T> using TMat18x32 = Eigen::Matrix<T, 18, 32>;
-template <typename T> using TMat19x1 = Eigen::Matrix<T, 19, 1>;
-template <typename T> using TMat19x2 = Eigen::Matrix<T, 19, 2>;
-template <typename T> using TMat19x3 = Eigen::Matrix<T, 19, 3>;
-template <typename T> using TMat19x4 = Eigen::Matrix<T, 19, 4>;
-template <typename T> using TMat19x5 = Eigen::Matrix<T, 19, 5>;
-template <typename T> using TMat19x6 = Eigen::Matrix<T, 19, 6>;
-template <typename T> using TMat19x7 = Eigen::Matrix<T, 19, 7>;
-template <typename T> using TMat19x8 = Eigen::Matrix<T, 19, 8>;
-template <typename T> using TMat19x9 = Eigen::Matrix<T, 19, 9>;
-template <typename T> using TMat19x10 = Eigen::Matrix<T, 19, 10>;
-template <typename T> using TMat19x11 = Eigen::Matrix<T, 19, 11>;
-template <typename T> using TMat19x12 = Eigen::Matrix<T, 19, 12>;
-template <typename T> using TMat19x13 = Eigen::Matrix<T, 19, 13>;
-template <typename T> using TMat19x14 = Eigen::Matrix<T, 19, 14>;
-template <typename T> using TMat19x15 = Eigen::Matrix<T, 19, 15>;
-template <typename T> using TMat19x16 = Eigen::Matrix<T, 19, 16>;
-template <typename T> using TMat19x17 = Eigen::Matrix<T, 19, 17>;
-template <typename T> using TMat19x18 = Eigen::Matrix<T, 19, 18>;
-template <typename T> using TMat19x19 = Eigen::Matrix<T, 19, 19>;
-template <typename T> using TMat19x20 = Eigen::Matrix<T, 19, 20>;
-template <typename T> using TMat19x21 = Eigen::Matrix<T, 19, 21>;
-template <typename T> using TMat19x22 = Eigen::Matrix<T, 19, 22>;
-template <typename T> using TMat19x23 = Eigen::Matrix<T, 19, 23>;
-template <typename T> using TMat19x24 = Eigen::Matrix<T, 19, 24>;
-template <typename T> using TMat19x25 = Eigen::Matrix<T, 19, 25>;
-template <typename T> using TMat19x26 = Eigen::Matrix<T, 19, 26>;
-template <typename T> using TMat19x27 = Eigen::Matrix<T, 19, 27>;
-template <typename T> using TMat19x28 = Eigen::Matrix<T, 19, 28>;
-template <typename T> using TMat19x29 = Eigen::Matrix<T, 19, 29>;
-template <typename T> using TMat19x30 = Eigen::Matrix<T, 19, 30>;
-template <typename T> using TMat19x31 = Eigen::Matrix<T, 19, 31>;
-template <typename T> using TMat19x32 = Eigen::Matrix<T, 19, 32>;
-template <typename T> using TMat20x1 = Eigen::Matrix<T, 20, 1>;
-template <typename T> using TMat20x2 = Eigen::Matrix<T, 20, 2>;
-template <typename T> using TMat20x3 = Eigen::Matrix<T, 20, 3>;
-template <typename T> using TMat20x4 = Eigen::Matrix<T, 20, 4>;
-template <typename T> using TMat20x5 = Eigen::Matrix<T, 20, 5>;
-template <typename T> using TMat20x6 = Eigen::Matrix<T, 20, 6>;
-template <typename T> using TMat20x7 = Eigen::Matrix<T, 20, 7>;
-template <typename T> using TMat20x8 = Eigen::Matrix<T, 20, 8>;
-template <typename T> using TMat20x9 = Eigen::Matrix<T, 20, 9>;
-template <typename T> using TMat20x10 = Eigen::Matrix<T, 20, 10>;
-template <typename T> using TMat20x11 = Eigen::Matrix<T, 20, 11>;
-template <typename T> using TMat20x12 = Eigen::Matrix<T, 20, 12>;
-template <typename T> using TMat20x13 = Eigen::Matrix<T, 20, 13>;
-template <typename T> using TMat20x14 = Eigen::Matrix<T, 20, 14>;
-template <typename T> using TMat20x15 = Eigen::Matrix<T, 20, 15>;
-template <typename T> using TMat20x16 = Eigen::Matrix<T, 20, 16>;
-template <typename T> using TMat20x17 = Eigen::Matrix<T, 20, 17>;
-template <typename T> using TMat20x18 = Eigen::Matrix<T, 20, 18>;
-template <typename T> using TMat20x19 = Eigen::Matrix<T, 20, 19>;
-template <typename T> using TMat20x20 = Eigen::Matrix<T, 20, 20>;
-template <typename T> using TMat20x21 = Eigen::Matrix<T, 20, 21>;
-template <typename T> using TMat20x22 = Eigen::Matrix<T, 20, 22>;
-template <typename T> using TMat20x23 = Eigen::Matrix<T, 20, 23>;
-template <typename T> using TMat20x24 = Eigen::Matrix<T, 20, 24>;
-template <typename T> using TMat20x25 = Eigen::Matrix<T, 20, 25>;
-template <typename T> using TMat20x26 = Eigen::Matrix<T, 20, 26>;
-template <typename T> using TMat20x27 = Eigen::Matrix<T, 20, 27>;
-template <typename T> using TMat20x28 = Eigen::Matrix<T, 20, 28>;
-template <typename T> using TMat20x29 = Eigen::Matrix<T, 20, 29>;
-template <typename T> using TMat20x30 = Eigen::Matrix<T, 20, 30>;
-template <typename T> using TMat20x31 = Eigen::Matrix<T, 20, 31>;
-template <typename T> using TMat20x32 = Eigen::Matrix<T, 20, 32>;
-template <typename T> using TMat21x1 = Eigen::Matrix<T, 21, 1>;
-template <typename T> using TMat21x2 = Eigen::Matrix<T, 21, 2>;
-template <typename T> using TMat21x3 = Eigen::Matrix<T, 21, 3>;
-template <typename T> using TMat21x4 = Eigen::Matrix<T, 21, 4>;
-template <typename T> using TMat21x5 = Eigen::Matrix<T, 21, 5>;
-template <typename T> using TMat21x6 = Eigen::Matrix<T, 21, 6>;
-template <typename T> using TMat21x7 = Eigen::Matrix<T, 21, 7>;
-template <typename T> using TMat21x8 = Eigen::Matrix<T, 21, 8>;
-template <typename T> using TMat21x9 = Eigen::Matrix<T, 21, 9>;
-template <typename T> using TMat21x10 = Eigen::Matrix<T, 21, 10>;
-template <typename T> using TMat21x11 = Eigen::Matrix<T, 21, 11>;
-template <typename T> using TMat21x12 = Eigen::Matrix<T, 21, 12>;
-template <typename T> using TMat21x13 = Eigen::Matrix<T, 21, 13>;
-template <typename T> using TMat21x14 = Eigen::Matrix<T, 21, 14>;
-template <typename T> using TMat21x15 = Eigen::Matrix<T, 21, 15>;
-template <typename T> using TMat21x16 = Eigen::Matrix<T, 21, 16>;
-template <typename T> using TMat21x17 = Eigen::Matrix<T, 21, 17>;
-template <typename T> using TMat21x18 = Eigen::Matrix<T, 21, 18>;
-template <typename T> using TMat21x19 = Eigen::Matrix<T, 21, 19>;
-template <typename T> using TMat21x20 = Eigen::Matrix<T, 21, 20>;
-template <typename T> using TMat21x21 = Eigen::Matrix<T, 21, 21>;
-template <typename T> using TMat21x22 = Eigen::Matrix<T, 21, 22>;
-template <typename T> using TMat21x23 = Eigen::Matrix<T, 21, 23>;
-template <typename T> using TMat21x24 = Eigen::Matrix<T, 21, 24>;
-template <typename T> using TMat21x25 = Eigen::Matrix<T, 21, 25>;
-template <typename T> using TMat21x26 = Eigen::Matrix<T, 21, 26>;
-template <typename T> using TMat21x27 = Eigen::Matrix<T, 21, 27>;
-template <typename T> using TMat21x28 = Eigen::Matrix<T, 21, 28>;
-template <typename T> using TMat21x29 = Eigen::Matrix<T, 21, 29>;
-template <typename T> using TMat21x30 = Eigen::Matrix<T, 21, 30>;
-template <typename T> using TMat21x31 = Eigen::Matrix<T, 21, 31>;
-template <typename T> using TMat21x32 = Eigen::Matrix<T, 21, 32>;
-template <typename T> using TMat22x1 = Eigen::Matrix<T, 22, 1>;
-template <typename T> using TMat22x2 = Eigen::Matrix<T, 22, 2>;
-template <typename T> using TMat22x3 = Eigen::Matrix<T, 22, 3>;
-template <typename T> using TMat22x4 = Eigen::Matrix<T, 22, 4>;
-template <typename T> using TMat22x5 = Eigen::Matrix<T, 22, 5>;
-template <typename T> using TMat22x6 = Eigen::Matrix<T, 22, 6>;
-template <typename T> using TMat22x7 = Eigen::Matrix<T, 22, 7>;
-template <typename T> using TMat22x8 = Eigen::Matrix<T, 22, 8>;
-template <typename T> using TMat22x9 = Eigen::Matrix<T, 22, 9>;
-template <typename T> using TMat22x10 = Eigen::Matrix<T, 22, 10>;
-template <typename T> using TMat22x11 = Eigen::Matrix<T, 22, 11>;
-template <typename T> using TMat22x12 = Eigen::Matrix<T, 22, 12>;
-template <typename T> using TMat22x13 = Eigen::Matrix<T, 22, 13>;
-template <typename T> using TMat22x14 = Eigen::Matrix<T, 22, 14>;
-template <typename T> using TMat22x15 = Eigen::Matrix<T, 22, 15>;
-template <typename T> using TMat22x16 = Eigen::Matrix<T, 22, 16>;
-template <typename T> using TMat22x17 = Eigen::Matrix<T, 22, 17>;
-template <typename T> using TMat22x18 = Eigen::Matrix<T, 22, 18>;
-template <typename T> using TMat22x19 = Eigen::Matrix<T, 22, 19>;
-template <typename T> using TMat22x20 = Eigen::Matrix<T, 22, 20>;
-template <typename T> using TMat22x21 = Eigen::Matrix<T, 22, 21>;
-template <typename T> using TMat22x22 = Eigen::Matrix<T, 22, 22>;
-template <typename T> using TMat22x23 = Eigen::Matrix<T, 22, 23>;
-template <typename T> using TMat22x24 = Eigen::Matrix<T, 22, 24>;
-template <typename T> using TMat22x25 = Eigen::Matrix<T, 22, 25>;
-template <typename T> using TMat22x26 = Eigen::Matrix<T, 22, 26>;
-template <typename T> using TMat22x27 = Eigen::Matrix<T, 22, 27>;
-template <typename T> using TMat22x28 = Eigen::Matrix<T, 22, 28>;
-template <typename T> using TMat22x29 = Eigen::Matrix<T, 22, 29>;
-template <typename T> using TMat22x30 = Eigen::Matrix<T, 22, 30>;
-template <typename T> using TMat22x31 = Eigen::Matrix<T, 22, 31>;
-template <typename T> using TMat22x32 = Eigen::Matrix<T, 22, 32>;
-template <typename T> using TMat23x1 = Eigen::Matrix<T, 23, 1>;
-template <typename T> using TMat23x2 = Eigen::Matrix<T, 23, 2>;
-template <typename T> using TMat23x3 = Eigen::Matrix<T, 23, 3>;
-template <typename T> using TMat23x4 = Eigen::Matrix<T, 23, 4>;
-template <typename T> using TMat23x5 = Eigen::Matrix<T, 23, 5>;
-template <typename T> using TMat23x6 = Eigen::Matrix<T, 23, 6>;
-template <typename T> using TMat23x7 = Eigen::Matrix<T, 23, 7>;
-template <typename T> using TMat23x8 = Eigen::Matrix<T, 23, 8>;
-template <typename T> using TMat23x9 = Eigen::Matrix<T, 23, 9>;
-template <typename T> using TMat23x10 = Eigen::Matrix<T, 23, 10>;
-template <typename T> using TMat23x11 = Eigen::Matrix<T, 23, 11>;
-template <typename T> using TMat23x12 = Eigen::Matrix<T, 23, 12>;
-template <typename T> using TMat23x13 = Eigen::Matrix<T, 23, 13>;
-template <typename T> using TMat23x14 = Eigen::Matrix<T, 23, 14>;
-template <typename T> using TMat23x15 = Eigen::Matrix<T, 23, 15>;
-template <typename T> using TMat23x16 = Eigen::Matrix<T, 23, 16>;
-template <typename T> using TMat23x17 = Eigen::Matrix<T, 23, 17>;
-template <typename T> using TMat23x18 = Eigen::Matrix<T, 23, 18>;
-template <typename T> using TMat23x19 = Eigen::Matrix<T, 23, 19>;
-template <typename T> using TMat23x20 = Eigen::Matrix<T, 23, 20>;
-template <typename T> using TMat23x21 = Eigen::Matrix<T, 23, 21>;
-template <typename T> using TMat23x22 = Eigen::Matrix<T, 23, 22>;
-template <typename T> using TMat23x23 = Eigen::Matrix<T, 23, 23>;
-template <typename T> using TMat23x24 = Eigen::Matrix<T, 23, 24>;
-template <typename T> using TMat23x25 = Eigen::Matrix<T, 23, 25>;
-template <typename T> using TMat23x26 = Eigen::Matrix<T, 23, 26>;
-template <typename T> using TMat23x27 = Eigen::Matrix<T, 23, 27>;
-template <typename T> using TMat23x28 = Eigen::Matrix<T, 23, 28>;
-template <typename T> using TMat23x29 = Eigen::Matrix<T, 23, 29>;
-template <typename T> using TMat23x30 = Eigen::Matrix<T, 23, 30>;
-template <typename T> using TMat23x31 = Eigen::Matrix<T, 23, 31>;
-template <typename T> using TMat23x32 = Eigen::Matrix<T, 23, 32>;
-template <typename T> using TMat24x1 = Eigen::Matrix<T, 24, 1>;
-template <typename T> using TMat24x2 = Eigen::Matrix<T, 24, 2>;
-template <typename T> using TMat24x3 = Eigen::Matrix<T, 24, 3>;
-template <typename T> using TMat24x4 = Eigen::Matrix<T, 24, 4>;
-template <typename T> using TMat24x5 = Eigen::Matrix<T, 24, 5>;
-template <typename T> using TMat24x6 = Eigen::Matrix<T, 24, 6>;
-template <typename T> using TMat24x7 = Eigen::Matrix<T, 24, 7>;
-template <typename T> using TMat24x8 = Eigen::Matrix<T, 24, 8>;
-template <typename T> using TMat24x9 = Eigen::Matrix<T, 24, 9>;
-template <typename T> using TMat24x10 = Eigen::Matrix<T, 24, 10>;
-template <typename T> using TMat24x11 = Eigen::Matrix<T, 24, 11>;
-template <typename T> using TMat24x12 = Eigen::Matrix<T, 24, 12>;
-template <typename T> using TMat24x13 = Eigen::Matrix<T, 24, 13>;
-template <typename T> using TMat24x14 = Eigen::Matrix<T, 24, 14>;
-template <typename T> using TMat24x15 = Eigen::Matrix<T, 24, 15>;
-template <typename T> using TMat24x16 = Eigen::Matrix<T, 24, 16>;
-template <typename T> using TMat24x17 = Eigen::Matrix<T, 24, 17>;
-template <typename T> using TMat24x18 = Eigen::Matrix<T, 24, 18>;
-template <typename T> using TMat24x19 = Eigen::Matrix<T, 24, 19>;
-template <typename T> using TMat24x20 = Eigen::Matrix<T, 24, 20>;
-template <typename T> using TMat24x21 = Eigen::Matrix<T, 24, 21>;
-template <typename T> using TMat24x22 = Eigen::Matrix<T, 24, 22>;
-template <typename T> using TMat24x23 = Eigen::Matrix<T, 24, 23>;
-template <typename T> using TMat24x24 = Eigen::Matrix<T, 24, 24>;
-template <typename T> using TMat24x25 = Eigen::Matrix<T, 24, 25>;
-template <typename T> using TMat24x26 = Eigen::Matrix<T, 24, 26>;
-template <typename T> using TMat24x27 = Eigen::Matrix<T, 24, 27>;
-template <typename T> using TMat24x28 = Eigen::Matrix<T, 24, 28>;
-template <typename T> using TMat24x29 = Eigen::Matrix<T, 24, 29>;
-template <typename T> using TMat24x30 = Eigen::Matrix<T, 24, 30>;
-template <typename T> using TMat24x31 = Eigen::Matrix<T, 24, 31>;
-template <typename T> using TMat24x32 = Eigen::Matrix<T, 24, 32>;
-template <typename T> using TMat25x1 = Eigen::Matrix<T, 25, 1>;
-template <typename T> using TMat25x2 = Eigen::Matrix<T, 25, 2>;
-template <typename T> using TMat25x3 = Eigen::Matrix<T, 25, 3>;
-template <typename T> using TMat25x4 = Eigen::Matrix<T, 25, 4>;
-template <typename T> using TMat25x5 = Eigen::Matrix<T, 25, 5>;
-template <typename T> using TMat25x6 = Eigen::Matrix<T, 25, 6>;
-template <typename T> using TMat25x7 = Eigen::Matrix<T, 25, 7>;
-template <typename T> using TMat25x8 = Eigen::Matrix<T, 25, 8>;
-template <typename T> using TMat25x9 = Eigen::Matrix<T, 25, 9>;
-template <typename T> using TMat25x10 = Eigen::Matrix<T, 25, 10>;
-template <typename T> using TMat25x11 = Eigen::Matrix<T, 25, 11>;
-template <typename T> using TMat25x12 = Eigen::Matrix<T, 25, 12>;
-template <typename T> using TMat25x13 = Eigen::Matrix<T, 25, 13>;
-template <typename T> using TMat25x14 = Eigen::Matrix<T, 25, 14>;
-template <typename T> using TMat25x15 = Eigen::Matrix<T, 25, 15>;
-template <typename T> using TMat25x16 = Eigen::Matrix<T, 25, 16>;
-template <typename T> using TMat25x17 = Eigen::Matrix<T, 25, 17>;
-template <typename T> using TMat25x18 = Eigen::Matrix<T, 25, 18>;
-template <typename T> using TMat25x19 = Eigen::Matrix<T, 25, 19>;
-template <typename T> using TMat25x20 = Eigen::Matrix<T, 25, 20>;
-template <typename T> using TMat25x21 = Eigen::Matrix<T, 25, 21>;
-template <typename T> using TMat25x22 = Eigen::Matrix<T, 25, 22>;
-template <typename T> using TMat25x23 = Eigen::Matrix<T, 25, 23>;
-template <typename T> using TMat25x24 = Eigen::Matrix<T, 25, 24>;
-template <typename T> using TMat25x25 = Eigen::Matrix<T, 25, 25>;
-template <typename T> using TMat25x26 = Eigen::Matrix<T, 25, 26>;
-template <typename T> using TMat25x27 = Eigen::Matrix<T, 25, 27>;
-template <typename T> using TMat25x28 = Eigen::Matrix<T, 25, 28>;
-template <typename T> using TMat25x29 = Eigen::Matrix<T, 25, 29>;
-template <typename T> using TMat25x30 = Eigen::Matrix<T, 25, 30>;
-template <typename T> using TMat25x31 = Eigen::Matrix<T, 25, 31>;
-template <typename T> using TMat25x32 = Eigen::Matrix<T, 25, 32>;
-template <typename T> using TMat26x1 = Eigen::Matrix<T, 26, 1>;
-template <typename T> using TMat26x2 = Eigen::Matrix<T, 26, 2>;
-template <typename T> using TMat26x3 = Eigen::Matrix<T, 26, 3>;
-template <typename T> using TMat26x4 = Eigen::Matrix<T, 26, 4>;
-template <typename T> using TMat26x5 = Eigen::Matrix<T, 26, 5>;
-template <typename T> using TMat26x6 = Eigen::Matrix<T, 26, 6>;
-template <typename T> using TMat26x7 = Eigen::Matrix<T, 26, 7>;
-template <typename T> using TMat26x8 = Eigen::Matrix<T, 26, 8>;
-template <typename T> using TMat26x9 = Eigen::Matrix<T, 26, 9>;
-template <typename T> using TMat26x10 = Eigen::Matrix<T, 26, 10>;
-template <typename T> using TMat26x11 = Eigen::Matrix<T, 26, 11>;
-template <typename T> using TMat26x12 = Eigen::Matrix<T, 26, 12>;
-template <typename T> using TMat26x13 = Eigen::Matrix<T, 26, 13>;
-template <typename T> using TMat26x14 = Eigen::Matrix<T, 26, 14>;
-template <typename T> using TMat26x15 = Eigen::Matrix<T, 26, 15>;
-template <typename T> using TMat26x16 = Eigen::Matrix<T, 26, 16>;
-template <typename T> using TMat26x17 = Eigen::Matrix<T, 26, 17>;
-template <typename T> using TMat26x18 = Eigen::Matrix<T, 26, 18>;
-template <typename T> using TMat26x19 = Eigen::Matrix<T, 26, 19>;
-template <typename T> using TMat26x20 = Eigen::Matrix<T, 26, 20>;
-template <typename T> using TMat26x21 = Eigen::Matrix<T, 26, 21>;
-template <typename T> using TMat26x22 = Eigen::Matrix<T, 26, 22>;
-template <typename T> using TMat26x23 = Eigen::Matrix<T, 26, 23>;
-template <typename T> using TMat26x24 = Eigen::Matrix<T, 26, 24>;
-template <typename T> using TMat26x25 = Eigen::Matrix<T, 26, 25>;
-template <typename T> using TMat26x26 = Eigen::Matrix<T, 26, 26>;
-template <typename T> using TMat26x27 = Eigen::Matrix<T, 26, 27>;
-template <typename T> using TMat26x28 = Eigen::Matrix<T, 26, 28>;
-template <typename T> using TMat26x29 = Eigen::Matrix<T, 26, 29>;
-template <typename T> using TMat26x30 = Eigen::Matrix<T, 26, 30>;
-template <typename T> using TMat26x31 = Eigen::Matrix<T, 26, 31>;
-template <typename T> using TMat26x32 = Eigen::Matrix<T, 26, 32>;
-template <typename T> using TMat27x1 = Eigen::Matrix<T, 27, 1>;
-template <typename T> using TMat27x2 = Eigen::Matrix<T, 27, 2>;
-template <typename T> using TMat27x3 = Eigen::Matrix<T, 27, 3>;
-template <typename T> using TMat27x4 = Eigen::Matrix<T, 27, 4>;
-template <typename T> using TMat27x5 = Eigen::Matrix<T, 27, 5>;
-template <typename T> using TMat27x6 = Eigen::Matrix<T, 27, 6>;
-template <typename T> using TMat27x7 = Eigen::Matrix<T, 27, 7>;
-template <typename T> using TMat27x8 = Eigen::Matrix<T, 27, 8>;
-template <typename T> using TMat27x9 = Eigen::Matrix<T, 27, 9>;
-template <typename T> using TMat27x10 = Eigen::Matrix<T, 27, 10>;
-template <typename T> using TMat27x11 = Eigen::Matrix<T, 27, 11>;
-template <typename T> using TMat27x12 = Eigen::Matrix<T, 27, 12>;
-template <typename T> using TMat27x13 = Eigen::Matrix<T, 27, 13>;
-template <typename T> using TMat27x14 = Eigen::Matrix<T, 27, 14>;
-template <typename T> using TMat27x15 = Eigen::Matrix<T, 27, 15>;
-template <typename T> using TMat27x16 = Eigen::Matrix<T, 27, 16>;
-template <typename T> using TMat27x17 = Eigen::Matrix<T, 27, 17>;
-template <typename T> using TMat27x18 = Eigen::Matrix<T, 27, 18>;
-template <typename T> using TMat27x19 = Eigen::Matrix<T, 27, 19>;
-template <typename T> using TMat27x20 = Eigen::Matrix<T, 27, 20>;
-template <typename T> using TMat27x21 = Eigen::Matrix<T, 27, 21>;
-template <typename T> using TMat27x22 = Eigen::Matrix<T, 27, 22>;
-template <typename T> using TMat27x23 = Eigen::Matrix<T, 27, 23>;
-template <typename T> using TMat27x24 = Eigen::Matrix<T, 27, 24>;
-template <typename T> using TMat27x25 = Eigen::Matrix<T, 27, 25>;
-template <typename T> using TMat27x26 = Eigen::Matrix<T, 27, 26>;
-template <typename T> using TMat27x27 = Eigen::Matrix<T, 27, 27>;
-template <typename T> using TMat27x28 = Eigen::Matrix<T, 27, 28>;
-template <typename T> using TMat27x29 = Eigen::Matrix<T, 27, 29>;
-template <typename T> using TMat27x30 = Eigen::Matrix<T, 27, 30>;
-template <typename T> using TMat27x31 = Eigen::Matrix<T, 27, 31>;
-template <typename T> using TMat27x32 = Eigen::Matrix<T, 27, 32>;
-template <typename T> using TMat28x1 = Eigen::Matrix<T, 28, 1>;
-template <typename T> using TMat28x2 = Eigen::Matrix<T, 28, 2>;
-template <typename T> using TMat28x3 = Eigen::Matrix<T, 28, 3>;
-template <typename T> using TMat28x4 = Eigen::Matrix<T, 28, 4>;
-template <typename T> using TMat28x5 = Eigen::Matrix<T, 28, 5>;
-template <typename T> using TMat28x6 = Eigen::Matrix<T, 28, 6>;
-template <typename T> using TMat28x7 = Eigen::Matrix<T, 28, 7>;
-template <typename T> using TMat28x8 = Eigen::Matrix<T, 28, 8>;
-template <typename T> using TMat28x9 = Eigen::Matrix<T, 28, 9>;
-template <typename T> using TMat28x10 = Eigen::Matrix<T, 28, 10>;
-template <typename T> using TMat28x11 = Eigen::Matrix<T, 28, 11>;
-template <typename T> using TMat28x12 = Eigen::Matrix<T, 28, 12>;
-template <typename T> using TMat28x13 = Eigen::Matrix<T, 28, 13>;
-template <typename T> using TMat28x14 = Eigen::Matrix<T, 28, 14>;
-template <typename T> using TMat28x15 = Eigen::Matrix<T, 28, 15>;
-template <typename T> using TMat28x16 = Eigen::Matrix<T, 28, 16>;
-template <typename T> using TMat28x17 = Eigen::Matrix<T, 28, 17>;
-template <typename T> using TMat28x18 = Eigen::Matrix<T, 28, 18>;
-template <typename T> using TMat28x19 = Eigen::Matrix<T, 28, 19>;
-template <typename T> using TMat28x20 = Eigen::Matrix<T, 28, 20>;
-template <typename T> using TMat28x21 = Eigen::Matrix<T, 28, 21>;
-template <typename T> using TMat28x22 = Eigen::Matrix<T, 28, 22>;
-template <typename T> using TMat28x23 = Eigen::Matrix<T, 28, 23>;
-template <typename T> using TMat28x24 = Eigen::Matrix<T, 28, 24>;
-template <typename T> using TMat28x25 = Eigen::Matrix<T, 28, 25>;
-template <typename T> using TMat28x26 = Eigen::Matrix<T, 28, 26>;
-template <typename T> using TMat28x27 = Eigen::Matrix<T, 28, 27>;
-template <typename T> using TMat28x28 = Eigen::Matrix<T, 28, 28>;
-template <typename T> using TMat28x29 = Eigen::Matrix<T, 28, 29>;
-template <typename T> using TMat28x30 = Eigen::Matrix<T, 28, 30>;
-template <typename T> using TMat28x31 = Eigen::Matrix<T, 28, 31>;
-template <typename T> using TMat28x32 = Eigen::Matrix<T, 28, 32>;
-template <typename T> using TMat29x1 = Eigen::Matrix<T, 29, 1>;
-template <typename T> using TMat29x2 = Eigen::Matrix<T, 29, 2>;
-template <typename T> using TMat29x3 = Eigen::Matrix<T, 29, 3>;
-template <typename T> using TMat29x4 = Eigen::Matrix<T, 29, 4>;
-template <typename T> using TMat29x5 = Eigen::Matrix<T, 29, 5>;
-template <typename T> using TMat29x6 = Eigen::Matrix<T, 29, 6>;
-template <typename T> using TMat29x7 = Eigen::Matrix<T, 29, 7>;
-template <typename T> using TMat29x8 = Eigen::Matrix<T, 29, 8>;
-template <typename T> using TMat29x9 = Eigen::Matrix<T, 29, 9>;
-template <typename T> using TMat29x10 = Eigen::Matrix<T, 29, 10>;
-template <typename T> using TMat29x11 = Eigen::Matrix<T, 29, 11>;
-template <typename T> using TMat29x12 = Eigen::Matrix<T, 29, 12>;
-template <typename T> using TMat29x13 = Eigen::Matrix<T, 29, 13>;
-template <typename T> using TMat29x14 = Eigen::Matrix<T, 29, 14>;
-template <typename T> using TMat29x15 = Eigen::Matrix<T, 29, 15>;
-template <typename T> using TMat29x16 = Eigen::Matrix<T, 29, 16>;
-template <typename T> using TMat29x17 = Eigen::Matrix<T, 29, 17>;
-template <typename T> using TMat29x18 = Eigen::Matrix<T, 29, 18>;
-template <typename T> using TMat29x19 = Eigen::Matrix<T, 29, 19>;
-template <typename T> using TMat29x20 = Eigen::Matrix<T, 29, 20>;
-template <typename T> using TMat29x21 = Eigen::Matrix<T, 29, 21>;
-template <typename T> using TMat29x22 = Eigen::Matrix<T, 29, 22>;
-template <typename T> using TMat29x23 = Eigen::Matrix<T, 29, 23>;
-template <typename T> using TMat29x24 = Eigen::Matrix<T, 29, 24>;
-template <typename T> using TMat29x25 = Eigen::Matrix<T, 29, 25>;
-template <typename T> using TMat29x26 = Eigen::Matrix<T, 29, 26>;
-template <typename T> using TMat29x27 = Eigen::Matrix<T, 29, 27>;
-template <typename T> using TMat29x28 = Eigen::Matrix<T, 29, 28>;
-template <typename T> using TMat29x29 = Eigen::Matrix<T, 29, 29>;
-template <typename T> using TMat29x30 = Eigen::Matrix<T, 29, 30>;
-template <typename T> using TMat29x31 = Eigen::Matrix<T, 29, 31>;
-template <typename T> using TMat29x32 = Eigen::Matrix<T, 29, 32>;
-template <typename T> using TMat30x1 = Eigen::Matrix<T, 30, 1>;
-template <typename T> using TMat30x2 = Eigen::Matrix<T, 30, 2>;
-template <typename T> using TMat30x3 = Eigen::Matrix<T, 30, 3>;
-template <typename T> using TMat30x4 = Eigen::Matrix<T, 30, 4>;
-template <typename T> using TMat30x5 = Eigen::Matrix<T, 30, 5>;
-template <typename T> using TMat30x6 = Eigen::Matrix<T, 30, 6>;
-template <typename T> using TMat30x7 = Eigen::Matrix<T, 30, 7>;
-template <typename T> using TMat30x8 = Eigen::Matrix<T, 30, 8>;
-template <typename T> using TMat30x9 = Eigen::Matrix<T, 30, 9>;
-template <typename T> using TMat30x10 = Eigen::Matrix<T, 30, 10>;
-template <typename T> using TMat30x11 = Eigen::Matrix<T, 30, 11>;
-template <typename T> using TMat30x12 = Eigen::Matrix<T, 30, 12>;
-template <typename T> using TMat30x13 = Eigen::Matrix<T, 30, 13>;
-template <typename T> using TMat30x14 = Eigen::Matrix<T, 30, 14>;
-template <typename T> using TMat30x15 = Eigen::Matrix<T, 30, 15>;
-template <typename T> using TMat30x16 = Eigen::Matrix<T, 30, 16>;
-template <typename T> using TMat30x17 = Eigen::Matrix<T, 30, 17>;
-template <typename T> using TMat30x18 = Eigen::Matrix<T, 30, 18>;
-template <typename T> using TMat30x19 = Eigen::Matrix<T, 30, 19>;
-template <typename T> using TMat30x20 = Eigen::Matrix<T, 30, 20>;
-template <typename T> using TMat30x21 = Eigen::Matrix<T, 30, 21>;
-template <typename T> using TMat30x22 = Eigen::Matrix<T, 30, 22>;
-template <typename T> using TMat30x23 = Eigen::Matrix<T, 30, 23>;
-template <typename T> using TMat30x24 = Eigen::Matrix<T, 30, 24>;
-template <typename T> using TMat30x25 = Eigen::Matrix<T, 30, 25>;
-template <typename T> using TMat30x26 = Eigen::Matrix<T, 30, 26>;
-template <typename T> using TMat30x27 = Eigen::Matrix<T, 30, 27>;
-template <typename T> using TMat30x28 = Eigen::Matrix<T, 30, 28>;
-template <typename T> using TMat30x29 = Eigen::Matrix<T, 30, 29>;
-template <typename T> using TMat30x30 = Eigen::Matrix<T, 30, 30>;
-template <typename T> using TMat30x31 = Eigen::Matrix<T, 30, 31>;
-template <typename T> using TMat30x32 = Eigen::Matrix<T, 30, 32>;
-template <typename T> using TMat31x1 = Eigen::Matrix<T, 31, 1>;
-template <typename T> using TMat31x2 = Eigen::Matrix<T, 31, 2>;
-template <typename T> using TMat31x3 = Eigen::Matrix<T, 31, 3>;
-template <typename T> using TMat31x4 = Eigen::Matrix<T, 31, 4>;
-template <typename T> using TMat31x5 = Eigen::Matrix<T, 31, 5>;
-template <typename T> using TMat31x6 = Eigen::Matrix<T, 31, 6>;
-template <typename T> using TMat31x7 = Eigen::Matrix<T, 31, 7>;
-template <typename T> using TMat31x8 = Eigen::Matrix<T, 31, 8>;
-template <typename T> using TMat31x9 = Eigen::Matrix<T, 31, 9>;
-template <typename T> using TMat31x10 = Eigen::Matrix<T, 31, 10>;
-template <typename T> using TMat31x11 = Eigen::Matrix<T, 31, 11>;
-template <typename T> using TMat31x12 = Eigen::Matrix<T, 31, 12>;
-template <typename T> using TMat31x13 = Eigen::Matrix<T, 31, 13>;
-template <typename T> using TMat31x14 = Eigen::Matrix<T, 31, 14>;
-template <typename T> using TMat31x15 = Eigen::Matrix<T, 31, 15>;
-template <typename T> using TMat31x16 = Eigen::Matrix<T, 31, 16>;
-template <typename T> using TMat31x17 = Eigen::Matrix<T, 31, 17>;
-template <typename T> using TMat31x18 = Eigen::Matrix<T, 31, 18>;
-template <typename T> using TMat31x19 = Eigen::Matrix<T, 31, 19>;
-template <typename T> using TMat31x20 = Eigen::Matrix<T, 31, 20>;
-template <typename T> using TMat31x21 = Eigen::Matrix<T, 31, 21>;
-template <typename T> using TMat31x22 = Eigen::Matrix<T, 31, 22>;
-template <typename T> using TMat31x23 = Eigen::Matrix<T, 31, 23>;
-template <typename T> using TMat31x24 = Eigen::Matrix<T, 31, 24>;
-template <typename T> using TMat31x25 = Eigen::Matrix<T, 31, 25>;
-template <typename T> using TMat31x26 = Eigen::Matrix<T, 31, 26>;
-template <typename T> using TMat31x27 = Eigen::Matrix<T, 31, 27>;
-template <typename T> using TMat31x28 = Eigen::Matrix<T, 31, 28>;
-template <typename T> using TMat31x29 = Eigen::Matrix<T, 31, 29>;
-template <typename T> using TMat31x30 = Eigen::Matrix<T, 31, 30>;
-template <typename T> using TMat31x31 = Eigen::Matrix<T, 31, 31>;
-template <typename T> using TMat31x32 = Eigen::Matrix<T, 31, 32>;
-template <typename T> using TMat32x1 = Eigen::Matrix<T, 32, 1>;
-template <typename T> using TMat32x2 = Eigen::Matrix<T, 32, 2>;
-template <typename T> using TMat32x3 = Eigen::Matrix<T, 32, 3>;
-template <typename T> using TMat32x4 = Eigen::Matrix<T, 32, 4>;
-template <typename T> using TMat32x5 = Eigen::Matrix<T, 32, 5>;
-template <typename T> using TMat32x6 = Eigen::Matrix<T, 32, 6>;
-template <typename T> using TMat32x7 = Eigen::Matrix<T, 32, 7>;
-template <typename T> using TMat32x8 = Eigen::Matrix<T, 32, 8>;
-template <typename T> using TMat32x9 = Eigen::Matrix<T, 32, 9>;
-template <typename T> using TMat32x10 = Eigen::Matrix<T, 32, 10>;
-template <typename T> using TMat32x11 = Eigen::Matrix<T, 32, 11>;
-template <typename T> using TMat32x12 = Eigen::Matrix<T, 32, 12>;
-template <typename T> using TMat32x13 = Eigen::Matrix<T, 32, 13>;
-template <typename T> using TMat32x14 = Eigen::Matrix<T, 32, 14>;
-template <typename T> using TMat32x15 = Eigen::Matrix<T, 32, 15>;
-template <typename T> using TMat32x16 = Eigen::Matrix<T, 32, 16>;
-template <typename T> using TMat32x17 = Eigen::Matrix<T, 32, 17>;
-template <typename T> using TMat32x18 = Eigen::Matrix<T, 32, 18>;
-template <typename T> using TMat32x19 = Eigen::Matrix<T, 32, 19>;
-template <typename T> using TMat32x20 = Eigen::Matrix<T, 32, 20>;
-template <typename T> using TMat32x21 = Eigen::Matrix<T, 32, 21>;
-template <typename T> using TMat32x22 = Eigen::Matrix<T, 32, 22>;
-template <typename T> using TMat32x23 = Eigen::Matrix<T, 32, 23>;
-template <typename T> using TMat32x24 = Eigen::Matrix<T, 32, 24>;
-template <typename T> using TMat32x25 = Eigen::Matrix<T, 32, 25>;
-template <typename T> using TMat32x26 = Eigen::Matrix<T, 32, 26>;
-template <typename T> using TMat32x27 = Eigen::Matrix<T, 32, 27>;
-template <typename T> using TMat32x28 = Eigen::Matrix<T, 32, 28>;
-template <typename T> using TMat32x29 = Eigen::Matrix<T, 32, 29>;
-template <typename T> using TMat32x30 = Eigen::Matrix<T, 32, 30>;
-template <typename T> using TMat32x31 = Eigen::Matrix<T, 32, 31>;
-template <typename T> using TMat32x32 = Eigen::Matrix<T, 32, 32>;
+template <typename T>
+using TMat1x1 = Eigen::Matrix<T, 1, 1>;
+template <typename T>
+using TMat1x2 = Eigen::Matrix<T, 1, 2>;
+template <typename T>
+using TMat1x3 = Eigen::Matrix<T, 1, 3>;
+template <typename T>
+using TMat1x4 = Eigen::Matrix<T, 1, 4>;
+template <typename T>
+using TMat1x5 = Eigen::Matrix<T, 1, 5>;
+template <typename T>
+using TMat1x6 = Eigen::Matrix<T, 1, 6>;
+template <typename T>
+using TMat1x7 = Eigen::Matrix<T, 1, 7>;
+template <typename T>
+using TMat1x8 = Eigen::Matrix<T, 1, 8>;
+template <typename T>
+using TMat1x9 = Eigen::Matrix<T, 1, 9>;
+template <typename T>
+using TMat1x10 = Eigen::Matrix<T, 1, 10>;
+template <typename T>
+using TMat1x11 = Eigen::Matrix<T, 1, 11>;
+template <typename T>
+using TMat1x12 = Eigen::Matrix<T, 1, 12>;
+template <typename T>
+using TMat1x13 = Eigen::Matrix<T, 1, 13>;
+template <typename T>
+using TMat1x14 = Eigen::Matrix<T, 1, 14>;
+template <typename T>
+using TMat1x15 = Eigen::Matrix<T, 1, 15>;
+template <typename T>
+using TMat1x16 = Eigen::Matrix<T, 1, 16>;
+template <typename T>
+using TMat1x17 = Eigen::Matrix<T, 1, 17>;
+template <typename T>
+using TMat1x18 = Eigen::Matrix<T, 1, 18>;
+template <typename T>
+using TMat1x19 = Eigen::Matrix<T, 1, 19>;
+template <typename T>
+using TMat1x20 = Eigen::Matrix<T, 1, 20>;
+template <typename T>
+using TMat1x21 = Eigen::Matrix<T, 1, 21>;
+template <typename T>
+using TMat1x22 = Eigen::Matrix<T, 1, 22>;
+template <typename T>
+using TMat1x23 = Eigen::Matrix<T, 1, 23>;
+template <typename T>
+using TMat1x24 = Eigen::Matrix<T, 1, 24>;
+template <typename T>
+using TMat1x25 = Eigen::Matrix<T, 1, 25>;
+template <typename T>
+using TMat1x26 = Eigen::Matrix<T, 1, 26>;
+template <typename T>
+using TMat1x27 = Eigen::Matrix<T, 1, 27>;
+template <typename T>
+using TMat1x28 = Eigen::Matrix<T, 1, 28>;
+template <typename T>
+using TMat1x29 = Eigen::Matrix<T, 1, 29>;
+template <typename T>
+using TMat1x30 = Eigen::Matrix<T, 1, 30>;
+template <typename T>
+using TMat1x31 = Eigen::Matrix<T, 1, 31>;
+template <typename T>
+using TMat1x32 = Eigen::Matrix<T, 1, 32>;
+template <typename T>
+using TMat2x1 = Eigen::Matrix<T, 2, 1>;
+template <typename T>
+using TMat2x2 = Eigen::Matrix<T, 2, 2>;
+template <typename T>
+using TMat2x3 = Eigen::Matrix<T, 2, 3>;
+template <typename T>
+using TMat2x4 = Eigen::Matrix<T, 2, 4>;
+template <typename T>
+using TMat2x5 = Eigen::Matrix<T, 2, 5>;
+template <typename T>
+using TMat2x6 = Eigen::Matrix<T, 2, 6>;
+template <typename T>
+using TMat2x7 = Eigen::Matrix<T, 2, 7>;
+template <typename T>
+using TMat2x8 = Eigen::Matrix<T, 2, 8>;
+template <typename T>
+using TMat2x9 = Eigen::Matrix<T, 2, 9>;
+template <typename T>
+using TMat2x10 = Eigen::Matrix<T, 2, 10>;
+template <typename T>
+using TMat2x11 = Eigen::Matrix<T, 2, 11>;
+template <typename T>
+using TMat2x12 = Eigen::Matrix<T, 2, 12>;
+template <typename T>
+using TMat2x13 = Eigen::Matrix<T, 2, 13>;
+template <typename T>
+using TMat2x14 = Eigen::Matrix<T, 2, 14>;
+template <typename T>
+using TMat2x15 = Eigen::Matrix<T, 2, 15>;
+template <typename T>
+using TMat2x16 = Eigen::Matrix<T, 2, 16>;
+template <typename T>
+using TMat2x17 = Eigen::Matrix<T, 2, 17>;
+template <typename T>
+using TMat2x18 = Eigen::Matrix<T, 2, 18>;
+template <typename T>
+using TMat2x19 = Eigen::Matrix<T, 2, 19>;
+template <typename T>
+using TMat2x20 = Eigen::Matrix<T, 2, 20>;
+template <typename T>
+using TMat2x21 = Eigen::Matrix<T, 2, 21>;
+template <typename T>
+using TMat2x22 = Eigen::Matrix<T, 2, 22>;
+template <typename T>
+using TMat2x23 = Eigen::Matrix<T, 2, 23>;
+template <typename T>
+using TMat2x24 = Eigen::Matrix<T, 2, 24>;
+template <typename T>
+using TMat2x25 = Eigen::Matrix<T, 2, 25>;
+template <typename T>
+using TMat2x26 = Eigen::Matrix<T, 2, 26>;
+template <typename T>
+using TMat2x27 = Eigen::Matrix<T, 2, 27>;
+template <typename T>
+using TMat2x28 = Eigen::Matrix<T, 2, 28>;
+template <typename T>
+using TMat2x29 = Eigen::Matrix<T, 2, 29>;
+template <typename T>
+using TMat2x30 = Eigen::Matrix<T, 2, 30>;
+template <typename T>
+using TMat2x31 = Eigen::Matrix<T, 2, 31>;
+template <typename T>
+using TMat2x32 = Eigen::Matrix<T, 2, 32>;
+template <typename T>
+using TMat3x1 = Eigen::Matrix<T, 3, 1>;
+template <typename T>
+using TMat3x2 = Eigen::Matrix<T, 3, 2>;
+template <typename T>
+using TMat3x3 = Eigen::Matrix<T, 3, 3>;
+template <typename T>
+using TMat3x4 = Eigen::Matrix<T, 3, 4>;
+template <typename T>
+using TMat3x5 = Eigen::Matrix<T, 3, 5>;
+template <typename T>
+using TMat3x6 = Eigen::Matrix<T, 3, 6>;
+template <typename T>
+using TMat3x7 = Eigen::Matrix<T, 3, 7>;
+template <typename T>
+using TMat3x8 = Eigen::Matrix<T, 3, 8>;
+template <typename T>
+using TMat3x9 = Eigen::Matrix<T, 3, 9>;
+template <typename T>
+using TMat3x10 = Eigen::Matrix<T, 3, 10>;
+template <typename T>
+using TMat3x11 = Eigen::Matrix<T, 3, 11>;
+template <typename T>
+using TMat3x12 = Eigen::Matrix<T, 3, 12>;
+template <typename T>
+using TMat3x13 = Eigen::Matrix<T, 3, 13>;
+template <typename T>
+using TMat3x14 = Eigen::Matrix<T, 3, 14>;
+template <typename T>
+using TMat3x15 = Eigen::Matrix<T, 3, 15>;
+template <typename T>
+using TMat3x16 = Eigen::Matrix<T, 3, 16>;
+template <typename T>
+using TMat3x17 = Eigen::Matrix<T, 3, 17>;
+template <typename T>
+using TMat3x18 = Eigen::Matrix<T, 3, 18>;
+template <typename T>
+using TMat3x19 = Eigen::Matrix<T, 3, 19>;
+template <typename T>
+using TMat3x20 = Eigen::Matrix<T, 3, 20>;
+template <typename T>
+using TMat3x21 = Eigen::Matrix<T, 3, 21>;
+template <typename T>
+using TMat3x22 = Eigen::Matrix<T, 3, 22>;
+template <typename T>
+using TMat3x23 = Eigen::Matrix<T, 3, 23>;
+template <typename T>
+using TMat3x24 = Eigen::Matrix<T, 3, 24>;
+template <typename T>
+using TMat3x25 = Eigen::Matrix<T, 3, 25>;
+template <typename T>
+using TMat3x26 = Eigen::Matrix<T, 3, 26>;
+template <typename T>
+using TMat3x27 = Eigen::Matrix<T, 3, 27>;
+template <typename T>
+using TMat3x28 = Eigen::Matrix<T, 3, 28>;
+template <typename T>
+using TMat3x29 = Eigen::Matrix<T, 3, 29>;
+template <typename T>
+using TMat3x30 = Eigen::Matrix<T, 3, 30>;
+template <typename T>
+using TMat3x31 = Eigen::Matrix<T, 3, 31>;
+template <typename T>
+using TMat3x32 = Eigen::Matrix<T, 3, 32>;
+template <typename T>
+using TMat4x1 = Eigen::Matrix<T, 4, 1>;
+template <typename T>
+using TMat4x2 = Eigen::Matrix<T, 4, 2>;
+template <typename T>
+using TMat4x3 = Eigen::Matrix<T, 4, 3>;
+template <typename T>
+using TMat4x4 = Eigen::Matrix<T, 4, 4>;
+template <typename T>
+using TMat4x5 = Eigen::Matrix<T, 4, 5>;
+template <typename T>
+using TMat4x6 = Eigen::Matrix<T, 4, 6>;
+template <typename T>
+using TMat4x7 = Eigen::Matrix<T, 4, 7>;
+template <typename T>
+using TMat4x8 = Eigen::Matrix<T, 4, 8>;
+template <typename T>
+using TMat4x9 = Eigen::Matrix<T, 4, 9>;
+template <typename T>
+using TMat4x10 = Eigen::Matrix<T, 4, 10>;
+template <typename T>
+using TMat4x11 = Eigen::Matrix<T, 4, 11>;
+template <typename T>
+using TMat4x12 = Eigen::Matrix<T, 4, 12>;
+template <typename T>
+using TMat4x13 = Eigen::Matrix<T, 4, 13>;
+template <typename T>
+using TMat4x14 = Eigen::Matrix<T, 4, 14>;
+template <typename T>
+using TMat4x15 = Eigen::Matrix<T, 4, 15>;
+template <typename T>
+using TMat4x16 = Eigen::Matrix<T, 4, 16>;
+template <typename T>
+using TMat4x17 = Eigen::Matrix<T, 4, 17>;
+template <typename T>
+using TMat4x18 = Eigen::Matrix<T, 4, 18>;
+template <typename T>
+using TMat4x19 = Eigen::Matrix<T, 4, 19>;
+template <typename T>
+using TMat4x20 = Eigen::Matrix<T, 4, 20>;
+template <typename T>
+using TMat4x21 = Eigen::Matrix<T, 4, 21>;
+template <typename T>
+using TMat4x22 = Eigen::Matrix<T, 4, 22>;
+template <typename T>
+using TMat4x23 = Eigen::Matrix<T, 4, 23>;
+template <typename T>
+using TMat4x24 = Eigen::Matrix<T, 4, 24>;
+template <typename T>
+using TMat4x25 = Eigen::Matrix<T, 4, 25>;
+template <typename T>
+using TMat4x26 = Eigen::Matrix<T, 4, 26>;
+template <typename T>
+using TMat4x27 = Eigen::Matrix<T, 4, 27>;
+template <typename T>
+using TMat4x28 = Eigen::Matrix<T, 4, 28>;
+template <typename T>
+using TMat4x29 = Eigen::Matrix<T, 4, 29>;
+template <typename T>
+using TMat4x30 = Eigen::Matrix<T, 4, 30>;
+template <typename T>
+using TMat4x31 = Eigen::Matrix<T, 4, 31>;
+template <typename T>
+using TMat4x32 = Eigen::Matrix<T, 4, 32>;
+template <typename T>
+using TMat5x1 = Eigen::Matrix<T, 5, 1>;
+template <typename T>
+using TMat5x2 = Eigen::Matrix<T, 5, 2>;
+template <typename T>
+using TMat5x3 = Eigen::Matrix<T, 5, 3>;
+template <typename T>
+using TMat5x4 = Eigen::Matrix<T, 5, 4>;
+template <typename T>
+using TMat5x5 = Eigen::Matrix<T, 5, 5>;
+template <typename T>
+using TMat5x6 = Eigen::Matrix<T, 5, 6>;
+template <typename T>
+using TMat5x7 = Eigen::Matrix<T, 5, 7>;
+template <typename T>
+using TMat5x8 = Eigen::Matrix<T, 5, 8>;
+template <typename T>
+using TMat5x9 = Eigen::Matrix<T, 5, 9>;
+template <typename T>
+using TMat5x10 = Eigen::Matrix<T, 5, 10>;
+template <typename T>
+using TMat5x11 = Eigen::Matrix<T, 5, 11>;
+template <typename T>
+using TMat5x12 = Eigen::Matrix<T, 5, 12>;
+template <typename T>
+using TMat5x13 = Eigen::Matrix<T, 5, 13>;
+template <typename T>
+using TMat5x14 = Eigen::Matrix<T, 5, 14>;
+template <typename T>
+using TMat5x15 = Eigen::Matrix<T, 5, 15>;
+template <typename T>
+using TMat5x16 = Eigen::Matrix<T, 5, 16>;
+template <typename T>
+using TMat5x17 = Eigen::Matrix<T, 5, 17>;
+template <typename T>
+using TMat5x18 = Eigen::Matrix<T, 5, 18>;
+template <typename T>
+using TMat5x19 = Eigen::Matrix<T, 5, 19>;
+template <typename T>
+using TMat5x20 = Eigen::Matrix<T, 5, 20>;
+template <typename T>
+using TMat5x21 = Eigen::Matrix<T, 5, 21>;
+template <typename T>
+using TMat5x22 = Eigen::Matrix<T, 5, 22>;
+template <typename T>
+using TMat5x23 = Eigen::Matrix<T, 5, 23>;
+template <typename T>
+using TMat5x24 = Eigen::Matrix<T, 5, 24>;
+template <typename T>
+using TMat5x25 = Eigen::Matrix<T, 5, 25>;
+template <typename T>
+using TMat5x26 = Eigen::Matrix<T, 5, 26>;
+template <typename T>
+using TMat5x27 = Eigen::Matrix<T, 5, 27>;
+template <typename T>
+using TMat5x28 = Eigen::Matrix<T, 5, 28>;
+template <typename T>
+using TMat5x29 = Eigen::Matrix<T, 5, 29>;
+template <typename T>
+using TMat5x30 = Eigen::Matrix<T, 5, 30>;
+template <typename T>
+using TMat5x31 = Eigen::Matrix<T, 5, 31>;
+template <typename T>
+using TMat5x32 = Eigen::Matrix<T, 5, 32>;
+template <typename T>
+using TMat6x1 = Eigen::Matrix<T, 6, 1>;
+template <typename T>
+using TMat6x2 = Eigen::Matrix<T, 6, 2>;
+template <typename T>
+using TMat6x3 = Eigen::Matrix<T, 6, 3>;
+template <typename T>
+using TMat6x4 = Eigen::Matrix<T, 6, 4>;
+template <typename T>
+using TMat6x5 = Eigen::Matrix<T, 6, 5>;
+template <typename T>
+using TMat6x6 = Eigen::Matrix<T, 6, 6>;
+template <typename T>
+using TMat6x7 = Eigen::Matrix<T, 6, 7>;
+template <typename T>
+using TMat6x8 = Eigen::Matrix<T, 6, 8>;
+template <typename T>
+using TMat6x9 = Eigen::Matrix<T, 6, 9>;
+template <typename T>
+using TMat6x10 = Eigen::Matrix<T, 6, 10>;
+template <typename T>
+using TMat6x11 = Eigen::Matrix<T, 6, 11>;
+template <typename T>
+using TMat6x12 = Eigen::Matrix<T, 6, 12>;
+template <typename T>
+using TMat6x13 = Eigen::Matrix<T, 6, 13>;
+template <typename T>
+using TMat6x14 = Eigen::Matrix<T, 6, 14>;
+template <typename T>
+using TMat6x15 = Eigen::Matrix<T, 6, 15>;
+template <typename T>
+using TMat6x16 = Eigen::Matrix<T, 6, 16>;
+template <typename T>
+using TMat6x17 = Eigen::Matrix<T, 6, 17>;
+template <typename T>
+using TMat6x18 = Eigen::Matrix<T, 6, 18>;
+template <typename T>
+using TMat6x19 = Eigen::Matrix<T, 6, 19>;
+template <typename T>
+using TMat6x20 = Eigen::Matrix<T, 6, 20>;
+template <typename T>
+using TMat6x21 = Eigen::Matrix<T, 6, 21>;
+template <typename T>
+using TMat6x22 = Eigen::Matrix<T, 6, 22>;
+template <typename T>
+using TMat6x23 = Eigen::Matrix<T, 6, 23>;
+template <typename T>
+using TMat6x24 = Eigen::Matrix<T, 6, 24>;
+template <typename T>
+using TMat6x25 = Eigen::Matrix<T, 6, 25>;
+template <typename T>
+using TMat6x26 = Eigen::Matrix<T, 6, 26>;
+template <typename T>
+using TMat6x27 = Eigen::Matrix<T, 6, 27>;
+template <typename T>
+using TMat6x28 = Eigen::Matrix<T, 6, 28>;
+template <typename T>
+using TMat6x29 = Eigen::Matrix<T, 6, 29>;
+template <typename T>
+using TMat6x30 = Eigen::Matrix<T, 6, 30>;
+template <typename T>
+using TMat6x31 = Eigen::Matrix<T, 6, 31>;
+template <typename T>
+using TMat6x32 = Eigen::Matrix<T, 6, 32>;
+template <typename T>
+using TMat7x1 = Eigen::Matrix<T, 7, 1>;
+template <typename T>
+using TMat7x2 = Eigen::Matrix<T, 7, 2>;
+template <typename T>
+using TMat7x3 = Eigen::Matrix<T, 7, 3>;
+template <typename T>
+using TMat7x4 = Eigen::Matrix<T, 7, 4>;
+template <typename T>
+using TMat7x5 = Eigen::Matrix<T, 7, 5>;
+template <typename T>
+using TMat7x6 = Eigen::Matrix<T, 7, 6>;
+template <typename T>
+using TMat7x7 = Eigen::Matrix<T, 7, 7>;
+template <typename T>
+using TMat7x8 = Eigen::Matrix<T, 7, 8>;
+template <typename T>
+using TMat7x9 = Eigen::Matrix<T, 7, 9>;
+template <typename T>
+using TMat7x10 = Eigen::Matrix<T, 7, 10>;
+template <typename T>
+using TMat7x11 = Eigen::Matrix<T, 7, 11>;
+template <typename T>
+using TMat7x12 = Eigen::Matrix<T, 7, 12>;
+template <typename T>
+using TMat7x13 = Eigen::Matrix<T, 7, 13>;
+template <typename T>
+using TMat7x14 = Eigen::Matrix<T, 7, 14>;
+template <typename T>
+using TMat7x15 = Eigen::Matrix<T, 7, 15>;
+template <typename T>
+using TMat7x16 = Eigen::Matrix<T, 7, 16>;
+template <typename T>
+using TMat7x17 = Eigen::Matrix<T, 7, 17>;
+template <typename T>
+using TMat7x18 = Eigen::Matrix<T, 7, 18>;
+template <typename T>
+using TMat7x19 = Eigen::Matrix<T, 7, 19>;
+template <typename T>
+using TMat7x20 = Eigen::Matrix<T, 7, 20>;
+template <typename T>
+using TMat7x21 = Eigen::Matrix<T, 7, 21>;
+template <typename T>
+using TMat7x22 = Eigen::Matrix<T, 7, 22>;
+template <typename T>
+using TMat7x23 = Eigen::Matrix<T, 7, 23>;
+template <typename T>
+using TMat7x24 = Eigen::Matrix<T, 7, 24>;
+template <typename T>
+using TMat7x25 = Eigen::Matrix<T, 7, 25>;
+template <typename T>
+using TMat7x26 = Eigen::Matrix<T, 7, 26>;
+template <typename T>
+using TMat7x27 = Eigen::Matrix<T, 7, 27>;
+template <typename T>
+using TMat7x28 = Eigen::Matrix<T, 7, 28>;
+template <typename T>
+using TMat7x29 = Eigen::Matrix<T, 7, 29>;
+template <typename T>
+using TMat7x30 = Eigen::Matrix<T, 7, 30>;
+template <typename T>
+using TMat7x31 = Eigen::Matrix<T, 7, 31>;
+template <typename T>
+using TMat7x32 = Eigen::Matrix<T, 7, 32>;
+template <typename T>
+using TMat8x1 = Eigen::Matrix<T, 8, 1>;
+template <typename T>
+using TMat8x2 = Eigen::Matrix<T, 8, 2>;
+template <typename T>
+using TMat8x3 = Eigen::Matrix<T, 8, 3>;
+template <typename T>
+using TMat8x4 = Eigen::Matrix<T, 8, 4>;
+template <typename T>
+using TMat8x5 = Eigen::Matrix<T, 8, 5>;
+template <typename T>
+using TMat8x6 = Eigen::Matrix<T, 8, 6>;
+template <typename T>
+using TMat8x7 = Eigen::Matrix<T, 8, 7>;
+template <typename T>
+using TMat8x8 = Eigen::Matrix<T, 8, 8>;
+template <typename T>
+using TMat8x9 = Eigen::Matrix<T, 8, 9>;
+template <typename T>
+using TMat8x10 = Eigen::Matrix<T, 8, 10>;
+template <typename T>
+using TMat8x11 = Eigen::Matrix<T, 8, 11>;
+template <typename T>
+using TMat8x12 = Eigen::Matrix<T, 8, 12>;
+template <typename T>
+using TMat8x13 = Eigen::Matrix<T, 8, 13>;
+template <typename T>
+using TMat8x14 = Eigen::Matrix<T, 8, 14>;
+template <typename T>
+using TMat8x15 = Eigen::Matrix<T, 8, 15>;
+template <typename T>
+using TMat8x16 = Eigen::Matrix<T, 8, 16>;
+template <typename T>
+using TMat8x17 = Eigen::Matrix<T, 8, 17>;
+template <typename T>
+using TMat8x18 = Eigen::Matrix<T, 8, 18>;
+template <typename T>
+using TMat8x19 = Eigen::Matrix<T, 8, 19>;
+template <typename T>
+using TMat8x20 = Eigen::Matrix<T, 8, 20>;
+template <typename T>
+using TMat8x21 = Eigen::Matrix<T, 8, 21>;
+template <typename T>
+using TMat8x22 = Eigen::Matrix<T, 8, 22>;
+template <typename T>
+using TMat8x23 = Eigen::Matrix<T, 8, 23>;
+template <typename T>
+using TMat8x24 = Eigen::Matrix<T, 8, 24>;
+template <typename T>
+using TMat8x25 = Eigen::Matrix<T, 8, 25>;
+template <typename T>
+using TMat8x26 = Eigen::Matrix<T, 8, 26>;
+template <typename T>
+using TMat8x27 = Eigen::Matrix<T, 8, 27>;
+template <typename T>
+using TMat8x28 = Eigen::Matrix<T, 8, 28>;
+template <typename T>
+using TMat8x29 = Eigen::Matrix<T, 8, 29>;
+template <typename T>
+using TMat8x30 = Eigen::Matrix<T, 8, 30>;
+template <typename T>
+using TMat8x31 = Eigen::Matrix<T, 8, 31>;
+template <typename T>
+using TMat8x32 = Eigen::Matrix<T, 8, 32>;
+template <typename T>
+using TMat9x1 = Eigen::Matrix<T, 9, 1>;
+template <typename T>
+using TMat9x2 = Eigen::Matrix<T, 9, 2>;
+template <typename T>
+using TMat9x3 = Eigen::Matrix<T, 9, 3>;
+template <typename T>
+using TMat9x4 = Eigen::Matrix<T, 9, 4>;
+template <typename T>
+using TMat9x5 = Eigen::Matrix<T, 9, 5>;
+template <typename T>
+using TMat9x6 = Eigen::Matrix<T, 9, 6>;
+template <typename T>
+using TMat9x7 = Eigen::Matrix<T, 9, 7>;
+template <typename T>
+using TMat9x8 = Eigen::Matrix<T, 9, 8>;
+template <typename T>
+using TMat9x9 = Eigen::Matrix<T, 9, 9>;
+template <typename T>
+using TMat9x10 = Eigen::Matrix<T, 9, 10>;
+template <typename T>
+using TMat9x11 = Eigen::Matrix<T, 9, 11>;
+template <typename T>
+using TMat9x12 = Eigen::Matrix<T, 9, 12>;
+template <typename T>
+using TMat9x13 = Eigen::Matrix<T, 9, 13>;
+template <typename T>
+using TMat9x14 = Eigen::Matrix<T, 9, 14>;
+template <typename T>
+using TMat9x15 = Eigen::Matrix<T, 9, 15>;
+template <typename T>
+using TMat9x16 = Eigen::Matrix<T, 9, 16>;
+template <typename T>
+using TMat9x17 = Eigen::Matrix<T, 9, 17>;
+template <typename T>
+using TMat9x18 = Eigen::Matrix<T, 9, 18>;
+template <typename T>
+using TMat9x19 = Eigen::Matrix<T, 9, 19>;
+template <typename T>
+using TMat9x20 = Eigen::Matrix<T, 9, 20>;
+template <typename T>
+using TMat9x21 = Eigen::Matrix<T, 9, 21>;
+template <typename T>
+using TMat9x22 = Eigen::Matrix<T, 9, 22>;
+template <typename T>
+using TMat9x23 = Eigen::Matrix<T, 9, 23>;
+template <typename T>
+using TMat9x24 = Eigen::Matrix<T, 9, 24>;
+template <typename T>
+using TMat9x25 = Eigen::Matrix<T, 9, 25>;
+template <typename T>
+using TMat9x26 = Eigen::Matrix<T, 9, 26>;
+template <typename T>
+using TMat9x27 = Eigen::Matrix<T, 9, 27>;
+template <typename T>
+using TMat9x28 = Eigen::Matrix<T, 9, 28>;
+template <typename T>
+using TMat9x29 = Eigen::Matrix<T, 9, 29>;
+template <typename T>
+using TMat9x30 = Eigen::Matrix<T, 9, 30>;
+template <typename T>
+using TMat9x31 = Eigen::Matrix<T, 9, 31>;
+template <typename T>
+using TMat9x32 = Eigen::Matrix<T, 9, 32>;
+template <typename T>
+using TMat10x1 = Eigen::Matrix<T, 10, 1>;
+template <typename T>
+using TMat10x2 = Eigen::Matrix<T, 10, 2>;
+template <typename T>
+using TMat10x3 = Eigen::Matrix<T, 10, 3>;
+template <typename T>
+using TMat10x4 = Eigen::Matrix<T, 10, 4>;
+template <typename T>
+using TMat10x5 = Eigen::Matrix<T, 10, 5>;
+template <typename T>
+using TMat10x6 = Eigen::Matrix<T, 10, 6>;
+template <typename T>
+using TMat10x7 = Eigen::Matrix<T, 10, 7>;
+template <typename T>
+using TMat10x8 = Eigen::Matrix<T, 10, 8>;
+template <typename T>
+using TMat10x9 = Eigen::Matrix<T, 10, 9>;
+template <typename T>
+using TMat10x10 = Eigen::Matrix<T, 10, 10>;
+template <typename T>
+using TMat10x11 = Eigen::Matrix<T, 10, 11>;
+template <typename T>
+using TMat10x12 = Eigen::Matrix<T, 10, 12>;
+template <typename T>
+using TMat10x13 = Eigen::Matrix<T, 10, 13>;
+template <typename T>
+using TMat10x14 = Eigen::Matrix<T, 10, 14>;
+template <typename T>
+using TMat10x15 = Eigen::Matrix<T, 10, 15>;
+template <typename T>
+using TMat10x16 = Eigen::Matrix<T, 10, 16>;
+template <typename T>
+using TMat10x17 = Eigen::Matrix<T, 10, 17>;
+template <typename T>
+using TMat10x18 = Eigen::Matrix<T, 10, 18>;
+template <typename T>
+using TMat10x19 = Eigen::Matrix<T, 10, 19>;
+template <typename T>
+using TMat10x20 = Eigen::Matrix<T, 10, 20>;
+template <typename T>
+using TMat10x21 = Eigen::Matrix<T, 10, 21>;
+template <typename T>
+using TMat10x22 = Eigen::Matrix<T, 10, 22>;
+template <typename T>
+using TMat10x23 = Eigen::Matrix<T, 10, 23>;
+template <typename T>
+using TMat10x24 = Eigen::Matrix<T, 10, 24>;
+template <typename T>
+using TMat10x25 = Eigen::Matrix<T, 10, 25>;
+template <typename T>
+using TMat10x26 = Eigen::Matrix<T, 10, 26>;
+template <typename T>
+using TMat10x27 = Eigen::Matrix<T, 10, 27>;
+template <typename T>
+using TMat10x28 = Eigen::Matrix<T, 10, 28>;
+template <typename T>
+using TMat10x29 = Eigen::Matrix<T, 10, 29>;
+template <typename T>
+using TMat10x30 = Eigen::Matrix<T, 10, 30>;
+template <typename T>
+using TMat10x31 = Eigen::Matrix<T, 10, 31>;
+template <typename T>
+using TMat10x32 = Eigen::Matrix<T, 10, 32>;
+template <typename T>
+using TMat11x1 = Eigen::Matrix<T, 11, 1>;
+template <typename T>
+using TMat11x2 = Eigen::Matrix<T, 11, 2>;
+template <typename T>
+using TMat11x3 = Eigen::Matrix<T, 11, 3>;
+template <typename T>
+using TMat11x4 = Eigen::Matrix<T, 11, 4>;
+template <typename T>
+using TMat11x5 = Eigen::Matrix<T, 11, 5>;
+template <typename T>
+using TMat11x6 = Eigen::Matrix<T, 11, 6>;
+template <typename T>
+using TMat11x7 = Eigen::Matrix<T, 11, 7>;
+template <typename T>
+using TMat11x8 = Eigen::Matrix<T, 11, 8>;
+template <typename T>
+using TMat11x9 = Eigen::Matrix<T, 11, 9>;
+template <typename T>
+using TMat11x10 = Eigen::Matrix<T, 11, 10>;
+template <typename T>
+using TMat11x11 = Eigen::Matrix<T, 11, 11>;
+template <typename T>
+using TMat11x12 = Eigen::Matrix<T, 11, 12>;
+template <typename T>
+using TMat11x13 = Eigen::Matrix<T, 11, 13>;
+template <typename T>
+using TMat11x14 = Eigen::Matrix<T, 11, 14>;
+template <typename T>
+using TMat11x15 = Eigen::Matrix<T, 11, 15>;
+template <typename T>
+using TMat11x16 = Eigen::Matrix<T, 11, 16>;
+template <typename T>
+using TMat11x17 = Eigen::Matrix<T, 11, 17>;
+template <typename T>
+using TMat11x18 = Eigen::Matrix<T, 11, 18>;
+template <typename T>
+using TMat11x19 = Eigen::Matrix<T, 11, 19>;
+template <typename T>
+using TMat11x20 = Eigen::Matrix<T, 11, 20>;
+template <typename T>
+using TMat11x21 = Eigen::Matrix<T, 11, 21>;
+template <typename T>
+using TMat11x22 = Eigen::Matrix<T, 11, 22>;
+template <typename T>
+using TMat11x23 = Eigen::Matrix<T, 11, 23>;
+template <typename T>
+using TMat11x24 = Eigen::Matrix<T, 11, 24>;
+template <typename T>
+using TMat11x25 = Eigen::Matrix<T, 11, 25>;
+template <typename T>
+using TMat11x26 = Eigen::Matrix<T, 11, 26>;
+template <typename T>
+using TMat11x27 = Eigen::Matrix<T, 11, 27>;
+template <typename T>
+using TMat11x28 = Eigen::Matrix<T, 11, 28>;
+template <typename T>
+using TMat11x29 = Eigen::Matrix<T, 11, 29>;
+template <typename T>
+using TMat11x30 = Eigen::Matrix<T, 11, 30>;
+template <typename T>
+using TMat11x31 = Eigen::Matrix<T, 11, 31>;
+template <typename T>
+using TMat11x32 = Eigen::Matrix<T, 11, 32>;
+template <typename T>
+using TMat12x1 = Eigen::Matrix<T, 12, 1>;
+template <typename T>
+using TMat12x2 = Eigen::Matrix<T, 12, 2>;
+template <typename T>
+using TMat12x3 = Eigen::Matrix<T, 12, 3>;
+template <typename T>
+using TMat12x4 = Eigen::Matrix<T, 12, 4>;
+template <typename T>
+using TMat12x5 = Eigen::Matrix<T, 12, 5>;
+template <typename T>
+using TMat12x6 = Eigen::Matrix<T, 12, 6>;
+template <typename T>
+using TMat12x7 = Eigen::Matrix<T, 12, 7>;
+template <typename T>
+using TMat12x8 = Eigen::Matrix<T, 12, 8>;
+template <typename T>
+using TMat12x9 = Eigen::Matrix<T, 12, 9>;
+template <typename T>
+using TMat12x10 = Eigen::Matrix<T, 12, 10>;
+template <typename T>
+using TMat12x11 = Eigen::Matrix<T, 12, 11>;
+template <typename T>
+using TMat12x12 = Eigen::Matrix<T, 12, 12>;
+template <typename T>
+using TMat12x13 = Eigen::Matrix<T, 12, 13>;
+template <typename T>
+using TMat12x14 = Eigen::Matrix<T, 12, 14>;
+template <typename T>
+using TMat12x15 = Eigen::Matrix<T, 12, 15>;
+template <typename T>
+using TMat12x16 = Eigen::Matrix<T, 12, 16>;
+template <typename T>
+using TMat12x17 = Eigen::Matrix<T, 12, 17>;
+template <typename T>
+using TMat12x18 = Eigen::Matrix<T, 12, 18>;
+template <typename T>
+using TMat12x19 = Eigen::Matrix<T, 12, 19>;
+template <typename T>
+using TMat12x20 = Eigen::Matrix<T, 12, 20>;
+template <typename T>
+using TMat12x21 = Eigen::Matrix<T, 12, 21>;
+template <typename T>
+using TMat12x22 = Eigen::Matrix<T, 12, 22>;
+template <typename T>
+using TMat12x23 = Eigen::Matrix<T, 12, 23>;
+template <typename T>
+using TMat12x24 = Eigen::Matrix<T, 12, 24>;
+template <typename T>
+using TMat12x25 = Eigen::Matrix<T, 12, 25>;
+template <typename T>
+using TMat12x26 = Eigen::Matrix<T, 12, 26>;
+template <typename T>
+using TMat12x27 = Eigen::Matrix<T, 12, 27>;
+template <typename T>
+using TMat12x28 = Eigen::Matrix<T, 12, 28>;
+template <typename T>
+using TMat12x29 = Eigen::Matrix<T, 12, 29>;
+template <typename T>
+using TMat12x30 = Eigen::Matrix<T, 12, 30>;
+template <typename T>
+using TMat12x31 = Eigen::Matrix<T, 12, 31>;
+template <typename T>
+using TMat12x32 = Eigen::Matrix<T, 12, 32>;
+template <typename T>
+using TMat13x1 = Eigen::Matrix<T, 13, 1>;
+template <typename T>
+using TMat13x2 = Eigen::Matrix<T, 13, 2>;
+template <typename T>
+using TMat13x3 = Eigen::Matrix<T, 13, 3>;
+template <typename T>
+using TMat13x4 = Eigen::Matrix<T, 13, 4>;
+template <typename T>
+using TMat13x5 = Eigen::Matrix<T, 13, 5>;
+template <typename T>
+using TMat13x6 = Eigen::Matrix<T, 13, 6>;
+template <typename T>
+using TMat13x7 = Eigen::Matrix<T, 13, 7>;
+template <typename T>
+using TMat13x8 = Eigen::Matrix<T, 13, 8>;
+template <typename T>
+using TMat13x9 = Eigen::Matrix<T, 13, 9>;
+template <typename T>
+using TMat13x10 = Eigen::Matrix<T, 13, 10>;
+template <typename T>
+using TMat13x11 = Eigen::Matrix<T, 13, 11>;
+template <typename T>
+using TMat13x12 = Eigen::Matrix<T, 13, 12>;
+template <typename T>
+using TMat13x13 = Eigen::Matrix<T, 13, 13>;
+template <typename T>
+using TMat13x14 = Eigen::Matrix<T, 13, 14>;
+template <typename T>
+using TMat13x15 = Eigen::Matrix<T, 13, 15>;
+template <typename T>
+using TMat13x16 = Eigen::Matrix<T, 13, 16>;
+template <typename T>
+using TMat13x17 = Eigen::Matrix<T, 13, 17>;
+template <typename T>
+using TMat13x18 = Eigen::Matrix<T, 13, 18>;
+template <typename T>
+using TMat13x19 = Eigen::Matrix<T, 13, 19>;
+template <typename T>
+using TMat13x20 = Eigen::Matrix<T, 13, 20>;
+template <typename T>
+using TMat13x21 = Eigen::Matrix<T, 13, 21>;
+template <typename T>
+using TMat13x22 = Eigen::Matrix<T, 13, 22>;
+template <typename T>
+using TMat13x23 = Eigen::Matrix<T, 13, 23>;
+template <typename T>
+using TMat13x24 = Eigen::Matrix<T, 13, 24>;
+template <typename T>
+using TMat13x25 = Eigen::Matrix<T, 13, 25>;
+template <typename T>
+using TMat13x26 = Eigen::Matrix<T, 13, 26>;
+template <typename T>
+using TMat13x27 = Eigen::Matrix<T, 13, 27>;
+template <typename T>
+using TMat13x28 = Eigen::Matrix<T, 13, 28>;
+template <typename T>
+using TMat13x29 = Eigen::Matrix<T, 13, 29>;
+template <typename T>
+using TMat13x30 = Eigen::Matrix<T, 13, 30>;
+template <typename T>
+using TMat13x31 = Eigen::Matrix<T, 13, 31>;
+template <typename T>
+using TMat13x32 = Eigen::Matrix<T, 13, 32>;
+template <typename T>
+using TMat14x1 = Eigen::Matrix<T, 14, 1>;
+template <typename T>
+using TMat14x2 = Eigen::Matrix<T, 14, 2>;
+template <typename T>
+using TMat14x3 = Eigen::Matrix<T, 14, 3>;
+template <typename T>
+using TMat14x4 = Eigen::Matrix<T, 14, 4>;
+template <typename T>
+using TMat14x5 = Eigen::Matrix<T, 14, 5>;
+template <typename T>
+using TMat14x6 = Eigen::Matrix<T, 14, 6>;
+template <typename T>
+using TMat14x7 = Eigen::Matrix<T, 14, 7>;
+template <typename T>
+using TMat14x8 = Eigen::Matrix<T, 14, 8>;
+template <typename T>
+using TMat14x9 = Eigen::Matrix<T, 14, 9>;
+template <typename T>
+using TMat14x10 = Eigen::Matrix<T, 14, 10>;
+template <typename T>
+using TMat14x11 = Eigen::Matrix<T, 14, 11>;
+template <typename T>
+using TMat14x12 = Eigen::Matrix<T, 14, 12>;
+template <typename T>
+using TMat14x13 = Eigen::Matrix<T, 14, 13>;
+template <typename T>
+using TMat14x14 = Eigen::Matrix<T, 14, 14>;
+template <typename T>
+using TMat14x15 = Eigen::Matrix<T, 14, 15>;
+template <typename T>
+using TMat14x16 = Eigen::Matrix<T, 14, 16>;
+template <typename T>
+using TMat14x17 = Eigen::Matrix<T, 14, 17>;
+template <typename T>
+using TMat14x18 = Eigen::Matrix<T, 14, 18>;
+template <typename T>
+using TMat14x19 = Eigen::Matrix<T, 14, 19>;
+template <typename T>
+using TMat14x20 = Eigen::Matrix<T, 14, 20>;
+template <typename T>
+using TMat14x21 = Eigen::Matrix<T, 14, 21>;
+template <typename T>
+using TMat14x22 = Eigen::Matrix<T, 14, 22>;
+template <typename T>
+using TMat14x23 = Eigen::Matrix<T, 14, 23>;
+template <typename T>
+using TMat14x24 = Eigen::Matrix<T, 14, 24>;
+template <typename T>
+using TMat14x25 = Eigen::Matrix<T, 14, 25>;
+template <typename T>
+using TMat14x26 = Eigen::Matrix<T, 14, 26>;
+template <typename T>
+using TMat14x27 = Eigen::Matrix<T, 14, 27>;
+template <typename T>
+using TMat14x28 = Eigen::Matrix<T, 14, 28>;
+template <typename T>
+using TMat14x29 = Eigen::Matrix<T, 14, 29>;
+template <typename T>
+using TMat14x30 = Eigen::Matrix<T, 14, 30>;
+template <typename T>
+using TMat14x31 = Eigen::Matrix<T, 14, 31>;
+template <typename T>
+using TMat14x32 = Eigen::Matrix<T, 14, 32>;
+template <typename T>
+using TMat15x1 = Eigen::Matrix<T, 15, 1>;
+template <typename T>
+using TMat15x2 = Eigen::Matrix<T, 15, 2>;
+template <typename T>
+using TMat15x3 = Eigen::Matrix<T, 15, 3>;
+template <typename T>
+using TMat15x4 = Eigen::Matrix<T, 15, 4>;
+template <typename T>
+using TMat15x5 = Eigen::Matrix<T, 15, 5>;
+template <typename T>
+using TMat15x6 = Eigen::Matrix<T, 15, 6>;
+template <typename T>
+using TMat15x7 = Eigen::Matrix<T, 15, 7>;
+template <typename T>
+using TMat15x8 = Eigen::Matrix<T, 15, 8>;
+template <typename T>
+using TMat15x9 = Eigen::Matrix<T, 15, 9>;
+template <typename T>
+using TMat15x10 = Eigen::Matrix<T, 15, 10>;
+template <typename T>
+using TMat15x11 = Eigen::Matrix<T, 15, 11>;
+template <typename T>
+using TMat15x12 = Eigen::Matrix<T, 15, 12>;
+template <typename T>
+using TMat15x13 = Eigen::Matrix<T, 15, 13>;
+template <typename T>
+using TMat15x14 = Eigen::Matrix<T, 15, 14>;
+template <typename T>
+using TMat15x15 = Eigen::Matrix<T, 15, 15>;
+template <typename T>
+using TMat15x16 = Eigen::Matrix<T, 15, 16>;
+template <typename T>
+using TMat15x17 = Eigen::Matrix<T, 15, 17>;
+template <typename T>
+using TMat15x18 = Eigen::Matrix<T, 15, 18>;
+template <typename T>
+using TMat15x19 = Eigen::Matrix<T, 15, 19>;
+template <typename T>
+using TMat15x20 = Eigen::Matrix<T, 15, 20>;
+template <typename T>
+using TMat15x21 = Eigen::Matrix<T, 15, 21>;
+template <typename T>
+using TMat15x22 = Eigen::Matrix<T, 15, 22>;
+template <typename T>
+using TMat15x23 = Eigen::Matrix<T, 15, 23>;
+template <typename T>
+using TMat15x24 = Eigen::Matrix<T, 15, 24>;
+template <typename T>
+using TMat15x25 = Eigen::Matrix<T, 15, 25>;
+template <typename T>
+using TMat15x26 = Eigen::Matrix<T, 15, 26>;
+template <typename T>
+using TMat15x27 = Eigen::Matrix<T, 15, 27>;
+template <typename T>
+using TMat15x28 = Eigen::Matrix<T, 15, 28>;
+template <typename T>
+using TMat15x29 = Eigen::Matrix<T, 15, 29>;
+template <typename T>
+using TMat15x30 = Eigen::Matrix<T, 15, 30>;
+template <typename T>
+using TMat15x31 = Eigen::Matrix<T, 15, 31>;
+template <typename T>
+using TMat15x32 = Eigen::Matrix<T, 15, 32>;
+template <typename T>
+using TMat16x1 = Eigen::Matrix<T, 16, 1>;
+template <typename T>
+using TMat16x2 = Eigen::Matrix<T, 16, 2>;
+template <typename T>
+using TMat16x3 = Eigen::Matrix<T, 16, 3>;
+template <typename T>
+using TMat16x4 = Eigen::Matrix<T, 16, 4>;
+template <typename T>
+using TMat16x5 = Eigen::Matrix<T, 16, 5>;
+template <typename T>
+using TMat16x6 = Eigen::Matrix<T, 16, 6>;
+template <typename T>
+using TMat16x7 = Eigen::Matrix<T, 16, 7>;
+template <typename T>
+using TMat16x8 = Eigen::Matrix<T, 16, 8>;
+template <typename T>
+using TMat16x9 = Eigen::Matrix<T, 16, 9>;
+template <typename T>
+using TMat16x10 = Eigen::Matrix<T, 16, 10>;
+template <typename T>
+using TMat16x11 = Eigen::Matrix<T, 16, 11>;
+template <typename T>
+using TMat16x12 = Eigen::Matrix<T, 16, 12>;
+template <typename T>
+using TMat16x13 = Eigen::Matrix<T, 16, 13>;
+template <typename T>
+using TMat16x14 = Eigen::Matrix<T, 16, 14>;
+template <typename T>
+using TMat16x15 = Eigen::Matrix<T, 16, 15>;
+template <typename T>
+using TMat16x16 = Eigen::Matrix<T, 16, 16>;
+template <typename T>
+using TMat16x17 = Eigen::Matrix<T, 16, 17>;
+template <typename T>
+using TMat16x18 = Eigen::Matrix<T, 16, 18>;
+template <typename T>
+using TMat16x19 = Eigen::Matrix<T, 16, 19>;
+template <typename T>
+using TMat16x20 = Eigen::Matrix<T, 16, 20>;
+template <typename T>
+using TMat16x21 = Eigen::Matrix<T, 16, 21>;
+template <typename T>
+using TMat16x22 = Eigen::Matrix<T, 16, 22>;
+template <typename T>
+using TMat16x23 = Eigen::Matrix<T, 16, 23>;
+template <typename T>
+using TMat16x24 = Eigen::Matrix<T, 16, 24>;
+template <typename T>
+using TMat16x25 = Eigen::Matrix<T, 16, 25>;
+template <typename T>
+using TMat16x26 = Eigen::Matrix<T, 16, 26>;
+template <typename T>
+using TMat16x27 = Eigen::Matrix<T, 16, 27>;
+template <typename T>
+using TMat16x28 = Eigen::Matrix<T, 16, 28>;
+template <typename T>
+using TMat16x29 = Eigen::Matrix<T, 16, 29>;
+template <typename T>
+using TMat16x30 = Eigen::Matrix<T, 16, 30>;
+template <typename T>
+using TMat16x31 = Eigen::Matrix<T, 16, 31>;
+template <typename T>
+using TMat16x32 = Eigen::Matrix<T, 16, 32>;
+template <typename T>
+using TMat17x1 = Eigen::Matrix<T, 17, 1>;
+template <typename T>
+using TMat17x2 = Eigen::Matrix<T, 17, 2>;
+template <typename T>
+using TMat17x3 = Eigen::Matrix<T, 17, 3>;
+template <typename T>
+using TMat17x4 = Eigen::Matrix<T, 17, 4>;
+template <typename T>
+using TMat17x5 = Eigen::Matrix<T, 17, 5>;
+template <typename T>
+using TMat17x6 = Eigen::Matrix<T, 17, 6>;
+template <typename T>
+using TMat17x7 = Eigen::Matrix<T, 17, 7>;
+template <typename T>
+using TMat17x8 = Eigen::Matrix<T, 17, 8>;
+template <typename T>
+using TMat17x9 = Eigen::Matrix<T, 17, 9>;
+template <typename T>
+using TMat17x10 = Eigen::Matrix<T, 17, 10>;
+template <typename T>
+using TMat17x11 = Eigen::Matrix<T, 17, 11>;
+template <typename T>
+using TMat17x12 = Eigen::Matrix<T, 17, 12>;
+template <typename T>
+using TMat17x13 = Eigen::Matrix<T, 17, 13>;
+template <typename T>
+using TMat17x14 = Eigen::Matrix<T, 17, 14>;
+template <typename T>
+using TMat17x15 = Eigen::Matrix<T, 17, 15>;
+template <typename T>
+using TMat17x16 = Eigen::Matrix<T, 17, 16>;
+template <typename T>
+using TMat17x17 = Eigen::Matrix<T, 17, 17>;
+template <typename T>
+using TMat17x18 = Eigen::Matrix<T, 17, 18>;
+template <typename T>
+using TMat17x19 = Eigen::Matrix<T, 17, 19>;
+template <typename T>
+using TMat17x20 = Eigen::Matrix<T, 17, 20>;
+template <typename T>
+using TMat17x21 = Eigen::Matrix<T, 17, 21>;
+template <typename T>
+using TMat17x22 = Eigen::Matrix<T, 17, 22>;
+template <typename T>
+using TMat17x23 = Eigen::Matrix<T, 17, 23>;
+template <typename T>
+using TMat17x24 = Eigen::Matrix<T, 17, 24>;
+template <typename T>
+using TMat17x25 = Eigen::Matrix<T, 17, 25>;
+template <typename T>
+using TMat17x26 = Eigen::Matrix<T, 17, 26>;
+template <typename T>
+using TMat17x27 = Eigen::Matrix<T, 17, 27>;
+template <typename T>
+using TMat17x28 = Eigen::Matrix<T, 17, 28>;
+template <typename T>
+using TMat17x29 = Eigen::Matrix<T, 17, 29>;
+template <typename T>
+using TMat17x30 = Eigen::Matrix<T, 17, 30>;
+template <typename T>
+using TMat17x31 = Eigen::Matrix<T, 17, 31>;
+template <typename T>
+using TMat17x32 = Eigen::Matrix<T, 17, 32>;
+template <typename T>
+using TMat18x1 = Eigen::Matrix<T, 18, 1>;
+template <typename T>
+using TMat18x2 = Eigen::Matrix<T, 18, 2>;
+template <typename T>
+using TMat18x3 = Eigen::Matrix<T, 18, 3>;
+template <typename T>
+using TMat18x4 = Eigen::Matrix<T, 18, 4>;
+template <typename T>
+using TMat18x5 = Eigen::Matrix<T, 18, 5>;
+template <typename T>
+using TMat18x6 = Eigen::Matrix<T, 18, 6>;
+template <typename T>
+using TMat18x7 = Eigen::Matrix<T, 18, 7>;
+template <typename T>
+using TMat18x8 = Eigen::Matrix<T, 18, 8>;
+template <typename T>
+using TMat18x9 = Eigen::Matrix<T, 18, 9>;
+template <typename T>
+using TMat18x10 = Eigen::Matrix<T, 18, 10>;
+template <typename T>
+using TMat18x11 = Eigen::Matrix<T, 18, 11>;
+template <typename T>
+using TMat18x12 = Eigen::Matrix<T, 18, 12>;
+template <typename T>
+using TMat18x13 = Eigen::Matrix<T, 18, 13>;
+template <typename T>
+using TMat18x14 = Eigen::Matrix<T, 18, 14>;
+template <typename T>
+using TMat18x15 = Eigen::Matrix<T, 18, 15>;
+template <typename T>
+using TMat18x16 = Eigen::Matrix<T, 18, 16>;
+template <typename T>
+using TMat18x17 = Eigen::Matrix<T, 18, 17>;
+template <typename T>
+using TMat18x18 = Eigen::Matrix<T, 18, 18>;
+template <typename T>
+using TMat18x19 = Eigen::Matrix<T, 18, 19>;
+template <typename T>
+using TMat18x20 = Eigen::Matrix<T, 18, 20>;
+template <typename T>
+using TMat18x21 = Eigen::Matrix<T, 18, 21>;
+template <typename T>
+using TMat18x22 = Eigen::Matrix<T, 18, 22>;
+template <typename T>
+using TMat18x23 = Eigen::Matrix<T, 18, 23>;
+template <typename T>
+using TMat18x24 = Eigen::Matrix<T, 18, 24>;
+template <typename T>
+using TMat18x25 = Eigen::Matrix<T, 18, 25>;
+template <typename T>
+using TMat18x26 = Eigen::Matrix<T, 18, 26>;
+template <typename T>
+using TMat18x27 = Eigen::Matrix<T, 18, 27>;
+template <typename T>
+using TMat18x28 = Eigen::Matrix<T, 18, 28>;
+template <typename T>
+using TMat18x29 = Eigen::Matrix<T, 18, 29>;
+template <typename T>
+using TMat18x30 = Eigen::Matrix<T, 18, 30>;
+template <typename T>
+using TMat18x31 = Eigen::Matrix<T, 18, 31>;
+template <typename T>
+using TMat18x32 = Eigen::Matrix<T, 18, 32>;
+template <typename T>
+using TMat19x1 = Eigen::Matrix<T, 19, 1>;
+template <typename T>
+using TMat19x2 = Eigen::Matrix<T, 19, 2>;
+template <typename T>
+using TMat19x3 = Eigen::Matrix<T, 19, 3>;
+template <typename T>
+using TMat19x4 = Eigen::Matrix<T, 19, 4>;
+template <typename T>
+using TMat19x5 = Eigen::Matrix<T, 19, 5>;
+template <typename T>
+using TMat19x6 = Eigen::Matrix<T, 19, 6>;
+template <typename T>
+using TMat19x7 = Eigen::Matrix<T, 19, 7>;
+template <typename T>
+using TMat19x8 = Eigen::Matrix<T, 19, 8>;
+template <typename T>
+using TMat19x9 = Eigen::Matrix<T, 19, 9>;
+template <typename T>
+using TMat19x10 = Eigen::Matrix<T, 19, 10>;
+template <typename T>
+using TMat19x11 = Eigen::Matrix<T, 19, 11>;
+template <typename T>
+using TMat19x12 = Eigen::Matrix<T, 19, 12>;
+template <typename T>
+using TMat19x13 = Eigen::Matrix<T, 19, 13>;
+template <typename T>
+using TMat19x14 = Eigen::Matrix<T, 19, 14>;
+template <typename T>
+using TMat19x15 = Eigen::Matrix<T, 19, 15>;
+template <typename T>
+using TMat19x16 = Eigen::Matrix<T, 19, 16>;
+template <typename T>
+using TMat19x17 = Eigen::Matrix<T, 19, 17>;
+template <typename T>
+using TMat19x18 = Eigen::Matrix<T, 19, 18>;
+template <typename T>
+using TMat19x19 = Eigen::Matrix<T, 19, 19>;
+template <typename T>
+using TMat19x20 = Eigen::Matrix<T, 19, 20>;
+template <typename T>
+using TMat19x21 = Eigen::Matrix<T, 19, 21>;
+template <typename T>
+using TMat19x22 = Eigen::Matrix<T, 19, 22>;
+template <typename T>
+using TMat19x23 = Eigen::Matrix<T, 19, 23>;
+template <typename T>
+using TMat19x24 = Eigen::Matrix<T, 19, 24>;
+template <typename T>
+using TMat19x25 = Eigen::Matrix<T, 19, 25>;
+template <typename T>
+using TMat19x26 = Eigen::Matrix<T, 19, 26>;
+template <typename T>
+using TMat19x27 = Eigen::Matrix<T, 19, 27>;
+template <typename T>
+using TMat19x28 = Eigen::Matrix<T, 19, 28>;
+template <typename T>
+using TMat19x29 = Eigen::Matrix<T, 19, 29>;
+template <typename T>
+using TMat19x30 = Eigen::Matrix<T, 19, 30>;
+template <typename T>
+using TMat19x31 = Eigen::Matrix<T, 19, 31>;
+template <typename T>
+using TMat19x32 = Eigen::Matrix<T, 19, 32>;
+template <typename T>
+using TMat20x1 = Eigen::Matrix<T, 20, 1>;
+template <typename T>
+using TMat20x2 = Eigen::Matrix<T, 20, 2>;
+template <typename T>
+using TMat20x3 = Eigen::Matrix<T, 20, 3>;
+template <typename T>
+using TMat20x4 = Eigen::Matrix<T, 20, 4>;
+template <typename T>
+using TMat20x5 = Eigen::Matrix<T, 20, 5>;
+template <typename T>
+using TMat20x6 = Eigen::Matrix<T, 20, 6>;
+template <typename T>
+using TMat20x7 = Eigen::Matrix<T, 20, 7>;
+template <typename T>
+using TMat20x8 = Eigen::Matrix<T, 20, 8>;
+template <typename T>
+using TMat20x9 = Eigen::Matrix<T, 20, 9>;
+template <typename T>
+using TMat20x10 = Eigen::Matrix<T, 20, 10>;
+template <typename T>
+using TMat20x11 = Eigen::Matrix<T, 20, 11>;
+template <typename T>
+using TMat20x12 = Eigen::Matrix<T, 20, 12>;
+template <typename T>
+using TMat20x13 = Eigen::Matrix<T, 20, 13>;
+template <typename T>
+using TMat20x14 = Eigen::Matrix<T, 20, 14>;
+template <typename T>
+using TMat20x15 = Eigen::Matrix<T, 20, 15>;
+template <typename T>
+using TMat20x16 = Eigen::Matrix<T, 20, 16>;
+template <typename T>
+using TMat20x17 = Eigen::Matrix<T, 20, 17>;
+template <typename T>
+using TMat20x18 = Eigen::Matrix<T, 20, 18>;
+template <typename T>
+using TMat20x19 = Eigen::Matrix<T, 20, 19>;
+template <typename T>
+using TMat20x20 = Eigen::Matrix<T, 20, 20>;
+template <typename T>
+using TMat20x21 = Eigen::Matrix<T, 20, 21>;
+template <typename T>
+using TMat20x22 = Eigen::Matrix<T, 20, 22>;
+template <typename T>
+using TMat20x23 = Eigen::Matrix<T, 20, 23>;
+template <typename T>
+using TMat20x24 = Eigen::Matrix<T, 20, 24>;
+template <typename T>
+using TMat20x25 = Eigen::Matrix<T, 20, 25>;
+template <typename T>
+using TMat20x26 = Eigen::Matrix<T, 20, 26>;
+template <typename T>
+using TMat20x27 = Eigen::Matrix<T, 20, 27>;
+template <typename T>
+using TMat20x28 = Eigen::Matrix<T, 20, 28>;
+template <typename T>
+using TMat20x29 = Eigen::Matrix<T, 20, 29>;
+template <typename T>
+using TMat20x30 = Eigen::Matrix<T, 20, 30>;
+template <typename T>
+using TMat20x31 = Eigen::Matrix<T, 20, 31>;
+template <typename T>
+using TMat20x32 = Eigen::Matrix<T, 20, 32>;
+template <typename T>
+using TMat21x1 = Eigen::Matrix<T, 21, 1>;
+template <typename T>
+using TMat21x2 = Eigen::Matrix<T, 21, 2>;
+template <typename T>
+using TMat21x3 = Eigen::Matrix<T, 21, 3>;
+template <typename T>
+using TMat21x4 = Eigen::Matrix<T, 21, 4>;
+template <typename T>
+using TMat21x5 = Eigen::Matrix<T, 21, 5>;
+template <typename T>
+using TMat21x6 = Eigen::Matrix<T, 21, 6>;
+template <typename T>
+using TMat21x7 = Eigen::Matrix<T, 21, 7>;
+template <typename T>
+using TMat21x8 = Eigen::Matrix<T, 21, 8>;
+template <typename T>
+using TMat21x9 = Eigen::Matrix<T, 21, 9>;
+template <typename T>
+using TMat21x10 = Eigen::Matrix<T, 21, 10>;
+template <typename T>
+using TMat21x11 = Eigen::Matrix<T, 21, 11>;
+template <typename T>
+using TMat21x12 = Eigen::Matrix<T, 21, 12>;
+template <typename T>
+using TMat21x13 = Eigen::Matrix<T, 21, 13>;
+template <typename T>
+using TMat21x14 = Eigen::Matrix<T, 21, 14>;
+template <typename T>
+using TMat21x15 = Eigen::Matrix<T, 21, 15>;
+template <typename T>
+using TMat21x16 = Eigen::Matrix<T, 21, 16>;
+template <typename T>
+using TMat21x17 = Eigen::Matrix<T, 21, 17>;
+template <typename T>
+using TMat21x18 = Eigen::Matrix<T, 21, 18>;
+template <typename T>
+using TMat21x19 = Eigen::Matrix<T, 21, 19>;
+template <typename T>
+using TMat21x20 = Eigen::Matrix<T, 21, 20>;
+template <typename T>
+using TMat21x21 = Eigen::Matrix<T, 21, 21>;
+template <typename T>
+using TMat21x22 = Eigen::Matrix<T, 21, 22>;
+template <typename T>
+using TMat21x23 = Eigen::Matrix<T, 21, 23>;
+template <typename T>
+using TMat21x24 = Eigen::Matrix<T, 21, 24>;
+template <typename T>
+using TMat21x25 = Eigen::Matrix<T, 21, 25>;
+template <typename T>
+using TMat21x26 = Eigen::Matrix<T, 21, 26>;
+template <typename T>
+using TMat21x27 = Eigen::Matrix<T, 21, 27>;
+template <typename T>
+using TMat21x28 = Eigen::Matrix<T, 21, 28>;
+template <typename T>
+using TMat21x29 = Eigen::Matrix<T, 21, 29>;
+template <typename T>
+using TMat21x30 = Eigen::Matrix<T, 21, 30>;
+template <typename T>
+using TMat21x31 = Eigen::Matrix<T, 21, 31>;
+template <typename T>
+using TMat21x32 = Eigen::Matrix<T, 21, 32>;
+template <typename T>
+using TMat22x1 = Eigen::Matrix<T, 22, 1>;
+template <typename T>
+using TMat22x2 = Eigen::Matrix<T, 22, 2>;
+template <typename T>
+using TMat22x3 = Eigen::Matrix<T, 22, 3>;
+template <typename T>
+using TMat22x4 = Eigen::Matrix<T, 22, 4>;
+template <typename T>
+using TMat22x5 = Eigen::Matrix<T, 22, 5>;
+template <typename T>
+using TMat22x6 = Eigen::Matrix<T, 22, 6>;
+template <typename T>
+using TMat22x7 = Eigen::Matrix<T, 22, 7>;
+template <typename T>
+using TMat22x8 = Eigen::Matrix<T, 22, 8>;
+template <typename T>
+using TMat22x9 = Eigen::Matrix<T, 22, 9>;
+template <typename T>
+using TMat22x10 = Eigen::Matrix<T, 22, 10>;
+template <typename T>
+using TMat22x11 = Eigen::Matrix<T, 22, 11>;
+template <typename T>
+using TMat22x12 = Eigen::Matrix<T, 22, 12>;
+template <typename T>
+using TMat22x13 = Eigen::Matrix<T, 22, 13>;
+template <typename T>
+using TMat22x14 = Eigen::Matrix<T, 22, 14>;
+template <typename T>
+using TMat22x15 = Eigen::Matrix<T, 22, 15>;
+template <typename T>
+using TMat22x16 = Eigen::Matrix<T, 22, 16>;
+template <typename T>
+using TMat22x17 = Eigen::Matrix<T, 22, 17>;
+template <typename T>
+using TMat22x18 = Eigen::Matrix<T, 22, 18>;
+template <typename T>
+using TMat22x19 = Eigen::Matrix<T, 22, 19>;
+template <typename T>
+using TMat22x20 = Eigen::Matrix<T, 22, 20>;
+template <typename T>
+using TMat22x21 = Eigen::Matrix<T, 22, 21>;
+template <typename T>
+using TMat22x22 = Eigen::Matrix<T, 22, 22>;
+template <typename T>
+using TMat22x23 = Eigen::Matrix<T, 22, 23>;
+template <typename T>
+using TMat22x24 = Eigen::Matrix<T, 22, 24>;
+template <typename T>
+using TMat22x25 = Eigen::Matrix<T, 22, 25>;
+template <typename T>
+using TMat22x26 = Eigen::Matrix<T, 22, 26>;
+template <typename T>
+using TMat22x27 = Eigen::Matrix<T, 22, 27>;
+template <typename T>
+using TMat22x28 = Eigen::Matrix<T, 22, 28>;
+template <typename T>
+using TMat22x29 = Eigen::Matrix<T, 22, 29>;
+template <typename T>
+using TMat22x30 = Eigen::Matrix<T, 22, 30>;
+template <typename T>
+using TMat22x31 = Eigen::Matrix<T, 22, 31>;
+template <typename T>
+using TMat22x32 = Eigen::Matrix<T, 22, 32>;
+template <typename T>
+using TMat23x1 = Eigen::Matrix<T, 23, 1>;
+template <typename T>
+using TMat23x2 = Eigen::Matrix<T, 23, 2>;
+template <typename T>
+using TMat23x3 = Eigen::Matrix<T, 23, 3>;
+template <typename T>
+using TMat23x4 = Eigen::Matrix<T, 23, 4>;
+template <typename T>
+using TMat23x5 = Eigen::Matrix<T, 23, 5>;
+template <typename T>
+using TMat23x6 = Eigen::Matrix<T, 23, 6>;
+template <typename T>
+using TMat23x7 = Eigen::Matrix<T, 23, 7>;
+template <typename T>
+using TMat23x8 = Eigen::Matrix<T, 23, 8>;
+template <typename T>
+using TMat23x9 = Eigen::Matrix<T, 23, 9>;
+template <typename T>
+using TMat23x10 = Eigen::Matrix<T, 23, 10>;
+template <typename T>
+using TMat23x11 = Eigen::Matrix<T, 23, 11>;
+template <typename T>
+using TMat23x12 = Eigen::Matrix<T, 23, 12>;
+template <typename T>
+using TMat23x13 = Eigen::Matrix<T, 23, 13>;
+template <typename T>
+using TMat23x14 = Eigen::Matrix<T, 23, 14>;
+template <typename T>
+using TMat23x15 = Eigen::Matrix<T, 23, 15>;
+template <typename T>
+using TMat23x16 = Eigen::Matrix<T, 23, 16>;
+template <typename T>
+using TMat23x17 = Eigen::Matrix<T, 23, 17>;
+template <typename T>
+using TMat23x18 = Eigen::Matrix<T, 23, 18>;
+template <typename T>
+using TMat23x19 = Eigen::Matrix<T, 23, 19>;
+template <typename T>
+using TMat23x20 = Eigen::Matrix<T, 23, 20>;
+template <typename T>
+using TMat23x21 = Eigen::Matrix<T, 23, 21>;
+template <typename T>
+using TMat23x22 = Eigen::Matrix<T, 23, 22>;
+template <typename T>
+using TMat23x23 = Eigen::Matrix<T, 23, 23>;
+template <typename T>
+using TMat23x24 = Eigen::Matrix<T, 23, 24>;
+template <typename T>
+using TMat23x25 = Eigen::Matrix<T, 23, 25>;
+template <typename T>
+using TMat23x26 = Eigen::Matrix<T, 23, 26>;
+template <typename T>
+using TMat23x27 = Eigen::Matrix<T, 23, 27>;
+template <typename T>
+using TMat23x28 = Eigen::Matrix<T, 23, 28>;
+template <typename T>
+using TMat23x29 = Eigen::Matrix<T, 23, 29>;
+template <typename T>
+using TMat23x30 = Eigen::Matrix<T, 23, 30>;
+template <typename T>
+using TMat23x31 = Eigen::Matrix<T, 23, 31>;
+template <typename T>
+using TMat23x32 = Eigen::Matrix<T, 23, 32>;
+template <typename T>
+using TMat24x1 = Eigen::Matrix<T, 24, 1>;
+template <typename T>
+using TMat24x2 = Eigen::Matrix<T, 24, 2>;
+template <typename T>
+using TMat24x3 = Eigen::Matrix<T, 24, 3>;
+template <typename T>
+using TMat24x4 = Eigen::Matrix<T, 24, 4>;
+template <typename T>
+using TMat24x5 = Eigen::Matrix<T, 24, 5>;
+template <typename T>
+using TMat24x6 = Eigen::Matrix<T, 24, 6>;
+template <typename T>
+using TMat24x7 = Eigen::Matrix<T, 24, 7>;
+template <typename T>
+using TMat24x8 = Eigen::Matrix<T, 24, 8>;
+template <typename T>
+using TMat24x9 = Eigen::Matrix<T, 24, 9>;
+template <typename T>
+using TMat24x10 = Eigen::Matrix<T, 24, 10>;
+template <typename T>
+using TMat24x11 = Eigen::Matrix<T, 24, 11>;
+template <typename T>
+using TMat24x12 = Eigen::Matrix<T, 24, 12>;
+template <typename T>
+using TMat24x13 = Eigen::Matrix<T, 24, 13>;
+template <typename T>
+using TMat24x14 = Eigen::Matrix<T, 24, 14>;
+template <typename T>
+using TMat24x15 = Eigen::Matrix<T, 24, 15>;
+template <typename T>
+using TMat24x16 = Eigen::Matrix<T, 24, 16>;
+template <typename T>
+using TMat24x17 = Eigen::Matrix<T, 24, 17>;
+template <typename T>
+using TMat24x18 = Eigen::Matrix<T, 24, 18>;
+template <typename T>
+using TMat24x19 = Eigen::Matrix<T, 24, 19>;
+template <typename T>
+using TMat24x20 = Eigen::Matrix<T, 24, 20>;
+template <typename T>
+using TMat24x21 = Eigen::Matrix<T, 24, 21>;
+template <typename T>
+using TMat24x22 = Eigen::Matrix<T, 24, 22>;
+template <typename T>
+using TMat24x23 = Eigen::Matrix<T, 24, 23>;
+template <typename T>
+using TMat24x24 = Eigen::Matrix<T, 24, 24>;
+template <typename T>
+using TMat24x25 = Eigen::Matrix<T, 24, 25>;
+template <typename T>
+using TMat24x26 = Eigen::Matrix<T, 24, 26>;
+template <typename T>
+using TMat24x27 = Eigen::Matrix<T, 24, 27>;
+template <typename T>
+using TMat24x28 = Eigen::Matrix<T, 24, 28>;
+template <typename T>
+using TMat24x29 = Eigen::Matrix<T, 24, 29>;
+template <typename T>
+using TMat24x30 = Eigen::Matrix<T, 24, 30>;
+template <typename T>
+using TMat24x31 = Eigen::Matrix<T, 24, 31>;
+template <typename T>
+using TMat24x32 = Eigen::Matrix<T, 24, 32>;
+template <typename T>
+using TMat25x1 = Eigen::Matrix<T, 25, 1>;
+template <typename T>
+using TMat25x2 = Eigen::Matrix<T, 25, 2>;
+template <typename T>
+using TMat25x3 = Eigen::Matrix<T, 25, 3>;
+template <typename T>
+using TMat25x4 = Eigen::Matrix<T, 25, 4>;
+template <typename T>
+using TMat25x5 = Eigen::Matrix<T, 25, 5>;
+template <typename T>
+using TMat25x6 = Eigen::Matrix<T, 25, 6>;
+template <typename T>
+using TMat25x7 = Eigen::Matrix<T, 25, 7>;
+template <typename T>
+using TMat25x8 = Eigen::Matrix<T, 25, 8>;
+template <typename T>
+using TMat25x9 = Eigen::Matrix<T, 25, 9>;
+template <typename T>
+using TMat25x10 = Eigen::Matrix<T, 25, 10>;
+template <typename T>
+using TMat25x11 = Eigen::Matrix<T, 25, 11>;
+template <typename T>
+using TMat25x12 = Eigen::Matrix<T, 25, 12>;
+template <typename T>
+using TMat25x13 = Eigen::Matrix<T, 25, 13>;
+template <typename T>
+using TMat25x14 = Eigen::Matrix<T, 25, 14>;
+template <typename T>
+using TMat25x15 = Eigen::Matrix<T, 25, 15>;
+template <typename T>
+using TMat25x16 = Eigen::Matrix<T, 25, 16>;
+template <typename T>
+using TMat25x17 = Eigen::Matrix<T, 25, 17>;
+template <typename T>
+using TMat25x18 = Eigen::Matrix<T, 25, 18>;
+template <typename T>
+using TMat25x19 = Eigen::Matrix<T, 25, 19>;
+template <typename T>
+using TMat25x20 = Eigen::Matrix<T, 25, 20>;
+template <typename T>
+using TMat25x21 = Eigen::Matrix<T, 25, 21>;
+template <typename T>
+using TMat25x22 = Eigen::Matrix<T, 25, 22>;
+template <typename T>
+using TMat25x23 = Eigen::Matrix<T, 25, 23>;
+template <typename T>
+using TMat25x24 = Eigen::Matrix<T, 25, 24>;
+template <typename T>
+using TMat25x25 = Eigen::Matrix<T, 25, 25>;
+template <typename T>
+using TMat25x26 = Eigen::Matrix<T, 25, 26>;
+template <typename T>
+using TMat25x27 = Eigen::Matrix<T, 25, 27>;
+template <typename T>
+using TMat25x28 = Eigen::Matrix<T, 25, 28>;
+template <typename T>
+using TMat25x29 = Eigen::Matrix<T, 25, 29>;
+template <typename T>
+using TMat25x30 = Eigen::Matrix<T, 25, 30>;
+template <typename T>
+using TMat25x31 = Eigen::Matrix<T, 25, 31>;
+template <typename T>
+using TMat25x32 = Eigen::Matrix<T, 25, 32>;
+template <typename T>
+using TMat26x1 = Eigen::Matrix<T, 26, 1>;
+template <typename T>
+using TMat26x2 = Eigen::Matrix<T, 26, 2>;
+template <typename T>
+using TMat26x3 = Eigen::Matrix<T, 26, 3>;
+template <typename T>
+using TMat26x4 = Eigen::Matrix<T, 26, 4>;
+template <typename T>
+using TMat26x5 = Eigen::Matrix<T, 26, 5>;
+template <typename T>
+using TMat26x6 = Eigen::Matrix<T, 26, 6>;
+template <typename T>
+using TMat26x7 = Eigen::Matrix<T, 26, 7>;
+template <typename T>
+using TMat26x8 = Eigen::Matrix<T, 26, 8>;
+template <typename T>
+using TMat26x9 = Eigen::Matrix<T, 26, 9>;
+template <typename T>
+using TMat26x10 = Eigen::Matrix<T, 26, 10>;
+template <typename T>
+using TMat26x11 = Eigen::Matrix<T, 26, 11>;
+template <typename T>
+using TMat26x12 = Eigen::Matrix<T, 26, 12>;
+template <typename T>
+using TMat26x13 = Eigen::Matrix<T, 26, 13>;
+template <typename T>
+using TMat26x14 = Eigen::Matrix<T, 26, 14>;
+template <typename T>
+using TMat26x15 = Eigen::Matrix<T, 26, 15>;
+template <typename T>
+using TMat26x16 = Eigen::Matrix<T, 26, 16>;
+template <typename T>
+using TMat26x17 = Eigen::Matrix<T, 26, 17>;
+template <typename T>
+using TMat26x18 = Eigen::Matrix<T, 26, 18>;
+template <typename T>
+using TMat26x19 = Eigen::Matrix<T, 26, 19>;
+template <typename T>
+using TMat26x20 = Eigen::Matrix<T, 26, 20>;
+template <typename T>
+using TMat26x21 = Eigen::Matrix<T, 26, 21>;
+template <typename T>
+using TMat26x22 = Eigen::Matrix<T, 26, 22>;
+template <typename T>
+using TMat26x23 = Eigen::Matrix<T, 26, 23>;
+template <typename T>
+using TMat26x24 = Eigen::Matrix<T, 26, 24>;
+template <typename T>
+using TMat26x25 = Eigen::Matrix<T, 26, 25>;
+template <typename T>
+using TMat26x26 = Eigen::Matrix<T, 26, 26>;
+template <typename T>
+using TMat26x27 = Eigen::Matrix<T, 26, 27>;
+template <typename T>
+using TMat26x28 = Eigen::Matrix<T, 26, 28>;
+template <typename T>
+using TMat26x29 = Eigen::Matrix<T, 26, 29>;
+template <typename T>
+using TMat26x30 = Eigen::Matrix<T, 26, 30>;
+template <typename T>
+using TMat26x31 = Eigen::Matrix<T, 26, 31>;
+template <typename T>
+using TMat26x32 = Eigen::Matrix<T, 26, 32>;
+template <typename T>
+using TMat27x1 = Eigen::Matrix<T, 27, 1>;
+template <typename T>
+using TMat27x2 = Eigen::Matrix<T, 27, 2>;
+template <typename T>
+using TMat27x3 = Eigen::Matrix<T, 27, 3>;
+template <typename T>
+using TMat27x4 = Eigen::Matrix<T, 27, 4>;
+template <typename T>
+using TMat27x5 = Eigen::Matrix<T, 27, 5>;
+template <typename T>
+using TMat27x6 = Eigen::Matrix<T, 27, 6>;
+template <typename T>
+using TMat27x7 = Eigen::Matrix<T, 27, 7>;
+template <typename T>
+using TMat27x8 = Eigen::Matrix<T, 27, 8>;
+template <typename T>
+using TMat27x9 = Eigen::Matrix<T, 27, 9>;
+template <typename T>
+using TMat27x10 = Eigen::Matrix<T, 27, 10>;
+template <typename T>
+using TMat27x11 = Eigen::Matrix<T, 27, 11>;
+template <typename T>
+using TMat27x12 = Eigen::Matrix<T, 27, 12>;
+template <typename T>
+using TMat27x13 = Eigen::Matrix<T, 27, 13>;
+template <typename T>
+using TMat27x14 = Eigen::Matrix<T, 27, 14>;
+template <typename T>
+using TMat27x15 = Eigen::Matrix<T, 27, 15>;
+template <typename T>
+using TMat27x16 = Eigen::Matrix<T, 27, 16>;
+template <typename T>
+using TMat27x17 = Eigen::Matrix<T, 27, 17>;
+template <typename T>
+using TMat27x18 = Eigen::Matrix<T, 27, 18>;
+template <typename T>
+using TMat27x19 = Eigen::Matrix<T, 27, 19>;
+template <typename T>
+using TMat27x20 = Eigen::Matrix<T, 27, 20>;
+template <typename T>
+using TMat27x21 = Eigen::Matrix<T, 27, 21>;
+template <typename T>
+using TMat27x22 = Eigen::Matrix<T, 27, 22>;
+template <typename T>
+using TMat27x23 = Eigen::Matrix<T, 27, 23>;
+template <typename T>
+using TMat27x24 = Eigen::Matrix<T, 27, 24>;
+template <typename T>
+using TMat27x25 = Eigen::Matrix<T, 27, 25>;
+template <typename T>
+using TMat27x26 = Eigen::Matrix<T, 27, 26>;
+template <typename T>
+using TMat27x27 = Eigen::Matrix<T, 27, 27>;
+template <typename T>
+using TMat27x28 = Eigen::Matrix<T, 27, 28>;
+template <typename T>
+using TMat27x29 = Eigen::Matrix<T, 27, 29>;
+template <typename T>
+using TMat27x30 = Eigen::Matrix<T, 27, 30>;
+template <typename T>
+using TMat27x31 = Eigen::Matrix<T, 27, 31>;
+template <typename T>
+using TMat27x32 = Eigen::Matrix<T, 27, 32>;
+template <typename T>
+using TMat28x1 = Eigen::Matrix<T, 28, 1>;
+template <typename T>
+using TMat28x2 = Eigen::Matrix<T, 28, 2>;
+template <typename T>
+using TMat28x3 = Eigen::Matrix<T, 28, 3>;
+template <typename T>
+using TMat28x4 = Eigen::Matrix<T, 28, 4>;
+template <typename T>
+using TMat28x5 = Eigen::Matrix<T, 28, 5>;
+template <typename T>
+using TMat28x6 = Eigen::Matrix<T, 28, 6>;
+template <typename T>
+using TMat28x7 = Eigen::Matrix<T, 28, 7>;
+template <typename T>
+using TMat28x8 = Eigen::Matrix<T, 28, 8>;
+template <typename T>
+using TMat28x9 = Eigen::Matrix<T, 28, 9>;
+template <typename T>
+using TMat28x10 = Eigen::Matrix<T, 28, 10>;
+template <typename T>
+using TMat28x11 = Eigen::Matrix<T, 28, 11>;
+template <typename T>
+using TMat28x12 = Eigen::Matrix<T, 28, 12>;
+template <typename T>
+using TMat28x13 = Eigen::Matrix<T, 28, 13>;
+template <typename T>
+using TMat28x14 = Eigen::Matrix<T, 28, 14>;
+template <typename T>
+using TMat28x15 = Eigen::Matrix<T, 28, 15>;
+template <typename T>
+using TMat28x16 = Eigen::Matrix<T, 28, 16>;
+template <typename T>
+using TMat28x17 = Eigen::Matrix<T, 28, 17>;
+template <typename T>
+using TMat28x18 = Eigen::Matrix<T, 28, 18>;
+template <typename T>
+using TMat28x19 = Eigen::Matrix<T, 28, 19>;
+template <typename T>
+using TMat28x20 = Eigen::Matrix<T, 28, 20>;
+template <typename T>
+using TMat28x21 = Eigen::Matrix<T, 28, 21>;
+template <typename T>
+using TMat28x22 = Eigen::Matrix<T, 28, 22>;
+template <typename T>
+using TMat28x23 = Eigen::Matrix<T, 28, 23>;
+template <typename T>
+using TMat28x24 = Eigen::Matrix<T, 28, 24>;
+template <typename T>
+using TMat28x25 = Eigen::Matrix<T, 28, 25>;
+template <typename T>
+using TMat28x26 = Eigen::Matrix<T, 28, 26>;
+template <typename T>
+using TMat28x27 = Eigen::Matrix<T, 28, 27>;
+template <typename T>
+using TMat28x28 = Eigen::Matrix<T, 28, 28>;
+template <typename T>
+using TMat28x29 = Eigen::Matrix<T, 28, 29>;
+template <typename T>
+using TMat28x30 = Eigen::Matrix<T, 28, 30>;
+template <typename T>
+using TMat28x31 = Eigen::Matrix<T, 28, 31>;
+template <typename T>
+using TMat28x32 = Eigen::Matrix<T, 28, 32>;
+template <typename T>
+using TMat29x1 = Eigen::Matrix<T, 29, 1>;
+template <typename T>
+using TMat29x2 = Eigen::Matrix<T, 29, 2>;
+template <typename T>
+using TMat29x3 = Eigen::Matrix<T, 29, 3>;
+template <typename T>
+using TMat29x4 = Eigen::Matrix<T, 29, 4>;
+template <typename T>
+using TMat29x5 = Eigen::Matrix<T, 29, 5>;
+template <typename T>
+using TMat29x6 = Eigen::Matrix<T, 29, 6>;
+template <typename T>
+using TMat29x7 = Eigen::Matrix<T, 29, 7>;
+template <typename T>
+using TMat29x8 = Eigen::Matrix<T, 29, 8>;
+template <typename T>
+using TMat29x9 = Eigen::Matrix<T, 29, 9>;
+template <typename T>
+using TMat29x10 = Eigen::Matrix<T, 29, 10>;
+template <typename T>
+using TMat29x11 = Eigen::Matrix<T, 29, 11>;
+template <typename T>
+using TMat29x12 = Eigen::Matrix<T, 29, 12>;
+template <typename T>
+using TMat29x13 = Eigen::Matrix<T, 29, 13>;
+template <typename T>
+using TMat29x14 = Eigen::Matrix<T, 29, 14>;
+template <typename T>
+using TMat29x15 = Eigen::Matrix<T, 29, 15>;
+template <typename T>
+using TMat29x16 = Eigen::Matrix<T, 29, 16>;
+template <typename T>
+using TMat29x17 = Eigen::Matrix<T, 29, 17>;
+template <typename T>
+using TMat29x18 = Eigen::Matrix<T, 29, 18>;
+template <typename T>
+using TMat29x19 = Eigen::Matrix<T, 29, 19>;
+template <typename T>
+using TMat29x20 = Eigen::Matrix<T, 29, 20>;
+template <typename T>
+using TMat29x21 = Eigen::Matrix<T, 29, 21>;
+template <typename T>
+using TMat29x22 = Eigen::Matrix<T, 29, 22>;
+template <typename T>
+using TMat29x23 = Eigen::Matrix<T, 29, 23>;
+template <typename T>
+using TMat29x24 = Eigen::Matrix<T, 29, 24>;
+template <typename T>
+using TMat29x25 = Eigen::Matrix<T, 29, 25>;
+template <typename T>
+using TMat29x26 = Eigen::Matrix<T, 29, 26>;
+template <typename T>
+using TMat29x27 = Eigen::Matrix<T, 29, 27>;
+template <typename T>
+using TMat29x28 = Eigen::Matrix<T, 29, 28>;
+template <typename T>
+using TMat29x29 = Eigen::Matrix<T, 29, 29>;
+template <typename T>
+using TMat29x30 = Eigen::Matrix<T, 29, 30>;
+template <typename T>
+using TMat29x31 = Eigen::Matrix<T, 29, 31>;
+template <typename T>
+using TMat29x32 = Eigen::Matrix<T, 29, 32>;
+template <typename T>
+using TMat30x1 = Eigen::Matrix<T, 30, 1>;
+template <typename T>
+using TMat30x2 = Eigen::Matrix<T, 30, 2>;
+template <typename T>
+using TMat30x3 = Eigen::Matrix<T, 30, 3>;
+template <typename T>
+using TMat30x4 = Eigen::Matrix<T, 30, 4>;
+template <typename T>
+using TMat30x5 = Eigen::Matrix<T, 30, 5>;
+template <typename T>
+using TMat30x6 = Eigen::Matrix<T, 30, 6>;
+template <typename T>
+using TMat30x7 = Eigen::Matrix<T, 30, 7>;
+template <typename T>
+using TMat30x8 = Eigen::Matrix<T, 30, 8>;
+template <typename T>
+using TMat30x9 = Eigen::Matrix<T, 30, 9>;
+template <typename T>
+using TMat30x10 = Eigen::Matrix<T, 30, 10>;
+template <typename T>
+using TMat30x11 = Eigen::Matrix<T, 30, 11>;
+template <typename T>
+using TMat30x12 = Eigen::Matrix<T, 30, 12>;
+template <typename T>
+using TMat30x13 = Eigen::Matrix<T, 30, 13>;
+template <typename T>
+using TMat30x14 = Eigen::Matrix<T, 30, 14>;
+template <typename T>
+using TMat30x15 = Eigen::Matrix<T, 30, 15>;
+template <typename T>
+using TMat30x16 = Eigen::Matrix<T, 30, 16>;
+template <typename T>
+using TMat30x17 = Eigen::Matrix<T, 30, 17>;
+template <typename T>
+using TMat30x18 = Eigen::Matrix<T, 30, 18>;
+template <typename T>
+using TMat30x19 = Eigen::Matrix<T, 30, 19>;
+template <typename T>
+using TMat30x20 = Eigen::Matrix<T, 30, 20>;
+template <typename T>
+using TMat30x21 = Eigen::Matrix<T, 30, 21>;
+template <typename T>
+using TMat30x22 = Eigen::Matrix<T, 30, 22>;
+template <typename T>
+using TMat30x23 = Eigen::Matrix<T, 30, 23>;
+template <typename T>
+using TMat30x24 = Eigen::Matrix<T, 30, 24>;
+template <typename T>
+using TMat30x25 = Eigen::Matrix<T, 30, 25>;
+template <typename T>
+using TMat30x26 = Eigen::Matrix<T, 30, 26>;
+template <typename T>
+using TMat30x27 = Eigen::Matrix<T, 30, 27>;
+template <typename T>
+using TMat30x28 = Eigen::Matrix<T, 30, 28>;
+template <typename T>
+using TMat30x29 = Eigen::Matrix<T, 30, 29>;
+template <typename T>
+using TMat30x30 = Eigen::Matrix<T, 30, 30>;
+template <typename T>
+using TMat30x31 = Eigen::Matrix<T, 30, 31>;
+template <typename T>
+using TMat30x32 = Eigen::Matrix<T, 30, 32>;
+template <typename T>
+using TMat31x1 = Eigen::Matrix<T, 31, 1>;
+template <typename T>
+using TMat31x2 = Eigen::Matrix<T, 31, 2>;
+template <typename T>
+using TMat31x3 = Eigen::Matrix<T, 31, 3>;
+template <typename T>
+using TMat31x4 = Eigen::Matrix<T, 31, 4>;
+template <typename T>
+using TMat31x5 = Eigen::Matrix<T, 31, 5>;
+template <typename T>
+using TMat31x6 = Eigen::Matrix<T, 31, 6>;
+template <typename T>
+using TMat31x7 = Eigen::Matrix<T, 31, 7>;
+template <typename T>
+using TMat31x8 = Eigen::Matrix<T, 31, 8>;
+template <typename T>
+using TMat31x9 = Eigen::Matrix<T, 31, 9>;
+template <typename T>
+using TMat31x10 = Eigen::Matrix<T, 31, 10>;
+template <typename T>
+using TMat31x11 = Eigen::Matrix<T, 31, 11>;
+template <typename T>
+using TMat31x12 = Eigen::Matrix<T, 31, 12>;
+template <typename T>
+using TMat31x13 = Eigen::Matrix<T, 31, 13>;
+template <typename T>
+using TMat31x14 = Eigen::Matrix<T, 31, 14>;
+template <typename T>
+using TMat31x15 = Eigen::Matrix<T, 31, 15>;
+template <typename T>
+using TMat31x16 = Eigen::Matrix<T, 31, 16>;
+template <typename T>
+using TMat31x17 = Eigen::Matrix<T, 31, 17>;
+template <typename T>
+using TMat31x18 = Eigen::Matrix<T, 31, 18>;
+template <typename T>
+using TMat31x19 = Eigen::Matrix<T, 31, 19>;
+template <typename T>
+using TMat31x20 = Eigen::Matrix<T, 31, 20>;
+template <typename T>
+using TMat31x21 = Eigen::Matrix<T, 31, 21>;
+template <typename T>
+using TMat31x22 = Eigen::Matrix<T, 31, 22>;
+template <typename T>
+using TMat31x23 = Eigen::Matrix<T, 31, 23>;
+template <typename T>
+using TMat31x24 = Eigen::Matrix<T, 31, 24>;
+template <typename T>
+using TMat31x25 = Eigen::Matrix<T, 31, 25>;
+template <typename T>
+using TMat31x26 = Eigen::Matrix<T, 31, 26>;
+template <typename T>
+using TMat31x27 = Eigen::Matrix<T, 31, 27>;
+template <typename T>
+using TMat31x28 = Eigen::Matrix<T, 31, 28>;
+template <typename T>
+using TMat31x29 = Eigen::Matrix<T, 31, 29>;
+template <typename T>
+using TMat31x30 = Eigen::Matrix<T, 31, 30>;
+template <typename T>
+using TMat31x31 = Eigen::Matrix<T, 31, 31>;
+template <typename T>
+using TMat31x32 = Eigen::Matrix<T, 31, 32>;
+template <typename T>
+using TMat32x1 = Eigen::Matrix<T, 32, 1>;
+template <typename T>
+using TMat32x2 = Eigen::Matrix<T, 32, 2>;
+template <typename T>
+using TMat32x3 = Eigen::Matrix<T, 32, 3>;
+template <typename T>
+using TMat32x4 = Eigen::Matrix<T, 32, 4>;
+template <typename T>
+using TMat32x5 = Eigen::Matrix<T, 32, 5>;
+template <typename T>
+using TMat32x6 = Eigen::Matrix<T, 32, 6>;
+template <typename T>
+using TMat32x7 = Eigen::Matrix<T, 32, 7>;
+template <typename T>
+using TMat32x8 = Eigen::Matrix<T, 32, 8>;
+template <typename T>
+using TMat32x9 = Eigen::Matrix<T, 32, 9>;
+template <typename T>
+using TMat32x10 = Eigen::Matrix<T, 32, 10>;
+template <typename T>
+using TMat32x11 = Eigen::Matrix<T, 32, 11>;
+template <typename T>
+using TMat32x12 = Eigen::Matrix<T, 32, 12>;
+template <typename T>
+using TMat32x13 = Eigen::Matrix<T, 32, 13>;
+template <typename T>
+using TMat32x14 = Eigen::Matrix<T, 32, 14>;
+template <typename T>
+using TMat32x15 = Eigen::Matrix<T, 32, 15>;
+template <typename T>
+using TMat32x16 = Eigen::Matrix<T, 32, 16>;
+template <typename T>
+using TMat32x17 = Eigen::Matrix<T, 32, 17>;
+template <typename T>
+using TMat32x18 = Eigen::Matrix<T, 32, 18>;
+template <typename T>
+using TMat32x19 = Eigen::Matrix<T, 32, 19>;
+template <typename T>
+using TMat32x20 = Eigen::Matrix<T, 32, 20>;
+template <typename T>
+using TMat32x21 = Eigen::Matrix<T, 32, 21>;
+template <typename T>
+using TMat32x22 = Eigen::Matrix<T, 32, 22>;
+template <typename T>
+using TMat32x23 = Eigen::Matrix<T, 32, 23>;
+template <typename T>
+using TMat32x24 = Eigen::Matrix<T, 32, 24>;
+template <typename T>
+using TMat32x25 = Eigen::Matrix<T, 32, 25>;
+template <typename T>
+using TMat32x26 = Eigen::Matrix<T, 32, 26>;
+template <typename T>
+using TMat32x27 = Eigen::Matrix<T, 32, 27>;
+template <typename T>
+using TMat32x28 = Eigen::Matrix<T, 32, 28>;
+template <typename T>
+using TMat32x29 = Eigen::Matrix<T, 32, 29>;
+template <typename T>
+using TMat32x30 = Eigen::Matrix<T, 32, 30>;
+template <typename T>
+using TMat32x31 = Eigen::Matrix<T, 32, 31>;
+template <typename T>
+using TMat32x32 = Eigen::Matrix<T, 32, 32>;
 
 using Quat = Eigen::Quaternion<float>;
 using Mat = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>;
@@ -2227,8 +3319,8 @@ using MatImgF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowM
 using SuperpointDescriptorType = Eigen::Matrix<float, 256, 1>;
 using DiskDescriptorType = Eigen::Matrix<float, 128, 1>;
 
-}
+}  // namespace SLAM_UTILITY
 
 using namespace SLAM_UTILITY;
 
-#endif // end of _BASIC_TYPE_H_
+#endif  // end of _BASIC_TYPE_H_

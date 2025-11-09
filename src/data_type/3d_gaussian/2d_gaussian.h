@@ -46,6 +46,6 @@ private:
     RgbPixel color_;
 };
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _2D_GAUSSIAN_H_
+#endif  // end of _2D_GAUSSIAN_H_

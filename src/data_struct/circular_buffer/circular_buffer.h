@@ -1,8 +1,8 @@
 #ifndef _SLAM_UTILITY_CIRCULAR_BUFFER_H_
 #define _SLAM_UTILITY_CIRCULAR_BUFFER_H_
 
-#include "basic_type.h"
 #include "array"
+#include "basic_type.h"
 
 namespace SLAM_UTILITY {
 
@@ -125,6 +125,6 @@ void CircularBuffer<T, MaxSize>::Clear() {
     size_ = 0;
 }
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _SLAM_UTILITY_CIRCULAR_BUFFER_H_
+#endif  // end of _SLAM_UTILITY_CIRCULAR_BUFFER_H_

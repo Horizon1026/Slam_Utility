@@ -1,7 +1,7 @@
 #include "plane.h"
 #include "slam_basic_math.h"
-#include "slam_operations.h"
 #include "slam_log_reporter.h"
+#include "slam_operations.h"
 
 namespace SLAM_UTILITY {
 
@@ -9,13 +9,9 @@ namespace {
     constexpr float kMaxToleranceCosThetaForTwoVectors = 0.996f;
 }
 
-Plane3D::Plane3D(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
-    FitPlaneModel(p1, p2, p3);
-}
+Plane3D::Plane3D(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) { FitPlaneModel(p1, p2, p3); }
 
-Plane3D::Plane3D(const std::vector<Vec3> &points) {
-    FitPlaneModelLse(points);
-}
+Plane3D::Plane3D(const std::vector<Vec3> &points) { FitPlaneModelLse(points); }
 
 bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
     const Vec3 p1p2 = (p1 - p2).normalized();
@@ -25,7 +21,7 @@ bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
     RETURN_FALSE_IF(cos_theta > kMaxToleranceCosThetaForTwoVectors);
 
     param_.head<3>() = p1p2.cross(p1p3);
-    param_.tail<1>().setConstant(- param_.head<3>().dot(p1));
+    param_.tail<1>().setConstant(-param_.head<3>().dot(p1));
     param_ /= normal_vector().norm();
     num_of_points_fitting_plane_ = 3;
     return true;
@@ -45,7 +41,7 @@ bool Plane3D::FitPlaneModelLse(const std::vector<Vec3> &points) {
     // Generate plane parameters.
     const Eigen::JacobiSVD<Mat> svd(matrix_A, Eigen::ComputeFullV);
     param_.head<3>() = svd.matrixV().rightCols<1>();
-    param_(3) = - mid_point_.dot(param_.head<3>());
+    param_(3) = -mid_point_.dot(param_.head<3>());
     num_of_points_fitting_plane_ = points.size();
     return true;
 }
@@ -71,7 +67,7 @@ bool Plane3D::FitPlaneModelPca(const std::vector<Vec3> &points) {
 void Plane3D::GeneratePlaneModelParameters() {
     const Eigen::SelfAdjointEigenSolver<Mat3> eig(covariance_);
     param_.head<3>() = eig.eigenvectors().col(0);
-    param_(3) = - param_.head<3>().dot(mid_point_);
+    param_(3) = -param_.head<3>().dot(mid_point_);
 }
 
 bool Plane3D::AddNewPointToFitPlaneModel(const Vec3 &new_p_w) {
@@ -89,9 +85,7 @@ bool Plane3D::AddNewPointToFitPlaneModel(const Vec3 &new_p_w) {
 }
 
 
-float Plane3D::GetDistanceToPlane(const Vec3 &p_w) const {
-    return normal_vector().dot(p_w) + distance_to_origin();
-}
+float Plane3D::GetDistanceToPlane(const Vec3 &p_w) const { return normal_vector().dot(p_w) + distance_to_origin(); }
 
 bool Plane3D::ComputeMidPoint(const std::vector<Vec3> &points, Vec3 &mid_point) {
     RETURN_FALSE_IF(points.empty());
@@ -103,4 +97,4 @@ bool Plane3D::ComputeMidPoint(const std::vector<Vec3> &points, Vec3 &mid_point) 
     return true;
 }
 
-}
+}  // namespace SLAM_UTILITY

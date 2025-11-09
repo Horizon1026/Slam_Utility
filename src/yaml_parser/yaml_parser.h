@@ -1,10 +1,10 @@
 #ifndef _SLAM_UTILITY_YAML_PARSER_H_
 #define _SLAM_UTILITY_YAML_PARSER_H_
 
-#include "string"
-#include "vector"
-#include "unordered_map"
 #include "memory"
+#include "string"
+#include "unordered_map"
+#include "vector"
 
 namespace SLAM_UTILITY {
 
@@ -46,9 +46,8 @@ private:
     static std::string GetRootKey(const std::vector<std::string> &root_keys);
     static uint32_t GetKeyLevel(const std::string &str);
     static std::vector<std::string> GetArrayValue(const std::string &str);
-
 };
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // _SLAM_UTILITY_YAML_PARSER_H_
+#endif  // _SLAM_UTILITY_YAML_PARSER_H_

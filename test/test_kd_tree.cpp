@@ -19,7 +19,7 @@ void TestArgSort() {
         values.emplace_back(std::rand());
     }
 
-    std::vector<int32_t> indices{0, 2, 5};
+    std::vector<int32_t> indices {0, 2, 5};
     SlamOperation::ArgSort(values, indices);
 
     for (uint32_t i = 0; i < indices.size(); ++i) {
@@ -35,7 +35,7 @@ void TestArgSortVector() {
         values.emplace_back(Vec3::Random());
     }
 
-    std::vector<int32_t> indices{0, 2, 5};
+    std::vector<int32_t> indices {0, 2, 5};
     SlamOperation::ArgSortVector(values, 0, indices);
 
     for (uint32_t i = 0; i < indices.size(); ++i) {
@@ -73,7 +73,7 @@ void TestKdTreeConstruction() {
     // Visualize result.
     Visualizor3D::Clear();
     for (const auto &index: index_of_points) {
-        Visualizor3D::points().emplace_back(PointType{
+        Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[index],
             .color = RgbColor::kCyan,
             .radius = 3,
@@ -84,7 +84,7 @@ void TestKdTreeConstruction() {
     index_of_points.clear();
     kd_tree_ptr->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr(), raw_points, index_of_points);
     for (const auto &index: index_of_points) {
-        Visualizor3D::points().emplace_back(PointType{
+        Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[index],
             .color = RgbColor::kRed,
             .radius = 3,
@@ -95,7 +95,7 @@ void TestKdTreeConstruction() {
     index_of_points.clear();
     kd_tree_ptr->left_ptr()->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr()->left_ptr(), raw_points, index_of_points);
     for (const auto &index: index_of_points) {
-        Visualizor3D::points().emplace_back(PointType{
+        Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[index],
             .color = RgbColor::kYellow,
             .radius = 3,
@@ -106,7 +106,7 @@ void TestKdTreeConstruction() {
     index_of_points.clear();
     kd_tree_ptr->left_ptr()->left_ptr()->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr()->left_ptr()->left_ptr(), raw_points, index_of_points);
     for (const auto &index: index_of_points) {
-        Visualizor3D::points().emplace_back(PointType{
+        Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[index],
             .color = RgbColor::kWhite,
             .radius = 3,
@@ -148,7 +148,7 @@ void TestKdTreeSearch() {
     // Visualize result full kd-tree.
     Visualizor3D::Clear();
     for (const auto &index: index_of_points) {
-        Visualizor3D::points().emplace_back(PointType{
+        Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[index],
             .color = RgbColor::kCyan,
             .radius = 2,
@@ -165,27 +165,27 @@ void TestKdTreeSearch() {
     kd_tree_ptr->SearchCube(kd_tree_ptr, raw_points, Vec3(4.9, 5.2, 6.2), Vec3(8.1, 9.2, 8.9), result_of_cube);
 
     // Visualize target and result.
-    Visualizor3D::points().emplace_back(PointType{
+    Visualizor3D::points().emplace_back(PointType {
         .p_w = target_point,
         .color = RgbColor::kGold,
         .radius = 5,
     });
     for (const auto &pair: result_of_radius) {
-        Visualizor3D::points().emplace_back(PointType{
+        Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[pair.second],
             .color = RgbColor::kRed,
             .radius = 3,
         });
     }
     for (const auto &pair: result_of_cube) {
-        Visualizor3D::points().emplace_back(PointType{
+        Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[pair.second],
             .color = RgbColor::kOrange,
             .radius = 3,
         });
     }
     for (const auto &pair: result_of_knn) {
-        Visualizor3D::points().emplace_back(PointType{
+        Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[pair.second],
             .color = RgbColor::kRoyalBlue,
             .radius = 3,

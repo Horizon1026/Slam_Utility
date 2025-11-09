@@ -10,7 +10,8 @@ class Plane3D {
 
 public:
     Plane3D() = default;
-    explicit Plane3D(const Vec4 &param) : param_(param) {}
+    explicit Plane3D(const Vec4 &param)
+        : param_(param) {}
     explicit Plane3D(const std::vector<Vec3> &points);
     Plane3D(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3);
     virtual ~Plane3D() = default;
@@ -48,9 +49,8 @@ private:
     Mat3 covariance_ = Mat3::Zero();
     // Number of points fitting plane.
     uint32_t num_of_points_fitting_plane_ = 0;
-
 };
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _PLANE_H_
+#endif  // end of _PLANE_H_

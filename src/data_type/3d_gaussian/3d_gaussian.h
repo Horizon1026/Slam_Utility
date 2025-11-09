@@ -1,10 +1,10 @@
 #ifndef _3D_GAUSSIAN_H_
 #define _3D_GAUSSIAN_H_
 
+#include "2d_gaussian.h"
 #include "basic_type.h"
 #include "basic_type_rgbcolor.h"
 #include "spherical_harmonic.h"
-#include "2d_gaussian.h"
 
 namespace SLAM_UTILITY {
 
@@ -38,8 +38,8 @@ public:
 private:
     // Position and sigma matrix in world frame.
     Vec3 p_w_ = Vec3::Zero();
-    Vec3 sigma_s_ = Vec3::Ones();       // Scale of sigma.
-    Quat sigma_q_ = Quat::Identity();   // Rotation of sigma.
+    Vec3 sigma_s_ = Vec3::Ones();      // Scale of sigma.
+    Quat sigma_q_ = Quat::Identity();  // Rotation of sigma.
     // Opacity of mid point.
     float mid_opacity_ = 0.0f;
     // Color of mid point.
@@ -47,6 +47,6 @@ private:
     std::array<SphericalHarmonicFunc<3>, 3> sh_colors_;
 };
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _3D_GAUSSIAN_H_
+#endif  // end of _3D_GAUSSIAN_H_

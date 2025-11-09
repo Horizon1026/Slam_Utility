@@ -4,14 +4,14 @@
 #include "basic_type.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
-#include "voxels.h"
 #include "unordered_set"
+#include "voxels.h"
 
 namespace SLAM_UTILITY {
 
 /* Class BasicVoxels Declaration. */
 template <typename T>
-class BasicVoxels: public Voxels<T> {
+class BasicVoxels : public Voxels<T> {
 
 public:
     struct Options {
@@ -128,6 +128,6 @@ void BasicVoxels<T>::ClearVoxel(const std::array<int32_t, 3> &voxel_indices) {
     GetVoxel(index) = this->default_value();
 }
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _SLAM_UTILITY_BASIC_VOXELS_H_
+#endif  // end of _SLAM_UTILITY_BASIC_VOXELS_H_

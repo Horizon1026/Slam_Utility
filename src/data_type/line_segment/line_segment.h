@@ -11,7 +11,8 @@ class LineSegment2D {
 
 public:
     LineSegment2D() = default;
-    explicit LineSegment2D(const Vec4 &param) : param_(param) {}
+    explicit LineSegment2D(const Vec4 &param)
+        : param_(param) {}
     LineSegment2D(const Vec2 &xy1, const Vec2 &xy2);
     virtual ~LineSegment2D() = default;
 
@@ -54,7 +55,10 @@ class LinePlucker3D {
 
 public:
     LinePlucker3D() = default;
-    explicit LinePlucker3D(const Vec6 &param) : param_(param) { Normalize(); }
+    explicit LinePlucker3D(const Vec6 &param)
+        : param_(param) {
+        Normalize();
+    }
     explicit LinePlucker3D(const LineSegment3D &line);
     explicit LinePlucker3D(const Mat4 &dual_plucker_matrix);
     LinePlucker3D(const Vec3 &normal_vector, const Vec3 &direction_vector);
@@ -78,8 +82,10 @@ public:
     LinePlucker3D TransformTo(const Vec3 &p_wc, const Quat &q_wc) const;
     Vec3 ProjectToNormalPlane() const;
     Vec3 ProjectToImagePlane(const float fx, const float fy, const float cx, const float cy) const;
-    template <bool kLeftMulti = true> Mat6x4 LinearizeTo4Dof() const;
-    template <bool kLeftMulti = true> void UpdateParameters(const Vec4 &delta_param);
+    template <bool kLeftMulti = true>
+    Mat6x4 LinearizeTo4Dof() const;
+    template <bool kLeftMulti = true>
+    void UpdateParameters(const Vec4 &delta_param);
 
     // Reference for member variables.
     Vec6 &param() { return param_; }
@@ -93,9 +99,8 @@ private:
 private:
     // [ (3)normal vector of plane | (3)direction vector of line ].
     Vec6 param_ = Vec6::Ones();
-
 };
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _LINE_SEGMENT_H_
+#endif  // end of _LINE_SEGMENT_H_

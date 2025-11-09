@@ -17,7 +17,7 @@ namespace {
     constexpr static float kZeroFloat = 1e-6f;
     constexpr static float kZeroDouble = 1e-10f;
     constexpr static int32_t kMaxInt32 = 2147483647;
-}
+}  // namespace
 
 class Utility {
 
@@ -27,18 +27,14 @@ public:
 
     static Mat3 SkewSymmetricMatrix(const Vec3 &v) {
         Mat3 M;
-        M << 0, - v.z(), v.y(),
-             v.z(), 0, - v.x(),
-             - v.y(), v.x(), 0;
+        M << 0, -v.z(), v.y(), v.z(), 0, -v.x(), -v.y(), v.x(), 0;
         return M;
     }
 
-    template<typename Derived>
+    template <typename Derived>
     static Eigen::Matrix<typename Derived::Scalar, 3, 3> SkewSymmetricMatrix(const Eigen::MatrixBase<Derived> &v) {
         Eigen::Matrix<typename Derived::Scalar, 3, 3> ans;
-        ans << typename Derived::Scalar(0), -v(2), v(1),
-               v(2), typename Derived::Scalar(0), -v(0),
-               -v(1), v(0), typename Derived::Scalar(0);
+        ans << typename Derived::Scalar(0), -v(2), v(1), v(2), typename Derived::Scalar(0), -v(0), -v(1), v(0), typename Derived::Scalar(0);
         return ans;
     }
 
@@ -66,7 +62,7 @@ public:
     /* Compute Q_L matrix. */
     static Mat4 Qleft(const Quat &q) {
         Mat4 Q;
-        Q.template block<1, 3>(0, 1) = - q.vec().transpose();
+        Q.template block<1, 3>(0, 1) = -q.vec().transpose();
         Q.template block<3, 1>(1, 0) = q.vec();
         Q.template block<3, 3>(1, 1) = SkewSymmetricMatrix(q.vec());
         for (uint32_t i = 0; i < 4; ++i) {
@@ -80,7 +76,7 @@ public:
         Eigen::Quaternion<typename Derived::Scalar> qq = Positify(q);
         Eigen::Matrix<typename Derived::Scalar, 4, 4> ans;
         ans(0, 0) = qq.w();
-        ans.template block<1, 3>(0, 1) = - qq.vec().transpose();
+        ans.template block<1, 3>(0, 1) = -qq.vec().transpose();
         ans.template block<3, 1>(1, 0) = qq.vec();
         ans.template block<3, 3>(1, 1) = qq.w() * Eigen::Matrix<typename Derived::Scalar, 3, 3>::Identity() + SkewSymmetricMatrix(qq.vec());
         return ans;
@@ -89,9 +85,9 @@ public:
     /* Compute Q_R matrix. */
     static Mat4 Qright(const Quat &q) {
         Mat4 Q;
-        Q.template block<1, 3>(0, 1) = - q.vec().transpose();
+        Q.template block<1, 3>(0, 1) = -q.vec().transpose();
         Q.template block<3, 1>(1, 0) = q.vec();
-        Q.template block<3, 3>(1, 1) = - SkewSymmetricMatrix(q.vec());
+        Q.template block<3, 3>(1, 1) = -SkewSymmetricMatrix(q.vec());
         for (uint32_t i = 0; i < 4; ++i) {
             Q(i, i) = q.w();
         }
@@ -103,7 +99,7 @@ public:
         Eigen::Quaternion<typename Derived::Scalar> pp = Positify(p);
         Eigen::Matrix<typename Derived::Scalar, 4, 4> ans;
         ans(0, 0) = pp.w();
-        ans.template block<1, 3>(0, 1) = - pp.vec().transpose();
+        ans.template block<1, 3>(0, 1) = -pp.vec().transpose();
         ans.template block<3, 1>(1, 0) = pp.vec();
         ans.template block<3, 3>(1, 1) = pp.w() * Eigen::Matrix<typename Derived::Scalar, 3, 3>::Identity() - SkewSymmetricMatrix(pp.vec());
         return ans;
@@ -112,10 +108,10 @@ public:
     /* Transform quaternion to pitch, roll, yaw. */
     template <typename Scalar>
     static TVec3<Scalar> QuaternionToEuler(const TQuat<Scalar> &q_wb) {
-        TVec3<Scalar> pry;    // pitch, roll, yaw
+        TVec3<Scalar> pry;  // pitch, roll, yaw
         TMat3<Scalar> R(q_wb.inverse());
         pry.x() = std::atan2(R(1, 2), R(2, 2)) * kRadToDeg;
-        pry.y() = std::asin(- R(0, 2)) * kRadToDeg;
+        pry.y() = std::asin(-R(0, 2)) * kRadToDeg;
         pry.z() = std::atan2(R(0, 1), R(0, 0)) * kRadToDeg;
         return pry;
     }
@@ -123,14 +119,12 @@ public:
     /* Transform pitch, roll, yaw to quaternion. */
     template <typename Scalar>
     static TQuat<Scalar> EulerToQuaternion(const TVec3<Scalar> &pry) {
-        const TVec3<Scalar> c = TVec3<Scalar>(
-            std::cos(static_cast<Scalar>(0.5) * pry.x() * kDegToRad),
-            std::cos(static_cast<Scalar>(0.5) * pry.y() * kDegToRad),
-            std::cos(static_cast<Scalar>(0.5) * pry.z() * kDegToRad));
-        const TVec3<Scalar> s = TVec3<Scalar>(
-            std::sin(static_cast<Scalar>(0.5) * pry.x() * kDegToRad),
-            std::sin(static_cast<Scalar>(0.5) * pry.y() * kDegToRad),
-            std::sin(static_cast<Scalar>(0.5) * pry.z() * kDegToRad));
+        const TVec3<Scalar> c =
+            TVec3<Scalar>(std::cos(static_cast<Scalar>(0.5) * pry.x() * kDegToRad), std::cos(static_cast<Scalar>(0.5) * pry.y() * kDegToRad),
+                          std::cos(static_cast<Scalar>(0.5) * pry.z() * kDegToRad));
+        const TVec3<Scalar> s =
+            TVec3<Scalar>(std::sin(static_cast<Scalar>(0.5) * pry.x() * kDegToRad), std::sin(static_cast<Scalar>(0.5) * pry.y() * kDegToRad),
+                          std::sin(static_cast<Scalar>(0.5) * pry.z() * kDegToRad));
         const Scalar w = c.x() * c.y() * c.z() + s.x() * s.y() * s.z();
         const Scalar x = s.x() * c.y() * c.z() - c.x() * s.y() * s.z();
         const Scalar y = c.x() * s.y() * c.z() + s.x() * c.y() * s.z();
@@ -147,10 +141,9 @@ public:
     template <typename Scalar>
     static TMat<Scalar> Inverse(const TMat<Scalar> &A) {
         Eigen::SelfAdjointEigenSolver<TMat<Scalar>> saes(A);
-        TMat<Scalar> Ainv = saes.eigenvectors() * TVec<Scalar>(
-            (saes.eigenvalues().array() > kZeroFloat).select(
-                saes.eigenvalues().array().inverse(), 0
-            )).asDiagonal() * saes.eigenvectors().transpose();
+        TMat<Scalar> Ainv = saes.eigenvectors() *
+                            TVec<Scalar>((saes.eigenvalues().array() > kZeroFloat).select(saes.eigenvalues().array().inverse(), 0)).asDiagonal() *
+                            saes.eigenvectors().transpose();
         return Ainv;
     }
 
@@ -174,22 +167,15 @@ public:
         Scalar real_factor;
         if (theta < kZeroFloat) {
             const Scalar theta_po4 = theta_sq * theta_sq;
-            imag_factor = static_cast<Scalar>(0.5)
-                          - static_cast<Scalar>(1.0 / 48.0) * theta_sq
-                          + static_cast<Scalar>(1.0 / 3840.0) * theta_po4;
-            real_factor = static_cast<Scalar>(1)
-                          - static_cast<Scalar>(0.5) * theta_sq
-                          + static_cast<Scalar>(1.0 / 384.0) * theta_po4;
+            imag_factor = static_cast<Scalar>(0.5) - static_cast<Scalar>(1.0 / 48.0) * theta_sq + static_cast<Scalar>(1.0 / 3840.0) * theta_po4;
+            real_factor = static_cast<Scalar>(1) - static_cast<Scalar>(0.5) * theta_sq + static_cast<Scalar>(1.0 / 384.0) * theta_po4;
         } else {
             const Scalar sin_half_theta = std::sin(half_theta);
             imag_factor = sin_half_theta / theta;
             real_factor = std::cos(half_theta);
         }
 
-        return TQuat<Scalar>(real_factor,
-                             imag_factor * omega.x(),
-                             imag_factor * omega.y(),
-                             imag_factor * omega.z());
+        return TQuat<Scalar>(real_factor, imag_factor * omega.x(), imag_factor * omega.y(), imag_factor * omega.z());
     }
 
     /* Compute log of vector3. */
@@ -212,7 +198,7 @@ public:
                 if (w > static_cast<Scalar>(0)) {
                     two_atan_nbyw_by_n = kPaiDouble / n;
                 } else {
-                    two_atan_nbyw_by_n = - kPaiDouble / n;
+                    two_atan_nbyw_by_n = -kPaiDouble / n;
                 }
             } else {
                 two_atan_nbyw_by_n = static_cast<Scalar>(2) * atan(n / w) / n;
@@ -231,8 +217,8 @@ public:
         } else {
             const TVec3<Scalar> a = omega / theta;
             const TMat3<Scalar> jacobian = std::sin(theta) / theta * TMat3<Scalar>::Identity() +
-                (static_cast<Scalar>(1) - std::sin(theta) / theta) * a * a.transpose() +
-                ((static_cast<Scalar>(1) - std::cos(theta)) / theta) * Utility::SkewSymmetricMatrix(a);
+                                           (static_cast<Scalar>(1) - std::sin(theta) / theta) * a * a.transpose() +
+                                           ((static_cast<Scalar>(1) - std::cos(theta)) / theta) * Utility::SkewSymmetricMatrix(a);
             return jacobian;
         }
     }
@@ -263,7 +249,7 @@ public:
         const TMat3<Scalar> C1 = R - TMat3<Scalar>::Identity();
         const TMat3<Scalar> C2 = R + TMat3<Scalar>::Identity();
         const TMat3<Scalar> C = C1 * C2.inverse();
-        return TVec3<Scalar>(- C(1, 2), C(0, 2), - C(0, 1));
+        return TVec3<Scalar>(-C(1, 2), C(0, 2), -C(0, 1));
     }
 
     /* Convert cayley to reduced rotation matrix. */
@@ -355,8 +341,7 @@ public:
 
     /* Compute transform matrix. */
     template <typename Scalar>
-    static void ComputeTransformTransform(const TVec3<Scalar> &p_ij, const TQuat<Scalar> &q_ij,
-                                          const TVec3<Scalar> &p_jk, const TQuat<Scalar> &q_jk,
+    static void ComputeTransformTransform(const TVec3<Scalar> &p_ij, const TQuat<Scalar> &q_ij, const TVec3<Scalar> &p_jk, const TQuat<Scalar> &q_jk,
                                           TVec3<Scalar> &p_ik, TQuat<Scalar> &q_ik) {
         // T_ik = T_ij * T_jk.
         /* [R_ik  t_ik] = [R_ij  t_ij] * [R_jk  t_jk]
@@ -366,8 +351,7 @@ public:
     }
 
     template <typename Scalar>
-    static void ComputeTransformInverseTransform(const TVec3<Scalar> &p_ji, const TQuat<Scalar> &q_ji,
-                                                 const TVec3<Scalar> &p_jk, const TQuat<Scalar> &q_jk,
+    static void ComputeTransformInverseTransform(const TVec3<Scalar> &p_ji, const TQuat<Scalar> &q_ji, const TVec3<Scalar> &p_jk, const TQuat<Scalar> &q_jk,
                                                  TVec3<Scalar> &p_ik, TQuat<Scalar> &q_ik) {
         // T_ik = T_ji.inv * T_jk.
         /* [R_ik  t_ik] = [R_ji.inv  -R_ji.inv * t_ji] * [R_jk  t_jk]
@@ -378,13 +362,12 @@ public:
     }
 
     template <typename Scalar>
-    static void ComputeTransformTransformInverse(const TVec3<Scalar> &p_ij, const TQuat<Scalar> &q_ij,
-                                                 const TVec3<Scalar> &p_kj, const TQuat<Scalar> &q_kj,
+    static void ComputeTransformTransformInverse(const TVec3<Scalar> &p_ij, const TQuat<Scalar> &q_ij, const TVec3<Scalar> &p_kj, const TQuat<Scalar> &q_kj,
                                                  TVec3<Scalar> &p_ik, TQuat<Scalar> &q_ik) {
         // T_ik = T_ij * T_kj.inv.
         /* [R_ik  t_ik] = [R_ij  t_ij] * [R_kj.inv  -R_kj.inv * t_kj]
                         = [R_ij * R_kj.inv  -R_ij * R_kj.inv * t_kj + t_ij] */
-        p_ik = - (q_ij * q_kj.inverse() * p_kj) + p_ij;
+        p_ik = -(q_ij * q_kj.inverse() * p_kj) + p_ij;
         q_ik = q_ij * q_kj.inverse();
     }
 
@@ -408,9 +391,8 @@ public:
         const TVec3<Scalar> axis_angle = vec * theta;
         return Exponent(axis_angle);
     }
-
 };
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _SLAM_BASIC_MATH_H_
+#endif  // end of _SLAM_BASIC_MATH_H_

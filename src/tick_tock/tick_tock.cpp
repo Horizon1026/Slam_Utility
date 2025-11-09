@@ -9,9 +9,7 @@ float TickTock::TockTickInSecond() {
     return elapsed_seconds.count();
 }
 
-float TickTock::TockTickInMillisecond() {
-    return TockTickInSecond() * 1000.0f;
-}
+float TickTock::TockTickInMillisecond() { return TockTickInSecond() * 1000.0f; }
 
 float TickTock::TockInSecond() {
     std::chrono::time_point<std::chrono::system_clock> new_time_point = std::chrono::system_clock::now();
@@ -19,8 +17,6 @@ float TickTock::TockInSecond() {
     return elapsed_seconds.count();
 }
 
-float TickTock::TockInMillisecond() {
-    return TockInSecond() * 1000.0f;
-}
+float TickTock::TockInMillisecond() { return TockInSecond() * 1000.0f; }
 
-}
+}  // namespace SLAM_UTILITY

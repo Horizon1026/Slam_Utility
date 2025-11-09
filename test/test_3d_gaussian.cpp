@@ -1,6 +1,6 @@
 #include "datatype_image.h"
-#include "slam_operations.h"
 #include "slam_log_reporter.h"
+#include "slam_operations.h"
 
 #include "2d_gaussian.h"
 #include "3d_gaussian.h"
@@ -44,7 +44,7 @@ void TestShowOne3DGaussian() {
         for (int32_t col = 0; col < image_cols; ++col) {
             const Vec2 uv = Vec2((col - cx) / fx, (row - cy) / fy);
             const float opacity = gaussian_2d.GetOpacityAt(uv);
-            const RgbPixel pixel_color = RgbPixel{
+            const RgbPixel pixel_color = RgbPixel {
                 .r = static_cast<uint8_t>(static_cast<float>(gaussian_3d.color().r) * opacity),
                 .g = static_cast<uint8_t>(static_cast<float>(gaussian_3d.color().g) * opacity),
                 .b = static_cast<uint8_t>(static_cast<float>(gaussian_3d.color().b) * opacity),
@@ -101,8 +101,8 @@ void TestShowSeveral3DGaussian() {
     SlamOperation::ArgSort(all_gaussian_depth, indices);
     for (const auto &index: indices) {
         const auto &gaussian_2d = all_gaussian_2d[index];
-        ReportInfo(all_gaussian_2d[index].depth() << ", rgb " << static_cast<int32_t>(gaussian_2d.color().r) << " | " <<
-            static_cast<int32_t>(gaussian_2d.color().g) << " | " << static_cast<int32_t>(gaussian_2d.color().b));
+        ReportInfo(all_gaussian_2d[index].depth() << ", rgb " << static_cast<int32_t>(gaussian_2d.color().r) << " | "
+                                                  << static_cast<int32_t>(gaussian_2d.color().g) << " | " << static_cast<int32_t>(gaussian_2d.color().b));
     }
 
     // Iterate each pixel of image to compute color.
@@ -123,7 +123,7 @@ void TestShowSeveral3DGaussian() {
                 BREAK_IF(occluded_probability < 1e-3f);
             }
 
-            const RgbPixel pixel_color = RgbPixel{
+            const RgbPixel pixel_color = RgbPixel {
                 .r = static_cast<uint8_t>(std::min(255.0f, float_color.x())),
                 .g = static_cast<uint8_t>(std::min(255.0f, float_color.y())),
                 .b = static_cast<uint8_t>(std::min(255.0f, float_color.z())),

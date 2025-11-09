@@ -23,4 +23,4 @@ float CovisibleGraph<Vec3, Vec2>::ComputeResidual() {
     return summary_residual;
 }
 
-}
+}  // namespace SLAM_UTILITY

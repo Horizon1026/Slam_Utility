@@ -30,7 +30,7 @@ private:
     constexpr static uint32_t kPyramidMaxLevel = 10;
     uint32_t level_ = 0;
     GrayImage images_[kPyramidMaxLevel];
-    uint8_t *data_ = nullptr;   // This buff not store raw image.
+    uint8_t *data_ = nullptr;  // This buff not store raw image.
     bool memory_owner_ = false;
 };
 

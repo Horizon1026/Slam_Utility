@@ -35,16 +35,23 @@ public:
 
     virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices) const = 0;
     virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices, std::array<int32_t, 3> &map_indices) const = 0;
-    void ConvertLocalIndicesToGlobalIndices(const std::array<int32_t, 3> &voxel_indices, const std::array<int32_t, 3> &map_index, std::array<int32_t, 3> &global_voxel_indices) const;
+    void ConvertLocalIndicesToGlobalIndices(const std::array<int32_t, 3> &voxel_indices, const std::array<int32_t, 3> &map_index,
+                                            std::array<int32_t, 3> &global_voxel_indices) const;
 
-    uint32_t GetBufferIndex(const std::array<int32_t, 3> &voxel_indices) const { return this->GetBufferIndex(voxel_indices[0], voxel_indices[1], voxel_indices[2]); }
-    uint32_t GetBufferIndex(int32_t x, int32_t y, int32_t z) const { return static_cast<uint32_t>(z * voxel_length_[0] * voxel_length_[1] + y * voxel_length_[0] + x); }
+    uint32_t GetBufferIndex(const std::array<int32_t, 3> &voxel_indices) const {
+        return this->GetBufferIndex(voxel_indices[0], voxel_indices[1], voxel_indices[2]);
+    }
+    uint32_t GetBufferIndex(int32_t x, int32_t y, int32_t z) const {
+        return static_cast<uint32_t>(z * voxel_length_[0] * voxel_length_[1] + y * voxel_length_[0] + x);
+    }
 
     T &GetVoxel(int32_t x, int32_t y, int32_t z) { return this->GetVoxel(this->GetBufferIndex(x, y, z)); }
     T &GetVoxel(const std::array<int32_t, 3> &voxel_indices) { return this->GetVoxel(this->GetBufferIndex(voxel_indices)); }
     virtual T &GetVoxel(uint32_t index) = 0;
 
-    static bool IsSameIndices(const std::array<int32_t, 3> &indices1, const std::array<int32_t, 3> &indices2) { return indices1[0] == indices2[0] && indices1[1] == indices2[1] && indices1[2] == indices2[2]; }
+    static bool IsSameIndices(const std::array<int32_t, 3> &indices1, const std::array<int32_t, 3> &indices2) {
+        return indices1[0] == indices2[0] && indices1[1] == indices2[1] && indices1[2] == indices2[2];
+    }
 
     // Reference for member variables.
     Options &options() { return options_; }
@@ -62,7 +69,6 @@ private:
     T default_value_;
     TVec3<int32_t> voxel_length_ = TVec3<int32_t>::Zero();
     TVec3<int32_t> half_voxel_length_ = TVec3<int32_t>::Zero();
-
 };
 
 template <typename T>
@@ -99,11 +105,12 @@ void Voxels<T>::ClearVoxel(const Vec3 &position) {
 }
 
 template <typename T>
-void Voxels<T>::ConvertLocalIndicesToGlobalIndices(const std::array<int32_t, 3> &voxel_indices, const std::array<int32_t, 3> &map_index, std::array<int32_t, 3> &global_voxel_indices) const {
+void Voxels<T>::ConvertLocalIndicesToGlobalIndices(const std::array<int32_t, 3> &voxel_indices, const std::array<int32_t, 3> &map_index,
+                                                   std::array<int32_t, 3> &global_voxel_indices) const {
     for (uint32_t i = 0; i < voxel_indices.size(); ++i) {
         global_voxel_indices[i] = map_index[i] * voxel_length_[i] + voxel_indices[i];
     }
 }
 
-}
-#endif // end of _SLAM_UTILITY_VOXELS_H_
+}  // namespace SLAM_UTILITY
+#endif  // end of _SLAM_UTILITY_VOXELS_H_

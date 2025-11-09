@@ -10,7 +10,7 @@ namespace SLAM_UTILITY {
 
 /* Class HashVoxels Declaration. */
 template <typename T>
-class HashVoxels: public Voxels<T> {
+class HashVoxels : public Voxels<T> {
 
 public:
     struct Options {
@@ -113,6 +113,6 @@ void HashVoxels<T>::ClearVoxel(const std::array<int32_t, 3> &voxel_indices) {
     GetVoxel(index) = this->default_value();
 }
 
-}
+}  // namespace SLAM_UTILITY
 
-#endif // end of _SLAM_UTILITY_HASH_VOXELS_H_
+#endif  // end of _SLAM_UTILITY_HASH_VOXELS_H_
