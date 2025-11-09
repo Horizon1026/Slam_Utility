@@ -1,6 +1,6 @@
 #include "covisible_graph.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 // Compute summary of reprojection residual.
 template <>
@@ -23,4 +23,4 @@ float CovisibleGraph<Vec3, Vec2>::ComputeResidual() {
     return summary_residual;
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

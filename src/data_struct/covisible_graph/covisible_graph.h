@@ -11,7 +11,7 @@
 #include "deque"
 #include "unordered_map"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class Covisible Graph Declaration. */
 template <typename FeatureParamType, typename FeatureObserveType>
@@ -423,6 +423,6 @@ void CovisibleGraph<FeatureParamType, FeatureObserveType>::RemoveFrameNeedRemove
     }
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SLAM_UTILITY_COVISIBLE_GRAPH_H_

@@ -2,7 +2,7 @@
 #include "line_segment.h"
 #include "slam_log_reporter.h"
 
-using namespace SLAM_UTILITY;
+using namespace slam_utility;
 
 void TestTranslationOfPlucker() {
     ReportColorInfo(">> Test translation of plucker line.");

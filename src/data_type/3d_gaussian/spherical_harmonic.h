@@ -4,7 +4,7 @@
 #include "basic_type.h"
 #include "basic_type_rgbcolor.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class SphericalHarmonicFunc Declaration. */
 template <uint32_t Order>
@@ -35,6 +35,6 @@ float SphericalHarmonicFunc<Order>::GetColorInFloat(const Vec3 &p_wf, const Vec3
     return GetColorInFloat(dir.normalized());
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SPHERICAL_HARMONIC_H_

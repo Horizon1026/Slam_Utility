@@ -2,7 +2,7 @@
 #include "plane.h"
 #include "slam_log_reporter.h"
 
-using namespace SLAM_UTILITY;
+using namespace slam_utility;
 
 void TestComputePlaneModelWithThreePoints() {
     ReportColorInfo(">> Test plane fitting with three points.");

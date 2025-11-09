@@ -2,7 +2,7 @@
 #include "slam_basic_math.h"
 #include "slam_operations.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gaussian_2d) const {
     // Compute mid point for 2d gaussian.
@@ -40,4 +40,4 @@ void Gaussian3D::ProjectTo2D(const Vec3 &p_wc, const Quat &q_wc, Gaussian2D &gau
     gaussian_2d.color() = color;
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

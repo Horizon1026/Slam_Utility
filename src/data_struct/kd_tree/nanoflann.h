@@ -2427,7 +2427,7 @@ struct KDTreeVectorOfVectorsAdaptor {
 }  // namespace nanoflann
 
 #include "basic_type.h"
-namespace SLAM_UTILITY {
+namespace slam_utility {
 using NanoFlannKdTree = nanoflann::KDTreeVectorOfVectorsAdaptor<std::vector<Vec3>, float>;
 }
 

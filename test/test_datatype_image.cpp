@@ -6,7 +6,7 @@
 #include "slam_operations.h"
 #include "visualizor_2d.h"
 
-using namespace SLAM_VISUALIZOR;
+using namespace slam_visualizor;
 
 std::string test_image_file_name = "../examples/image.png";
 

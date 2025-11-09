@@ -4,7 +4,7 @@
 #include "basic_type.h"
 #include "unordered_map"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 // Define feature point to be [x, y, 1], and only store [x, y].
 using VisualPointFeatureObserve = Vec2;
@@ -14,6 +14,6 @@ using VisualPointFeatureObserveMultiView = std::unordered_map<int32_t, Vec2>;
 using VisualLineFeatureObserve = Vec6;
 using VisualLineFeatureObserveMultiView = std::unordered_map<int32_t, Vec6>;
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SENSOR_UTILITY_VISUAL_OBSERVE_H_

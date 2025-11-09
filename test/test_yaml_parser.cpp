@@ -3,7 +3,7 @@
 #include "slam_log_reporter.h"
 #include "yaml_parser.h"
 
-using namespace SLAM_UTILITY;
+using namespace slam_utility;
 
 
 int main() {

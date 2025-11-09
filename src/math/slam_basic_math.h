@@ -3,7 +3,7 @@
 
 #include "basic_type.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 namespace {
     constexpr static float kPai = 3.14159265358979323846f;
@@ -393,6 +393,6 @@ public:
     }
 };
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SLAM_BASIC_MATH_H_

@@ -3,7 +3,7 @@
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 namespace {
     constexpr float kMaxToleranceCosThetaForTwoVectors = 0.996f;
@@ -97,4 +97,4 @@ bool Plane3D::ComputeMidPoint(const std::vector<Vec3> &points, Vec3 &mid_point) 
     return true;
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

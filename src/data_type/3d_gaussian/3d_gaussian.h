@@ -6,7 +6,7 @@
 #include "basic_type_rgbcolor.h"
 #include "spherical_harmonic.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class Gaussian3D Declaration. */
 class Gaussian3D {
@@ -47,6 +47,6 @@ private:
     std::array<SphericalHarmonicFunc<3>, 3> sh_colors_;
 };
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _3D_GAUSSIAN_H_

@@ -1,7 +1,7 @@
 #include "slam_operations.h"
 #include "dirent.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 bool SlamOperation::GetFilesNameInDirectory(const std::string &dir, std::vector<std::string> &filenames) {
     DIR *ptr_dir;
@@ -24,4 +24,4 @@ bool SlamOperation::GetFilesNameInDirectory(const std::string &dir, std::vector<
     return true;
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

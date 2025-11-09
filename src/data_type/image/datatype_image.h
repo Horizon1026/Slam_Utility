@@ -5,7 +5,7 @@
 #include "basic_type_rgbcolor.h"
 #include "cmath"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class GrayImage Declaration */
 class GrayImage {
@@ -147,6 +147,6 @@ private:
     bool memory_owner_ = false;
 };
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _DATATYPE_IMAGE_H_

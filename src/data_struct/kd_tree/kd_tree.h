@@ -9,7 +9,7 @@
 #include "memory"
 #include "vector"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Options of KD-Tree. */
 struct OptionsOfKdTree {
@@ -308,6 +308,6 @@ void KdTreeNode<Scalar, Dimension>::InformationRecursion() {
     }
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SLAM_UTILITY_KD_TREE_H_

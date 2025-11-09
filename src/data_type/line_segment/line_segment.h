@@ -4,7 +4,7 @@
 #include "basic_type.h"
 #include "slam_basic_math.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class LineSegment2D Declaration. */
 class LineSegment2D {
@@ -101,6 +101,6 @@ private:
     Vec6 param_ = Vec6::Ones();
 };
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _LINE_SEGMENT_H_

@@ -6,7 +6,7 @@
 #include <eigen3/unsupported/Eigen/FFT>
 #include <eigen3/unsupported/Eigen/Polynomials>
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 using uint8_t = unsigned char;
 using uint16_t = unsigned short;
@@ -3319,8 +3319,8 @@ using MatImgF = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowM
 using SuperpointDescriptorType = Eigen::Matrix<float, 256, 1>;
 using DiskDescriptorType = Eigen::Matrix<float, 128, 1>;
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
-using namespace SLAM_UTILITY;
+using namespace slam_utility;
 
 #endif  // end of _BASIC_TYPE_H_

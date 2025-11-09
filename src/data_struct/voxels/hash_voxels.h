@@ -6,7 +6,7 @@
 #include "slam_operations.h"
 #include "voxels.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class HashVoxels Declaration. */
 template <typename T>
@@ -113,6 +113,6 @@ void HashVoxels<T>::ClearVoxel(const std::array<int32_t, 3> &voxel_indices) {
     GetVoxel(index) = this->default_value();
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SLAM_UTILITY_HASH_VOXELS_H_

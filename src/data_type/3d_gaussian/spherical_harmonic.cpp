@@ -1,7 +1,7 @@
 #include "spherical_harmonic.h"
 #include "slam_operations.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 namespace {
     constexpr std::array<float, 1> kC0 = std::array<float, 1> {0.28209479177387814};
@@ -83,4 +83,4 @@ float SphericalHarmonicFunc<3>::GetColorInFloat(const Vec3 &direction) const {
     return color;
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

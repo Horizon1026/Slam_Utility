@@ -6,7 +6,7 @@
 #include "unordered_map"
 #include "vector"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class YamlParser Declaration. */
 class YamlParser final {
@@ -48,6 +48,6 @@ private:
     static std::vector<std::string> GetArrayValue(const std::string &str);
 };
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // _SLAM_UTILITY_YAML_PARSER_H_

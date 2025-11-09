@@ -7,8 +7,8 @@
 
 #include "visualizor_2d.h"
 
-using namespace SLAM_UTILITY;
-using namespace SLAM_VISUALIZOR;
+using namespace slam_utility;
+using namespace slam_visualizor;
 
 constexpr int32_t image_rows = 1000;
 constexpr int32_t image_cols = 1000;

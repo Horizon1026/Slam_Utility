@@ -6,7 +6,7 @@
 
 #include "unordered_map"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class Visual Frame Declaration. */
 template <typename FeatureType>
@@ -98,6 +98,6 @@ void VisualFrame<FeatureType>::SimpleInformation() const {
                                                       << features_.size());
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SENSOR_UTILITY_VISUAL_FRAME_H_

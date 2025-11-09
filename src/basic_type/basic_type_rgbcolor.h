@@ -3,7 +3,7 @@
 
 #include "basic_type.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 // Rgb image element definition.
 struct RgbPixel {
@@ -96,6 +96,6 @@ private:
     static std::vector<RgbPixel> colors_pool_;
 };
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _BASIC_TYPE_RGBCOLOR_H_

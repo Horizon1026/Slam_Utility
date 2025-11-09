@@ -3,7 +3,7 @@
 
 #include "basic_type.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 #define RETURN_FALSE_IF_FALSE(...)                                                                                                                             \
     if ((__VA_ARGS__) == false) {                                                                                                                              \
@@ -131,6 +131,6 @@ public:
     }
 };
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif

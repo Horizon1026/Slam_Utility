@@ -7,7 +7,7 @@
 #include "unordered_set"
 #include "voxels.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class BasicVoxels Declaration. */
 template <typename T>
@@ -128,6 +128,6 @@ void BasicVoxels<T>::ClearVoxel(const std::array<int32_t, 3> &voxel_indices) {
     GetVoxel(index) = this->default_value();
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SLAM_UTILITY_BASIC_VOXELS_H_

@@ -2,7 +2,7 @@
 #include "circular_buffer.h"
 #include "slam_log_reporter.h"
 
-using namespace SLAM_UTILITY;
+using namespace slam_utility;
 
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test circular buffer." RESET_COLOR);

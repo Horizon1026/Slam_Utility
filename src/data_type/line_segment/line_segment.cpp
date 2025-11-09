@@ -3,7 +3,7 @@
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 LineSegment2D::LineSegment2D(const Vec2 &xy1, const Vec2 &xy2) {
     param_.head<2>() = xy1;
@@ -175,4 +175,4 @@ void LinePlucker3D::UpdateParameters<false>(const Vec4 &delta_param) {
     Normalize();
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

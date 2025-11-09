@@ -6,8 +6,8 @@
 
 #include "kd_tree.h"
 
-using namespace SLAM_UTILITY;
-using namespace SLAM_VISUALIZOR;
+using namespace slam_utility;
+using namespace slam_visualizor;
 
 constexpr int32_t kNumOfPointsInOneDimension = 10;
 

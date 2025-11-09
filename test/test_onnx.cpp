@@ -5,8 +5,8 @@
 #include "tick_tock.h"
 #include "visualizor_2d.h"
 
-using namespace SLAM_UTILITY;
-using namespace SLAM_VISUALIZOR;
+using namespace slam_utility;
+using namespace slam_visualizor;
 
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test onnx run time." RESET_COLOR);

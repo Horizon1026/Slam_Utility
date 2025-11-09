@@ -5,7 +5,7 @@
 #include "memory"
 #include "vector"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Forward Declaration of ObjectPool. */
 template <typename T>
@@ -73,6 +73,6 @@ ObjectPtr<T> ObjectPool<T>::Get() {
     return ObjectPtr<T>(ptr, PoolDeleter<T>(this));
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SLAM_UTILITY_OBJECT_POOL_H_

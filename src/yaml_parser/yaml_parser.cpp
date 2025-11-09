@@ -6,7 +6,7 @@
 #include "sstream"
 #include "stdexcept"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 YamlParser::ConfigMap YamlParser::ParseFile(const std::string &file_path) {
     std::string content;
@@ -371,4 +371,4 @@ double YamlParser::ToDouble(const std::string &str) {
     }
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

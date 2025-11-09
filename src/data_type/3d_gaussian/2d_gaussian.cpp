@@ -2,7 +2,7 @@
 #include "slam_basic_math.h"
 #include "slam_operations.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 float Gaussian2D::GetOpacityAt(const Vec2 &uv) const { return GetOpacityAt(uv, sigma_.inverse()); }
 
@@ -17,4 +17,4 @@ float Gaussian2D::GetPowerAt(const Vec2 &uv, const Mat2 &inv_sigma) const {
     return power;
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

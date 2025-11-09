@@ -4,7 +4,7 @@
 #include "basic_type.h"
 #include "slam_log_reporter.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 enum FeatureSolvedStatus : uint8_t {
     kUnsolved = 0,
@@ -68,6 +68,6 @@ void VisualFeature<ParamType, ObserveType>::Information() const {
                                                           << static_cast<int32_t>(status_));
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SENSOR_UTILITY_VISUAL_FEATURE_H_

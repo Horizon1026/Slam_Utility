@@ -4,7 +4,7 @@
 #include "basic_type.h"
 #include "basic_type_rgbcolor.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class Gaussian2D Declaration. */
 class Gaussian2D {
@@ -46,6 +46,6 @@ private:
     RgbPixel color_;
 };
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _2D_GAUSSIAN_H_

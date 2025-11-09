@@ -1,6 +1,6 @@
 #include "basic_type_rgbcolor.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 // Typical color definition.
 RgbPixel RgbColor::kPink = RgbPixel {.r = 255, .g = 192, .b = 203};
@@ -41,4 +41,4 @@ std::vector<RgbPixel> RgbColor::colors_pool_ = std::vector<RgbPixel> {
     RgbColor::kOrangeRed, RgbColor::kRed,    RgbColor::kDarkRed,     RgbColor::kBrown,
 };
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

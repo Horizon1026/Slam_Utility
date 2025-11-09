@@ -4,7 +4,7 @@
 #include "array"
 #include "basic_type.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class Circular Buffer Declaration. */
 template <typename T, uint32_t MaxSize>
@@ -125,6 +125,6 @@ void CircularBuffer<T, MaxSize>::Clear() {
     size_ = 0;
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
 #endif  // end of _SLAM_UTILITY_CIRCULAR_BUFFER_H_

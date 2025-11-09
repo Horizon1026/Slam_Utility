@@ -1,6 +1,6 @@
 #include "tick_tock.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 float TickTock::TockTickInSecond() {
     std::chrono::time_point<std::chrono::system_clock> new_time_point = std::chrono::system_clock::now();
@@ -19,4 +19,4 @@ float TickTock::TockInSecond() {
 
 float TickTock::TockInMillisecond() { return TockInSecond() * 1000.0f; }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

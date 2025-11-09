@@ -5,7 +5,7 @@
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 /* Class Voxels Declaration. */
 template <typename T>
@@ -112,5 +112,5 @@ void Voxels<T>::ConvertLocalIndicesToGlobalIndices(const std::array<int32_t, 3> 
     }
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 #endif  // end of _SLAM_UTILITY_VOXELS_H_

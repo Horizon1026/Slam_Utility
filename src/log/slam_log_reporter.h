@@ -6,7 +6,7 @@
 
 #define STD_COUT_INFO (1)
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 #define RESET_COLOR "\033[0m"
 #define BLACK "\033[30m"
@@ -64,8 +64,8 @@ namespace SLAM_UTILITY {
 #define ReportColorError(...)
 #endif
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility
 
-using namespace SLAM_UTILITY;
+using namespace slam_utility;
 
 #endif  // end of _SLAM_LOG_REPORTER_H_

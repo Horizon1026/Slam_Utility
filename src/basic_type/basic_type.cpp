@@ -1,7 +1,7 @@
 #include "basic_type.h"
 #include "iostream"
 
-namespace SLAM_UTILITY {
+namespace slam_utility {
 
 void PrintBasicType() {
     int32_t max_size = 32;
@@ -17,4 +17,4 @@ void PrintBasicType() {
     }
 }
 
-}  // namespace SLAM_UTILITY
+}  // namespace slam_utility

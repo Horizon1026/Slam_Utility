@@ -3,7 +3,7 @@
 #include "slam_log_reporter.h"
 #include "vector"
 
-using namespace SLAM_UTILITY;
+using namespace slam_utility;
 
 void TestTangentBase() {
     ReportColorInfo(">> Test Utility::TangentBase()");
