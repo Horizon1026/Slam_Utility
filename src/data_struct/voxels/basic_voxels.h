@@ -11,7 +11,7 @@ namespace slam_utility {
 
 /* Class BasicVoxels Declaration. */
 template <typename T>
-class BasicVoxels : public Voxels<T> {
+class BasicVoxels: public Voxels<T> {
 
 public:
     struct Options {

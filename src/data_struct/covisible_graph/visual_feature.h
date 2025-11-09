@@ -18,8 +18,7 @@ class VisualFeature {
 
 public:
     VisualFeature() = delete;
-    explicit VisualFeature(uint32_t id)
-        : id_(id) {}
+    explicit VisualFeature(uint32_t id): id_(id) {}
     virtual ~VisualFeature() = default;
 
     void Information() const;

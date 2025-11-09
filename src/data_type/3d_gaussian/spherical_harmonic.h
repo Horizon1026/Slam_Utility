@@ -12,8 +12,7 @@ class SphericalHarmonicFunc {
 
 public:
     SphericalHarmonicFunc() = default;
-    explicit SphericalHarmonicFunc(const Vec16 &coeff)
-        : coeff_(coeff) {}
+    explicit SphericalHarmonicFunc(const Vec16 &coeff): coeff_(coeff) {}
     virtual ~SphericalHarmonicFunc() = default;
 
     float GetColorInFloat(const Vec3 &p_wf, const Vec3 &p_wc) const;

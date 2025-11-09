@@ -10,8 +10,7 @@ class Plane3D {
 
 public:
     Plane3D() = default;
-    explicit Plane3D(const Vec4 &param)
-        : param_(param) {}
+    explicit Plane3D(const Vec4 &param): param_(param) {}
     explicit Plane3D(const std::vector<Vec3> &points);
     Plane3D(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3);
     virtual ~Plane3D() = default;

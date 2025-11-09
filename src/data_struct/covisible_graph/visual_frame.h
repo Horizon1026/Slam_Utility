@@ -14,8 +14,7 @@ class VisualFrame {
 
 public:
     VisualFrame() = default;
-    explicit VisualFrame(uint32_t id)
-        : id_(id) {}
+    explicit VisualFrame(uint32_t id): id_(id) {}
     virtual ~VisualFrame() = default;
 
     void Information() const;

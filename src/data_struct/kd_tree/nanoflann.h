@@ -92,16 +92,16 @@ T pi_const() {
  * method)
  */
 template <typename T, typename = int>
-struct has_resize : std::false_type {};
+struct has_resize: std::false_type {};
 
 template <typename T>
-struct has_resize<T, decltype((void)std::declval<T>().resize(1), 0)> : std::true_type {};
+struct has_resize<T, decltype((void)std::declval<T>().resize(1), 0)>: std::true_type {};
 
 template <typename T, typename = int>
-struct has_assign : std::false_type {};
+struct has_assign: std::false_type {};
 
 template <typename T>
-struct has_assign<T, decltype((void)std::declval<T>().assign(1, 0), 0)> : std::true_type {};
+struct has_assign<T, decltype((void)std::declval<T>().assign(1, 0), 0)>: std::true_type {};
 
 /**
  * Free function to resize a resizable object
@@ -158,9 +158,7 @@ struct IndexDist_Sorter {
 template <typename IndexType = size_t, typename DistanceType = double>
 struct ResultItem {
     ResultItem() = default;
-    ResultItem(const IndexType index, const DistanceType distance)
-        : first(index)
-        , second(distance) {}
+    ResultItem(const IndexType index, const DistanceType distance): first(index), second(distance) {}
 
     IndexType first;      //!< Index of the sample in the dataset
     DistanceType second;  //!< Distance from sample to query point
@@ -184,11 +182,7 @@ private:
     CountType count;
 
 public:
-    explicit KNNResultSet(CountType capacity_)
-        : indices(nullptr)
-        , dists(nullptr)
-        , capacity(capacity_)
-        , count(0) {}
+    explicit KNNResultSet(CountType capacity_): indices(nullptr), dists(nullptr), capacity(capacity_), count(0) {}
 
     void init(IndexType *indices_, DistanceType *dists_) {
         indices = indices_;
@@ -258,12 +252,8 @@ private:
     DistanceType maximumSearchDistanceSquared;
 
 public:
-    explicit RKNNResultSet(CountType capacity_, DistanceType maximumSearchDistanceSquared_)
-        : indices(nullptr)
-        , dists(nullptr)
-        , capacity(capacity_)
-        , count(0)
-        , maximumSearchDistanceSquared(maximumSearchDistanceSquared_) {}
+    explicit RKNNResultSet(CountType capacity_, DistanceType maximumSearchDistanceSquared_):
+        indices(nullptr), dists(nullptr), capacity(capacity_), count(0), maximumSearchDistanceSquared(maximumSearchDistanceSquared_) {}
 
     void init(IndexType *indices_, DistanceType *dists_) {
         indices = indices_;
@@ -333,9 +323,8 @@ public:
 
     std::vector<ResultItem<IndexType, DistanceType>> &m_indices_dists;
 
-    explicit RadiusResultSet(DistanceType radius_, std::vector<ResultItem<IndexType, DistanceType>> &indices_dists)
-        : radius(radius_)
-        , m_indices_dists(indices_dists) {
+    explicit RadiusResultSet(DistanceType radius_, std::vector<ResultItem<IndexType, DistanceType>> &indices_dists):
+        radius(radius_), m_indices_dists(indices_dists) {
         init();
     }
 
@@ -427,8 +416,7 @@ struct L1_Adaptor {
 
     const DataSource &data_source;
 
-    L1_Adaptor(const DataSource &_data_source)
-        : data_source(_data_source) {}
+    L1_Adaptor(const DataSource &_data_source): data_source(_data_source) {}
 
     DistanceType evalMetric(const T *a, const IndexType b_idx, size_t size, DistanceType worst_dist = -1) const {
         DistanceType result = DistanceType();
@@ -479,8 +467,7 @@ struct L2_Adaptor {
 
     const DataSource &data_source;
 
-    L2_Adaptor(const DataSource &_data_source)
-        : data_source(_data_source) {}
+    L2_Adaptor(const DataSource &_data_source): data_source(_data_source) {}
 
     DistanceType evalMetric(const T *a, const IndexType b_idx, size_t size, DistanceType worst_dist = -1) const {
         DistanceType result = DistanceType();
@@ -532,8 +519,7 @@ struct L2_Simple_Adaptor {
 
     const DataSource &data_source;
 
-    L2_Simple_Adaptor(const DataSource &_data_source)
-        : data_source(_data_source) {}
+    L2_Simple_Adaptor(const DataSource &_data_source): data_source(_data_source) {}
 
     DistanceType evalMetric(const T *a, const IndexType b_idx, size_t size) const {
         DistanceType result = DistanceType();
@@ -567,8 +553,7 @@ struct SO2_Adaptor {
 
     const DataSource &data_source;
 
-    SO2_Adaptor(const DataSource &_data_source)
-        : data_source(_data_source) {}
+    SO2_Adaptor(const DataSource &_data_source): data_source(_data_source) {}
 
     DistanceType evalMetric(const T *a, const IndexType b_idx, size_t size) const {
         return accum_dist(a[size - 1], data_source.kdtree_get_pt(b_idx, size - 1), size - 1);
@@ -606,8 +591,7 @@ struct SO3_Adaptor {
 
     L2_Simple_Adaptor<T, DataSource, DistanceType, IndexType> distance_L2_Simple;
 
-    SO3_Adaptor(const DataSource &_data_source)
-        : distance_L2_Simple(_data_source) {}
+    SO3_Adaptor(const DataSource &_data_source): distance_L2_Simple(_data_source) {}
 
     DistanceType evalMetric(const T *a, const IndexType b_idx, size_t size) const { return distance_L2_Simple.evalMetric(a, b_idx, size); }
 
@@ -618,7 +602,7 @@ struct SO3_Adaptor {
 };
 
 /** Metaprogramming helper traits class for the L1 (Manhattan) metric */
-struct metric_L1 : public Metric {
+struct metric_L1: public Metric {
     template <class T, class DataSource, typename IndexType = uint32_t>
     struct traits {
         using distance_t = L1_Adaptor<T, DataSource, T, IndexType>;
@@ -626,7 +610,7 @@ struct metric_L1 : public Metric {
 };
 /** Metaprogramming helper traits class for the L2 (Euclidean) **squared**
  * distance metric */
-struct metric_L2 : public Metric {
+struct metric_L2: public Metric {
     template <class T, class DataSource, typename IndexType = uint32_t>
     struct traits {
         using distance_t = L2_Adaptor<T, DataSource, T, IndexType>;
@@ -634,21 +618,21 @@ struct metric_L2 : public Metric {
 };
 /** Metaprogramming helper traits class for the L2_simple (Euclidean)
  * **squared** distance metric */
-struct metric_L2_Simple : public Metric {
+struct metric_L2_Simple: public Metric {
     template <class T, class DataSource, typename IndexType = uint32_t>
     struct traits {
         using distance_t = L2_Simple_Adaptor<T, DataSource, T, IndexType>;
     };
 };
 /** Metaprogramming helper traits class for the SO3_InnerProdQuat metric */
-struct metric_SO2 : public Metric {
+struct metric_SO2: public Metric {
     template <class T, class DataSource, typename IndexType = uint32_t>
     struct traits {
         using distance_t = SO2_Adaptor<T, DataSource, T, IndexType>;
     };
 };
 /** Metaprogramming helper traits class for the SO3_InnerProdQuat metric */
-struct metric_SO3 : public Metric {
+struct metric_SO3: public Metric {
     template <class T, class DataSource, typename IndexType = uint32_t>
     struct traits {
         using distance_t = SO3_Adaptor<T, DataSource, T, IndexType>;
@@ -670,10 +654,7 @@ inline std::underlying_type<KDTreeSingleIndexAdaptorFlags>::type operator&(KDTre
 /**  Parameters (see README.md) */
 struct KDTreeSingleIndexAdaptorParams {
     KDTreeSingleIndexAdaptorParams(size_t _leaf_max_size = 10, KDTreeSingleIndexAdaptorFlags _flags = KDTreeSingleIndexAdaptorFlags::None,
-                                   unsigned int _n_thread_build = 1)
-        : leaf_max_size(_leaf_max_size)
-        , flags(_flags)
-        , n_thread_build(_n_thread_build) {}
+                                   unsigned int _n_thread_build = 1): leaf_max_size(_leaf_max_size), flags(_flags), n_thread_build(_n_thread_build) {}
 
     size_t leaf_max_size;
     KDTreeSingleIndexAdaptorFlags flags;
@@ -682,9 +663,7 @@ struct KDTreeSingleIndexAdaptorParams {
 
 /** Search options for KDTreeSingleIndexAdaptor::findNeighbors() */
 struct SearchParameters {
-    SearchParameters(float eps_ = 0, bool sorted_ = true)
-        : eps(eps_)
-        , sorted(sorted_) {}
+    SearchParameters(float eps_ = 0, bool sorted_ = true): eps(eps_), sorted(sorted_) {}
 
     float eps;    //!< search for eps-approximate neighbours (default: 0)
     bool sorted;  //!< only for radius search, require neighbours sorted by
@@ -1384,17 +1363,12 @@ public:
      */
     template <class... Args>
     explicit KDTreeSingleIndexAdaptor(const Dimension dimensionality, const DatasetAdaptor &inputData, const KDTreeSingleIndexAdaptorParams &params,
-                                      Args &&...args)
-        : dataset_(inputData)
-        , indexParams(params)
-        , distance_(inputData, std::forward<Args>(args)...) {
+                                      Args &&...args): dataset_(inputData), indexParams(params), distance_(inputData, std::forward<Args>(args)...) {
         init(dimensionality, params);
     }
 
-    explicit KDTreeSingleIndexAdaptor(const Dimension dimensionality, const DatasetAdaptor &inputData, const KDTreeSingleIndexAdaptorParams &params = {})
-        : dataset_(inputData)
-        , indexParams(params)
-        , distance_(inputData) {
+    explicit KDTreeSingleIndexAdaptor(const Dimension dimensionality, const DatasetAdaptor &inputData, const KDTreeSingleIndexAdaptorParams &params = {}):
+        dataset_(inputData), indexParams(params), distance_(inputData) {
         init(dimensionality, params);
     }
 
@@ -1783,11 +1757,8 @@ public:
      * @param params Basically, the maximum leaf node size
      */
     KDTreeSingleIndexDynamicAdaptor_(const Dimension dimensionality, const DatasetAdaptor &inputData, std::vector<int> &treeIndex,
-                                     const KDTreeSingleIndexAdaptorParams &params = KDTreeSingleIndexAdaptorParams())
-        : dataset_(inputData)
-        , index_params_(params)
-        , treeIndex_(treeIndex)
-        , distance_(inputData) {
+                                     const KDTreeSingleIndexAdaptorParams &params = KDTreeSingleIndexAdaptorParams()):
+        dataset_(inputData), index_params_(params), treeIndex_(treeIndex), distance_(inputData) {
         Base::size_ = 0;
         Base::size_at_index_build_ = 0;
         for (auto &v: Base::root_bbox_)
@@ -2136,10 +2107,7 @@ public:
      */
     explicit KDTreeSingleIndexDynamicAdaptor(const int dimensionality, const DatasetAdaptor &inputData,
                                              const KDTreeSingleIndexAdaptorParams &params = KDTreeSingleIndexAdaptorParams(),
-                                             const size_t maximumPointCount = 1000000000U)
-        : dataset_(inputData)
-        , index_params_(params)
-        , distance_(inputData) {
+                                             const size_t maximumPointCount = 1000000000U): dataset_(inputData), index_params_(params), distance_(inputData) {
         treeCount_ = static_cast<size_t>(std::log2(maximumPointCount)) + 1;
         pointCount_ = 0U;
         dim_ = dimensionality;
@@ -2268,8 +2236,7 @@ struct KDTreeEigenMatrixAdaptor {
 
     /// Constructor: takes a const ref to the matrix object with the data points
     explicit KDTreeEigenMatrixAdaptor(const Dimension dimensionality, const std::reference_wrapper<const MatrixType> &mat, const int leaf_max_size = 10,
-                                      const unsigned int n_thread_build = 1)
-        : m_data_matrix(mat) {
+                                      const unsigned int n_thread_build = 1): m_data_matrix(mat) {
         const auto dims = row_major ? mat.get().cols() : mat.get().rows();
         if (static_cast<Dimension>(dims) != dimensionality)
             throw std::runtime_error("Error: 'dimensionality' must match column count in data "
@@ -2371,8 +2338,7 @@ struct KDTreeVectorOfVectorsAdaptor {
     /// Constructor: takes a const ref to the vector of vectors object with the
     /// data points
     KDTreeVectorOfVectorsAdaptor(const size_t /* dimensionality */, const VectorOfVectorsType &mat, const int leaf_max_size = 10,
-                                 const unsigned int n_thread_build = 1)
-        : m_data(mat) {
+                                 const unsigned int n_thread_build = 1): m_data(mat) {
         assert(mat.size() != 0 && mat[0].size() != 0);
         const size_t dims = mat[0].size();
         if (DIM > 0 && static_cast<int>(dims) != DIM)

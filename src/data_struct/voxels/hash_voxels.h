@@ -10,7 +10,7 @@ namespace slam_utility {
 
 /* Class HashVoxels Declaration. */
 template <typename T>
-class HashVoxels : public Voxels<T> {
+class HashVoxels: public Voxels<T> {
 
 public:
     struct Options {

@@ -1,8 +1,7 @@
 #include "datatype_image_pyramid.h"
 #include "slam_memory.h"
 
-ImagePyramid::ImagePyramid(uint32_t level, GrayImage *raw_image)
-    : level_(level) {
+ImagePyramid::ImagePyramid(uint32_t level, GrayImage *raw_image): level_(level) {
     level_ = std::min(std::max(level, static_cast<uint32_t>(0)), kPyramidMaxLevel - 1);
     SetRawImage(raw_image);
 }

@@ -14,8 +14,7 @@ class ObjectPool;
 /* Class PoolDeleter Declaration and Definition. */
 template <typename T>
 struct PoolDeleter {
-    explicit PoolDeleter(ObjectPool<T> *p = nullptr)
-        : pool(p) {}
+    explicit PoolDeleter(ObjectPool<T> *p = nullptr): pool(p) {}
 
     // Define the same operation of 'Delete' for ObjectPool.
     void operator()(T *ptr) {
@@ -52,8 +51,7 @@ private:
 
 /* Class ObjectPool Definition. */
 template <typename T>
-ObjectPool<T>::ObjectPool(uint32_t initial_size)
-    : objects_(initial_size) {
+ObjectPool<T>::ObjectPool(uint32_t initial_size): objects_(initial_size) {
     free_objects_list_.reserve(initial_size);
     for (auto &obj: objects_) {
         free_objects_list_.emplace_back(&obj);
