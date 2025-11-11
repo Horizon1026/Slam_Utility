@@ -85,7 +85,7 @@ void BasicVoxels<T>::ResetBuffer() {
 template <typename T>
 bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices) const {
     for (uint32_t i = 0; i < voxel_indices.size(); ++i) {
-        voxel_indices[i] = static_cast<int32_t>(position[i] / this->options().kStep[i]) + this->half_voxel_length()[i];
+        voxel_indices[i] = static_cast<int32_t>(std::floor(position[i] / this->options().kStep[i])) + this->half_voxel_length()[i];
         RETURN_FALSE_IF(voxel_indices[i] < 0 || voxel_indices[i] >= this->voxel_length()[i]);
     }
     return true;
@@ -94,7 +94,7 @@ bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::arr
 template <typename T>
 bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices, std::array<int32_t, 3> &map_indices) const {
     for (uint32_t i = 0; i < voxel_indices.size(); ++i) {
-        voxel_indices[i] = static_cast<int32_t>(position[i] / this->options().kStep[i]) + this->half_voxel_length()[i];
+        voxel_indices[i] = static_cast<int32_t>(std::floor(position[i] / this->options().kStep[i])) + this->half_voxel_length()[i];
         const int32_t voxel_length = this->voxel_length()[i];
         map_indices[i] = voxel_indices[i] / voxel_length;
         if (voxel_indices[i] < 0) {
