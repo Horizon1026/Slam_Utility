@@ -23,7 +23,7 @@ bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
     param_.head<3>() = p1p2.cross(p1p3);
     param_.tail<1>().setConstant(-param_.head<3>().dot(p1));
     param_ /= normal_vector().norm();
-    num_of_points_fitting_plane_ = 3;
+    num_of_points_ = 3;
     return true;
 }
 
@@ -42,7 +42,7 @@ bool Plane3D::FitPlaneModelLse(const std::vector<Vec3> &points) {
     const Eigen::JacobiSVD<Mat> svd(matrix_A, Eigen::ComputeFullV);
     param_.head<3>() = svd.matrixV().rightCols<1>();
     param_(3) = -mid_point_.dot(param_.head<3>());
-    num_of_points_fitting_plane_ = points.size();
+    num_of_points_ = points.size();
     return true;
 }
 
@@ -60,7 +60,7 @@ bool Plane3D::FitPlaneModelPca(const std::vector<Vec3> &points) {
 
     // Generate plane parameters.
     GeneratePlaneModelParameters();
-    num_of_points_fitting_plane_ = points.size();
+    num_of_points_ = points.size();
     return true;
 }
 
@@ -72,7 +72,7 @@ void Plane3D::GeneratePlaneModelParameters() {
 
 bool Plane3D::AddNewPointToFitPlaneModel(const Vec3 &new_p_w) {
     // Incremental update of plane model.
-    const float old_weight = static_cast<float>(num_of_points_fitting_plane_);
+    const float old_weight = static_cast<float>(num_of_points_);
     const float new_weight = old_weight + 1.0f;
     // Incremental update of mid point and covariance matrix.
     const Vec3 new_mid_point = mid_point_ + (new_p_w - mid_point_) / new_weight;
@@ -80,7 +80,7 @@ bool Plane3D::AddNewPointToFitPlaneModel(const Vec3 &new_p_w) {
     mid_point_ = new_mid_point;
     covariance_ = new_covariance;
 
-    ++num_of_points_fitting_plane_;
+    ++num_of_points_;
     return true;
 }
 

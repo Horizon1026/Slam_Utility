@@ -33,8 +33,14 @@ public:
 
     // Reference for member variables.
     Vec4 &param() { return param_; }
+    Vec3 &mid_point() { return mid_point_; }
+    Mat3 &covariance() { return covariance_; }
+    uint32_t &num_of_points() { return num_of_points_; }
     // Const reference for member variables.
     const Vec4 &param() const { return param_; }
+    const Vec3 &mid_point() const { return mid_point_; }
+    const Mat3 &covariance() const { return covariance_; }
+    const uint32_t &num_of_points() const { return num_of_points_; }
 
 private:
     bool ComputeMidPoint(const std::vector<Vec3> &points, Vec3 &mid_point);
@@ -47,9 +53,9 @@ private:
     // Covariance matrix of points.
     Mat3 covariance_ = Mat3::Zero();
     // Number of points fitting plane.
-    uint32_t num_of_points_fitting_plane_ = 0;
+    uint32_t num_of_points_ = 0;
 };
 
 }  // namespace slam_utility
 
-#endif  // end of _PLANE_H_
+#endif  // end of _PLANE_3D_H_
