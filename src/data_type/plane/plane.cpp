@@ -71,19 +71,27 @@ void Plane3D::GeneratePlaneModelParameters() {
 }
 
 bool Plane3D::AddNewPointToFitPlaneModel(const Vec3 &new_p_w) {
+    // Initialize normal distribution.
+    if (num_of_points_ == 0) {
+        mid_point_ = new_p_w;
+        covariance_.setZero();
+        ++num_of_points_;
+        return true;
+    }
     // Incremental update of plane model.
     const float old_weight = static_cast<float>(num_of_points_);
     const float new_weight = old_weight + 1.0f;
     // Incremental update of mid point and covariance matrix.
+    // miu <- (N - 1) / N * miu + 1 / N * x = miu + 1 / N + (x - miu)
+    // sigma <- (N - 1) / N * sigma + 1 / (N - 1) * (x - miu) * (x - miu).T
     const Vec3 new_mid_point = mid_point_ + (new_p_w - mid_point_) / new_weight;
-    const Mat3 new_covariance = covariance_ + (new_p_w - mid_point_) * (new_p_w - mid_point_).transpose();
+    const Mat3 new_covariance = covariance_ * old_weight / new_weight + (new_p_w - mid_point_) * (new_p_w - mid_point_).transpose() / old_weight;
+    // Update parameters of normal distribution.
     mid_point_ = new_mid_point;
     covariance_ = new_covariance;
-
     ++num_of_points_;
     return true;
 }
-
 
 float Plane3D::GetDistanceToPlane(const Vec3 &p_w) const { return normal_vector().dot(p_w) + distance_to_origin(); }
 
