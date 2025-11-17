@@ -57,6 +57,9 @@ endif()
 if( NOT TARGET lib_voxels )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_struct/voxels ${PROJECT_SOURCE_DIR}/build/lib_voxels )
 endif()
+if( NOT TARGET lib_grids )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_struct/grids ${PROJECT_SOURCE_DIR}/build/lib_grids )
+endif()
 
 # Add all relative 3rd libraries.
 if( NOT TARGET lib_stack_backward )
@@ -85,6 +88,7 @@ target_link_libraries( lib_slam_utility
     lib_circular_buffer
     lib_kd_tree
     lib_voxels
+    lib_grids
 
     lib_stack_backward
 )
