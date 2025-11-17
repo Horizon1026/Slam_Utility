@@ -31,12 +31,12 @@ public:
     using Voxels<T>::TryToOccupy;
     using Voxels<T>::IsOccupied;
     using Voxels<T>::ClearVoxel;
-    virtual bool TryToOccupy(const std::array<int32_t, 3> &voxel_indices, const T &value) override;
-    virtual bool IsOccupied(const std::array<int32_t, 3> &voxel_indices, const T &value) override;
-    virtual void ClearVoxel(const std::array<int32_t, 3> &voxel_indices) override;
+    virtual bool TryToOccupy(const typename Voxels<T>::Index &voxel_indices, const T &value) override;
+    virtual bool IsOccupied(const typename Voxels<T>::Index &voxel_indices, const T &value) override;
+    virtual void ClearVoxel(const typename Voxels<T>::Index &voxel_indices) override;
 
-    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices) const override;
-    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices, std::array<int32_t, 3> &map_indices) const override;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices) const override;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices, typename Voxels<T>::Index &map_indices) const override;
 
     using Voxels<T>::GetBufferIndex;
     using Voxels<T>::GetVoxel;
@@ -83,7 +83,7 @@ void BasicVoxels<T>::ResetBuffer() {
 }
 
 template <typename T>
-bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices) const {
+bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices) const {
     for (uint32_t i = 0; i < voxel_indices.size(); ++i) {
         voxel_indices[i] = static_cast<int32_t>(std::floor(position[i] / this->options().kStep[i])) + this->half_voxel_length()[i];
         RETURN_FALSE_IF(voxel_indices[i] < 0 || voxel_indices[i] >= this->voxel_length()[i]);
@@ -92,7 +92,7 @@ bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::arr
 }
 
 template <typename T>
-bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::array<int32_t, 3> &voxel_indices, std::array<int32_t, 3> &map_indices) const {
+bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices, typename Voxels<T>::Index &map_indices) const {
     for (uint32_t i = 0; i < voxel_indices.size(); ++i) {
         voxel_indices[i] = static_cast<int32_t>(std::floor(position[i] / this->options().kStep[i])) + this->half_voxel_length()[i];
         const int32_t voxel_length = this->voxel_length()[i];
@@ -106,7 +106,7 @@ bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, std::arr
 }
 
 template <typename T>
-bool BasicVoxels<T>::TryToOccupy(const std::array<int32_t, 3> &voxel_indices, const T &value) {
+bool BasicVoxels<T>::TryToOccupy(const typename Voxels<T>::Index &voxel_indices, const T &value) {
     const uint32_t index = this->GetBufferIndex(voxel_indices[0], voxel_indices[1], voxel_indices[2]);
     auto &v = GetVoxel(index);
     RETURN_FALSE_IF(v == value);
@@ -116,14 +116,14 @@ bool BasicVoxels<T>::TryToOccupy(const std::array<int32_t, 3> &voxel_indices, co
 }
 
 template <typename T>
-bool BasicVoxels<T>::IsOccupied(const std::array<int32_t, 3> &voxel_indices, const T &value) {
+bool BasicVoxels<T>::IsOccupied(const typename Voxels<T>::Index &voxel_indices, const T &value) {
     const uint32_t index = this->GetBufferIndex(voxel_indices[0], voxel_indices[1], voxel_indices[2]);
     auto &v = GetVoxel(index);
     return v == value;
 }
 
 template <typename T>
-void BasicVoxels<T>::ClearVoxel(const std::array<int32_t, 3> &voxel_indices) {
+void BasicVoxels<T>::ClearVoxel(const typename Voxels<T>::Index &voxel_indices) {
     const uint32_t index = this->GetBufferIndex(voxel_indices[0], voxel_indices[1], voxel_indices[2]);
     GetVoxel(index) = this->default_value();
 }
