@@ -131,127 +131,25 @@ public:
         });
     }
 
-    static bool IsEndWith(const std::string &raw_string, const std::string &sub_string) {
-        RETURN_FALSE_IF(sub_string.length() > raw_string.length());
-        return raw_string.substr(raw_string.length() - sub_string.length()) == sub_string;
-    }
+    static bool IsEndWith(const std::string &raw_string, const std::string &sub_string);
+    static bool IsEndWith(const std::vector<std::string> &all_raw_string, const std::string &sub_string);
+    static bool IsEndWith(const std::vector<std::string> &all_raw_string, const std::vector<std::string> &all_sub_string);
+    static bool IsEndWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string);
+    static bool IsEndWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string);
 
-    static bool IsEndWith(const std::vector<std::string> &all_raw_string, const std::string &sub_string) {
-        RETURN_FALSE_IF(all_raw_string.empty());
-        for (const auto &raw_str : all_raw_string) {
-            RETURN_FALSE_IF(!IsEndWith(raw_str, sub_string));
-        }
-        return true;
-    }
+    static bool IsBeginWith(const std::string &raw_string, const std::string &sub_string);
+    static bool IsBeginWith(const std::vector<std::string> &all_raw_string, const std::string &sub_string);
+    static bool IsBeginWith(const std::vector<std::string> &all_raw_string, const std::vector<std::string> &all_sub_string);
+    static bool IsBeginWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string);
+    static bool IsBeginWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string);
 
-    static bool IsEndWith(const std::vector<std::string> &all_raw_string, const std::vector<std::string> &all_sub_string) {
-        RETURN_FALSE_IF(all_raw_string.size() != all_sub_string.size());
-        for (uint32_t i = 0; i < all_raw_string.size(); ++i) {
-            RETURN_FALSE_IF(!IsEndWith(all_raw_string[i], all_sub_string[i]));
-        }
-        return true;
-    }
+    static bool IsContained(const std::string &raw_string, const std::string &sub_string);
+    static bool IsContained(const std::vector<std::string> &all_raw_string, const std::string &sub_string);
+    static bool IsContained(const std::vector<std::string> &all_raw_string, const std::vector<std::string> &all_sub_string);
+    static bool IsContained(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string);
+    static bool IsContained(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string);
 
-    static bool IsEndWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string) {
-        RETURN_FALSE_IF(all_raw_string.empty());
-        RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
-        for (uint32_t i = begin_idx; i < all_raw_string.size(); ++i) {
-            RETURN_FALSE_IF(!IsEndWith(all_raw_string[i], sub_string));
-        }
-        return true;
-    }
-
-    static bool IsEndWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string) {
-        RETURN_FALSE_IF(all_sub_string.empty());
-        RETURN_FALSE_IF(all_raw_string.empty());
-        RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
-        RETURN_FALSE_IF(begin_idx + all_sub_string.size() > all_raw_string.size());
-        for (uint32_t i = 0; i < all_sub_string.size(); ++i) {
-            RETURN_FALSE_IF(!IsEndWith(all_raw_string[i + begin_idx], all_sub_string[i]));
-        }
-        return true;
-    }
-
-    static bool IsBeginWith(const std::string &raw_string, const std::string &sub_string) {
-        RETURN_FALSE_IF(sub_string.length() > raw_string.length());
-        return raw_string.substr(0, sub_string.length()) == sub_string;
-    }
-
-    static bool IsBeginWith(const std::vector<std::string> &all_raw_string, const std::string &sub_string) {
-        RETURN_FALSE_IF(all_raw_string.empty());
-        for (const auto &raw_str : all_raw_string) {
-            RETURN_FALSE_IF(!IsBeginWith(raw_str, sub_string));
-        }
-        return true;
-    }
-
-    static bool IsBeginWith(const std::vector<std::string> &all_raw_string, const std::vector<std::string> &all_sub_string) {
-        RETURN_FALSE_IF(all_raw_string.size() != all_sub_string.size());
-        for (uint32_t i = 0; i < all_raw_string.size(); ++i) {
-            RETURN_FALSE_IF(!IsBeginWith(all_raw_string[i], all_sub_string[i]));
-        }
-        return true;
-    }
-
-    static bool IsBeginWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string) {
-        RETURN_FALSE_IF(all_raw_string.empty());
-        RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
-        for (uint32_t i = begin_idx; i < all_raw_string.size(); ++i) {
-            RETURN_FALSE_IF(!IsBeginWith(all_raw_string[i], sub_string));
-        }
-        return true;
-    }
-
-    static bool IsBeginWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string) {
-        RETURN_FALSE_IF(all_sub_string.empty());
-        RETURN_FALSE_IF(all_raw_string.empty());
-        RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
-        RETURN_FALSE_IF(begin_idx + all_sub_string.size() > all_raw_string.size());
-        for (uint32_t i = 0; i < all_sub_string.size(); ++i) {
-            RETURN_FALSE_IF(!IsBeginWith(all_raw_string[i + begin_idx], all_sub_string[i]));
-        }
-        return true;
-    }
-
-    static bool IsContained(const std::string &raw_string, const std::string &sub_string) {
-        return raw_string.find(sub_string) != std::string::npos;
-    }
-
-    static bool IsContained(const std::vector<std::string> &all_raw_string, const std::string &sub_string) {
-        RETURN_FALSE_IF(all_raw_string.empty());
-        for (const auto &raw_str : all_raw_string) {
-            RETURN_FALSE_IF(!IsContained(raw_str, sub_string));
-        }
-        return true;
-    }
-
-    static bool IsContained(const std::vector<std::string> &all_raw_string, const std::vector<std::string> &all_sub_string) {
-        RETURN_FALSE_IF(all_raw_string.size() != all_sub_string.size());
-        for (uint32_t i = 0; i < all_raw_string.size(); ++i) {
-            RETURN_FALSE_IF(!IsContained(all_raw_string[i], all_sub_string[i]));
-        }
-        return true;
-    }
-
-    static bool IsContained(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string) {
-        RETURN_FALSE_IF(all_raw_string.empty());
-        RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
-        for (uint32_t i = begin_idx; i < all_raw_string.size(); ++i) {
-            RETURN_FALSE_IF(!IsContained(all_raw_string[i], sub_string));
-        }
-        return true;
-    }
-
-    static bool IsContained(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string) {
-        RETURN_FALSE_IF(all_sub_string.empty());
-        RETURN_FALSE_IF(all_raw_string.empty());
-        RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
-        RETURN_FALSE_IF(begin_idx + all_sub_string.size() > all_raw_string.size());
-        for (uint32_t i = 0; i < all_sub_string.size(); ++i) {
-            RETURN_FALSE_IF(!IsContained(all_raw_string[i + begin_idx], all_sub_string[i]));
-        }
-        return true;
-    }
+    static bool IsDirectory(const std::string &path);
 };
 
 }  // namespace slam_utility

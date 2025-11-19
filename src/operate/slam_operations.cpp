@@ -1,27 +1,151 @@
 #include "slam_operations.h"
-#include "dirent.h"
+#include "filesystem"
 
 namespace slam_utility {
 
 bool SlamOperation::GetFilesNameInDirectory(const std::string &dir, std::vector<std::string> &filenames) {
-    DIR *ptr_dir;
-    struct dirent *ptr;
-    if (!(ptr_dir = opendir(dir.c_str()))) {
+    namespace fs = std::filesystem;
+    filenames.clear();
+    if (dir.empty()) {
         return false;
     }
-
-    while ((ptr = readdir(ptr_dir)) != 0) {
-        CONTINUE_IF(strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0);
-        CONTINUE_IF(dir.empty());
-        if (dir.back() != '/') {
-            filenames.emplace_back(dir + "/" + ptr->d_name);
-        } else {
-            filenames.emplace_back(dir + ptr->d_name);
+    try {
+        for (const auto &entry : fs::directory_iterator(dir)) {
+            // Ignore '.' and '..' (filesystem does not return these, but just in case)
+            const auto &path = entry.path();
+            std::string filename = path.filename().string();
+            if (filename == "." || filename == "..") {
+                continue;
+            }
+            filenames.emplace_back(path.string());
         }
+        return true;
+    } catch (const fs::filesystem_error &) {
+        return false;
     }
+}
 
-    closedir(ptr_dir);
+bool SlamOperation::IsEndWith(const std::string &raw_string, const std::string &sub_string) {
+    RETURN_FALSE_IF(sub_string.length() > raw_string.length());
+    return raw_string.substr(raw_string.length() - sub_string.length()) == sub_string;
+}
+
+bool SlamOperation::IsEndWith(const std::vector<std::string> &all_raw_string, const std::string &sub_string) {
+    RETURN_FALSE_IF(all_raw_string.empty());
+    for (const auto &raw_str: all_raw_string) {
+        RETURN_FALSE_IF(!IsEndWith(raw_str, sub_string));
+    }
     return true;
 }
+
+bool SlamOperation::IsEndWith(const std::vector<std::string> &all_raw_string, const std::vector<std::string> &all_sub_string) {
+    RETURN_FALSE_IF(all_raw_string.size() != all_sub_string.size());
+    for (uint32_t i = 0; i < all_raw_string.size(); ++i) {
+        RETURN_FALSE_IF(!IsEndWith(all_raw_string[i], all_sub_string[i]));
+    }
+    return true;
+}
+
+bool SlamOperation::IsEndWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string) {
+    RETURN_FALSE_IF(all_raw_string.empty());
+    RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
+    for (uint32_t i = begin_idx; i < all_raw_string.size(); ++i) {
+        RETURN_FALSE_IF(!IsEndWith(all_raw_string[i], sub_string));
+    }
+    return true;
+}
+
+bool SlamOperation::IsEndWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string) {
+    RETURN_FALSE_IF(all_sub_string.empty());
+    RETURN_FALSE_IF(all_raw_string.empty());
+    RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
+    RETURN_FALSE_IF(begin_idx + all_sub_string.size() > all_raw_string.size());
+    for (uint32_t i = 0; i < all_sub_string.size(); ++i) {
+        RETURN_FALSE_IF(!IsEndWith(all_raw_string[i + begin_idx], all_sub_string[i]));
+    }
+    return true;
+}
+
+bool SlamOperation::IsBeginWith(const std::string &raw_string, const std::string &sub_string) {
+    RETURN_FALSE_IF(sub_string.length() > raw_string.length());
+    return raw_string.substr(0, sub_string.length()) == sub_string;
+}
+
+bool SlamOperation::IsBeginWith(const std::vector<std::string> &all_raw_string, const std::string &sub_string) {
+    RETURN_FALSE_IF(all_raw_string.empty());
+    for (const auto &raw_str: all_raw_string) {
+        RETURN_FALSE_IF(!IsBeginWith(raw_str, sub_string));
+    }
+    return true;
+}
+
+bool SlamOperation::IsBeginWith(const std::vector<std::string> &all_raw_string, const std::vector<std::string> &all_sub_string) {
+    RETURN_FALSE_IF(all_raw_string.size() != all_sub_string.size());
+    for (uint32_t i = 0; i < all_raw_string.size(); ++i) {
+        RETURN_FALSE_IF(!IsBeginWith(all_raw_string[i], all_sub_string[i]));
+    }
+    return true;
+}
+
+bool SlamOperation::IsBeginWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string) {
+    RETURN_FALSE_IF(all_raw_string.empty());
+    RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
+    for (uint32_t i = begin_idx; i < all_raw_string.size(); ++i) {
+        RETURN_FALSE_IF(!IsBeginWith(all_raw_string[i], sub_string));
+    }
+    return true;
+}
+
+bool SlamOperation::IsBeginWith(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string) {
+    RETURN_FALSE_IF(all_sub_string.empty());
+    RETURN_FALSE_IF(all_raw_string.empty());
+    RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
+    RETURN_FALSE_IF(begin_idx + all_sub_string.size() > all_raw_string.size());
+    for (uint32_t i = 0; i < all_sub_string.size(); ++i) {
+        RETURN_FALSE_IF(!IsBeginWith(all_raw_string[i + begin_idx], all_sub_string[i]));
+    }
+    return true;
+}
+
+bool SlamOperation::IsContained(const std::string &raw_string, const std::string &sub_string) { return raw_string.find(sub_string) != std::string::npos; }
+
+bool SlamOperation::IsContained(const std::vector<std::string> &all_raw_string, const std::string &sub_string) {
+    RETURN_FALSE_IF(all_raw_string.empty());
+    for (const auto &raw_str: all_raw_string) {
+        RETURN_FALSE_IF(!IsContained(raw_str, sub_string));
+    }
+    return true;
+}
+
+bool SlamOperation::IsContained(const std::vector<std::string> &all_raw_string, const std::vector<std::string> &all_sub_string) {
+    RETURN_FALSE_IF(all_raw_string.size() != all_sub_string.size());
+    for (uint32_t i = 0; i < all_raw_string.size(); ++i) {
+        RETURN_FALSE_IF(!IsContained(all_raw_string[i], all_sub_string[i]));
+    }
+    return true;
+}
+
+bool SlamOperation::IsContained(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string) {
+    RETURN_FALSE_IF(all_raw_string.empty());
+    RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
+    for (uint32_t i = begin_idx; i < all_raw_string.size(); ++i) {
+        RETURN_FALSE_IF(!IsContained(all_raw_string[i], sub_string));
+    }
+    return true;
+}
+
+bool SlamOperation::IsContained(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string) {
+    RETURN_FALSE_IF(all_sub_string.empty());
+    RETURN_FALSE_IF(all_raw_string.empty());
+    RETURN_FALSE_IF(begin_idx >= all_raw_string.size());
+    RETURN_FALSE_IF(begin_idx + all_sub_string.size() > all_raw_string.size());
+    for (uint32_t i = 0; i < all_sub_string.size(); ++i) {
+        RETURN_FALSE_IF(!IsContained(all_raw_string[i + begin_idx], all_sub_string[i]));
+    }
+    return true;
+}
+
+
+bool SlamOperation::IsDirectory(const std::string &path) { return std::filesystem::is_directory(path); }
 
 }  // namespace slam_utility
