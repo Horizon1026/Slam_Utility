@@ -148,4 +148,17 @@ bool SlamOperation::IsContained(const std::vector<std::string> &all_raw_string, 
 
 bool SlamOperation::IsDirectory(const std::string &path) { return std::filesystem::is_directory(path); }
 
+std::string SlamOperation::GetLastSubStringAfter(const std::string &raw_string, const std::string &divider) {
+    // Split raw_string using divider and return the last substring.
+    // If divider is not found, return raw_string itself.
+    if (divider.empty()) {
+        return raw_string;
+    }
+    size_t pos = raw_string.rfind(divider);
+    if (pos == std::string::npos) {
+        return raw_string;
+    }
+    return raw_string.substr(pos + divider.length());
+}
+
 }  // namespace slam_utility
