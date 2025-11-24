@@ -23,75 +23,43 @@ bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
     param_.head<3>() = p1p2.cross(p1p3);
     param_.tail<1>().setConstant(-param_.head<3>().dot(p1));
     param_ /= normal_vector().norm();
-    num_of_points_ = 3;
     return true;
 }
 
 bool Plane3D::FitPlaneModelLse(const std::vector<Vec3> &points) {
     RETURN_FALSE_IF(points.size() < 3);
-    mid_point_ = Vec3::Zero();
-    RETURN_FALSE_IF(!ComputeMidPoint(points, mid_point_));
+    normal_distribution_.mid_point() = Vec3::Zero();
+    RETURN_FALSE_IF(!ComputeMidPoint(points, normal_distribution_.mid_point()));
 
     // Construct matrix A to solve normal vector of plane.
     Mat matrix_A = Mat::Zero(points.size(), 3);
     for (uint32_t i = 0; i < points.size(); ++i) {
-        const auto point = points[i] - mid_point_;
+        const auto point = points[i] - normal_distribution_.mid_point();
         matrix_A.row(i) = point.transpose();
     }
     // Generate plane parameters.
     const Eigen::JacobiSVD<Mat> svd(matrix_A, Eigen::ComputeFullV);
     param_.head<3>() = svd.matrixV().rightCols<1>();
-    param_(3) = -mid_point_.dot(param_.head<3>());
-    num_of_points_ = points.size();
+    param_(3) = -normal_distribution_.mid_point().dot(param_.head<3>());
+    normal_distribution_.num_of_points() = points.size();
     return true;
 }
 
 bool Plane3D::FitPlaneModelPca(const std::vector<Vec3> &points) {
     RETURN_FALSE_IF(points.size() < 3);
-    mid_point_ = Vec3::Zero();
-    RETURN_FALSE_IF(!ComputeMidPoint(points, mid_point_));
-
-    // Construct covariance matrix.
-    covariance_ = Mat3::Zero();
-    for (const Vec3 &point: points) {
-        const Vec3 p = point - mid_point_;
-        covariance_ += p * p.transpose();
-    }
-
-    // Generate plane parameters.
+    normal_distribution_.Reset();
+    RETURN_FALSE_IF(!normal_distribution_.DirectlyFitDistribution(points));
     GeneratePlaneModelParameters();
-    num_of_points_ = points.size();
     return true;
 }
 
 void Plane3D::GeneratePlaneModelParameters() {
-    const Eigen::SelfAdjointEigenSolver<Mat3> eig(covariance_);
+    const Eigen::SelfAdjointEigenSolver<Mat3> eig(normal_distribution_.covariance());
     param_.head<3>() = eig.eigenvectors().col(0);
-    param_(3) = -param_.head<3>().dot(mid_point_);
+    param_(3) = -param_.head<3>().dot(normal_distribution_.mid_point());
 }
 
-bool Plane3D::AddNewPointToFitPlaneModel(const Vec3 &new_p_w) {
-    // Initialize normal distribution.
-    if (num_of_points_ == 0) {
-        mid_point_ = new_p_w;
-        covariance_.setZero();
-        ++num_of_points_;
-        return true;
-    }
-    // Incremental update of plane model.
-    const float old_weight = static_cast<float>(num_of_points_);
-    const float new_weight = old_weight + 1.0f;
-    // Incremental update of mid point and covariance matrix.
-    // miu <- (N - 1) / N * miu + 1 / N * x = miu + 1 / N + (x - miu)
-    // sigma <- (N - 1) / N * sigma + 1 / (N - 1) * (x - miu) * (x - miu).T
-    const Vec3 new_mid_point = mid_point_ + (new_p_w - mid_point_) / new_weight;
-    const Mat3 new_covariance = covariance_ * old_weight / new_weight + (new_p_w - mid_point_) * (new_p_w - mid_point_).transpose() / old_weight;
-    // Update parameters of normal distribution.
-    mid_point_ = new_mid_point;
-    covariance_ = new_covariance;
-    ++num_of_points_;
-    return true;
-}
+bool Plane3D::AddNewPointToFitPlaneModel(const Vec3 &new_p_w) { return normal_distribution_.IncrementallyFitDistribution(new_p_w); }
 
 float Plane3D::GetDistanceToPlane(const Vec3 &p_w) const { return normal_vector().dot(p_w) + distance_to_origin(); }
 

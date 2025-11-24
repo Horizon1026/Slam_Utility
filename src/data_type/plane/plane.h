@@ -2,6 +2,7 @@
 #define _PLANE_3D_H_
 
 #include "basic_type.h"
+#include "normal_distribution.h"
 
 namespace slam_utility {
 
@@ -33,27 +34,18 @@ public:
 
     // Reference for member variables.
     Vec4 &param() { return param_; }
-    Vec3 &mid_point() { return mid_point_; }
-    Mat3 &covariance() { return covariance_; }
-    uint32_t &num_of_points() { return num_of_points_; }
+    NormalDistribution<3> normal_distribution() { return normal_distribution_; }
     // Const reference for member variables.
     const Vec4 &param() const { return param_; }
-    const Vec3 &mid_point() const { return mid_point_; }
-    const Mat3 &covariance() const { return covariance_; }
-    const uint32_t &num_of_points() const { return num_of_points_; }
+    const NormalDistribution<3> normal_distribution() const { return normal_distribution_; }
 
 private:
-    bool ComputeMidPoint(const std::vector<Vec3> &points, Vec3 &mid_point);
+    static bool ComputeMidPoint(const std::vector<Vec3> &points, Vec3 &mid_point);
 
 private:
-    // Parameters of plane.
+    // Parameters of plane. [a, b, c, d] -> [normal_vector, distance_to_origin]
     Vec4 param_ = Vec4::Ones();
-    // Mid point of points.
-    Vec3 mid_point_ = Vec3::Zero();
-    // Covariance matrix of points.
-    Mat3 covariance_ = Mat3::Zero();
-    // Number of points fitting plane.
-    uint32_t num_of_points_ = 0;
+    NormalDistribution<3> normal_distribution_;
 };
 
 }  // namespace slam_utility

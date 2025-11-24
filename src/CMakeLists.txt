@@ -37,6 +37,9 @@ endif()
 if( NOT TARGET lib_line_segment )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_type/line_segment ${PROJECT_SOURCE_DIR}/build/lib_line_segment )
 endif()
+if( NOT TARGET lib_probability_distribution )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_type/probability_distribution ${PROJECT_SOURCE_DIR}/build/lib_probability_distribution )
+endif()
 if( NOT TARGET lib_plane )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_type/plane ${PROJECT_SOURCE_DIR}/build/lib_plane )
 endif()
@@ -81,6 +84,7 @@ target_link_libraries( lib_slam_utility
     lib_image_pyramid
     lib_3d_gaussian
     lib_line_segment
+    lib_probability_distribution
     lib_plane
 
     lib_covisible_graph
