@@ -29,7 +29,10 @@ namespace slam_utility {
     if (__VA_ARGS__) {                                                                                                                                         \
         return true;                                                                                                                                           \
     }
-
+#define RETURN_NULL_IF(...)                                                                                                                                    \
+    if (__VA_ARGS__) {                                                                                                                                         \
+        return nullptr;                                                                                                                                        \
+    }
 #define RETURN_IF(...)                                                                                                                                         \
     if (__VA_ARGS__) {                                                                                                                                         \
         return;                                                                                                                                                \

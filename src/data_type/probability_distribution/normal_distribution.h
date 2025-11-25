@@ -18,6 +18,7 @@ public:
     void Reset();
     bool IncrementallyFitDistribution(const TVec<float, kDimension> &point);
     bool DirectlyFitDistribution(const std::vector<TVec<float, kDimension>> &points);
+    void SynchronizeToAdvancedParameters();
 
     // Define operators.
     bool operator==(const NormalDistribution &other) const { return mid_point_ == other.mid_point_ && covariance_ == other.covariance_; }
@@ -26,15 +27,18 @@ public:
     // Reference for member variables.
     TVec<float, kDimension> &mid_point() { return mid_point_; }
     TMat<float, kDimension, kDimension> &covariance() { return covariance_; }
+    TMat<float, kDimension, kDimension> &sqrt_inv_covariance() { return sqrt_inv_covariance_; }
     uint32_t &num_of_points() { return num_of_points_; }
     // Const reference for member variables.
     const TVec<float, kDimension> &mid_point() const { return mid_point_; }
     const TMat<float, kDimension, kDimension> &covariance() const { return covariance_; }
+    const TMat<float, kDimension, kDimension> &sqrt_inv_covariance() const { return sqrt_inv_covariance_; }
     const uint32_t &num_of_points() const { return num_of_points_; }
 
 private:
     TVec<float, kDimension> mid_point_ = TVec<float, kDimension>::Zero();
     TMat<float, kDimension, kDimension> covariance_ = TMat<float, kDimension, kDimension>::Zero();
+    TMat<float, kDimension, kDimension> sqrt_inv_covariance_ = TMat<float, kDimension, kDimension>::Zero();
     uint32_t num_of_points_ = 0;
 };
 
@@ -91,6 +95,12 @@ bool NormalDistribution<kDimension>::DirectlyFitDistribution(const std::vector<T
     }
 
     return true;
+}
+
+template <int32_t kDimension>
+void NormalDistribution<kDimension>::SynchronizeToAdvancedParameters() {
+    const Eigen::LLT<TMat<float, kDimension, kDimension>> cov_llt(covariance_ + TMat<float, kDimension, kDimension>::Identity() * 1e-4f);
+    sqrt_inv_covariance_ = cov_llt.matrixL().solve(TMat<float, kDimension, kDimension>::Identity());
 }
 
 }  // namespace slam_utility
