@@ -34,10 +34,10 @@ public:
 
     // Reference for member variables.
     Vec4 &param() { return param_; }
-    NormalDistribution<3> normal_distribution() { return normal_distribution_; }
+    NormalDistribution<3> &normal_distribution() { return normal_distribution_; }
     // Const reference for member variables.
     const Vec4 &param() const { return param_; }
-    const NormalDistribution<3> normal_distribution() const { return normal_distribution_; }
+    const NormalDistribution<3> &normal_distribution() const { return normal_distribution_; }
 
 private:
     static bool ComputeMidPoint(const std::vector<Vec3> &points, Vec3 &mid_point);

@@ -11,6 +11,11 @@ template <int32_t kDimension>
 class NormalDistribution {
 
 public:
+    struct AdvancedParameters {
+        TMat<float, kDimension, kDimension> sqrt_inv_covariance_ = TMat<float, kDimension, kDimension>::Zero();
+    };
+
+public:
     NormalDistribution() = default;
     virtual ~NormalDistribution() = default;
 
@@ -27,19 +32,19 @@ public:
     // Reference for member variables.
     TVec<float, kDimension> &mid_point() { return mid_point_; }
     TMat<float, kDimension, kDimension> &covariance() { return covariance_; }
-    TMat<float, kDimension, kDimension> &sqrt_inv_covariance() { return sqrt_inv_covariance_; }
     uint32_t &num_of_points() { return num_of_points_; }
     // Const reference for member variables.
     const TVec<float, kDimension> &mid_point() const { return mid_point_; }
     const TMat<float, kDimension, kDimension> &covariance() const { return covariance_; }
-    const TMat<float, kDimension, kDimension> &sqrt_inv_covariance() const { return sqrt_inv_covariance_; }
+    const TMat<float, kDimension, kDimension> &sqrt_inv_covariance() const { return advanced_params_.sqrt_inv_covariance_; }
     const uint32_t &num_of_points() const { return num_of_points_; }
 
 private:
     TVec<float, kDimension> mid_point_ = TVec<float, kDimension>::Zero();
     TMat<float, kDimension, kDimension> covariance_ = TMat<float, kDimension, kDimension>::Zero();
-    TMat<float, kDimension, kDimension> sqrt_inv_covariance_ = TMat<float, kDimension, kDimension>::Zero();
     uint32_t num_of_points_ = 0;
+
+    AdvancedParameters advanced_params_;
 };
 
 /* Class NormalDistribution Definition. */
@@ -100,7 +105,7 @@ bool NormalDistribution<kDimension>::DirectlyFitDistribution(const std::vector<T
 template <int32_t kDimension>
 void NormalDistribution<kDimension>::SynchronizeToAdvancedParameters() {
     const Eigen::LLT<TMat<float, kDimension, kDimension>> cov_llt(covariance_ + TMat<float, kDimension, kDimension>::Identity() * 1e-4f);
-    sqrt_inv_covariance_ = cov_llt.matrixL().solve(TMat<float, kDimension, kDimension>::Identity());
+    advanced_params_.sqrt_inv_covariance_ = cov_llt.matrixL().solve(TMat<float, kDimension, kDimension>::Identity());
 }
 
 }  // namespace slam_utility
