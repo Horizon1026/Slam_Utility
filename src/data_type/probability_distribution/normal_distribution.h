@@ -68,10 +68,10 @@ bool NormalDistribution<kDimension>::IncrementallyFitDistribution(const TVec<flo
     const float old_weight = static_cast<float>(num_of_points_);
     const float new_weight = old_weight + 1.0f;
     // Incremental update of mid point and covariance matrix.
-    // miu <- (N - 1) / N * miu + 1 / N * x = miu + 1 / N + (x - miu)
-    // sigma <- (N - 1) / N * sigma + 1 / (N - 1) * (x - miu) * (x - miu).T
+    // new_miu = N / (N + 1) * miu + 1 / (N + 1) * x = miu + 1 / (N + 1) * (x - miu)
+    // new_sigma = N / (N + 1) * sigma + 1 / (N + 1) * (x - miu) * (x - new_miu).T
     const Vec3 new_mid_point = mid_point_ + (point - mid_point_) / new_weight;
-    const Mat3 new_covariance = covariance_ * old_weight / new_weight + (point - mid_point_) * (point - mid_point_).transpose() / old_weight;
+    const Mat3 new_covariance = covariance_ * old_weight / new_weight + (point - mid_point_) * (point - new_mid_point).transpose() / new_weight;
     // Update parameters of normal distribution.
     mid_point_ = new_mid_point;
     covariance_ = new_covariance;
@@ -90,7 +90,7 @@ bool NormalDistribution<kDimension>::DirectlyFitDistribution(const std::vector<T
     for (const Vec3 &point: points) {
         summary += point;
     }
-    mid_point_ = summary / static_cast<float>(points.size());
+    mid_point_ = summary / static_cast<float>(num_of_points_);
 
     // Compute covariance matrix.
     covariance_.setZero();
@@ -98,7 +98,7 @@ bool NormalDistribution<kDimension>::DirectlyFitDistribution(const std::vector<T
         const Vec3 p = point - mid_point_;
         covariance_ += p * p.transpose();
     }
-
+    covariance_ /= static_cast<float>(num_of_points_);
     return true;
 }
 
