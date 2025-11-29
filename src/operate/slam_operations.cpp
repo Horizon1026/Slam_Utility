@@ -145,6 +145,15 @@ bool SlamOperation::IsContained(const std::vector<std::string> &all_raw_string, 
     return true;
 }
 
+std::string SlamOperation::ReplaceBy(const std::string &raw_string, const std::string &sub_string, const std::string &replace_string) {
+    std::string result = raw_string;
+    auto pos = result.find(sub_string);
+    while (pos != std::string::npos) {
+        result.replace(pos, sub_string.length(), replace_string);
+        pos = result.find(sub_string, pos + replace_string.length());
+    }
+    return result;
+}
 
 bool SlamOperation::IsDirectory(const std::string &path) { return std::filesystem::is_directory(path); }
 

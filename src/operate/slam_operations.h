@@ -152,6 +152,8 @@ public:
     static bool IsContained(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::string &sub_string);
     static bool IsContained(const std::vector<std::string> &all_raw_string, const uint32_t begin_idx, const std::vector<std::string> &all_sub_string);
 
+    static std::string ReplaceBy(const std::string &raw_string, const std::string &sub_string, const std::string &replace_string);
+
     static bool IsDirectory(const std::string &path);
     static std::string GetLastSubStringAfter(const std::string &raw_string, const std::string &divider);
 
@@ -159,9 +161,8 @@ public:
     static void FindAllKeysEndWith(const std::unordered_map<std::string, T> &map, const std::string &sub_string, std::vector<std::string> &keys_found) {
         keys_found.clear();
         for (const auto &[key, value]: map) {
-            if (IsEndWith(key, sub_string)) {
-                keys_found.emplace_back(key);
-            }
+            CONTINUE_IF(!IsEndWith(key, sub_string));
+            keys_found.emplace_back(key);
         }
     }
 };
