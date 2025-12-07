@@ -279,6 +279,8 @@ std::vector<std::string> YamlParser::GetArrayValue(const std::string &str) {
     return result;
 }
 
+std::string YamlParser::ToString(const std::string &str) { return str; }
+
 bool YamlParser::ToBool(const std::string &str) { return str == "true"; }
 
 uint8_t YamlParser::ToUint8(const std::string &str) {
@@ -369,6 +371,102 @@ double YamlParser::ToDouble(const std::string &str) {
         ReportError("Failed to convert string to double: " << str);
         return 0.0;
     }
+}
+
+std::string YamlParser::ToString(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return "";
+    }
+    return ToString(strs[idx]);
+}
+
+bool YamlParser::ToBool(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return false;
+    }
+    return strs[idx] == "true";
+}
+
+uint8_t YamlParser::ToUint8(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0;
+    }
+    return ToUint8(strs[idx]);
+}
+
+uint16_t YamlParser::ToUint16(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0;
+    }
+    return ToUint16(strs[idx]);
+}
+
+uint32_t YamlParser::ToUint32(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0;
+    }
+    return ToUint32(strs[idx]);
+}
+
+uint64_t YamlParser::ToUint64(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0;
+    }
+    return ToUint64(strs[idx]);
+}
+
+int8_t YamlParser::ToInt8(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0;
+    }
+    return ToInt8(strs[idx]);
+}
+
+int16_t YamlParser::ToInt16(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0;
+    }
+    return ToInt16(strs[idx]);
+}
+
+int32_t YamlParser::ToInt32(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0;
+    }
+    return ToInt32(strs[idx]);
+}
+
+int64_t YamlParser::ToInt64(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0;
+    }
+    return ToInt64(strs[idx]);
+}
+
+float YamlParser::ToFloat(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0.0f;
+    }
+    return ToFloat(strs[idx]);
+}
+
+double YamlParser::ToDouble(const std::vector<std::string> &strs, const uint32_t idx) {
+    if (strs.size() <= idx) {
+        // Return default value.
+        return 0.0;
+    }
+    return ToDouble(strs[idx]);
 }
 
 }  // namespace slam_utility
