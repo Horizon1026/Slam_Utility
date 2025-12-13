@@ -50,7 +50,21 @@ namespace slam_utility {
 #define ReportColorDebug(...) std::cout << CYAN "[Debug] " << __VA_ARGS__ << RESET_COLOR << std::endl
 #define ReportColorWarn(...) std::cout << YELLOW "[Warn ] " << __VA_ARGS__ << RESET_COLOR << std::endl
 #define ReportColorError(...) std::cout << RED "[Error] " << __VA_ARGS__ << RESET_COLOR << std::endl
+
+#define ReportInfoHead(...) std::cout << GREEN "[Info ] " RESET_COLOR << __VA_ARGS__
+#define ReportDebugHead(...) std::cout << CYAN "[Debug] " RESET_COLOR << __VA_ARGS__
+#define ReportWarnHead(...) std::cout << YELLOW "[Warn ] " RESET_COLOR << __VA_ARGS__
+#define ReportErrorHead(...) std::cout << RED "[Error] " RESET_COLOR << __VA_ARGS__
+
+#define ReportColorInfoHead(...) std::cout << GREEN "[Info ] " << __VA_ARGS__ << RESET_COLOR
+#define ReportColorDebugHead(...) std::cout << CYAN "[Debug] " << __VA_ARGS__ << RESET_COLOR
+#define ReportColorWarnHead(...) std::cout << YELLOW "[Warn ] " << __VA_ARGS__ << RESET_COLOR
+#define ReportColorErrorHead(...) std::cout << RED "[Error] " << __VA_ARGS__ << RESET_COLOR
+
+#define ReportEndLine() std::cout << std::endl
+
 #else
+
 #define ReportText(...)
 
 #define ReportInfo(...)
@@ -62,6 +76,19 @@ namespace slam_utility {
 #define ReportColorDebug(...)
 #define ReportColorWarn(...)
 #define ReportColorError(...)
+
+#define ReportInfoHead(...)
+#define ReportDebugHead(...)
+#define ReportWarnHead(...)
+#define ReportErrorHead(...)
+
+#define ReportColorInfoHead(...)
+#define ReportColorDebugHead(...)
+#define ReportColorWarnHead(...)
+#define ReportColorErrorHead(...)
+
+#define ReportEndLine()
+
 #endif
 
 }  // namespace slam_utility
