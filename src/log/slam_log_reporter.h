@@ -63,6 +63,13 @@ namespace slam_utility {
 
 #define ReportEndLine() std::cout << std::endl
 
+#define ReportDebugVector(v)                                                                                                                                   \
+    std::cout << CYAN "[Debug] " RESET_COLOR << #v << ": [";                                                                                                   \
+    for (const auto &item: v) {                                                                                                                                \
+        std::cout << std::to_string(item) << " ";                                                                                                              \
+    }                                                                                                                                                          \
+    std::cout << "] " << std::endl;
+
 #else
 
 #define ReportText(...)
