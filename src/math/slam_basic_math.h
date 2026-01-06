@@ -15,22 +15,22 @@ namespace {
     constexpr static double kRadToDegDouble = 57.295779579;
     constexpr static double kDegToRadDouble = 1.0 / kRadToDegDouble;
     constexpr static float kZeroFloat = 1e-6f;
-    constexpr static float kZeroDouble = 1e-10f;
+    constexpr static double kZeroDouble = 1e-10;
     constexpr static int32_t kMaxInt32 = 2147483647;
 }  // namespace
 
+/* Class Utility Declaration. */
 class Utility {
 
 public:
     Utility() = default;
     virtual ~Utility() = default;
 
-    static Mat3 SkewSymmetricMatrix(const Vec3 &v) {
-        Mat3 M;
-        M << 0, -v.z(), v.y(), v.z(), 0, -v.x(), -v.y(), v.x(), 0;
-        return M;
-    }
+    // --- Matrix Operations ---
 
+    /**
+     * @brief Compute the skew-symmetric matrix of a 3D vector.
+     */
     template <typename Derived>
     static Eigen::Matrix<typename Derived::Scalar, 3, 3> SkewSymmetricMatrix(const Eigen::MatrixBase<Derived> &v) {
         Eigen::Matrix<typename Derived::Scalar, 3, 3> ans;
@@ -38,127 +38,91 @@ public:
         return ans;
     }
 
-    /* Transform quaternion format. */
+    static Mat3 SkewSymmetricMatrix(const Vec3 &v) {
+        Mat3 M;
+        M << 0, -v.z(), v.y(), v.z(), 0, -v.x(), -v.y(), v.x(), 0;
+        return M;
+    }
+
+    /**
+     * @brief Compute inverse of a symmetric matrix using eigenvalue decomposition.
+     */
+    template <typename Derived>
+    static TMat<typename Derived::Scalar> Inverse(const Eigen::MatrixBase<Derived> &A) {
+        typedef typename Derived::Scalar Scalar;
+        const Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>> saes(A);
+        const TMat<Scalar> Ainv = saes.eigenvectors() *
+                                  TVec<Scalar>((saes.eigenvalues().array() > kZeroFloat).select(saes.eigenvalues().array().inverse(), 0)).asDiagonal() *
+                                  saes.eigenvectors().transpose();
+        return Ainv;
+    }
+
+    // --- Quaternion Operations ---
+
+    /**
+     * @brief Ensure quaternion w >= 0.
+     */
     template <typename Derived>
     static Eigen::Quaternion<typename Derived::Scalar> Positify(const Eigen::QuaternionBase<Derived> &q) {
+        if (q.w() < 0) {
+            return Eigen::Quaternion<typename Derived::Scalar>(-q.w(), -q.x(), -q.y(), -q.z());
+        }
         return q;
     }
 
-    /* Compute delta_quaternion with rotation vector. */
+    /**
+     * @brief Compute delta quaternion for small rotation vector theta.
+     */
     template <typename Derived>
     static Eigen::Quaternion<typename Derived::Scalar> DeltaQ(const Eigen::MatrixBase<Derived> &theta) {
-        typedef typename Derived::Scalar Scalar_t;
-        Eigen::Quaternion<Scalar_t> dq;
-        Eigen::Matrix<Scalar_t, 3, 1> half_theta = theta;
-        half_theta /= static_cast<Scalar_t>(2.0);
-        dq.w() = static_cast<Scalar_t>(1.0);
+        typedef typename Derived::Scalar Scalar;
+        Eigen::Quaternion<Scalar> dq;
+        const Eigen::Matrix<Scalar, 3, 1> half_theta = theta * static_cast<Scalar>(0.5);
+        dq.w() = static_cast<Scalar>(1.0);
         dq.x() = half_theta.x();
         dq.y() = half_theta.y();
         dq.z() = half_theta.z();
         return dq;
     }
 
-
-    /* Compute Q_L matrix. */
-    static Mat4 Qleft(const Quat &q) {
-        Mat4 Q;
-        Q.template block<1, 3>(0, 1) = -q.vec().transpose();
-        Q.template block<3, 1>(1, 0) = q.vec();
-        Q.template block<3, 3>(1, 1) = SkewSymmetricMatrix(q.vec());
-        for (uint32_t i = 0; i < 4; ++i) {
-            Q(i, i) = q.w();
-        }
-        return Q;
-    }
-
+    /**
+     * @brief Left multiplication matrix of a quaternion.
+     */
     template <typename Derived>
     static Eigen::Matrix<typename Derived::Scalar, 4, 4> Qleft(const Eigen::QuaternionBase<Derived> &q) {
-        Eigen::Quaternion<typename Derived::Scalar> qq = Positify(q);
-        Eigen::Matrix<typename Derived::Scalar, 4, 4> ans;
+        typedef typename Derived::Scalar Scalar;
+        const Eigen::Quaternion<Scalar> qq = q;  // Standardize if needed, but here we use q directly
+        Eigen::Matrix<Scalar, 4, 4> ans;
         ans(0, 0) = qq.w();
         ans.template block<1, 3>(0, 1) = -qq.vec().transpose();
         ans.template block<3, 1>(1, 0) = qq.vec();
-        ans.template block<3, 3>(1, 1) = qq.w() * Eigen::Matrix<typename Derived::Scalar, 3, 3>::Identity() + SkewSymmetricMatrix(qq.vec());
+        ans.template block<3, 3>(1, 1) = qq.w() * Eigen::Matrix<Scalar, 3, 3>::Identity() + SkewSymmetricMatrix(qq.vec());
         return ans;
     }
 
-    /* Compute Q_R matrix. */
-    static Mat4 Qright(const Quat &q) {
-        Mat4 Q;
-        Q.template block<1, 3>(0, 1) = -q.vec().transpose();
-        Q.template block<3, 1>(1, 0) = q.vec();
-        Q.template block<3, 3>(1, 1) = -SkewSymmetricMatrix(q.vec());
-        for (uint32_t i = 0; i < 4; ++i) {
-            Q(i, i) = q.w();
-        }
-        return Q;
-    }
-
+    /**
+     * @brief Right multiplication matrix of a quaternion.
+     */
     template <typename Derived>
     static Eigen::Matrix<typename Derived::Scalar, 4, 4> Qright(const Eigen::QuaternionBase<Derived> &p) {
-        Eigen::Quaternion<typename Derived::Scalar> pp = Positify(p);
-        Eigen::Matrix<typename Derived::Scalar, 4, 4> ans;
+        typedef typename Derived::Scalar Scalar;
+        const Eigen::Quaternion<Scalar> pp = p;
+        Eigen::Matrix<Scalar, 4, 4> ans;
         ans(0, 0) = pp.w();
         ans.template block<1, 3>(0, 1) = -pp.vec().transpose();
         ans.template block<3, 1>(1, 0) = pp.vec();
-        ans.template block<3, 3>(1, 1) = pp.w() * Eigen::Matrix<typename Derived::Scalar, 3, 3>::Identity() - SkewSymmetricMatrix(pp.vec());
+        ans.template block<3, 3>(1, 1) = pp.w() * Eigen::Matrix<Scalar, 3, 3>::Identity() - SkewSymmetricMatrix(pp.vec());
         return ans;
     }
 
-    /* Transform quaternion to pitch, roll, yaw. */
-    template <typename Scalar>
-    static TVec3<Scalar> QuaternionToEuler(const TQuat<Scalar> &q_wb) {
-        TVec3<Scalar> pry;  // pitch, roll, yaw
-        TMat3<Scalar> R(q_wb.inverse());
-        pry.x() = std::atan2(R(1, 2), R(2, 2)) * kRadToDeg;
-        pry.y() = std::asin(-R(0, 2)) * kRadToDeg;
-        pry.z() = std::atan2(R(0, 1), R(0, 0)) * kRadToDeg;
-        return pry;
-    }
+    // --- SO(3) Lie Group & Algebra ---
 
-    /* Transform pitch, roll, yaw to quaternion. */
-    template <typename Scalar>
-    static TQuat<Scalar> EulerToQuaternion(const TVec3<Scalar> &pry) {
-        const TVec3<Scalar> c =
-            TVec3<Scalar>(std::cos(static_cast<Scalar>(0.5) * pry.x() * kDegToRad), std::cos(static_cast<Scalar>(0.5) * pry.y() * kDegToRad),
-                          std::cos(static_cast<Scalar>(0.5) * pry.z() * kDegToRad));
-        const TVec3<Scalar> s =
-            TVec3<Scalar>(std::sin(static_cast<Scalar>(0.5) * pry.x() * kDegToRad), std::sin(static_cast<Scalar>(0.5) * pry.y() * kDegToRad),
-                          std::sin(static_cast<Scalar>(0.5) * pry.z() * kDegToRad));
-        const Scalar w = c.x() * c.y() * c.z() + s.x() * s.y() * s.z();
-        const Scalar x = s.x() * c.y() * c.z() - c.x() * s.y() * s.z();
-        const Scalar y = c.x() * s.y() * c.z() + s.x() * c.y() * s.z();
-        const Scalar z = c.x() * c.y() * s.z() - s.x() * s.y() * c.z();
-        TQuat<Scalar> q_wb;
-        q_wb.w() = w;
-        q_wb.x() = x;
-        q_wb.y() = y;
-        q_wb.z() = z;
-        return q_wb;
-    }
-
-    /* Compute inverse of symmetric matrix. */
-    template <typename Scalar>
-    static TMat<Scalar> Inverse(const TMat<Scalar> &A) {
-        Eigen::SelfAdjointEigenSolver<TMat<Scalar>> saes(A);
-        TMat<Scalar> Ainv = saes.eigenvectors() *
-                            TVec<Scalar>((saes.eigenvalues().array() > kZeroFloat).select(saes.eigenvalues().array().inverse(), 0)).asDiagonal() *
-                            saes.eigenvectors().transpose();
-        return Ainv;
-    }
-
-    /* Combine q t to homogeneous transformation. */
-    template <typename Scalar>
-    static TMat4<Scalar> TransformMatrix(const TQuat<Scalar> &q, const TVec3<Scalar> &t) {
-        TMat4<Scalar> transform = TMat4<Scalar>::Identity();
-        transform.template block<3, 3>(0, 0) = q.matrix();
-        transform.template block<3, 1>(0, 3) = t;
-        return transform;
-    }
-
-    /* Compute exp of vector3. */
-    template <typename Scalar>
-    static TQuat<Scalar> Exponent(const TVec3<Scalar> &omega) {
+    /**
+     * @brief Exponential map from so(3) to SO(3).
+     */
+    template <typename Derived>
+    static Eigen::Quaternion<typename Derived::Scalar> Exponent(const Eigen::MatrixBase<Derived> &omega) {
+        typedef typename Derived::Scalar Scalar;
         const Scalar theta_sq = omega.squaredNorm();
         const Scalar theta = std::sqrt(theta_sq);
         const Scalar half_theta = static_cast<Scalar>(0.5) * theta;
@@ -175,221 +139,324 @@ public:
             real_factor = std::cos(half_theta);
         }
 
-        return TQuat<Scalar>(real_factor, imag_factor * omega.x(), imag_factor * omega.y(), imag_factor * omega.z());
+        return Eigen::Quaternion<Scalar>(real_factor, imag_factor * omega.x(), imag_factor * omega.y(), imag_factor * omega.z());
     }
 
-    /* Compute log of vector3. */
-    template <typename Scalar>
-    static TVec3<Scalar> Logarithm(const TQuat<Scalar> &other) {
-        const Scalar squared_n = other.vec().squaredNorm();
+    /**
+     * @brief Logarithmic map from SO(3) to so(3).
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 1> Logarithm(const Eigen::QuaternionBase<Derived> &q) {
+        typedef typename Derived::Scalar Scalar;
+        const Scalar squared_n = q.vec().squaredNorm();
         const Scalar n = std::sqrt(squared_n);
-        const Scalar w = other.w();
+        const Scalar w = q.w();
 
-        // Atan-based log thanks to C. Hertzberg et al.:
-        // "Integrating Generic Sensor Fusion Algorithms with Sound State
-        // Representation through Encapsulation of Manifolds"
-        // Information Fusion, 2011
         Scalar two_atan_nbyw_by_n;
         if (n < kZeroFloat) {
             const Scalar squared_w = w * w;
             two_atan_nbyw_by_n = static_cast<Scalar>(2) / w - static_cast<Scalar>(2) * squared_n / (w * squared_w);
         } else {
             if (std::abs(w) < kZeroFloat) {
-                if (w > static_cast<Scalar>(0)) {
-                    two_atan_nbyw_by_n = kPaiDouble / n;
-                } else {
-                    two_atan_nbyw_by_n = -kPaiDouble / n;
-                }
+                two_atan_nbyw_by_n = (w > static_cast<Scalar>(0) ? static_cast<Scalar>(kPaiDouble) : static_cast<Scalar>(-kPaiDouble)) / n;
             } else {
-                two_atan_nbyw_by_n = static_cast<Scalar>(2) * atan(n / w) / n;
+                two_atan_nbyw_by_n = static_cast<Scalar>(2) * std::atan(n / w) / n;
             }
         }
-
-        return two_atan_nbyw_by_n * other.vec();
+        return two_atan_nbyw_by_n * q.vec();
     }
 
-    /* Compute left jacobian of vector3. */
-    template <typename Scalar>
-    static TMat3<Scalar> LeftJacobian(const TVec3<Scalar> &omega) {
+    /**
+     * @brief Left Jacobian of SO(3).
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 3> LeftJacobian(const Eigen::MatrixBase<Derived> &omega) {
+        typedef typename Derived::Scalar Scalar;
         const Scalar theta = omega.norm();
         if (theta < kZeroFloat) {
-            return TMat3<Scalar>::Identity();
+            return Eigen::Matrix<Scalar, 3, 3>::Identity();
         } else {
-            const TVec3<Scalar> a = omega / theta;
-            const TMat3<Scalar> jacobian = std::sin(theta) / theta * TMat3<Scalar>::Identity() +
-                                           (static_cast<Scalar>(1) - std::sin(theta) / theta) * a * a.transpose() +
-                                           ((static_cast<Scalar>(1) - std::cos(theta)) / theta) * Utility::SkewSymmetricMatrix(a);
-            return jacobian;
+            const Eigen::Matrix<Scalar, 3, 1> a = omega / theta;
+            const Eigen::Matrix<Scalar, 3, 3> a_skew = SkewSymmetricMatrix(a);
+            return std::sin(theta) / theta * Eigen::Matrix<Scalar, 3, 3>::Identity() + (static_cast<Scalar>(1) - std::sin(theta) / theta) * a * a.transpose() +
+                   ((static_cast<Scalar>(1) - std::cos(theta)) / theta) * a_skew;
         }
     }
 
-    /* Compute right jacobian of vector3. */
-    template <typename Scalar>
-    static TMat3<Scalar> RightJacobian(const TVec3<Scalar> &omega) {
-        return Utility::LeftJacobian(Vec3(-omega));
+    /**
+     * @brief Inverse of Left Jacobian of SO(3).
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 3> LeftJacobianInverse(const Eigen::MatrixBase<Derived> &omega) {
+        typedef typename Derived::Scalar Scalar;
+        const Scalar theta2 = omega.squaredNorm();
+        const Scalar theta = std::sqrt(theta2);
+        const Eigen::Matrix<Scalar, 3, 3> omega_skew = SkewSymmetricMatrix(omega);
+        if (theta < kZeroFloat) {
+            return Eigen::Matrix<Scalar, 3, 3>::Identity() - static_cast<Scalar>(0.5) * omega_skew + static_cast<Scalar>(1.0 / 12.0) * omega_skew * omega_skew;
+        } else {
+            return Eigen::Matrix<Scalar, 3, 3>::Identity() - static_cast<Scalar>(0.5) * omega_skew +
+                   (static_cast<Scalar>(1) / theta2 - (static_cast<Scalar>(1) + std::cos(theta)) / (static_cast<Scalar>(2) * theta * std::sin(theta))) *
+                       omega_skew * omega_skew;
+        }
     }
 
-    /* Compute one of the basis on the tangent plane of the input vector. */
-    template <typename Scalar>
-    static TMat3x2<Scalar> TangentBase(const TVec3<Scalar> &v) {
-        TMat3x2<Scalar> b0b1;
-        const TVec3<Scalar> a = v.normalized();
-        TVec3<Scalar> b(0, 0, 1);
-        if (a == b) {
-            b = TVec3<Scalar>(1, 0, 0);
+    /**
+     * @brief Right Jacobian of SO(3).
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 3> RightJacobian(const Eigen::MatrixBase<Derived> &omega) {
+        return LeftJacobian(-omega);
+    }
+
+    /**
+     * @brief Inverse of Right Jacobian of SO(3).
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 3> RightJacobianInverse(const Eigen::MatrixBase<Derived> &omega) {
+        return LeftJacobianInverse(-omega);
+    }
+
+    // --- Euler Angles & Attitude ---
+
+    /**
+     * @brief Transform quaternion to Euler angles (pitch, roll, yaw) in degrees.
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 1> QuaternionToEuler(const Eigen::QuaternionBase<Derived> &q_wb) {
+        typedef typename Derived::Scalar Scalar;
+        Eigen::Matrix<Scalar, 3, 1> pry;  // pitch, roll, yaw
+        const Eigen::Matrix<Scalar, 3, 3> R(q_wb.inverse());
+        pry.x() = std::atan2(R(1, 2), R(2, 2)) * static_cast<Scalar>(kRadToDegDouble);
+        pry.y() = std::asin(-R(0, 2)) * static_cast<Scalar>(kRadToDegDouble);
+        pry.z() = std::atan2(R(0, 1), R(0, 0)) * static_cast<Scalar>(kRadToDegDouble);
+        return pry;
+    }
+
+    /**
+     * @brief Transform Euler angles (pitch, roll, yaw) in degrees to quaternion.
+     */
+    template <typename Derived>
+    static Eigen::Quaternion<typename Derived::Scalar> EulerToQuaternion(const Eigen::MatrixBase<Derived> &pry) {
+        typedef typename Derived::Scalar Scalar;
+        const Eigen::Matrix<Scalar, 3, 1> c = Eigen::Matrix<Scalar, 3, 1>(std::cos(static_cast<Scalar>(0.5) * pry.x() * static_cast<Scalar>(kDegToRadDouble)),
+                                                                    std::cos(static_cast<Scalar>(0.5) * pry.y() * static_cast<Scalar>(kDegToRadDouble)),
+                                                                    std::cos(static_cast<Scalar>(0.5) * pry.z() * static_cast<Scalar>(kDegToRadDouble)));
+        const Eigen::Matrix<Scalar, 3, 1> s = Eigen::Matrix<Scalar, 3, 1>(std::sin(static_cast<Scalar>(0.5) * pry.x() * static_cast<Scalar>(kDegToRadDouble)),
+                                                                    std::sin(static_cast<Scalar>(0.5) * pry.y() * static_cast<Scalar>(kDegToRadDouble)),
+                                                                    std::sin(static_cast<Scalar>(0.5) * pry.z() * static_cast<Scalar>(kDegToRadDouble)));
+        const Scalar w = c.x() * c.y() * c.z() + s.x() * s.y() * s.z();
+        const Scalar x = s.x() * c.y() * c.z() - c.x() * s.y() * s.z();
+        const Scalar y = c.x() * s.y() * c.z() + s.x() * c.y() * s.z();
+        const Scalar z = c.x() * c.y() * s.z() - s.x() * s.y() * c.z();
+        return Eigen::Quaternion<Scalar>(w, x, y, z);
+    }
+
+    /**
+     * @brief Compute attitude (quaternion) from gravity vector in local frame.
+     * Fixes singularity when gravity is parallel to world z-axis.
+     */
+    template <typename Derived>
+    static Eigen::Quaternion<typename Derived::Scalar> ConvertGravityToAttitude(const Eigen::MatrixBase<Derived> &gravity_i) {
+        typedef typename Derived::Scalar Scalar;
+        const Eigen::Matrix<Scalar, 3, 1> g_w(0, 0, 1);
+        const Eigen::Matrix<Scalar, 3, 1> g_i = gravity_i.normalized();
+        // Eigen::Quaternion::FromTwoVectors is robust against parallel/anti-parallel cases.
+        return Eigen::Quaternion<Scalar>::FromTwoVectors(g_i, g_w);
+    }
+
+    // --- Cayley Map ---
+
+    /**
+     * @brief Convert rotation matrix to Cayley parameters.
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 1> ConvertRotationMatrixToCayley(const Eigen::MatrixBase<Derived> &R) {
+        typedef typename Derived::Scalar Scalar;
+        const Eigen::Matrix<Scalar, 3, 3> I = Eigen::Matrix<Scalar, 3, 3>::Identity();
+        const Eigen::Matrix<Scalar, 3, 3> C = (R - I) * (R + I).inverse();
+        return Eigen::Matrix<Scalar, 3, 1>(-C(1, 2), C(0, 2), -C(0, 1));
+    }
+
+    /**
+     * @brief Convert Cayley parameters to reduced rotation matrix.
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 3> ConvertCayleyToReducedRotationMatrix(const Eigen::MatrixBase<Derived> &cayley) {
+        typedef typename Derived::Scalar Scalar;
+        Eigen::Matrix<Scalar, 3, 3> R;
+        R(0, 0) = 1.0 + std::pow(cayley(0), 2) - std::pow(cayley(1), 2) - std::pow(cayley(2), 2);
+        R(0, 1) = 2.0 * (cayley(0) * cayley(1) - cayley(2));
+        R(0, 2) = 2.0 * (cayley(0) * cayley(2) + cayley(1));
+        R(1, 0) = 2.0 * (cayley(0) * cayley(1) + cayley(2));
+        R(1, 1) = 1.0 - std::pow(cayley(0), 2) + std::pow(cayley(1), 2) - std::pow(cayley(2), 2);
+        R(1, 2) = 2.0 * (cayley(1) * cayley(2) - cayley(0));
+        R(2, 0) = 2.0 * (cayley(0) * cayley(2) - cayley(1));
+        R(2, 1) = 2.0 * (cayley(1) * cayley(2) + cayley(0));
+        R(2, 2) = 1.0 - std::pow(cayley(0), 2) - std::pow(cayley(1), 2) + std::pow(cayley(2), 2);
+        return R;
+    }
+
+    /**
+     * @brief Convert Cayley parameters to rotation matrix.
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 3> ConvertCayleyToRotationMatrix(const Eigen::MatrixBase<Derived> &cayley) {
+        typedef typename Derived::Scalar Scalar;
+        const Scalar scale = 1.0 + std::pow(cayley(0), 2) + std::pow(cayley(1), 2) + std::pow(cayley(2), 2);
+        return ConvertCayleyToReducedRotationMatrix(cayley) / scale;
+    }
+
+    /**
+     * @brief Convert Cayley parameters to quaternion.
+     */
+    template <typename Derived>
+    static Eigen::Quaternion<typename Derived::Scalar> ConvertCayleyToQuaternion(const Eigen::MatrixBase<Derived> &cayley) {
+        typedef typename Derived::Scalar Scalar;
+        Eigen::Quaternion<Scalar> q;
+        q.w() = static_cast<Scalar>(1);
+        q.vec() = cayley;
+        return q.normalized();
+    }
+
+    /**
+     * @brief Convert quaternion to Cayley parameters.
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 1> ConvertQuaternionToCayley(const Eigen::QuaternionBase<Derived> &q) {
+        return q.vec() / q.w();
+    }
+
+    // --- Angle-Axis Conversions ---
+
+    /**
+     * @brief Convert rotation vector (angle-axis) to rotation matrix.
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 3> ConvertAngleAxisToRotationMatrix(const Eigen::MatrixBase<Derived> &rvec) {
+        typedef typename Derived::Scalar Scalar;
+        const Scalar angle = rvec.norm();
+        if (angle == static_cast<Scalar>(0)) {
+            return Eigen::Matrix<Scalar, 3, 3>::Identity();
+        }
+        const Eigen::Matrix<Scalar, 3, 1> axis = rvec.normalized();
+        return Eigen::AngleAxis<Scalar>(angle, axis).toRotationMatrix();
+    }
+
+    /**
+     * @brief Convert rotation vector (angle-axis) to quaternion.
+     */
+    template <typename Derived>
+    static Eigen::Quaternion<typename Derived::Scalar> ConvertAngleAxisToQuaternion(const Eigen::MatrixBase<Derived> &rvec) {
+        return Eigen::Quaternion<typename Derived::Scalar>(ConvertAngleAxisToRotationMatrix(rvec));
+    }
+
+    /**
+     * @brief Convert quaternion to rotation vector (angle-axis).
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 1> ConvertQuaternionToAngleAxis(const Eigen::QuaternionBase<Derived> &q) {
+        return ConvertRotationMatrixToAngleAxis(q.toRotationMatrix());
+    }
+
+    /**
+     * @brief Convert rotation matrix to rotation vector (angle-axis).
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 1> ConvertRotationMatrixToAngleAxis(const Eigen::MatrixBase<Derived> &R) {
+        typedef typename Derived::Scalar Scalar;
+        Eigen::AngleAxis<Scalar> angle_axis;
+        angle_axis.fromRotationMatrix(R);
+        return angle_axis.angle() * angle_axis.axis();
+    }
+
+    // --- Coordinate Transformations ---
+
+    /**
+     * @brief Combine quaternion and translation to a homogeneous transformation matrix.
+     */
+    template <typename DerivedQ, typename DerivedT>
+    static Eigen::Matrix<typename DerivedQ::Scalar, 4, 4> TransformMatrix(const Eigen::QuaternionBase<DerivedQ> &q, const Eigen::MatrixBase<DerivedT> &t) {
+        typedef typename DerivedQ::Scalar Scalar;
+        Eigen::Matrix<Scalar, 4, 4> transform = Eigen::Matrix<Scalar, 4, 4>::Identity();
+        transform.template block<3, 3>(0, 0) = q.toRotationMatrix();
+        transform.template block<3, 1>(0, 3) = t;
+        return transform;
+    }
+
+    /**
+     * @brief T_ik = T_ij * T_jk
+     */
+    template <typename DerivedP1, typename DerivedQ1, typename DerivedP2, typename DerivedQ2, typename DerivedP3, typename DerivedQ3>
+    static void ComputeTransformTransform(const Eigen::MatrixBase<DerivedP1> &p_ij, const Eigen::QuaternionBase<DerivedQ1> &q_ij,
+                                          const Eigen::MatrixBase<DerivedP2> &p_jk, const Eigen::QuaternionBase<DerivedQ2> &q_jk,
+                                          Eigen::MatrixBase<DerivedP3> &p_ik, Eigen::QuaternionBase<DerivedQ3> &q_ik) {
+        p_ik = q_ij * p_jk + p_ij;
+        q_ik = q_ij * q_jk;
+    }
+
+    /**
+     * @brief T_ik = T_ji.inv * T_jk
+     */
+    template <typename DerivedP1, typename DerivedQ1, typename DerivedP2, typename DerivedQ2, typename DerivedP3, typename DerivedQ3>
+    static void ComputeTransformInverseTransform(const Eigen::MatrixBase<DerivedP1> &p_ji, const Eigen::QuaternionBase<DerivedQ1> &q_ji,
+                                                 const Eigen::MatrixBase<DerivedP2> &p_jk, const Eigen::QuaternionBase<DerivedQ2> &q_jk,
+                                                 Eigen::MatrixBase<DerivedP3> &p_ik, Eigen::QuaternionBase<DerivedQ3> &q_ik) {
+        typedef typename DerivedQ1::Scalar Scalar;
+        const Eigen::Quaternion<Scalar> q_ij = q_ji.inverse();
+        p_ik = q_ij * p_jk - q_ij * p_ji;
+        q_ik = q_ij * q_jk;
+    }
+
+    /**
+     * @brief T_ik = T_ij * T_kj.inv
+     */
+    template <typename DerivedP1, typename DerivedQ1, typename DerivedP2, typename DerivedQ2, typename DerivedP3, typename DerivedQ3>
+    static void ComputeTransformTransformInverse(const Eigen::MatrixBase<DerivedP1> &p_ij, const Eigen::QuaternionBase<DerivedQ1> &q_ij,
+                                                 const Eigen::MatrixBase<DerivedP2> &p_kj, const Eigen::QuaternionBase<DerivedQ2> &q_kj,
+                                                 Eigen::MatrixBase<DerivedP3> &p_ik, Eigen::QuaternionBase<DerivedQ3> &q_ik) {
+        typedef typename DerivedQ1::Scalar Scalar;
+        const Eigen::Quaternion<Scalar> q_jk = q_kj.inverse();
+        p_ik = q_ij * (q_jk * (-p_kj)) + p_ij;
+        q_ik = q_ij * q_jk;
+    }
+
+    // --- Miscellaneous Utilities ---
+
+    /**
+     * @brief Compute two orthogonal basis vectors on the tangent plane of a 3D vector.
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, 3, 2> TangentBase(const Eigen::MatrixBase<Derived> &v) {
+        typedef typename Derived::Scalar Scalar;
+        Eigen::Matrix<Scalar, 3, 2> b0b1;
+        const Eigen::Matrix<Scalar, 3, 1> a = v.normalized();
+        Eigen::Matrix<Scalar, 3, 1> b(0, 0, 1);
+        if (std::abs(a.z()) > static_cast<Scalar>(0.9)) {
+            b = Eigen::Matrix<Scalar, 3, 1>(1, 0, 0);
         }
         b0b1.template block<3, 1>(0, 0) = (b - a * a.dot(b)).normalized();
         b0b1.template block<3, 1>(0, 1) = a.cross(b0b1.template block<3, 1>(0, 0));
         return b0b1;
     }
 
-    /* Convert rotation matrix to cayley. */
-    template <typename Scalar>
-    static TVec3<Scalar> ConvertRotationMatrixToCayley(const TMat3<Scalar> &R) {
-        const TMat3<Scalar> C1 = R - TMat3<Scalar>::Identity();
-        const TMat3<Scalar> C2 = R + TMat3<Scalar>::Identity();
-        const TMat3<Scalar> C = C1 * C2.inverse();
-        return TVec3<Scalar>(-C(1, 2), C(0, 2), -C(0, 1));
-    }
-
-    /* Convert cayley to reduced rotation matrix. */
-    template <typename Scalar>
-    static TMat3<Scalar> ConvertCayleyToReducedRotationMatrix(const TVec3<Scalar> &cayley) {
-        TMat3<Scalar> R;
-        R(0, 0) = 1.0 + pow(cayley(0), 2) - pow(cayley(1), 2) - pow(cayley(2), 2);
-        R(0, 1) = 2.0 * (cayley(0) * cayley(1) - cayley(2));
-        R(0, 2) = 2.0 * (cayley(0) * cayley(2) + cayley(1));
-        R(1, 0) = 2.0 * (cayley(0) * cayley(1) + cayley(2));
-        R(1, 1) = 1.0 - pow(cayley(0), 2) + pow(cayley(1), 2) - pow(cayley(2), 2);
-        R(1, 2) = 2.0 * (cayley(1) * cayley(2) - cayley(0));
-        R(2, 0) = 2.0 * (cayley(0) * cayley(2) - cayley(1));
-        R(2, 1) = 2.0 * (cayley(1) * cayley(2) + cayley(0));
-        R(2, 2) = 1.0 - pow(cayley(0), 2) - pow(cayley(1), 2) + pow(cayley(2), 2);
-        return R;
-    }
-
-    /* Convert cayley to rotation matrix. */
-    template <typename Scalar>
-    static TMat3<Scalar> ConvertCayleyToRotationMatrix(const TVec3<Scalar> &cayley) {
-        const Scalar scale = 1.0 + pow(cayley(0), 2) + pow(cayley(1), 2) + pow(cayley(2), 2);
-
-        TMat3<Scalar> R;
-        R(0, 0) = 1.0 + pow(cayley(0), 2) - pow(cayley(1), 2) - pow(cayley(2), 2);
-        R(0, 1) = 2.0 * (cayley(0) * cayley(1) - cayley(2));
-        R(0, 2) = 2.0 * (cayley(0) * cayley(2) + cayley(1));
-        R(1, 0) = 2.0 * (cayley(0) * cayley(1) + cayley(2));
-        R(1, 1) = 1.0 - pow(cayley(0), 2) + pow(cayley(1), 2) - pow(cayley(2), 2);
-        R(1, 2) = 2.0 * (cayley(1) * cayley(2) - cayley(0));
-        R(2, 0) = 2.0 * (cayley(0) * cayley(2) - cayley(1));
-        R(2, 1) = 2.0 * (cayley(1) * cayley(2) + cayley(0));
-        R(2, 2) = 1.0 - pow(cayley(0), 2) - pow(cayley(1), 2) + pow(cayley(2), 2);
-        return R / scale;
-    }
-
-    /* Convert cayley to quaternion. */
-    template <typename Scalar>
-    static TQuat<Scalar> ConvertCayleyToQuaternion(const TVec3<Scalar> &cayley) {
-        TQuat<Scalar> q = TQuat<Scalar>::Identity();
-        q.w() = static_cast<Scalar>(1);
-        q.x() = cayley.x();
-        q.y() = cayley.y();
-        q.z() = cayley.z();
-        return q.normalized();
-    }
-
-    /* Convert quaternion to cayley. */
-    template <typename Scalar>
-    static TVec3<Scalar> ConvertQuaternionToCayley(const TQuat<Scalar> &q) {
-        return TVec3<Scalar>(q.x() / q.w(), q.y() / q.w(), q.z() / q.w());
-    }
-
-    /* Convert angle axis to rotation matrix. */
-    template <typename Scalar>
-    static TMat3<Scalar> ConvertAngleAxisToRotationMatrix(const TVec3<Scalar> &rvec) {
-        const Scalar angle = rvec.norm();
-        if (angle == static_cast<Scalar>(0)) {
-            return TMat3<Scalar>::Identity();
-        }
-
-        const TVec3<Scalar> axis = rvec.normalized();
-        TMat3<Scalar> rmat;
-        rmat = Eigen::AngleAxis<Scalar>(angle, axis);
-        return rmat;
-    }
-
-    /* Convert angle axis to quaternion. */
-    template <typename Scalar>
-    static TQuat<Scalar> ConvertAngleAxisToQuaternion(const TVec3<Scalar> &rvec) {
-        const TMat3<Scalar> rotation_matrix = ConvertAngleAxisToRotationMatrix(rvec);
-        return TQuat<Scalar>(rotation_matrix);
-    }
-
-    /* Convert quaternion to angle axis. */
-    template <typename Scalar>
-    static TVec3<Scalar> ConvertQuaternionToAngleAxis(const TQuat<Scalar> &q) {
-        const TMat3<Scalar> R = q.toRotationMatrix();
-        return ConvertRotationMatrixToAngleAxis(R);
-    }
-
-    /* Convert rotation matrix to angle axis. */
-    template <typename Scalar>
-    static TVec3<Scalar> ConvertRotationMatrixToAngleAxis(const TMat3<Scalar> &R) {
-        Eigen::AngleAxis<Scalar> angle_axis;
-        angle_axis.fromRotationMatrix(R);
-        return angle_axis.angle() * angle_axis.axis();
-    }
-
-    /* Compute transform matrix. */
-    template <typename Scalar>
-    static void ComputeTransformTransform(const TVec3<Scalar> &p_ij, const TQuat<Scalar> &q_ij, const TVec3<Scalar> &p_jk, const TQuat<Scalar> &q_jk,
-                                          TVec3<Scalar> &p_ik, TQuat<Scalar> &q_ik) {
-        // T_ik = T_ij * T_jk.
-        /* [R_ik  t_ik] = [R_ij  t_ij] * [R_jk  t_jk]
-                        = [R_ij * R_jk  R_ij * t_jk + t_ij] */
-        p_ik = q_ij * p_jk + p_ij;
-        q_ik = q_ij * q_jk;
-    }
-
-    template <typename Scalar>
-    static void ComputeTransformInverseTransform(const TVec3<Scalar> &p_ji, const TQuat<Scalar> &q_ji, const TVec3<Scalar> &p_jk, const TQuat<Scalar> &q_jk,
-                                                 TVec3<Scalar> &p_ik, TQuat<Scalar> &q_ik) {
-        // T_ik = T_ji.inv * T_jk.
-        /* [R_ik  t_ik] = [R_ji.inv  -R_ji.inv * t_ji] * [R_jk  t_jk]
-                        = [R_ji.inv * R_jk  R_ji.inv * t_jk - R_ji.inv * t_ji] */
-        const TQuat<Scalar> q_ij = q_ji.inverse();
-        p_ik = q_ij * p_jk - q_ij * p_ji;
-        q_ik = q_ij * q_jk;
-    }
-
-    template <typename Scalar>
-    static void ComputeTransformTransformInverse(const TVec3<Scalar> &p_ij, const TQuat<Scalar> &q_ij, const TVec3<Scalar> &p_kj, const TQuat<Scalar> &q_kj,
-                                                 TVec3<Scalar> &p_ik, TQuat<Scalar> &q_ik) {
-        // T_ik = T_ij * T_kj.inv.
-        /* [R_ik  t_ik] = [R_ij  t_ij] * [R_kj.inv  -R_kj.inv * t_kj]
-                        = [R_ij * R_kj.inv  -R_ij * R_kj.inv * t_kj + t_ij] */
-        p_ik = -(q_ij * q_kj.inverse() * p_kj) + p_ij;
-        q_ik = q_ij * q_kj.inverse();
-    }
-
+    /**
+     * @brief Compute the difference between two angles in radians, wrapped to [-pi, pi].
+     */
     template <typename Scalar>
     static Scalar AngleDiffInRad(const Scalar &a, const Scalar &b) {
-        const TVec3<Scalar> diff(a - b, a - b + k2Pai, a - b - k2Pai);
-        const TVec3<Scalar> diff_abs = diff.cwiseAbs();
+        const Scalar diff_val = a - b;
+        const Scalar two_pi = static_cast<Scalar>(k2PaiDouble);
+        const Eigen::Matrix<Scalar, 3, 1> diff(diff_val, diff_val + two_pi, diff_val - two_pi);
+        const Eigen::Matrix<Scalar, 3, 1> diff_abs = diff.cwiseAbs();
         int32_t idx = 0;
-        idx = diff_abs(idx) > diff_abs(1) ? 1 : idx;
-        idx = diff_abs(idx) > diff_abs(2) ? 2 : idx;
+        if (diff_abs(1) < diff_abs(idx)) {
+            idx = 1;
+        }
+        if (diff_abs(2) < diff_abs(idx)) {
+            idx = 2;
+        }
         return diff(idx);
-    }
-
-    template <typename Scalar>
-    static TQuat<Scalar> ConvertGravityToAttitude(const TVec3<Scalar> &gravity_i) {
-        const TVec3<Scalar> g_w = TVec3<Scalar>(0, 0, 1);
-        const TVec3<Scalar> g_i = gravity_i.normalized();
-        const Scalar norm = (g_i.cross(g_w)).norm();
-        const TVec3<Scalar> vec = g_i.cross(g_w) / norm;
-        const Scalar theta = std::atan2(norm, g_i.dot(g_w));
-        const TVec3<Scalar> axis_angle = vec * theta;
-        return Exponent(axis_angle);
     }
 };
 
