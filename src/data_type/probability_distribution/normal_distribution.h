@@ -13,6 +13,7 @@ class NormalDistribution {
 public:
     struct AdvancedParameters {
         TMat<float, kDimension, kDimension> sqrt_inv_covariance_ = TMat<float, kDimension, kDimension>::Zero();
+        TMat<float, kDimension, kDimension> inv_covariance_ = TMat<float, kDimension, kDimension>::Zero();
     };
 
 public:
@@ -37,6 +38,7 @@ public:
     const TVec<float, kDimension> &mid_point() const { return mid_point_; }
     const TMat<float, kDimension, kDimension> &covariance() const { return covariance_; }
     const TMat<float, kDimension, kDimension> &sqrt_inv_covariance() const { return advanced_params_.sqrt_inv_covariance_; }
+    const TMat<float, kDimension, kDimension> &inv_covariance() const { return advanced_params_.inv_covariance_; }
     const uint32_t &num_of_points() const { return num_of_points_; }
 
 private:
@@ -106,6 +108,7 @@ template <int32_t kDimension>
 void NormalDistribution<kDimension>::SynchronizeToAdvancedParameters() {
     const Eigen::LLT<TMat<float, kDimension, kDimension>> cov_llt(covariance_ + TMat<float, kDimension, kDimension>::Identity() * 1e-4f);
     advanced_params_.sqrt_inv_covariance_ = cov_llt.matrixL().solve(TMat<float, kDimension, kDimension>::Identity());
+    advanced_params_.inv_covariance_ = advanced_params_.sqrt_inv_covariance_ * advanced_params_.sqrt_inv_covariance_.transpose();
 }
 
 }  // namespace slam_utility
