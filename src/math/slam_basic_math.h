@@ -220,36 +220,53 @@ public:
     // --- Euler Angles & Attitude ---
 
     /**
-     * @brief Transform quaternion to Euler angles (pitch, roll, yaw) in degrees.
+     * @brief Transform quaternion to Euler angles (roll, pitch, yaw) in degrees.
      */
     template <typename Derived>
-    static Eigen::Matrix<typename Derived::Scalar, 3, 1> QuaternionToEuler(const Eigen::QuaternionBase<Derived> &q_wb) {
+    static Eigen::Matrix<typename Derived::Scalar, 3, 1> QuaternionToEuler(const Eigen::QuaternionBase<Derived> &q) {
         typedef typename Derived::Scalar Scalar;
-        Eigen::Matrix<Scalar, 3, 1> pry;  // pitch, roll, yaw
-        const Eigen::Matrix<Scalar, 3, 3> R(q_wb.inverse());
-        pry.x() = std::atan2(R(1, 2), R(2, 2)) * static_cast<Scalar>(kRadToDegDouble);
-        pry.y() = std::asin(-R(0, 2)) * static_cast<Scalar>(kRadToDegDouble);
-        pry.z() = std::atan2(R(0, 1), R(0, 0)) * static_cast<Scalar>(kRadToDegDouble);
-        return pry;
+        TVec3<Scalar> rpy = TVec3<Scalar>::Zero();  // roll, pitch, yaw
+
+        // Roll (x-axis rotation)
+        const Scalar sinr_cosp = 2 * (q.w() * q.x() + q.y() * q.z());
+        const Scalar cosr_cosp = 1 - 2 * (q.x() * q.x() + q.y() * q.y());
+        rpy.x() = std::atan2(sinr_cosp, cosr_cosp);
+
+        // Pitch (y-axis rotation)
+        const Scalar sinp = 2 * (q.w() * q.y() - q.z() * q.x());
+        if (std::abs(sinp) >= 1) {
+            rpy.y() = std::copysign(kPaiDouble / 2.0, sinp); // Use 90 degrees if out of range
+        } else {
+            rpy.y() = std::asin(sinp);
+        }
+
+        // Yaw (z-axis rotation)
+        const Scalar siny_cosp = 2 * (q.w() * q.z() + q.x() * q.y());
+        const Scalar cosy_cosp = 1 - 2 * (q.y() * q.y() + q.z() * q.z());
+        rpy.z() = std::atan2(siny_cosp, cosy_cosp);
+
+        return rpy * static_cast<Scalar>(kRadToDegDouble);
     }
 
     /**
-     * @brief Transform Euler angles (pitch, roll, yaw) in degrees to quaternion.
+     * @brief Transform Euler angles (roll, pitch, yaw) in degrees to quaternion.
      */
     template <typename Derived>
-    static Eigen::Quaternion<typename Derived::Scalar> EulerToQuaternion(const Eigen::MatrixBase<Derived> &pry) {
+    static Eigen::Quaternion<typename Derived::Scalar> EulerToQuaternion(const Eigen::MatrixBase<Derived> &rpy) {
         typedef typename Derived::Scalar Scalar;
-        const Eigen::Matrix<Scalar, 3, 1> c = Eigen::Matrix<Scalar, 3, 1>(std::cos(static_cast<Scalar>(0.5) * pry.x() * static_cast<Scalar>(kDegToRadDouble)),
-                                                                    std::cos(static_cast<Scalar>(0.5) * pry.y() * static_cast<Scalar>(kDegToRadDouble)),
-                                                                    std::cos(static_cast<Scalar>(0.5) * pry.z() * static_cast<Scalar>(kDegToRadDouble)));
-        const Eigen::Matrix<Scalar, 3, 1> s = Eigen::Matrix<Scalar, 3, 1>(std::sin(static_cast<Scalar>(0.5) * pry.x() * static_cast<Scalar>(kDegToRadDouble)),
-                                                                    std::sin(static_cast<Scalar>(0.5) * pry.y() * static_cast<Scalar>(kDegToRadDouble)),
-                                                                    std::sin(static_cast<Scalar>(0.5) * pry.z() * static_cast<Scalar>(kDegToRadDouble)));
-        const Scalar w = c.x() * c.y() * c.z() + s.x() * s.y() * s.z();
-        const Scalar x = s.x() * c.y() * c.z() - c.x() * s.y() * s.z();
-        const Scalar y = c.x() * s.y() * c.z() + s.x() * c.y() * s.z();
-        const Scalar z = c.x() * c.y() * s.z() - s.x() * s.y() * c.z();
-        return Eigen::Quaternion<Scalar>(w, x, y, z);
+        const Scalar cr = std::cos(rpy.x() * static_cast<Scalar>(0.5) * static_cast<Scalar>(kDegToRadDouble));
+        const Scalar sr = std::sin(rpy.x() * static_cast<Scalar>(0.5) * static_cast<Scalar>(kDegToRadDouble));
+        const Scalar cp = std::cos(rpy.y() * static_cast<Scalar>(0.5) * static_cast<Scalar>(kDegToRadDouble));
+        const Scalar sp = std::sin(rpy.y() * static_cast<Scalar>(0.5) * static_cast<Scalar>(kDegToRadDouble));
+        const Scalar cy = std::cos(rpy.z() * static_cast<Scalar>(0.5) * static_cast<Scalar>(kDegToRadDouble));
+        const Scalar sy = std::sin(rpy.z() * static_cast<Scalar>(0.5) * static_cast<Scalar>(kDegToRadDouble));
+
+        TQuat<Scalar> q = TQuat<Scalar>::Identity();
+        q.w() = cy * cp * cr + sy * sp * sr;
+        q.x() = cy * cp * sr - sy * sp * cr;
+        q.y() = sy * cp * sr + cy * sp * cr;
+        q.z() = sy * cp * cr - cy * sp * sr;
+        return q;
     }
 
     /**

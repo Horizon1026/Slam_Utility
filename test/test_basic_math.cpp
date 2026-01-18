@@ -14,12 +14,12 @@ void TestTangentBase() {
 
 void TestConvertionBetweenEulerAndQuaternion() {
     ReportColorInfo(">> Test Utility::EulerToQuaternion() and QuaternionToEuler()");
-    Vec3 pry = Vec3(90, 50, 60);
-    ReportInfo("Truth pitch, roll, yaw is " << LogVec(pry));
-    const Quat q = Utility::EulerToQuaternion(pry);
+    Vec3 rpy = Vec3(90, 50, 60);
+    ReportInfo("Truth roll, pitch, yaw is " << LogVec(rpy));
+    const Quat q = Utility::EulerToQuaternion(rpy);
     ReportInfo("q is " << LogQuat(q));
-    pry = Utility::QuaternionToEuler(q);
-    ReportInfo("pitch, roll, yaw is " << LogVec(pry));
+    rpy = Utility::QuaternionToEuler(q);
+    ReportInfo("Estimated roll, pitch, yaw is " << LogVec(rpy));
 }
 
 void TestLogAndExp() {
