@@ -2,6 +2,7 @@
 #define _NORMAL_DISTRIBUTION_H_
 
 #include "basic_type.h"
+#include "slam_basic_math.h"
 #include "slam_operations.h"
 
 namespace slam_utility {
@@ -25,6 +26,7 @@ public:
     bool IncrementallyFitDistribution(const TVec<float, kDimension> &point);
     bool DirectlyFitDistribution(const std::vector<TVec<float, kDimension>> &points);
     void SynchronizeToAdvancedParameters();
+    float ProbabilityDensityFunction(const TVec<float, kDimension> &point) const;
 
     // Define operators.
     bool operator==(const NormalDistribution &other) const { return mid_point_ == other.mid_point_ && covariance_ == other.covariance_; }
@@ -109,6 +111,12 @@ void NormalDistribution<kDimension>::SynchronizeToAdvancedParameters() {
     const Eigen::LLT<TMat<float, kDimension, kDimension>> cov_llt(covariance_ + TMat<float, kDimension, kDimension>::Identity() * 1e-4f);
     advanced_params_.sqrt_inv_covariance_ = cov_llt.matrixL().solve(TMat<float, kDimension, kDimension>::Identity());
     advanced_params_.inv_covariance_ = advanced_params_.sqrt_inv_covariance_ * advanced_params_.sqrt_inv_covariance_.transpose();
+}
+
+template <int32_t kDimension>
+float NormalDistribution<kDimension>::ProbabilityDensityFunction(const TVec<float, kDimension> &point) const {
+    const TVec<float, kDimension> diff = point - mid_point_;
+    return std::exp(-0.5 * diff.transpose() * advanced_params_.inv_covariance_ * diff) / std::sqrt(2.0f * kPai * covariance_.determinant());
 }
 
 }  // namespace slam_utility

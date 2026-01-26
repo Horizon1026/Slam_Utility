@@ -43,6 +43,7 @@ set( UNIT_TEST_OF_SLAM_UTILITY_LIST
     test_line_segment
     test_plane
     test_yaml_parser
+    test_probability_distribution
 )
 foreach( unit_test_src ${UNIT_TEST_OF_SLAM_UTILITY_LIST} )
     add_executable( ${unit_test_src}

@@ -11,4 +11,5 @@ cd ./build
 ./test_plane
 ./test_yaml_parser
 ./test_onnx
+./test_probability_distribution
 cd ..
