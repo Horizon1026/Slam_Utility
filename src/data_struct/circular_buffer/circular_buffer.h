@@ -33,7 +33,8 @@ public:
         if (index >= size_) {
             throw std::out_of_range("Index out of range");
         }
-        return buffer_[(head_ + index) % MaxSize];
+        uint32_t pos = head_ + index;
+        return buffer_[pos < MaxSize ? pos : pos - MaxSize];
     }
     const T &Back() const { return buffer_[tail_]; }
     const T &Front() const { return buffer_[head_]; }
@@ -43,7 +44,8 @@ public:
         if (index >= size_) {
             throw std::out_of_range("Index out of range");
         }
-        return buffer_[(head_ + index) % MaxSize];
+        uint32_t pos = head_ + index;
+        return buffer_[pos < MaxSize ? pos : pos - MaxSize];
     }
 
     // Status of buffer.
