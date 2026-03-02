@@ -63,12 +63,13 @@ void TestKdTreeConstruction() {
         sorted_point_indices[i] = i;
     }
     std::unique_ptr<KdTreeNode<float, 3>> kd_tree_ptr = std::make_unique<KdTreeNode<float, 3>>();
-    kd_tree_ptr->Construct(raw_points, sorted_point_indices, kd_tree_ptr);
-    ReportInfo("Construct a kd-tree with depth " << kd_tree_ptr->GetDepth(kd_tree_ptr));
+    kd_tree_ptr->Construct(raw_points, sorted_point_indices);
+    ReportInfo("Construct a kd-tree with depth " << kd_tree_ptr->GetDepth());
 
     // Extract all points in kd-tree.
     std::vector<int32_t> index_of_points;
-    kd_tree_ptr->ExtractAllPoints(kd_tree_ptr, raw_points, index_of_points);
+    kd_tree_ptr->ExtractAllPoints(index_of_points);
+    ReportInfo("Extracted " << index_of_points.size() << " points from kd-tree.");
 
     // Visualize result.
     Visualizor3D::Clear();
@@ -82,7 +83,7 @@ void TestKdTreeConstruction() {
 
     // Extract half points in kd-tree.
     index_of_points.clear();
-    kd_tree_ptr->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr(), raw_points, index_of_points);
+    kd_tree_ptr->left_ptr()->ExtractAllPoints(index_of_points);
     for (const auto &index: index_of_points) {
         Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[index],
@@ -93,7 +94,7 @@ void TestKdTreeConstruction() {
 
     // Extract half-half points in kd-tree.
     index_of_points.clear();
-    kd_tree_ptr->left_ptr()->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr()->left_ptr(), raw_points, index_of_points);
+    kd_tree_ptr->left_ptr()->left_ptr()->ExtractAllPoints(index_of_points);
     for (const auto &index: index_of_points) {
         Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[index],
@@ -104,7 +105,7 @@ void TestKdTreeConstruction() {
 
     // Extract half-half points in kd-tree.
     index_of_points.clear();
-    kd_tree_ptr->left_ptr()->left_ptr()->left_ptr()->ExtractAllPoints(kd_tree_ptr->left_ptr()->left_ptr()->left_ptr(), raw_points, index_of_points);
+    kd_tree_ptr->left_ptr()->left_ptr()->left_ptr()->ExtractAllPoints(index_of_points);
     for (const auto &index: index_of_points) {
         Visualizor3D::points().emplace_back(PointType {
             .p_w = raw_points[index],
@@ -138,12 +139,12 @@ void TestKdTreeSearch() {
         sorted_point_indices[i] = i;
     }
     std::unique_ptr<KdTreeNode<float, 3>> kd_tree_ptr = std::make_unique<KdTreeNode<float, 3>>();
-    kd_tree_ptr->Construct(raw_points, sorted_point_indices, kd_tree_ptr);
-    ReportInfo("Construct a kd-tree with depth " << kd_tree_ptr->GetDepth(kd_tree_ptr));
+    kd_tree_ptr->Construct(raw_points, sorted_point_indices);
+    ReportInfo("Construct a kd-tree with depth " << kd_tree_ptr->GetDepth());
 
     // Extract all points in kd-tree.
     std::vector<int32_t> index_of_points;
-    kd_tree_ptr->ExtractAllPoints(kd_tree_ptr, raw_points, index_of_points);
+    kd_tree_ptr->ExtractAllPoints(index_of_points);
 
     // Visualize result full kd-tree.
     Visualizor3D::Clear();
@@ -158,11 +159,14 @@ void TestKdTreeSearch() {
     // Create target and do search.
     const Vec3 target_point = Vec3(2.2, 3.4, 5.8);
     std::multimap<float, int32_t> result_of_radius;
-    kd_tree_ptr->SearchRadius(kd_tree_ptr, raw_points, target_point, 3.0f, result_of_radius);
+    kd_tree_ptr->SearchRadius(raw_points, target_point, 3.0f, result_of_radius);
+    ReportInfo("SearchRadius found " << result_of_radius.size() << " points.");
     std::multimap<float, int32_t> result_of_knn;
-    kd_tree_ptr->SearchKnn(kd_tree_ptr, raw_points, target_point, 4, result_of_knn);
+    kd_tree_ptr->SearchKnn(raw_points, target_point, 4, result_of_knn);
+    ReportInfo("SearchKnn found " << result_of_knn.size() << " points.");
     std::multimap<float, int32_t> result_of_cube;
-    kd_tree_ptr->SearchCube(kd_tree_ptr, raw_points, Vec3(4.9, 5.2, 6.2), Vec3(8.1, 9.2, 8.9), result_of_cube);
+    kd_tree_ptr->SearchCube(raw_points, Vec3(4.9, 5.2, 6.2), Vec3(8.1, 9.2, 8.9), result_of_cube);
+    ReportInfo("SearchCube found " << result_of_cube.size() << " points.");
 
     // Visualize target and result.
     Visualizor3D::points().emplace_back(PointType {
