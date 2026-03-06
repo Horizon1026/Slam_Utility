@@ -30,6 +30,8 @@ template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic
 using TMat = Eigen::Matrix<T, Row, Col>;
 template <typename T, int32_t Row = Eigen::Dynamic>
 using TVec = Eigen::Matrix<T, Row, 1>;
+template <typename T, int32_t Col = Eigen::Dynamic>
+using TVecRow = Eigen::Matrix<T, 1, Col>;
 template <typename T, int32_t Row = Eigen::Dynamic, int32_t Col = Eigen::Dynamic>
 using TMatImg = Eigen::Matrix<T, Row, Col, Eigen::RowMajor>;
 
@@ -2215,6 +2217,7 @@ using TMat32x32 = Eigen::Matrix<T, 32, 32>;
 using Quat = Eigen::Quaternion<float>;
 using Mat = Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>;
 using Vec = Eigen::Matrix<float, Eigen::Dynamic, 1>;
+using VecRow = Eigen::Matrix<float, 1, Eigen::Dynamic>;
 
 using Mat1 = Eigen::Matrix<float, 1, 1>;
 using Mat2 = Eigen::Matrix<float, 2, 2>;
