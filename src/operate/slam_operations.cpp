@@ -10,7 +10,29 @@ bool SlamOperation::GetFilesNameInDirectory(const std::string &dir, std::vector<
         return false;
     }
     try {
-        for (const auto &entry : fs::directory_iterator(dir)) {
+        for (const auto &entry: fs::directory_iterator(dir)) {
+            // Ignore '.' and '..' (filesystem does not return these, but just in case)
+            const auto &path = entry.path();
+            std::string filename = path.filename().string();
+            if (filename == "." || filename == "..") {
+                continue;
+            }
+            filenames.emplace_back(path.string());
+        }
+        return true;
+    } catch (const fs::filesystem_error &) {
+        return false;
+    }
+}
+
+bool SlamOperation::GetFilesNameInDirectoryRecursively(const std::string &dir, std::vector<std::string> &filenames) {
+    namespace fs = std::filesystem;
+    filenames.clear();
+    if (dir.empty()) {
+        return false;
+    }
+    try {
+        for (const auto &entry: fs::recursive_directory_iterator(dir)) {
             // Ignore '.' and '..' (filesystem does not return these, but just in case)
             const auto &path = entry.path();
             std::string filename = path.filename().string();

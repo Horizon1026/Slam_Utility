@@ -91,6 +91,7 @@ public:
     }
 
     static bool GetFilesNameInDirectory(const std::string &dir, std::vector<std::string> &filenames);
+    static bool GetFilesNameInDirectoryRecursively(const std::string &dir, std::vector<std::string> &filenames);
 
     template <typename T>
     static void ArgSort(const std::vector<T> &array, std::vector<int32_t> &indices) {
