@@ -92,6 +92,8 @@ public:
 
     static bool GetFilesNameInDirectory(const std::string &dir, std::vector<std::string> &filenames);
     static bool GetFilesNameInDirectoryRecursively(const std::string &dir, std::vector<std::string> &filenames);
+    static bool SaveMatrixToTxtFile(const Mat &matrix, const std::string &file_path);
+    static bool LoadMatrixFromTxtFile(const std::string &file_path, Mat &matrix);
 
     template <typename T>
     static void ArgSort(const std::vector<T> &array, std::vector<int32_t> &indices) {

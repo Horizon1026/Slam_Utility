@@ -1,5 +1,6 @@
 #include "slam_operations.h"
 #include "filesystem"
+#include "fstream"
 
 namespace slam_utility {
 
@@ -45,6 +46,51 @@ bool SlamOperation::GetFilesNameInDirectoryRecursively(const std::string &dir, s
     } catch (const fs::filesystem_error &) {
         return false;
     }
+}
+
+bool SlamOperation::SaveMatrixToTxtFile(const Mat &matrix, const std::string &file_path) {
+    std::ofstream ofs(file_path);
+    if (!ofs.is_open()) {
+        return false;
+    }
+
+    for (int32_t i = 0; i < matrix.rows(); ++i) {
+        for (int32_t j = 0; j < matrix.cols(); ++j) {
+            ofs << matrix(i, j) << " ";
+        }
+        ofs << "\n";
+    }
+
+    ofs.close();
+    return true;
+}
+
+bool SlamOperation::LoadMatrixFromTxtFile(const std::string &file_path, Mat &matrix) {
+    std::ifstream ifs(file_path);
+    RETURN_FALSE_IF(!ifs.is_open());
+
+    // Load data from txt file.
+    std::vector<std::vector<float>> matrix_data;
+    std::string line;
+    while (std::getline(ifs, line)) {
+        std::stringstream ss(line);
+        std::vector<float> row;
+        float value;
+        while (ss >> value) {
+            row.push_back(value);
+        }
+        matrix_data.push_back(row);
+    }
+    ifs.close();
+
+    // Load data to matrix.
+    matrix.resize(matrix_data.size(), matrix_data.front().size());
+    for (uint32_t row = 0; row < matrix_data.size(); ++row) {
+        for (uint32_t col = 0; col < matrix_data[row].size(); ++col) {
+            matrix(row, col) = matrix_data[row][col];
+        }
+    }
+    return true;
 }
 
 bool SlamOperation::IsEndWith(const std::string &raw_string, const std::string &sub_string) {
