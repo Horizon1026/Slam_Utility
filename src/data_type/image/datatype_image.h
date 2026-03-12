@@ -17,6 +17,14 @@ public:
     explicit GrayImage(const MatImgF &matrix_image);
     virtual ~GrayImage();
 
+    // Move semantics.
+    GrayImage(GrayImage &&other) noexcept;
+    GrayImage &operator=(GrayImage &&other) noexcept;
+
+    // Delete copy operations.
+    GrayImage(const GrayImage &) = delete;
+    GrayImage &operator=(const GrayImage &) = delete;
+
     uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }
     int32_t rows() const { return rows_; }
@@ -92,6 +100,14 @@ public:
     explicit RgbImage(MatImg &matrix_image);
     explicit RgbImage(const MatImgF &matrix_image);
     virtual ~RgbImage();
+
+    // Move semantics.
+    RgbImage(RgbImage &&other) noexcept;
+    RgbImage &operator=(RgbImage &&other) noexcept;
+
+    // Delete copy operations.
+    RgbImage(const RgbImage &) = delete;
+    RgbImage &operator=(const RgbImage &) = delete;
 
     uint8_t *data() const { return data_; }
     int32_t cols() const { return cols_; }

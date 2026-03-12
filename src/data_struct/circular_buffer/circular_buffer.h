@@ -13,7 +13,14 @@ class CircularBuffer {
 public:
     CircularBuffer() = default;
     virtual ~CircularBuffer() = default;
-    CircularBuffer(const CircularBuffer &v) {}
+
+    // Move semantics.
+    CircularBuffer(CircularBuffer &&other) noexcept = default;
+    CircularBuffer &operator=(CircularBuffer &&other) noexcept = default;
+
+    // Copy semantics.
+    CircularBuffer(const CircularBuffer &) = default;
+    CircularBuffer &operator=(const CircularBuffer &) = default;
 
     // Operate buffer.
     void MovePushFront(T &element);

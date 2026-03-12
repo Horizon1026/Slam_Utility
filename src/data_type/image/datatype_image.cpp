@@ -18,6 +18,32 @@ GrayImage::~GrayImage() {
     }
 }
 
+GrayImage::GrayImage(GrayImage &&other) noexcept
+    : data_(other.data_), cols_(other.cols_), rows_(other.rows_), memory_owner_(other.memory_owner_) {
+    other.data_ = nullptr;
+    other.cols_ = 0;
+    other.rows_ = 0;
+    other.memory_owner_ = false;
+}
+
+GrayImage &GrayImage::operator=(GrayImage &&other) noexcept {
+    if (this != &other) {
+        if (memory_owner_ && data_ != nullptr) {
+            SlamMemory::Free(data_);
+        }
+        data_ = other.data_;
+        cols_ = other.cols_;
+        rows_ = other.rows_;
+        memory_owner_ = other.memory_owner_;
+
+        other.data_ = nullptr;
+        other.cols_ = 0;
+        other.rows_ = 0;
+        other.memory_owner_ = false;
+    }
+    return *this;
+}
+
 void GrayImage::Clear() {
     if (data_ == nullptr) {
         return;
@@ -70,6 +96,32 @@ RgbImage::~RgbImage() {
     if (memory_owner_) {
         SlamMemory::Free(data_);
     }
+}
+
+RgbImage::RgbImage(RgbImage &&other) noexcept
+    : data_(other.data_), cols_(other.cols_), rows_(other.rows_), memory_owner_(other.memory_owner_) {
+    other.data_ = nullptr;
+    other.cols_ = 0;
+    other.rows_ = 0;
+    other.memory_owner_ = false;
+}
+
+RgbImage &RgbImage::operator=(RgbImage &&other) noexcept {
+    if (this != &other) {
+        if (memory_owner_ && data_ != nullptr) {
+            SlamMemory::Free(data_);
+        }
+        data_ = other.data_;
+        cols_ = other.cols_;
+        rows_ = other.rows_;
+        memory_owner_ = other.memory_owner_;
+
+        other.data_ = nullptr;
+        other.cols_ = 0;
+        other.rows_ = 0;
+        other.memory_owner_ = false;
+    }
+    return *this;
 }
 
 void RgbImage::Clear() {

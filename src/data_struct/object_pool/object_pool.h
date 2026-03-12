@@ -1,7 +1,6 @@
 #ifndef _SLAM_UTILITY_OBJECT_POOL_H_
 #define _SLAM_UTILITY_OBJECT_POOL_H_
 
-#include "functional"
 #include "memory"
 #include "vector"
 
@@ -39,8 +38,17 @@ class ObjectPool {
     friend struct PoolDeleter<T>;
 
 public:
-    explicit ObjectPool(uint32_t initial_size = 100);
+    ObjectPool() : ObjectPool(100) {}
+    explicit ObjectPool(uint32_t initial_size);
     virtual ~ObjectPool() = default;
+
+    // Move semantics.
+    ObjectPool(ObjectPool &&other) noexcept;
+    ObjectPool &operator=(ObjectPool &&other) noexcept;
+
+    // Delete copy operations.
+    ObjectPool(const ObjectPool &) = delete;
+    ObjectPool &operator=(const ObjectPool &) = delete;
 
     ObjectPtr<T> Get();
 
@@ -51,11 +59,28 @@ private:
 
 /* Class ObjectPool Definition. */
 template <typename T>
-ObjectPool<T>::ObjectPool(uint32_t initial_size): objects_(initial_size) {
+ObjectPool<T>::ObjectPool(uint32_t initial_size) {
+    objects_.reserve(initial_size);
+    for (uint32_t i = 0; i < initial_size; ++i) {
+        objects_.emplace_back();
+    }
     free_objects_list_.reserve(initial_size);
     for (auto &obj: objects_) {
         free_objects_list_.emplace_back(&obj);
     }
+}
+
+template <typename T>
+ObjectPool<T>::ObjectPool(ObjectPool &&other) noexcept
+    : objects_(std::move(other.objects_)), free_objects_list_(std::move(other.free_objects_list_)) {}
+
+template <typename T>
+ObjectPool<T> &ObjectPool<T>::operator=(ObjectPool &&other) noexcept {
+    if (this != &other) {
+        objects_ = std::move(other.objects_);
+        free_objects_list_ = std::move(other.free_objects_list_);
+    }
+    return *this;
 }
 
 template <typename T>
