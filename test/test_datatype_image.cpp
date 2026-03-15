@@ -40,8 +40,7 @@ void TestPyramid() {
     pyramid.CreateImagePyramid(5);
 
     for (uint32_t i = 0; i < pyramid.level(); ++i) {
-        GrayImage one_level = pyramid.GetImage(i);
-        Visualizor2D::ShowImage(std::to_string(i), one_level);
+        Visualizor2D::ShowImage(std::to_string(i), pyramid.GetImage(i));
         Visualizor2D::WaitKey(1);
     }
     Visualizor2D::WaitKey(0);
