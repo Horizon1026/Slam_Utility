@@ -475,6 +475,26 @@ public:
         }
         return diff(idx);
     }
+
+    // -- Interpolation --
+
+    /**
+     * @brief Linear interpolation of two vectors.
+     */
+    template <typename Derived>
+    static Eigen::Matrix<typename Derived::Scalar, Derived::RowsAtCompileTime, Derived::ColsAtCompileTime>
+    Interpolate(const Eigen::MatrixBase<Derived> &v0, const Eigen::MatrixBase<Derived> &v1, const typename Derived::Scalar &t) {
+        return (static_cast<typename Derived::Scalar>(1.0) - t) * v0 + t * v1;
+    }
+
+    /**
+     * @brief Spherical linear interpolation of two quaternions.
+     */
+    template <typename Derived, typename OtherDerived>
+    static Eigen::Quaternion<typename Derived::Scalar> Interpolate(const Eigen::QuaternionBase<Derived> &q0, const Eigen::QuaternionBase<OtherDerived> &q1,
+                                                                   const typename Derived::Scalar &t) {
+        return q0.slerp(t, q1);
+    }
 };
 
 }  // namespace slam_utility
