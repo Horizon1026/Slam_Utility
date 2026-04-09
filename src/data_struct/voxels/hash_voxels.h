@@ -43,6 +43,11 @@ public:
 
     uint32_t GetNumberOfProcessedVoxels() const { return buffer_.size(); }
 
+    // Reference for member varibles.
+    std::unordered_map<uint32_t, T> &buffer() { return buffer_; }
+    // Const reference for member varibles.
+    const std::unordered_map<uint32_t, T> &buffer() const { return buffer_; }
+
 private:
     std::unordered_map<uint32_t, T> buffer_;
 };
