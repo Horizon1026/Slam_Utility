@@ -2,21 +2,21 @@
 
 namespace slam_utility {
 
-float TickTock::TockTickInSecond() {
+double TickTock::TockTickInSecond() {
     std::chrono::time_point<std::chrono::system_clock> new_time_point = std::chrono::system_clock::now();
-    std::chrono::duration<float> elapsed_seconds = new_time_point - time_point_;
+    std::chrono::duration<double> elapsed_seconds = new_time_point - time_point_;
     time_point_ = new_time_point;
     return elapsed_seconds.count();
 }
 
-float TickTock::TockTickInMillisecond() { return TockTickInSecond() * 1000.0f; }
+double TickTock::TockTickInMillisecond() { return TockTickInSecond() * 1e3; }
 
-float TickTock::TockInSecond() {
+double TickTock::TockInSecond() {
     std::chrono::time_point<std::chrono::system_clock> new_time_point = std::chrono::system_clock::now();
-    std::chrono::duration<float> elapsed_seconds = new_time_point - time_point_;
+    std::chrono::duration<double> elapsed_seconds = new_time_point - time_point_;
     return elapsed_seconds.count();
 }
 
-float TickTock::TockInMillisecond() { return TockInSecond() * 1000.0f; }
+double TickTock::TockInMillisecond() { return TockInSecond() * 1e3; }
 
 }  // namespace slam_utility

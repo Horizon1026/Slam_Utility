@@ -12,11 +12,11 @@ public:
     TickTock() = default;
     virtual ~TickTock() = default;
 
-    float TockTickInMillisecond();
-    float TockTickInSecond();
+    double TockTickInMillisecond();
+    double TockTickInSecond();
 
-    float TockInMillisecond();
-    float TockInSecond();
+    double TockInMillisecond();
+    double TockInSecond();
 
 private:
     std::chrono::time_point<std::chrono::system_clock> time_point_ = std::chrono::system_clock::now();

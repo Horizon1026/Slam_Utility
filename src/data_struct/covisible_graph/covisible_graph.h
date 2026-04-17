@@ -34,12 +34,12 @@ public:
     void Information() const;
 
     // Add new frame and new features in it.
-    bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id, const std::vector<FeatureObserveType> &features_observe, const float time_stamp_s,
+    bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id, const std::vector<FeatureObserveType> &features_observe, const double time_stamp_s,
                                  const int32_t new_frame_id = -1, const std::vector<MatImg> &raw_images = std::vector<MatImg>());
 
     // Add new frame and new features in it.
     bool AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id, const std::vector<FeatureObserveType> &features_observe,
-                                 const std::vector<FeatureParamType> &features_param, const float time_stamp_s, const Quat &q_wc = Quat::Identity(),
+                                 const std::vector<FeatureParamType> &features_param, const double time_stamp_s, const Quat &q_wc = Quat::Identity(),
                                  const Vec3 &p_wc = Vec3::Zero(), const std::vector<MatImg> &raw_images = std::vector<MatImg>());
 
     // Remove feature by feature_id.
@@ -171,7 +171,7 @@ bool CovisibleGraph<FeatureParamType, FeatureObserveType>::SelfCheck() {
 template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                                                                    const std::vector<FeatureObserveType> &features_observe,
-                                                                                   const float time_stamp_s, const int32_t new_frame_id,
+                                                                                   const double time_stamp_s, const int32_t new_frame_id,
                                                                                    const std::vector<MatImg> &raw_images) {
     if (features_id.size() != features_observe.size()) {
         return false;
@@ -227,7 +227,7 @@ template <typename FeatureParamType, typename FeatureObserveType>
 bool CovisibleGraph<FeatureParamType, FeatureObserveType>::AddNewFrameWithFeatures(const std::vector<uint32_t> &features_id,
                                                                                    const std::vector<FeatureObserveType> &features_observe,
                                                                                    const std::vector<FeatureParamType> &features_param,
-                                                                                   const float time_stamp_s, const Quat &q_wc, const Vec3 &p_wc,
+                                                                                   const double time_stamp_s, const Quat &q_wc, const Vec3 &p_wc,
                                                                                    const std::vector<MatImg> &raw_images) {
     RETURN_FALSE_IF_FALSE(AddNewFrameWithFeatures(features_id, features_observe, time_stamp_s, -1, raw_images));
 

@@ -24,7 +24,7 @@ public:
     uint32_t &id() { return id_; }
     Quat &q_wc() { return q_wc_; }
     Vec3 &p_wc() { return p_wc_; }
-    float &time_stamp_s() { return time_stamp_s_; }
+    double &time_stamp_s() { return time_stamp_s_; }
     std::unordered_map<uint32_t, FeatureType *> &features() { return features_; }
     std::vector<MatImg> &raw_images() { return raw_images_; }
     bool &need_remove() { return need_remove_; }
@@ -33,7 +33,7 @@ public:
     const uint32_t &id() const { return id_; }
     const Quat &q_wc() const { return q_wc_; }
     const Vec3 &p_wc() const { return p_wc_; }
-    const float &time_stamp_s() const { return time_stamp_s_; }
+    const double &time_stamp_s() const { return time_stamp_s_; }
     const std::unordered_map<uint32_t, FeatureType *> &features() const { return features_; }
     const std::vector<MatImg> &raw_images() const { return raw_images_; }
     const bool &need_remove() const { return need_remove_; }
@@ -45,7 +45,7 @@ private:
     // Camera position, velocity and attitude combined with this frame.
     Quat q_wc_ = Quat::Identity();
     Vec3 p_wc_ = Vec3::Zero();
-    float time_stamp_s_ = 0.0f;
+    double time_stamp_s_ = 0.0;
 
     // Features observed by this frame.
     std::unordered_map<uint32_t, FeatureType *> features_;
