@@ -17,9 +17,14 @@ Defined some basic datatype or operations for slam algorithm.
 - [x] Scripts for all repos based on Slam_Utility.
 
 # Dependence
-- Eigen3 (>= 3.3.7)
-- Visualizor2D (only for test)
-- Visualizor3D (only for test)
+
+### Project repositories
+- Visualizor2D（only for test）
+- Visualizor3D（only for test）
+
+### Third-party repositories
+- Eigen3 (>= 3.3.7)（`sudo apt install libeigen3-dev`）
+- dw (`sudo apt install libdw-dev`)
 
 # Compile and Run
 - 第三方仓库的话需要自行 apt-get install 安装
@@ -37,4 +42,4 @@ sh run.sh
 
 # Tips
 - 欢迎一起交流学习，不同意商用；
-- 这是一个 basic 的基础“积木”仓库，会被较多更高级的“积木”仓库所依赖，更新频率一般不会很高；
+- 这是一个 basic 的基础"积木"仓库，会被较多更高级的"积木"仓库所依赖，更新频率一般不会很高；
