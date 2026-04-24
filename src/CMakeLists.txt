@@ -43,6 +43,9 @@ endif()
 if( NOT TARGET lib_plane )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_type/plane ${PROJECT_SOURCE_DIR}/build/lib_plane )
 endif()
+if( NOT TARGET lib_quadratic_plane )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_type/quadratic_plane ${PROJECT_SOURCE_DIR}/build/lib_quadratic_plane )
+endif()
 
 # Add all relative components of slam utility data struct.
 if( NOT TARGET lib_covisible_graph )
@@ -86,6 +89,7 @@ target_link_libraries( lib_slam_utility
     lib_line_segment
     lib_probability_distribution
     lib_plane
+    lib_quadratic_plane
 
     lib_covisible_graph
     lib_object_pool

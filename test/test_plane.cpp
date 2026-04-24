@@ -10,7 +10,7 @@ void TestComputePlaneModelWithThreePoints() {
     const Vec3 p2_w = Vec3(1, 1, 1);
     const Vec3 p3_w = Vec3(0, 0, 0);
     Plane3D plane;
-    plane.FitPlaneModel(p1_w, p2_w, p3_w);
+    plane.FitModel(p1_w, p2_w, p3_w);
     ReportInfo("   Plane model is " << LogVec(plane.param()));
     ReportInfo("   Covariance of normal distribution is\n" << LogMat(plane.normal_distribution().covariance()));
     ReportInfo("   Distance of p1_w to plane is " << plane.GetDistanceToPlane(p1_w));
@@ -21,7 +21,7 @@ void TestComputePlaneModelWithThreePoints() {
 void TestComputePlaneModelLseWithSeveralPoints(const std::vector<Vec3> &points) {
     ReportColorInfo(">> Test plane fitting(LSE) with several points.");
     Plane3D plane;
-    plane.FitPlaneModelLse(points);
+    plane.FitModelLse(points);
     ReportInfo("   Plane model is " << LogVec(plane.param()));
     ReportInfo("   Covariance of normal distribution is\n" << LogMat(plane.normal_distribution().covariance()));
     for (const auto &point: points) {
@@ -32,7 +32,7 @@ void TestComputePlaneModelLseWithSeveralPoints(const std::vector<Vec3> &points) 
 void TestComputePlaneModelPcaWithSeveralPoints(const std::vector<Vec3> &points) {
     ReportColorInfo(">> Test plane fitting(PCA) with several points.");
     Plane3D plane;
-    plane.FitPlaneModelPca(points);
+    plane.FitModelPca(points);
     ReportInfo("   Plane model is " << LogVec(plane.param()));
     ReportInfo("   Covariance of normal distribution is\n" << LogMat(plane.normal_distribution().covariance()));
     for (const auto &point: points) {
@@ -44,7 +44,7 @@ void TestComputePlaneModelIncrementally(const std::vector<Vec3> &points) {
     ReportColorInfo(">> Test compute plane model incrementally.");
     Plane3D plane;
     for (const auto &point: points) {
-        plane.AddNewPointToFitPlaneModel(point);
+        plane.AddNewPointToFitModel(point);
     }
     plane.GeneratePlaneModelParameters();
     ReportInfo("   Plane model is " << LogVec(plane.param()));

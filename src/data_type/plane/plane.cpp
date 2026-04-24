@@ -9,11 +9,11 @@ namespace {
     constexpr float kMaxToleranceCosThetaForTwoVectors = 0.996f;
 }
 
-Plane3D::Plane3D(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) { FitPlaneModel(p1, p2, p3); }
+Plane3D::Plane3D(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) { FitModel(p1, p2, p3); }
 
-Plane3D::Plane3D(const std::vector<Vec3> &points) { FitPlaneModelLse(points); }
+Plane3D::Plane3D(const std::vector<Vec3> &points) { FitModelLse(points); }
 
-bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
+bool Plane3D::FitModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
     const Vec3 p1p2 = (p1 - p2).normalized();
     const Vec3 p1p3 = (p1 - p3).normalized();
     // If the three points aligning with one line, they cannot generate a plane.
@@ -26,7 +26,7 @@ bool Plane3D::FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3) {
     return true;
 }
 
-bool Plane3D::FitPlaneModelLse(const std::vector<Vec3> &points) {
+bool Plane3D::FitModelLse(const std::vector<Vec3> &points) {
     RETURN_FALSE_IF(points.size() < 3);
     normal_distribution_.mid_point() = Vec3::Zero();
     RETURN_FALSE_IF(!ComputeMidPoint(points, normal_distribution_.mid_point()));
@@ -45,7 +45,7 @@ bool Plane3D::FitPlaneModelLse(const std::vector<Vec3> &points) {
     return true;
 }
 
-bool Plane3D::FitPlaneModelPca(const std::vector<Vec3> &points) {
+bool Plane3D::FitModelPca(const std::vector<Vec3> &points) {
     RETURN_FALSE_IF(points.size() < 3);
     normal_distribution_.Reset();
     RETURN_FALSE_IF(!normal_distribution_.DirectlyFitDistribution(points));
@@ -59,7 +59,7 @@ void Plane3D::GeneratePlaneModelParameters() {
     param_(3) = -param_.head<3>().dot(normal_distribution_.mid_point());
 }
 
-bool Plane3D::AddNewPointToFitPlaneModel(const Vec3 &new_p_w) { return normal_distribution_.IncrementallyFitDistribution(new_p_w); }
+bool Plane3D::AddNewPointToFitModel(const Vec3 &new_p_w) { return normal_distribution_.IncrementallyFitDistribution(new_p_w); }
 
 float Plane3D::GetDistanceToPlane(const Vec3 &p_w) const { return normal_vector().dot(p_w) + distance_to_origin(); }
 

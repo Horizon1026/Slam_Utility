@@ -5,7 +5,6 @@
 
 using namespace slam_utility;
 
-
 int main() {
     ReportColorWarn(">> Test YAML parser.");
 

@@ -42,6 +42,7 @@ set( UNIT_TEST_OF_SLAM_UTILITY_LIST
     test_3d_gaussian
     test_line_segment
     test_plane
+    test_quadratic_plane
     test_yaml_parser
     test_probability_distribution
 )

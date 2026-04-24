@@ -8,6 +8,12 @@ namespace slam_utility {
 
 /* Class Plane3D Declaration. */
 class Plane3D {
+/* Plane 3D model: n * x + d = 0
+   Note:
+    - n: normal vector of the plane, usually unit vector.
+    - d: distance from the origin to the plane.
+    - x: arbitrary points.
+*/
 
 public:
     Plane3D() = default;
@@ -17,11 +23,11 @@ public:
     virtual ~Plane3D() = default;
 
     // Operations.
-    bool FitPlaneModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3);
-    bool FitPlaneModelLse(const std::vector<Vec3> &points);
-    bool FitPlaneModelPca(const std::vector<Vec3> &points);
+    bool FitModel(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3);
+    bool FitModelLse(const std::vector<Vec3> &points);
+    bool FitModelPca(const std::vector<Vec3> &points);
     void GeneratePlaneModelParameters();
-    bool AddNewPointToFitPlaneModel(const Vec3 &new_p_w);
+    bool AddNewPointToFitModel(const Vec3 &new_p_w);
     float GetDistanceToPlane(const Vec3 &p_w) const;
 
     // Parameters of plane.
