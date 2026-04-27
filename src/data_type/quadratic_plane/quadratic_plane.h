@@ -30,7 +30,8 @@ public:
     virtual ~QuadraticPlane() = default;
 
     // Operations.
-    bool FitModelLse(const std::vector<Vec3> &points);
+    bool FitModel(const std::vector<Vec3> &points);
+    bool FitParabolicModel(const std::vector<Vec3> &points);
     bool ComputeCurvaturesAtPoint(const Vec3 &point, Curvatures &curvatures) const;
 
     // Define operators.

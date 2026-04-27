@@ -5,9 +5,9 @@
 
 namespace slam_utility {
 
-QuadraticPlane::QuadraticPlane(const std::vector<Vec3> &points) { FitModelLse(points); }
+QuadraticPlane::QuadraticPlane(const std::vector<Vec3> &points) { FitModel(points); }
 
-bool QuadraticPlane::FitModelLse(const std::vector<Vec3> &points) {
+bool QuadraticPlane::FitModel(const std::vector<Vec3> &points) {
     RETURN_FALSE_IF(points.size() < static_cast<uint32_t>(param_.rows()));
 
     // Construct matrix A.
@@ -29,6 +29,31 @@ bool QuadraticPlane::FitModelLse(const std::vector<Vec3> &points) {
 
     const Eigen::SelfAdjointEigenSolver<TMat10<float>> solver(AtA);
     param_ = solver.eigenvectors().col(0);
+
+    return true;
+}
+
+bool QuadraticPlane::FitParabolicModel(const std::vector<Vec3> &points) {
+    RETURN_FALSE_IF(points.size() < 6);
+
+    // Parabolic surface model: z = ax^2 + by^2 + cxy + dx + ey + f
+    // This is equivalent to ax^2 + by^2 + 0z^2 + cxy + 0xz + 0yz + dx + ey - 1z + f = 0
+    // Construct matrix A and vector b for least squares: Ap = b
+    Mat matrix_A = Mat::Zero(points.size(), 6);
+    Vec vector_b = Vec::Zero(points.size());
+
+    for (uint32_t i = 0; i < points.size(); ++i) {
+        const Vec3 &p = points[i];
+        matrix_A.row(i) << p.x() * p.x(), p.y() * p.y(), p.x() * p.y(), p.x(), p.y(), 1.0f;
+        vector_b(i) = p.z();
+    }
+
+    // Solve for parameters p = [a, b, c, d, e, f]^T
+    const Vec6 p = matrix_A.colPivHouseholderQr().solve(vector_b);
+
+    // Map to general quadratic parameters: [a, b, c, d, e, f, g, h, i, j]
+    // which corresponds to: [x^2, y^2, z^2, xy, xz, yz, x, y, z, 1]
+    param_ << p(0), p(1), 0.0f, p(2), 0.0f, 0.0f, p(3), p(4), -1.0f, p(5);
 
     return true;
 }

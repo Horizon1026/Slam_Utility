@@ -6,7 +6,7 @@ using namespace slam_utility;
 
 void TestQuadraticPlane(const std::string &name, const std::vector<Vec3> &pts, const Vec3 &eval_pt) {
     QuadraticPlane quad;
-    if (!quad.FitModelLse(pts)) {
+    if (!quad.FitModel(pts)) {
         ReportError("Fit " << name << " failed.");
         return;
     }
@@ -73,6 +73,36 @@ int main(int argc, char **argv) {
     saddle_pts.emplace_back(0.2, 0.8, -0.6);
     saddle_pts.emplace_back(-0.6, 0.4, 0.2);
     TestQuadraticPlane("Saddle Surface z=x²-y²", saddle_pts, Vec3(0,0,0));
+
+    // Parabolic surface: z = x² + y²
+    // Ground truth: K=4, H=2 at (0,0,0) ? No, wait.
+    // z = x^2 + y^2
+    // F(x,y,z) = x^2 + y^2 - z = 0
+    // Fx = 2x, Fy = 2y, Fz = -1
+    // At (0,0,0): Fx=0, Fy=0, Fz=-1. Normal = (0,0,1).
+    // Fxx = 2, Fyy = 2, Fzz = 0, Fxy = 0, Fxz = 0, Fyz = 0
+    // Gaussian Curvature K = (Fxx*Fyy - Fxy^2) / (Fx^2+Fy^2+Fz^2)^2 = (2*2 - 0) / 1^2 = 4
+    // Mean Curvature H = ... at origin it should be (Fxx+Fyy)/2 = 2.
+    std::vector<Vec3> parabolic_pts;
+    parabolic_pts.emplace_back(0, 0, 0);
+    parabolic_pts.emplace_back(1, 0, 1);
+    parabolic_pts.emplace_back(0, 1, 1);
+    parabolic_pts.emplace_back(-1, 0, 1);
+    parabolic_pts.emplace_back(0, -1, 1);
+    parabolic_pts.emplace_back(0.5, 0.5, 0.5);
+    parabolic_pts.emplace_back(-0.5, 0.5, 0.5);
+    parabolic_pts.emplace_back(0.5, -0.5, 0.5);
+    parabolic_pts.emplace_back(-0.5, -0.5, 0.5);
+
+    QuadraticPlane quad_p;
+    if (quad_p.FitParabolicModel(parabolic_pts)) {
+        QuadraticPlane::Curvatures cur;
+        if (quad_p.ComputeCurvaturesAtPoint(Vec3(0, 0, 0), cur)) {
+            ReportInfo("\n[Parabolic Surface z=x²+y²] Evaluation point: (0, 0, 0)");
+            ReportInfo("  [K] Gaussian Curvature  : " << cur.gaussian_curvature);
+            ReportInfo("  [H] Mean Curvature      : " << cur.mean_curvature);
+        }
+    }
 
     return 0;
 }
