@@ -1,6 +1,6 @@
 #include "gaussian_mixture_model.h"
 #include "slam_log_reporter.h"
-#include <random>
+#include "random"
 
 using namespace slam_utility;
 

@@ -3,7 +3,7 @@
 
 #include "basic_type.h"
 #include "datatype_image.h"
-#include <cmath>
+#include "cmath"
 
 class ImagePyramid {
 
