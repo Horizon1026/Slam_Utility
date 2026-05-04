@@ -1,11 +1,11 @@
 #ifndef _GAUSSIAN_MIXTURE_MODEL_H_
 #define _GAUSSIAN_MIXTURE_MODEL_H_
 
-#include <algorithm>
-#include <cmath>
-#include <numeric>
-#include <random>
-#include <vector>
+#include "algorithm"
+#include "cmath"
+#include "numeric"
+#include "random"
+#include "vector"
 
 #include "basic_type.h"
 #include "normal_distribution.h"
