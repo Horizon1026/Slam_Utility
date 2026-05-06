@@ -488,6 +488,54 @@ public:
     }
 
     /**
+     * @brief Bilinear interpolation for sub-pixel access to matrix values.
+     */
+    template <typename Derived>
+    static typename Derived::Scalar Interpolate(const Eigen::MatrixBase<Derived> &matrix, const typename Derived::Scalar &row,
+                                                const typename Derived::Scalar &col) {
+        typedef typename Derived::Scalar Scalar;
+        const int32_t rows = static_cast<int32_t>(matrix.rows());
+        const int32_t cols = static_cast<int32_t>(matrix.cols());
+
+        // Return zero if matrix is too small for interpolation.
+        if (rows < 2 || cols < 2) {
+            return static_cast<Scalar>(0);
+        }
+
+        Scalar r = row;
+        Scalar c = col;
+
+        // Apply replicate boundary clamping.
+        if (r < static_cast<Scalar>(0)) {
+            r = static_cast<Scalar>(0);
+        } else if (r > static_cast<Scalar>(rows - 2) - std::numeric_limits<Scalar>::epsilon()) {
+            r = static_cast<Scalar>(rows - 2) - std::numeric_limits<Scalar>::epsilon();
+        }
+        if (c < static_cast<Scalar>(0)) {
+            c = static_cast<Scalar>(0);
+        } else if (c > static_cast<Scalar>(cols - 2) - std::numeric_limits<Scalar>::epsilon()) {
+            c = static_cast<Scalar>(cols - 2) - std::numeric_limits<Scalar>::epsilon();
+        }
+
+        // Get integer pixel coordinates and interpolation weights.
+        const int32_t r0 = static_cast<int32_t>(r);
+        const int32_t c0 = static_cast<int32_t>(c);
+        const Scalar wr = r - static_cast<Scalar>(r0);
+        const Scalar wc = c - static_cast<Scalar>(c0);
+        const Scalar wr1 = static_cast<Scalar>(1.0) - wr;
+        const Scalar wc1 = static_cast<Scalar>(1.0) - wc;
+
+        // Get 2x2 neighboring pixel values.
+        const Scalar m00 = matrix(r0, c0);
+        const Scalar m01 = matrix(r0, c0 + 1);
+        const Scalar m10 = matrix(r0 + 1, c0);
+        const Scalar m11 = matrix(r0 + 1, c0 + 1);
+
+        // Bilinear interpolation formula.
+        return wr1 * wc1 * m00 + wr1 * wc * m01 + wr * wc1 * m10 + wr * wc * m11;
+    }
+
+    /**
      * @brief Spherical linear interpolation of two quaternions.
      */
     template <typename Derived, typename OtherDerived>
