@@ -70,53 +70,6 @@ void TestKdTreeConstruction() {
     std::vector<int32_t> index_of_points;
     kd_tree_ptr->ExtractAllPoints(index_of_points);
     ReportInfo("Extracted " << index_of_points.size() << " points from kd-tree.");
-
-    // Visualize result.
-    Visualizor3D::Clear();
-    for (const auto &index: index_of_points) {
-        Visualizor3D::points().emplace_back(PointType {
-            .p_w = raw_points[index],
-            .color = RgbColor::kCyan,
-            .radius = 3,
-        });
-    }
-
-    // Extract half points in kd-tree.
-    index_of_points.clear();
-    kd_tree_ptr->left_ptr()->ExtractAllPoints(index_of_points);
-    for (const auto &index: index_of_points) {
-        Visualizor3D::points().emplace_back(PointType {
-            .p_w = raw_points[index],
-            .color = RgbColor::kRed,
-            .radius = 3,
-        });
-    }
-
-    // Extract half-half points in kd-tree.
-    index_of_points.clear();
-    kd_tree_ptr->left_ptr()->left_ptr()->ExtractAllPoints(index_of_points);
-    for (const auto &index: index_of_points) {
-        Visualizor3D::points().emplace_back(PointType {
-            .p_w = raw_points[index],
-            .color = RgbColor::kYellow,
-            .radius = 3,
-        });
-    }
-
-    // Extract half-half points in kd-tree.
-    index_of_points.clear();
-    kd_tree_ptr->left_ptr()->left_ptr()->left_ptr()->ExtractAllPoints(index_of_points);
-    for (const auto &index: index_of_points) {
-        Visualizor3D::points().emplace_back(PointType {
-            .p_w = raw_points[index],
-            .color = RgbColor::kWhite,
-            .radius = 3,
-        });
-    }
-
-    while (!Visualizor3D::ShouldQuit()) {
-        Visualizor3D::Refresh("Constructed kd-tree", 30);
-    }
 }
 
 void TestKdTreeSearch() {
@@ -165,7 +118,7 @@ void TestKdTreeSearch() {
     kd_tree_ptr->SearchKnn(raw_points, target_point, 4, result_of_knn);
     ReportInfo("SearchKnn found " << result_of_knn.size() << " points.");
     std::multimap<float, int32_t> result_of_cube;
-    kd_tree_ptr->SearchCube(raw_points, Vec3(4.9, 5.2, 6.2), Vec3(8.1, 9.2, 8.9), result_of_cube);
+    kd_tree_ptr->SearchCube(raw_points, Vec3(1, 1, 1), Vec3(3, 3, 3), result_of_cube);
     ReportInfo("SearchCube found " << result_of_cube.size() << " points.");
 
     // Visualize target and result.

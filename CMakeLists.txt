@@ -39,6 +39,7 @@ set( UNIT_TEST_OF_SLAM_UTILITY_LIST
     test_backward
     test_basic_math
     test_kd_tree
+    test_extend_kd_tree
     test_3d_gaussian
     test_line_segment
     test_plane
