@@ -476,6 +476,51 @@ public:
         return diff(idx);
     }
 
+    /**
+     * @brief Compute the difference between two angles in degrees, wrapped to [-180, 180].
+     */
+    template <typename Scalar>
+    static Scalar AngleDiffInDegree(const Scalar &a, const Scalar &b) {
+        const Scalar diff_val = a - b;
+        const Scalar three_sixty = static_cast<Scalar>(360.0);
+        const Eigen::Matrix<Scalar, 3, 1> diff(diff_val, diff_val + three_sixty, diff_val - three_sixty);
+        const Eigen::Matrix<Scalar, 3, 1> diff_abs = diff.cwiseAbs();
+        int32_t idx = 0;
+        if (diff_abs(1) < diff_abs(idx)) {
+            idx = 1;
+        }
+        if (diff_abs(2) < diff_abs(idx)) {
+            idx = 2;
+        }
+        return diff(idx);
+    }
+
+    /**
+     * @brief Normalize an angle in degrees to the range [-180, 180].
+     */
+    template <typename Scalar>
+    static Scalar FormatDegree(const Scalar abnormal_degree) {
+        if (abnormal_degree < static_cast<Scalar>(-180.0)) {
+            return abnormal_degree + static_cast<Scalar>(180.0 * 2.0);
+        } else if (abnormal_degree > static_cast<Scalar>(180.0)) {
+            return abnormal_degree - static_cast<Scalar>(180.0 * 2.0);
+        }
+        return abnormal_degree;
+    }
+
+    /**
+     * @brief Normalize an angle in radians to the range [-pi, pi].
+     */
+    template <typename Scalar>
+    static Scalar FormatRad(const Scalar abnormal_rad) {
+        if (abnormal_rad < static_cast<Scalar>(-kPaiDouble)) {
+            return abnormal_rad + static_cast<Scalar>(k2PaiDouble);
+        } else if (abnormal_rad > static_cast<Scalar>(kPaiDouble)) {
+            return abnormal_rad - static_cast<Scalar>(k2PaiDouble);
+        }
+        return abnormal_rad;
+    }
+
     // -- Interpolation --
 
     /**
