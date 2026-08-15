@@ -3,6 +3,8 @@
 
 #include "memory"
 #include "vector"
+#include "chrono"
+#include "mutex"
 
 namespace slam_utility {
 
@@ -18,6 +20,10 @@ struct PoolDeleter {
     // Define the same operation of 'Delete' for ObjectPool.
     void operator()(T *ptr) {
         if (pool) {
+            std::unique_lock<std::timed_mutex> lock(pool->mutex_, std::defer_lock);
+            if (!lock.try_lock_for(std::chrono::milliseconds(10))) {
+                return;
+            }
             pool->free_objects_list_.emplace_back(ptr);
         } else {
             // Process the situation of dynamic allocation.
@@ -55,6 +61,7 @@ public:
 private:
     std::vector<T> objects_;
     std::vector<T *> free_objects_list_;
+    mutable std::timed_mutex mutex_;
 };
 
 /* Class ObjectPool Definition. */
@@ -85,6 +92,10 @@ ObjectPool<T> &ObjectPool<T>::operator=(ObjectPool &&other) noexcept {
 
 template <typename T>
 ObjectPtr<T> ObjectPool<T>::Get() {
+    std::unique_lock<std::timed_mutex> lock(mutex_, std::defer_lock);
+    if (!lock.try_lock_for(std::chrono::milliseconds(10))) {
+        return ObjectPtr<T>(new T, PoolDeleter<T>(nullptr));
+    }
     if (free_objects_list_.empty()) {
         // Use the standard deleter.
         return ObjectPtr<T>(new T, PoolDeleter<T>(this));
