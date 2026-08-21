@@ -3,18 +3,27 @@ Defined some basic datatype or operations for slam algorithm.
 
 # Components
 - [x] Datatype for matrix, image, image pyramid and so on.
+    - [x] 3D gaussian / 2D gaussian / spherical harmonic.
+    - [x] Line segment.
+    - [x] Plane.
+    - [x] Quadratic plane.
+    - [x] Probability distribution.
 - [x] Simple log api.
 - [x] Simple math lib.
 - [x] Memory manager.
 - [x] Basic operations.
-- [ ] Data struct for slam.
+- [x] Data struct for slam.
     - [x] Visual covisible graph.
     - [x] Object pool.
     - [x] Circular queue.
     - [x] Kd tree.
+    - [x] Voxels.
+    - [x] Grids.
 - [x] Tick tock timer.
 - [x] Simple yaml parser.
-- [x] Scripts for all repos based on Slam_Utility.
+- [x] Onnx runtime for cxx. (3rd lib)
+- [x] Stack backward. (3rd lib)
+- [ ] Scripts for all repos based on Slam_Utility.
 
 # Dependence
 
@@ -24,7 +33,11 @@ Defined some basic datatype or operations for slam algorithm.
 
 ### Third-party repositories
 - Eigen3 (>= 3.3.7)（`sudo apt install libeigen3-dev`）
+- glfw3（`sudo apt install libglfw3-dev`）（only for test）
 - dw (`sudo apt install libdw-dev`)
+- onnxruntime (pre-built library, only for test_onnx)
+- nanoflann（bundled in src/data_struct/kd_tree）
+- backward-cpp（bundled in 3rd_libraries/backward）
 
 # Compile and Run
 - 第三方仓库的话需要自行 apt-get install 安装
