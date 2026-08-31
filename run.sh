@@ -14,4 +14,5 @@ cd ./build
 ./test_yaml_parser
 ./test_onnx
 ./test_probability_distribution
+./test_cubic_uniform_bspline
 cd ..

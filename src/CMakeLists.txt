@@ -66,6 +66,9 @@ endif()
 if( NOT TARGET lib_grids )
     add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_struct/grids ${PROJECT_SOURCE_DIR}/build/lib_grids )
 endif()
+if( NOT TARGET lib_bspline )
+    add_subdirectory( ${SLAM_UTILITY_PATH}/src/data_struct/bspline ${PROJECT_SOURCE_DIR}/build/lib_bspline )
+endif()
 
 # Add all relative 3rd libraries.
 if( NOT TARGET lib_stack_backward )
@@ -97,6 +100,7 @@ target_link_libraries( lib_slam_utility
     lib_kd_tree
     lib_voxels
     lib_grids
+    lib_bspline
 
     lib_stack_backward
 )
