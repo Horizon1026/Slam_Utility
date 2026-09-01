@@ -1,40 +1,55 @@
 #ifndef _SLAM_UTILITY_CUBIC_UNIFORM_BSPLINE_H_
 #define _SLAM_UTILITY_CUBIC_UNIFORM_BSPLINE_H_
 
+#include "algorithm"
 #include "basic_type.h"
-#include <algorithm>
-#include <cmath>
-#include <vector>
+#include "cmath"
+#include "slam_operations.h"
+#include "type_traits"
+#include "vector"
 
 namespace slam_utility {
 
-/* Class Cubic Uniform B-Spline Declaration.
- *
- * The spline uses a clamped, cubic uniform knot vector. Four repeated knots at
- * each end make the curve pass through the first and last samples. Fit()
- * computes control points that interpolate every supplied sample.
- */
+/* Class Cubic Uniform B-Spline Declaration */
 template <typename T>
 class CubicUniformBSpline {
+    // The spline uses a clamped, cubic uniform knot vector.
+    // Four repeated knots at each end make the curve pass through the first and last samples.
 
 public:
     CubicUniformBSpline() = default;
     virtual ~CubicUniformBSpline() = default;
 
-    bool Fit(const std::vector<double> &time_stamp_s, const std::vector<T> &values);
-    bool GetValue(double time_stamp_s, T &value, T &first_derivative, T &second_derivative) const;
-    bool GetValue(double time_stamp_s, T &value) const;
+    // Computes control points that interpolate every supplied sample.
+    // A failed fit leaves the last successfully fitted spline unchanged.
+    bool Fit(const std::vector<double> &all_time_stamps_s, const std::vector<T> &all_values);
 
+    // Getters.
+    bool GetValue(const double time_stamp_s, T &value, T &first_derivative, T &second_derivative) const;
+    bool GetValue(const double time_stamp_s, T &value, T &first_derivative) const;
+    bool GetValue(const double time_stamp_s, T &value) const;
     bool IsFitted() const { return !control_points_.empty(); }
-    double start_time_stamp_s() const { return start_time_stamp_s_; }
-    double end_time_stamp_s() const { return end_time_stamp_s_; }
-    double time_interval_s() const { return time_interval_s_; }
+
+    // Reference for member variables.
+    std::vector<double> &knots() { return knots_; }
+    std::vector<T> &control_points() { return control_points_; }
+    double &start_time_stamp_s() { return start_time_stamp_s_; }
+    double &end_time_stamp_s() { return end_time_stamp_s_; }
+    double &time_interval_s() { return time_interval_s_; }
+    // Const reference for member variables.
+    const std::vector<double> &knots() const { return knots_; }
+    const std::vector<T> &control_points() const { return control_points_; }
+    const double &start_time_stamp_s() const { return start_time_stamp_s_; }
+    const double &end_time_stamp_s() const { return end_time_stamp_s_; }
+    const double &time_interval_s() const { return time_interval_s_; }
 
 private:
-    void CalculateBasis(double time_stamp_s, std::vector<double> &basis, std::vector<double> &first_basis, std::vector<double> &second_basis) const;
+    void CalculateBasis(const double time_stamp_s, std::vector<double> &basis, std::vector<double> &first_basis, std::vector<double> &second_basis) const;
 
 private:
+    // Knot vector defining the spline's parameter intervals and basis functions.
     std::vector<double> knots_;
+    // Control points combined by the basis functions to evaluate the spline.
     std::vector<T> control_points_;
     double start_time_stamp_s_ = 0.0;
     double end_time_stamp_s_ = 0.0;
@@ -43,69 +58,96 @@ private:
 
 /* Class Cubic Uniform B-Spline Definition. */
 template <typename T>
-bool CubicUniformBSpline<T>::Fit(const std::vector<double> &time_stamp_s, const std::vector<T> &values) {
-    if (time_stamp_s.size() != values.size() || values.size() < 4) {
-        return false;
+bool CubicUniformBSpline<T>::Fit(const std::vector<double> &all_time_stamps_s, const std::vector<T> &all_values) {
+    RETURN_FALSE_IF(all_time_stamps_s.size() != all_values.size() || all_values.size() < 4);
+    for (const double time_stamp_s: all_time_stamps_s) {
+        RETURN_FALSE_IF(!std::isfinite(time_stamp_s));
     }
 
-    const double time_interval_s = time_stamp_s[1] - time_stamp_s[0];
-    if (time_interval_s <= 0.0) {
-        return false;
-    }
-    for (uint32_t i = 2; i < time_stamp_s.size(); ++i) {
-        const double interval_s = time_stamp_s[i] - time_stamp_s[i - 1];
+    const double time_interval_s = all_time_stamps_s[1] - all_time_stamps_s[0];
+    RETURN_FALSE_IF(!std::isfinite(time_interval_s) || time_interval_s <= 0.0);
+    for (uint32_t i = 2; i < all_time_stamps_s.size(); ++i) {
+        const double interval_s = all_time_stamps_s[i] - all_time_stamps_s[i - 1];
         const double tolerance = 1e-9 * std::max(1.0, std::fabs(time_interval_s));
-        if (std::fabs(interval_s - time_interval_s) > tolerance) {
-            return false;
-        }
+        RETURN_FALSE_IF(!std::isfinite(interval_s) || std::fabs(interval_s - time_interval_s) > tolerance);
     }
 
-    // A cubic B-spline requires four repeated end knots. The remaining knots are uniformly spaced, so each curve segment has the same time length.
-    start_time_stamp_s_ = time_stamp_s.front();
-    end_time_stamp_s_ = time_stamp_s.back();
-    time_interval_s_ = time_interval_s;
-    knots_.clear();
-    knots_.insert(knots_.end(), 4, start_time_stamp_s_);
-    const double knot_interval_s = (end_time_stamp_s_ - start_time_stamp_s_) / (values.size() - 3);
-    for (uint32_t i = 1; i + 3 < values.size(); ++i) {
-        knots_.push_back(start_time_stamp_s_ + i * knot_interval_s);
+    // Build a candidate spline locally. No observable state is changed unless
+    // node construction and the interpolation solve both succeed.
+    CubicUniformBSpline<T> candidate;
+    // Let N be the number of control points (not the maximum control-point index). A clamped cubic B-spline has N + 4 knots: four repeated knots at
+    // each endpoint and N - 4 internal knots. These internal knots divide the parameter domain into N - 3 uniformly sized, non-zero knot spans.
+    candidate.start_time_stamp_s_ = all_time_stamps_s.front();
+    candidate.end_time_stamp_s_ = all_time_stamps_s.back();
+    candidate.time_interval_s_ = time_interval_s;
+    candidate.knots_.insert(candidate.knots_.end(), 4, candidate.start_time_stamp_s_);
+    const double knot_interval_s = (candidate.end_time_stamp_s_ - candidate.start_time_stamp_s_) / (all_values.size() - 3);
+    // Generate exactly N - 4 internal knots: i = 1, 2, ..., N - 4.
+    for (uint32_t i = 1; i + 3 < all_values.size(); ++i) {
+        candidate.knots_.push_back(candidate.start_time_stamp_s_ + i * knot_interval_s);
     }
-    knots_.insert(knots_.end(), 4, end_time_stamp_s_);
+    candidate.knots_.insert(candidate.knots_.end(), 4, candidate.end_time_stamp_s_);
 
     // At every sample time, S(t_i) = sum_j N_j,3(t_i) * P_j. Building these equations gives A * P = samples, where A contains cubic basis values.
-    const uint32_t num_values = values.size();
-    Eigen::MatrixXd interpolation_matrix(num_values, num_values);
+    const uint32_t num_values = all_values.size();
+    TMat<double> interpolation_matrix(num_values, num_values);
     std::vector<double> basis;
     std::vector<double> first_basis;
     std::vector<double> second_basis;
     for (uint32_t i = 0; i < num_values; ++i) {
-        CalculateBasis(time_stamp_s[i], basis, first_basis, second_basis);
+        candidate.CalculateBasis(all_time_stamps_s[i], basis, first_basis, second_basis);
         for (uint32_t j = 0; j < num_values; ++j) {
             interpolation_matrix(i, j) = basis[j];
         }
     }
-    // Solve for the control points. Applying A^-1 to each value component also supports arbitrary value types, such as scalars and fixed-size vectors.
-    const Eigen::MatrixXd inverse_matrix = interpolation_matrix.fullPivLu().inverse();
-    if (!inverse_matrix.allFinite()) {
-        control_points_.clear();
-        return false;
+    uint32_t value_dimension = 1;
+    // Arithmetic values are one-dimensional scalars; other supported values are Eigen vectors whose dimension is determined by the input sample.
+    if constexpr (!std::is_arithmetic_v<T>) {
+        value_dimension = static_cast<uint32_t>(all_values.front().size());
     }
-
-    control_points_.resize(num_values);
+    TMat<double> value_matrix(num_values, value_dimension);
     for (uint32_t i = 0; i < num_values; ++i) {
-        control_points_[i] = values[0] * inverse_matrix(i, 0);
-        for (uint32_t j = 1; j < num_values; ++j) {
-            control_points_[i] += values[j] * inverse_matrix(i, j);
+        if constexpr (std::is_arithmetic_v<T>) {
+            value_matrix(i, 0) = static_cast<double>(all_values[i]);
+        } else {
+            for (uint32_t j = 0; j < value_dimension; ++j) {
+                value_matrix(i, j) = static_cast<double>(all_values[i][j]);
+            }
         }
     }
+
+    // Factor once and solve A * P = values directly. Avoid explicitly forming
+    // A^-1, reject rank-deficient/ill-conditioned systems, and verify the solve.
+    auto decomposition = interpolation_matrix.fullPivLu();
+    constexpr double kMinimumReciprocalCondition = 1e-12;
+    const double reciprocal_condition = decomposition.rcond();
+    RETURN_FALSE_IF(!decomposition.isInvertible() || !std::isfinite(reciprocal_condition) || reciprocal_condition < kMinimumReciprocalCondition);
+    const TMat<double> solution = decomposition.solve(value_matrix);
+    RETURN_FALSE_IF(!solution.allFinite());
+    const double residual_norm = (interpolation_matrix * solution - value_matrix).norm();
+    constexpr double kRelativeResidualTolerance = 1e-10;
+    RETURN_FALSE_IF(residual_norm > kRelativeResidualTolerance * std::max(1.0, value_matrix.norm()));
+
+    candidate.control_points_.resize(num_values);
+    for (uint32_t i = 0; i < num_values; ++i) {
+        if constexpr (std::is_arithmetic_v<T>) {
+            candidate.control_points_[i] = static_cast<T>(solution(i, 0));
+        } else {
+            candidate.control_points_[i] = solution.row(i).transpose().template cast<typename T::Scalar>();
+        }
+    }
+
+    knots_ = std::move(candidate.knots_);
+    control_points_ = std::move(candidate.control_points_);
+    start_time_stamp_s_ = candidate.start_time_stamp_s_;
+    end_time_stamp_s_ = candidate.end_time_stamp_s_;
+    time_interval_s_ = candidate.time_interval_s_;
     return true;
 }
 
 template <typename T>
-bool CubicUniformBSpline<T>::GetValue(double time_stamp_s, T &value, T &first_derivative, T &second_derivative) const {
-    if (!IsFitted() || time_stamp_s < start_time_stamp_s_ || time_stamp_s > end_time_stamp_s_) {
-        return false;
-    }
+bool CubicUniformBSpline<T>::GetValue(const double time_stamp_s, T &value, T &first_derivative, T &second_derivative) const {
+    RETURN_FALSE_IF(!IsFitted() || time_stamp_s < start_time_stamp_s_ || time_stamp_s > end_time_stamp_s_);
 
     std::vector<double> basis;
     std::vector<double> first_basis;
@@ -124,14 +166,20 @@ bool CubicUniformBSpline<T>::GetValue(double time_stamp_s, T &value, T &first_de
 }
 
 template <typename T>
-bool CubicUniformBSpline<T>::GetValue(double time_stamp_s, T &value) const {
+bool CubicUniformBSpline<T>::GetValue(const double time_stamp_s, T &value, T &first_derivative) const {
+    T second_derivative {};
+    return GetValue(time_stamp_s, value, first_derivative, second_derivative);
+}
+
+template <typename T>
+bool CubicUniformBSpline<T>::GetValue(const double time_stamp_s, T &value) const {
     T first_derivative {};
     T second_derivative {};
     return GetValue(time_stamp_s, value, first_derivative, second_derivative);
 }
 
 template <typename T>
-void CubicUniformBSpline<T>::CalculateBasis(double time_stamp_s, std::vector<double> &basis, std::vector<double> &first_basis,
+void CubicUniformBSpline<T>::CalculateBasis(const double time_stamp_s, std::vector<double> &basis, std::vector<double> &first_basis,
                                             std::vector<double> &second_basis) const {
     // Cox-de Boor basis functions are conventionally half-open on each knot interval. Evaluate the final time infinitesimally from the left to obtain
     // the correct endpoint value and one-sided derivatives.

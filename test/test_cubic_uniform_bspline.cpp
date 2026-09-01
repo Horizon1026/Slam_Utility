@@ -3,6 +3,7 @@
 
 #include "cassert"
 #include "cmath"
+#include "limits"
 #include "vector"
 
 using namespace slam_utility;
@@ -38,6 +39,10 @@ void TestScalarSpline() {
         assert(std::fabs(first_derivative - (after_value - before_value) / (2.0 * kStep)) < 1e-7);
         assert(std::fabs(second_derivative - (after_value - 2.0 * value + before_value) / (kStep * kStep)) < 1e-5);
     }
+    double value = 0.0;
+    double first_derivative = 0.0;
+    assert(spline.GetValue(2.0, value, first_derivative));
+    assert(std::fabs(value - values[2]) < 1e-9);
     assert(!spline.GetValue(-0.01, values[0]));
     assert(!spline.GetValue(5.01, values[0]));
 }
@@ -70,6 +75,14 @@ void TestInvalidInput() {
     CubicUniformBSpline<double> spline;
     assert(!spline.Fit({0.0, 1.0, 2.0}, {0.0, 1.0, 2.0}));
     assert(!spline.Fit({0.0, 1.0, 2.5, 3.5}, {0.0, 1.0, 2.5, 3.5}));
+
+    const std::vector<double> valid_time_stamp_s {0.0, 1.0, 2.0, 3.0};
+    const std::vector<double> valid_values {1.0, 2.0, 3.0, 4.0};
+    assert(spline.Fit(valid_time_stamp_s, valid_values));
+    const std::vector<double> control_points_before = spline.control_points();
+    assert(!spline.Fit({0.0, 1.0, std::numeric_limits<double>::quiet_NaN(), 3.0}, valid_values));
+    assert(spline.IsFitted());
+    assert(spline.control_points() == control_points_before);
 }
 
 int main(int argc, char **argv) {

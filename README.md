@@ -19,6 +19,9 @@ Defined some basic datatype or operations for slam algorithm.
     - [x] Kd tree.
     - [x] Voxels.
     - [x] Grids.
+    - [x] B-spline.
+        - [x] Cubic uniform B-spline for scalar and Euclidean vector interpolation, including first- and second-order derivatives.
+        - [x] Cubic uniform SO(3) B-spline for quaternion attitude, body angular velocity, and angular acceleration.
 - [x] Tick tock timer.
 - [x] Simple yaml parser.
 - [x] Onnx runtime for cxx. (3rd lib)

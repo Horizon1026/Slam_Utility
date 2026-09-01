@@ -47,6 +47,7 @@ set( UNIT_TEST_OF_SLAM_UTILITY_LIST
     test_yaml_parser
     test_probability_distribution
     test_cubic_uniform_bspline
+    test_cubic_uniform_so3_bspline
 )
 foreach( unit_test_src ${UNIT_TEST_OF_SLAM_UTILITY_LIST} )
     add_executable( ${unit_test_src}
