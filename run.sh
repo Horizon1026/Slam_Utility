@@ -15,4 +15,5 @@ cd ./build
 ./test_onnx
 ./test_probability_distribution
 ./test_cubic_uniform_bspline
+./test_cubic_uniform_so3_bspline
 cd ..
