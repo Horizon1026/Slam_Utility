@@ -1,8 +1,9 @@
 #ifndef _SLAM_UTILITY_CIRCULAR_BUFFER_H_
 #define _SLAM_UTILITY_CIRCULAR_BUFFER_H_
 
-#include "array"
 #include "basic_type.h"
+
+#include "array"
 
 namespace slam_utility {
 

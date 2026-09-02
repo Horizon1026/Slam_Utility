@@ -1,11 +1,11 @@
 #include "basic_type.h"
 #include "slam_log_reporter.h"
+
 #include "vector"
 
 using namespace slam_utility;
 
 #include "enable_stack_backward.h"
-
 int main(int argc, char **argv) {
     ReportInfo(YELLOW ">> Test stack trace back." RESET_COLOR);
 

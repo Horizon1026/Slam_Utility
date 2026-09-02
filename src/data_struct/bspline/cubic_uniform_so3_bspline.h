@@ -3,6 +3,7 @@
 
 #include "cubic_uniform_bspline.h"
 #include "slam_basic_math.h"
+
 #include "vector"
 
 namespace slam_utility {

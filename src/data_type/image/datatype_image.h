@@ -3,6 +3,7 @@
 
 #include "basic_type.h"
 #include "basic_type_rgbcolor.h"
+
 #include "cmath"
 
 namespace slam_utility {

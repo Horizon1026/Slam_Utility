@@ -4,7 +4,6 @@
 #include "visual_feature.h"
 #include "visual_frame.h"
 #include "visual_observe.h"
-
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 

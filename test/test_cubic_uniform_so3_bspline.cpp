@@ -1,10 +1,11 @@
+#include "cubic_uniform_so3_bspline.h"
+#include "slam_basic_math.h"
+#include "slam_log_reporter.h"
+
 #include "algorithm"
 #include "cassert"
 #include "cmath"
-#include "cubic_uniform_so3_bspline.h"
 #include "iomanip"
-#include "slam_basic_math.h"
-#include "slam_log_reporter.h"
 #include "vector"
 
 using namespace slam_utility;

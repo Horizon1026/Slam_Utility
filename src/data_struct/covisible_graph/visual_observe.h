@@ -2,6 +2,7 @@
 #define _SENSOR_UTILITY_VISUAL_OBSERVE_H_
 
 #include "basic_type.h"
+
 #include "unordered_map"
 
 namespace slam_utility {

@@ -1,8 +1,10 @@
 #include "basic_type.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
-#include "visualizor_3d.h"
 #include "extend_kd_tree.h"
+
+#include "visualizor_3d.h"
+
 #include "numeric"
 
 using namespace slam_utility;

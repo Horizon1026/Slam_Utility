@@ -1,8 +1,9 @@
 #include "basic_type.h"
-#include "onnx_run_time.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
 #include "tick_tock.h"
+
+#include "onnx_run_time.h"
 #include "visualizor_2d.h"
 
 using namespace slam_utility;

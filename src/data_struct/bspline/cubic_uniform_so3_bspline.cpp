@@ -1,7 +1,8 @@
 #include "cubic_uniform_so3_bspline.h"
+#include "slam_operations.h"
+
 #include "algorithm"
 #include "cmath"
-#include "slam_operations.h"
 
 namespace slam_utility {
 

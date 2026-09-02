@@ -1,7 +1,8 @@
-#include "iomanip"
-#include "iostream"
 #include "slam_log_reporter.h"
 #include "yaml_parser.h"
+
+#include "iomanip"
+#include "iostream"
 
 using namespace slam_utility;
 

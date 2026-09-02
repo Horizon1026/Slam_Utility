@@ -1,10 +1,11 @@
 #ifndef _SLAM_UTILITY_CUBIC_UNIFORM_BSPLINE_H_
 #define _SLAM_UTILITY_CUBIC_UNIFORM_BSPLINE_H_
 
-#include "algorithm"
 #include "basic_type.h"
-#include "cmath"
 #include "slam_operations.h"
+
+#include "algorithm"
+#include "cmath"
 #include "type_traits"
 #include "vector"
 

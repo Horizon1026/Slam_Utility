@@ -4,8 +4,9 @@
 #include "basic_type.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
-#include "unordered_set"
 #include "voxels.h"
+
+#include "unordered_set"
 
 namespace slam_utility {
 

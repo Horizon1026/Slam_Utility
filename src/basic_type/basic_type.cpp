@@ -1,4 +1,5 @@
 #include "basic_type.h"
+
 #include "iostream"
 
 namespace slam_utility {

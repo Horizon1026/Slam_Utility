@@ -1,8 +1,9 @@
 #include "yaml_parser.h"
+#include "slam_log_reporter.h"
+
 #include "algorithm"
 #include "cctype"
 #include "fstream"
-#include "slam_log_reporter.h"
 #include "sstream"
 #include "stdexcept"
 
