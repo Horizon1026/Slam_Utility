@@ -14,6 +14,8 @@ cd ./build
 ./test_yaml_parser
 ./test_onnx
 ./test_probability_distribution
-./test_cubic_uniform_bspline
-./test_cubic_uniform_so3_bspline
+./test_clamped_cubic_bspline_interpolator
+./test_clamped_cubic_so3_bspline_interpolator
+./test_local_uniform_cubic_bspline_approximator
+./test_local_uniform_cubic_so3_bspline_approximator
 cd ..

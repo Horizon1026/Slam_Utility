@@ -1,4 +1,4 @@
-#include "cubic_uniform_bspline.h"
+#include "clamped_cubic_bspline_interpolator.h"
 #include "slam_log_reporter.h"
 
 #include "cassert"
@@ -17,7 +17,7 @@ void TestScalarSpline() {
         values.push_back(CubicFunction(time_stamp));
     }
 
-    CubicUniformBSpline<double> spline;
+    ClampedCubicBSplineInterpolator<double> spline;
     assert(spline.Fit(time_stamp_s, values));
     for (uint32_t i = 0; i < time_stamp_s.size(); ++i) {
         double value = 0.0;
@@ -54,7 +54,7 @@ void TestVectorSpline() {
         values.emplace_back(CubicFunction(time_stamp), 2.0 * CubicFunction(time_stamp), -CubicFunction(time_stamp));
     }
 
-    CubicUniformBSpline<Vec3> spline;
+    ClampedCubicBSplineInterpolator<Vec3> spline;
     assert(spline.Fit(time_stamp_s, values));
     for (uint32_t i = 0; i < time_stamp_s.size(); ++i) {
         Vec3 value = Vec3::Zero();
@@ -72,7 +72,7 @@ void TestVectorSpline() {
 }
 
 void TestInvalidInput() {
-    CubicUniformBSpline<double> spline;
+    ClampedCubicBSplineInterpolator<double> spline;
     assert(!spline.Fit({0.0, 1.0, 2.0}, {0.0, 1.0, 2.0}));
     assert(!spline.Fit({0.0, 1.0, 2.5, 3.5}, {0.0, 1.0, 2.5, 3.5}));
 
@@ -86,10 +86,10 @@ void TestInvalidInput() {
 }
 
 int main(int argc, char **argv) {
-    ReportInfo(YELLOW ">> Test cubic uniform B-spline." RESET_COLOR);
+    ReportInfo(YELLOW ">> Test clamped cubic B-spline interpolator." RESET_COLOR);
     TestScalarSpline();
     TestVectorSpline();
     TestInvalidInput();
-    ReportInfo(GREEN ">> All cubic uniform B-spline tests passed." RESET_COLOR);
+    ReportInfo(GREEN ">> All clamped cubic B-spline interpolator tests passed." RESET_COLOR);
     return 0;
 }

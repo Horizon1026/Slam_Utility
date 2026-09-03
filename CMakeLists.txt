@@ -2,10 +2,10 @@ cmake_minimum_required( VERSION 3.10 )
 
 project( slam_utility )
 
-set( CMAKE_BUILD_TYPE "Debug" )
-set( CMAKE_CXX_FLAGS "-std=c++17 -O3 -g -Wall -pthread" )
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set( CMAKE_CXX_STANDARD 20 )
+set( CMAKE_CXX_STANDARD_REQUIRED ON )
+set( CMAKE_CXX_EXTENSIONS OFF )
 
 # Add slam utility.
 if( NOT TARGET lib_slam_utility )
@@ -46,8 +46,10 @@ set( UNIT_TEST_OF_SLAM_UTILITY_LIST
     test_quadratic_plane
     test_yaml_parser
     test_probability_distribution
-    test_cubic_uniform_bspline
-    test_cubic_uniform_so3_bspline
+    test_clamped_cubic_bspline_interpolator
+    test_clamped_cubic_so3_bspline_interpolator
+    test_local_uniform_cubic_bspline_approximator
+    test_local_uniform_cubic_so3_bspline_approximator
 )
 foreach( unit_test_src ${UNIT_TEST_OF_SLAM_UTILITY_LIST} )
     add_executable( ${unit_test_src}

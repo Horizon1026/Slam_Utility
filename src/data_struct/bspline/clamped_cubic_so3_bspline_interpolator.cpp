@@ -1,4 +1,4 @@
-#include "cubic_uniform_so3_bspline.h"
+#include "clamped_cubic_so3_bspline_interpolator.h"
 #include "slam_operations.h"
 
 #include "algorithm"
@@ -6,7 +6,7 @@
 
 namespace slam_utility {
 
-bool CubicUniformSO3BSpline::Fit(const std::vector<double> &all_time_stamps_s, const std::vector<TQuat<double>> &all_orientations) {
+bool ClampedCubicSO3BSplineInterpolator::Fit(const std::vector<double> &all_time_stamps_s, const std::vector<TQuat<double>> &all_orientations) {
     RETURN_FALSE_IF(all_time_stamps_s.size() != all_orientations.size() || all_orientations.size() < 4);
 
     std::vector<TQuat<double>> normalized_orientations;
@@ -34,7 +34,7 @@ bool CubicUniformSO3BSpline::Fit(const std::vector<double> &all_time_stamps_s, c
         RETURN_FALSE_IF(!std::isfinite(all_time_stamps_s[i]) || std::fabs(interval_s - time_interval_s) > tolerance);
     }
 
-    CubicUniformSO3BSpline candidate;
+    ClampedCubicSO3BSplineInterpolator candidate;
     candidate.start_time_stamp_s_ = all_time_stamps_s.front();
     candidate.end_time_stamp_s_ = all_time_stamps_s.back();
     candidate.time_interval_s_ = time_interval_s;
@@ -99,7 +99,7 @@ bool CubicUniformSO3BSpline::Fit(const std::vector<double> &all_time_stamps_s, c
     return false;
 }
 
-bool CubicUniformSO3BSpline::GetValue(const double time_stamp_s, TQuat<double> &orientation, TVec3<double> &angular_velocity,
+bool ClampedCubicSO3BSplineInterpolator::GetValue(const double time_stamp_s, TQuat<double> &orientation, TVec3<double> &angular_velocity,
                                       TVec3<double> &angular_acceleration) const {
     RETURN_FALSE_IF(!IsFitted() || !GetAngularVelocity(time_stamp_s, angular_velocity));
 
@@ -119,18 +119,18 @@ bool CubicUniformSO3BSpline::GetValue(const double time_stamp_s, TQuat<double> &
     return true;
 }
 
-bool CubicUniformSO3BSpline::GetValue(const double time_stamp_s, TQuat<double> &orientation) const {
+bool ClampedCubicSO3BSplineInterpolator::GetValue(const double time_stamp_s, TQuat<double> &orientation) const {
     TVec3<double> angular_velocity = TVec3<double>::Zero();
     TVec3<double> angular_acceleration = TVec3<double>::Zero();
     return GetValue(time_stamp_s, orientation, angular_velocity, angular_acceleration);
 }
 
-bool CubicUniformSO3BSpline::GetAngularVelocity(const double time_stamp_s, TVec3<double> &angular_velocity) const {
+bool ClampedCubicSO3BSplineInterpolator::GetAngularVelocity(const double time_stamp_s, TVec3<double> &angular_velocity) const {
     TQuat<double> orientation;
     return Evaluate(time_stamp_s, orientation, angular_velocity);
 }
 
-bool CubicUniformSO3BSpline::Evaluate(const double time_stamp_s, TQuat<double> &orientation, TVec3<double> &angular_velocity) const {
+bool ClampedCubicSO3BSplineInterpolator::Evaluate(const double time_stamp_s, TQuat<double> &orientation, TVec3<double> &angular_velocity) const {
     RETURN_FALSE_IF(!IsFitted() || time_stamp_s < start_time_stamp_s_ || time_stamp_s > end_time_stamp_s_);
     std::vector<double> basis;
     std::vector<double> first_basis;
@@ -162,7 +162,7 @@ bool CubicUniformSO3BSpline::Evaluate(const double time_stamp_s, TQuat<double> &
     return orientation.coeffs().allFinite() && velocity.allFinite();
 }
 
-void CubicUniformSO3BSpline::CalculateBasis(const double time_stamp_s, std::vector<double> &basis, std::vector<double> &first_basis) const {
+void ClampedCubicSO3BSplineInterpolator::CalculateBasis(const double time_stamp_s, std::vector<double> &basis, std::vector<double> &first_basis) const {
     const double evaluation_time_stamp_s = time_stamp_s == end_time_stamp_s_ ? std::nextafter(time_stamp_s, start_time_stamp_s_) : time_stamp_s;
     std::vector<std::vector<double>> basis_by_degree(4);
     basis_by_degree[0].resize(knots_.size() - 1, 0.0);

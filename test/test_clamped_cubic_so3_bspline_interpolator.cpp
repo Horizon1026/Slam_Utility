@@ -1,4 +1,4 @@
-#include "cubic_uniform_so3_bspline.h"
+#include "clamped_cubic_so3_bspline_interpolator.h"
 #include "slam_basic_math.h"
 #include "slam_log_reporter.h"
 
@@ -44,18 +44,18 @@ public:
 
 private:
     TQuat<double> reference_orientation_ = TQuat<double>::Identity();
-    CubicUniformBSpline<TVec3<double>> rotation_vector_spline_;
+    ClampedCubicBSplineInterpolator<TVec3<double>> rotation_vector_spline_;
 };
 
 int main(int argc, char **argv) {
-    ReportInfo(YELLOW ">> Test cubic uniform SO(3) B-spline." RESET_COLOR);
+    ReportInfo(YELLOW ">> Test clamped cubic SO(3) B-spline interpolator." RESET_COLOR);
     const std::vector<double> time_stamp_s {0.0, 1.0, 2.0, 3.0, 4.0};
     std::vector<TQuat<double>> orientations;
     for (const double time_stamp: time_stamp_s) {
         orientations.emplace_back(Utility::Exponent(TVec3<double>(0.0, 0.0, 0.4 * time_stamp)));
     }
 
-    CubicUniformSO3BSpline spline;
+    ClampedCubicSO3BSplineInterpolator spline;
     assert(spline.Fit(time_stamp_s, orientations));
     for (uint32_t i = 0; i < time_stamp_s.size(); ++i) {
         TQuat<double> orientation = TQuat<double>::Identity();
@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
     std::vector<TQuat<double>> non_commuting_orientations {
         TQuat<double>::Identity(), Utility::Exponent(TVec3<double>(0.20, -0.10, 0.05)), Utility::Exponent(TVec3<double>(-0.15, 0.25, 0.20)),
         Utility::Exponent(TVec3<double>(0.30, 0.10, -0.20)), Utility::Exponent(TVec3<double>(-0.05, -0.20, 0.35))};
-    CubicUniformSO3BSpline non_commuting_spline;
+    ClampedCubicSO3BSplineInterpolator non_commuting_spline;
     assert(non_commuting_spline.Fit(time_stamp_s, non_commuting_orientations));
     for (uint32_t i = 0; i < time_stamp_s.size(); ++i) {
         TQuat<double> orientation;
@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
         large_rotation_time_stamps_s.emplace_back(static_cast<double>(i));
         large_rotation_orientations.emplace_back(Utility::Exponent(TVec3<double>(0.0, 0.0, static_cast<double>(i))));
     }
-    CubicUniformSO3BSpline cumulative_spline;
+    ClampedCubicSO3BSplineInterpolator cumulative_spline;
     FixedTangentSO3BSpline fixed_tangent_spline;
     assert(cumulative_spline.Fit(large_rotation_time_stamps_s, large_rotation_orientations));
     assert(fixed_tangent_spline.Fit(large_rotation_time_stamps_s, large_rotation_orientations));
@@ -147,6 +147,6 @@ int main(int argc, char **argv) {
     ReportInfo("   Fixed-reference tangent spline " << std::scientific << std::setprecision(6) << maximum_fixed_tangent_orientation_error << "              "
                                                     << maximum_fixed_tangent_velocity_error);
     ReportInfo("   Cumulative spline max angular acceleration [rad/s^2]: " << std::scientific << std::setprecision(6) << maximum_cumulative_acceleration);
-    ReportInfo(GREEN ">> All cubic uniform SO(3) B-spline tests passed." RESET_COLOR);
+    ReportInfo(GREEN ">> All clamped cubic SO(3) B-spline interpolator tests passed." RESET_COLOR);
     return 0;
 }

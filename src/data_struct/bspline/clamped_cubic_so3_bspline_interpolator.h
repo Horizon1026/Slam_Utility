@@ -1,19 +1,19 @@
-#ifndef _SLAM_UTILITY_CUBIC_UNIFORM_SO3_BSPLINE_H_
-#define _SLAM_UTILITY_CUBIC_UNIFORM_SO3_BSPLINE_H_
+#ifndef _SLAM_UTILITY_CLAMPED_CUBIC_SO3_BSPLINE_INTERPOLATOR_H_
+#define _SLAM_UTILITY_CLAMPED_CUBIC_SO3_BSPLINE_INTERPOLATOR_H_
 
-#include "cubic_uniform_bspline.h"
+#include "clamped_cubic_bspline_interpolator.h"
 #include "slam_basic_math.h"
 
 #include "vector"
 
 namespace slam_utility {
 
-/* Class Cubic Uniform SO(3) B-Spline Declaration. */
-class CubicUniformSO3BSpline {
+// Globally fitted cubic SO(3) spline that interpolates every input orientation.
+class ClampedCubicSO3BSplineInterpolator {
 
 public:
-    CubicUniformSO3BSpline() = default;
-    virtual ~CubicUniformSO3BSpline() = default;
+    ClampedCubicSO3BSplineInterpolator() = default;
+    virtual ~ClampedCubicSO3BSplineInterpolator() = default;
 
     bool Fit(const std::vector<double> &all_time_stamps_s, const std::vector<TQuat<double>> &all_orientations);
     bool GetValue(const double time_stamp_s, TQuat<double> &orientation, TVec3<double> &angular_velocity, TVec3<double> &angular_acceleration) const;
@@ -46,4 +46,4 @@ private:
 
 }  // namespace slam_utility
 
-#endif  // end of _SLAM_UTILITY_CUBIC_UNIFORM_SO3_BSPLINE_H_
+#endif  // _SLAM_UTILITY_CLAMPED_CUBIC_SO3_BSPLINE_INTERPOLATOR_H_

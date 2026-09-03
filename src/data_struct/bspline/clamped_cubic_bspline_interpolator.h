@@ -1,5 +1,5 @@
-#ifndef _SLAM_UTILITY_CUBIC_UNIFORM_BSPLINE_H_
-#define _SLAM_UTILITY_CUBIC_UNIFORM_BSPLINE_H_
+#ifndef _SLAM_UTILITY_CLAMPED_CUBIC_BSPLINE_INTERPOLATOR_H_
+#define _SLAM_UTILITY_CLAMPED_CUBIC_BSPLINE_INTERPOLATOR_H_
 
 #include "basic_type.h"
 #include "slam_operations.h"
@@ -11,15 +11,15 @@
 
 namespace slam_utility {
 
-/* Class Cubic Uniform B-Spline Declaration */
+// Globally fitted cubic spline that interpolates every input sample.
 template <typename T>
-class CubicUniformBSpline {
+class ClampedCubicBSplineInterpolator {
     // The spline uses a clamped, cubic uniform knot vector.
     // Four repeated knots at each end make the curve pass through the first and last samples.
 
 public:
-    CubicUniformBSpline() = default;
-    virtual ~CubicUniformBSpline() = default;
+    ClampedCubicBSplineInterpolator() = default;
+    virtual ~ClampedCubicBSplineInterpolator() = default;
 
     // Computes control points that interpolate every supplied sample.
     // A failed fit leaves the last successfully fitted spline unchanged.
@@ -57,9 +57,9 @@ private:
     double time_interval_s_ = 0.0;
 };
 
-/* Class Cubic Uniform B-Spline Definition. */
+/* Clamped Cubic B-Spline Interpolator definition. */
 template <typename T>
-bool CubicUniformBSpline<T>::Fit(const std::vector<double> &all_time_stamps_s, const std::vector<T> &all_values) {
+bool ClampedCubicBSplineInterpolator<T>::Fit(const std::vector<double> &all_time_stamps_s, const std::vector<T> &all_values) {
     RETURN_FALSE_IF(all_time_stamps_s.size() != all_values.size() || all_values.size() < 4);
     for (const double time_stamp_s: all_time_stamps_s) {
         RETURN_FALSE_IF(!std::isfinite(time_stamp_s));
@@ -75,7 +75,7 @@ bool CubicUniformBSpline<T>::Fit(const std::vector<double> &all_time_stamps_s, c
 
     // Build a candidate spline locally. No observable state is changed unless
     // node construction and the interpolation solve both succeed.
-    CubicUniformBSpline<T> candidate;
+    ClampedCubicBSplineInterpolator<T> candidate;
     // Let N be the number of control points (not the maximum control-point index). A clamped cubic B-spline has N + 4 knots: four repeated knots at
     // each endpoint and N - 4 internal knots. These internal knots divide the parameter domain into N - 3 uniformly sized, non-zero knot spans.
     candidate.start_time_stamp_s_ = all_time_stamps_s.front();
@@ -147,7 +147,7 @@ bool CubicUniformBSpline<T>::Fit(const std::vector<double> &all_time_stamps_s, c
 }
 
 template <typename T>
-bool CubicUniformBSpline<T>::GetValue(const double time_stamp_s, T &value, T &first_derivative, T &second_derivative) const {
+bool ClampedCubicBSplineInterpolator<T>::GetValue(const double time_stamp_s, T &value, T &first_derivative, T &second_derivative) const {
     RETURN_FALSE_IF(!IsFitted() || time_stamp_s < start_time_stamp_s_ || time_stamp_s > end_time_stamp_s_);
 
     std::vector<double> basis;
@@ -167,20 +167,20 @@ bool CubicUniformBSpline<T>::GetValue(const double time_stamp_s, T &value, T &fi
 }
 
 template <typename T>
-bool CubicUniformBSpline<T>::GetValue(const double time_stamp_s, T &value, T &first_derivative) const {
+bool ClampedCubicBSplineInterpolator<T>::GetValue(const double time_stamp_s, T &value, T &first_derivative) const {
     T second_derivative {};
     return GetValue(time_stamp_s, value, first_derivative, second_derivative);
 }
 
 template <typename T>
-bool CubicUniformBSpline<T>::GetValue(const double time_stamp_s, T &value) const {
+bool ClampedCubicBSplineInterpolator<T>::GetValue(const double time_stamp_s, T &value) const {
     T first_derivative {};
     T second_derivative {};
     return GetValue(time_stamp_s, value, first_derivative, second_derivative);
 }
 
 template <typename T>
-void CubicUniformBSpline<T>::CalculateBasis(const double time_stamp_s, std::vector<double> &basis, std::vector<double> &first_basis,
+void ClampedCubicBSplineInterpolator<T>::CalculateBasis(const double time_stamp_s, std::vector<double> &basis, std::vector<double> &first_basis,
                                             std::vector<double> &second_basis) const {
     // Cox-de Boor basis functions are conventionally half-open on each knot interval. Evaluate the final time infinitesimally from the left to obtain
     // the correct endpoint value and one-sided derivatives.
@@ -235,4 +235,4 @@ void CubicUniformBSpline<T>::CalculateBasis(const double time_stamp_s, std::vect
 
 }  // namespace slam_utility
 
-#endif  // end of _SLAM_UTILITY_CUBIC_UNIFORM_BSPLINE_H_
+#endif  // _SLAM_UTILITY_CLAMPED_CUBIC_BSPLINE_INTERPOLATOR_H_
