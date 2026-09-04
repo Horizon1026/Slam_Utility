@@ -8,9 +8,8 @@
 
 namespace slam_utility {
 
-// Standard uniform cubic B-spline basis and its first derivative with respect
-// to the local parameter u in [0, 1], shared by the SO(3) cumulative weights.
-void LocalUniformCubicSO3BSplineApproximator::CalculateBasisAndFirstDerivative(const double u, double (&basis)[4], double (&first_basis)[4]) {
+// Standard uniform cubic B-spline basis and its first derivative with respect to the local parameter u in [0, 1], shared by the SO(3) cumulative weights.
+void LocalUniformCubicSO3BSplineApproximator::CalculateBasisAndFirstDerivative(const double u, double (&basis)[4], double (&first_basis)[4]) const {
     const double u2 = u * u;
     const double u3 = u2 * u;
     basis[0] = (1.0 - u) * (1.0 - u) * (1.0 - u) / 6.0;
@@ -30,8 +29,7 @@ bool LocalUniformCubicSO3BSplineApproximator::Fit(const double start_time_s, con
         RETURN_FALSE_IF(!std::isfinite(control.w()) || !control.vec().allFinite() || control.norm() < kZeroDouble);
     }
 
-    // Normalize and keep consecutive samples on the same hemisphere so their
-    // logarithms vary continuously.
+    // Normalize and keep consecutive samples on the same hemisphere so their logarithms vary continuously.
     LocalUniformCubicSO3BSplineApproximator candidate;
     candidate.start_time_s_ = start_time_s;
     candidate.interval_s_ = interval_s;
@@ -66,8 +64,7 @@ bool LocalUniformCubicSO3BSplineApproximator::Evaluate(const double time_stamp_s
         u = raw_span - static_cast<double>(span);
     }
 
-    // Active control orientations of this span, with one duplicated ghost
-    // control at each end.
+    // Active control orientations of this span, with one duplicated ghost control at each end.
     const uint32_t index[4] = {
         span > 0 ? span - 1 : 0,
         span,
@@ -97,8 +94,7 @@ bool LocalUniformCubicSO3BSplineApproximator::Evaluate(const double time_stamp_s
     const double weight[3] = {1.0 - basis[0], basis[2] + basis[3], basis[3]};
     const double first_weight[3] = {-first_basis[0], first_basis[2] + first_basis[3], first_basis[3]};
 
-    // Cumulative Lie-group spline value and right-trivialized (body-frame)
-    // angular velocity with respect to u, using the same recurrence as
+    // Cumulative Lie-group spline value and right-trivialized (body-frame) angular velocity with respect to u, using the same recurrence as
     // ClampedCubicSO3BSplineInterpolator restricted to the active span.
     const TQuat<double> factor[3] = {Utility::Exponent(weight[0] * increments[0]), Utility::Exponent(weight[1] * increments[1]),
                                      Utility::Exponent(weight[2] * increments[2])};
@@ -123,8 +119,7 @@ bool LocalUniformCubicSO3BSplineApproximator::GetAngularAcceleration(const doubl
     TVec3<double> left_angular_velocity = TVec3<double>::Zero();
     TQuat<double> right_orientation;
     TVec3<double> right_angular_velocity = TVec3<double>::Zero();
-    RETURN_FALSE_IF(!Evaluate(left_time_s, left_orientation, left_angular_velocity) ||
-                    !Evaluate(right_time_s, right_orientation, right_angular_velocity));
+    RETURN_FALSE_IF(!Evaluate(left_time_s, left_orientation, left_angular_velocity) || !Evaluate(right_time_s, right_orientation, right_angular_velocity));
     const double time_difference_s = right_time_s - left_time_s;
     RETURN_FALSE_IF(time_difference_s <= 0.0);
     angular_acceleration = (right_angular_velocity - left_angular_velocity) / time_difference_s;
@@ -132,7 +127,7 @@ bool LocalUniformCubicSO3BSplineApproximator::GetAngularAcceleration(const doubl
 }
 
 bool LocalUniformCubicSO3BSplineApproximator::GetValue(const double time_stamp_s, TQuat<double> &orientation, TVec3<double> &angular_velocity,
-                                      TVec3<double> &angular_acceleration) const {
+                                                       TVec3<double> &angular_acceleration) const {
     RETURN_FALSE_IF(!Evaluate(time_stamp_s, orientation, angular_velocity));
     return GetAngularAcceleration(time_stamp_s, angular_acceleration);
 }

@@ -60,9 +60,9 @@ public:
 private:
     // Standard uniform cubic B-spline basis, its first and second derivative
     // with respect to the local parameter u, for the four active controls.
-    static void CalculateWeights(const double u, double (&basis)[4], double (&first_basis)[4], double (&second_basis)[4]);
+    void CalculateWeights(const double u, double (&basis)[4], double (&first_basis)[4], double (&second_basis)[4]) const;
 
-    static bool IsFiniteValue(const T &value) {
+    bool IsFiniteValue(const T &value) const {
         if constexpr (std::is_arithmetic_v<T>) {
             return std::isfinite(static_cast<double>(value));
         } else {
@@ -158,7 +158,7 @@ bool LocalUniformCubicBSplineApproximator<T>::GetValue(const double time_stamp_s
 }
 
 template <typename T>
-void LocalUniformCubicBSplineApproximator<T>::CalculateWeights(const double u, double (&basis)[4], double (&first_basis)[4], double (&second_basis)[4]) {
+void LocalUniformCubicBSplineApproximator<T>::CalculateWeights(const double u, double (&basis)[4], double (&first_basis)[4], double (&second_basis)[4]) const {
     const double u2 = u * u;
     const double u3 = u2 * u;
     // Standard uniform cubic B-spline basis on u in [0, 1].

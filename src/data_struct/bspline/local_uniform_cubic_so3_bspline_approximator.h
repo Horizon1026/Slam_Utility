@@ -49,17 +49,17 @@ public:
     bool GetValue(const double time_stamp_s, TQuat<double> &orientation) const;
     bool IsFitted() const { return !controls_.empty(); }
 
+    // Reference for member variables.
+    double end_time_stamp_s() const { return start_time_s_ + static_cast<double>(controls_.size() - 1) * interval_s_; }
     // Const reference for member variables.
     const double &start_time_stamp_s() const { return start_time_s_; }
-    double end_time_stamp_s() const { return start_time_s_ + static_cast<double>(controls_.size() - 1) * interval_s_; }
     const double &time_interval_s() const { return interval_s_; }
 
 private:
-    static void CalculateBasisAndFirstDerivative(double u, double (&basis)[4], double (&first_basis)[4]);
+    void CalculateBasisAndFirstDerivative(double u, double (&basis)[4], double (&first_basis)[4]) const;
     // Evaluates orientation and body-frame angular velocity (rad/s) at a valid time.
     bool Evaluate(const double time_stamp_s, TQuat<double> &orientation, TVec3<double> &angular_velocity) const;
-    // Central finite difference of the analytic angular velocity to obtain the
-    // body-frame angular acceleration (rad/s^2).
+    // Central finite difference of the analytic angular velocity to obtain the body-frame angular acceleration (rad/s^2).
     bool GetAngularAcceleration(const double time_stamp_s, TVec3<double> &angular_acceleration) const;
 
 private:
