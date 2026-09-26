@@ -6,23 +6,19 @@
 #include "eigen3/unsupported/Eigen/FFT"
 #include "eigen3/unsupported/Eigen/Polynomials"
 
+#include "cstdint"
+
 namespace slam_utility {
 
-using uint8_t = unsigned char;
-using uint16_t = unsigned short;
-using uint32_t = unsigned int;
+using uint8_t = std::uint8_t;
+using uint16_t = std::uint16_t;
+using uint32_t = std::uint32_t;
+using uint64_t = std::uint64_t;
 
-using int8_t = signed char;
-using int16_t = short;
-using int32_t = int;
-
-#ifdef _WIN32
-using uint64_t = unsigned long long;
-using int64_t = long long;
-#else
-using uint64_t = unsigned long int;
-using int64_t = long int;
-#endif
+using int8_t = std::int8_t;
+using int16_t = std::int16_t;
+using int32_t = std::int32_t;
+using int64_t = std::int64_t;
 
 template <typename T>
 using TQuat = Eigen::Quaternion<T>;
