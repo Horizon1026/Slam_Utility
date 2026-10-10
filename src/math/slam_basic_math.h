@@ -3,6 +3,10 @@
 
 #include "basic_type.h"
 
+#include "algorithm"
+#include "cmath"
+#include "type_traits"
+
 namespace slam_utility {
 
 namespace {
@@ -27,6 +31,42 @@ public:
     virtual ~Utility() = default;
 
     // --- Matrix Operations ---
+
+    /**
+     * @brief Minimum eigenvalue of a real symmetric 2x2 matrix, using a closed form.
+     * @note Only the upper triangle is read. Scalar must be a floating-point type.
+     */
+    template <typename Scalar>
+    static Scalar MinEigenValue(const TMat2<Scalar> &matrix) {
+        return SymmetricEigenValue2<Scalar, true>(matrix);
+    }
+
+    /**
+     * @brief Maximum eigenvalue of a real symmetric 2x2 matrix, using a closed form.
+     * @note Only the upper triangle is read. Scalar must be a floating-point type.
+     */
+    template <typename Scalar>
+    static Scalar MaxEigenValue(const TMat2<Scalar> &matrix) {
+        return SymmetricEigenValue2<Scalar, false>(matrix);
+    }
+
+    /**
+     * @brief Minimum eigenvalue of a real symmetric 3x3 matrix, using a closed form.
+     * @note Only the upper triangle is read. Scalar must be a floating-point type.
+     */
+    template <typename Scalar>
+    static Scalar MinEigenValue(const TMat3<Scalar> &matrix) {
+        return SymmetricEigenValue3<Scalar, true>(matrix);
+    }
+
+    /**
+     * @brief Maximum eigenvalue of a real symmetric 3x3 matrix, using a closed form.
+     * @note Only the upper triangle is read. Scalar must be a floating-point type.
+     */
+    template <typename Scalar>
+    static Scalar MaxEigenValue(const TMat3<Scalar> &matrix) {
+        return SymmetricEigenValue3<Scalar, false>(matrix);
+    }
 
     /**
      * @brief Compute the skew-symmetric matrix of a 3D vector.
@@ -235,7 +275,7 @@ public:
         // Pitch (y-axis rotation)
         const Scalar sinp = 2 * (q.w() * q.y() - q.z() * q.x());
         if (std::abs(sinp) >= 1) {
-            rpy.y() = std::copysign(kPaiDouble / 2.0, sinp); // Use 90 degrees if out of range
+            rpy.y() = std::copysign(kPaiDouble / 2.0, sinp);  // Use 90 degrees if out of range
         } else {
             rpy.y() = std::asin(sinp);
         }
@@ -587,6 +627,74 @@ public:
     static Eigen::Quaternion<typename Derived::Scalar> Interpolate(const Eigen::QuaternionBase<Derived> &q0, const Eigen::QuaternionBase<OtherDerived> &q1,
                                                                    const typename Derived::Scalar &t) {
         return q0.slerp(t, q1);
+    }
+
+private:
+    template <typename Scalar, bool Minimum>
+    static Scalar SymmetricEigenValue2(const TMat2<Scalar> &matrix) {
+        static_assert(std::is_floating_point<Scalar>::value, "Eigenvalue methods require a real floating-point scalar.");
+        const Scalar a = matrix(0, 0);
+        const Scalar b = matrix(0, 1);
+        const Scalar d = matrix(1, 1);
+        if (b == Scalar(0)) {
+            return Minimum ? std::min(a, d) : std::max(a, d);
+        }
+
+        // Normalize before squaring to avoid overflow/underflow for large/small matrices.
+        const Scalar scale = std::max(std::max(std::abs(a), std::abs(d)), std::abs(b));
+        const Scalar half_a = (a / scale) * Scalar(0.5);
+        const Scalar half_d = (d / scale) * Scalar(0.5);
+        const Scalar scaled_b = b / scale;
+        const Scalar half_diff = half_a - half_d;
+        const Scalar radius = std::sqrt(half_diff * half_diff + scaled_b * scaled_b);
+        const Scalar mean = half_a + half_d;
+        return scale * (Minimum ? mean - radius : mean + radius);
+    }
+
+    template <typename Scalar, bool Minimum>
+    static Scalar SymmetricEigenValue3(const TMat3<Scalar> &matrix) {
+        static_assert(std::is_floating_point<Scalar>::value, "Eigenvalue methods require a real floating-point scalar.");
+        const Scalar a = matrix(0, 0);
+        const Scalar d = matrix(1, 1);
+        const Scalar f = matrix(2, 2);
+        const Scalar b = matrix(0, 1);
+        const Scalar c = matrix(0, 2);
+        const Scalar e = matrix(1, 2);
+        if (b == Scalar(0) && c == Scalar(0) && e == Scalar(0)) {
+            return Minimum ? std::min(std::min(a, d), f) : std::max(std::max(a, d), f);
+        }
+
+        const Scalar scale = std::max(std::max(std::max(std::abs(a), std::abs(d)), std::abs(f)), std::max(std::max(std::abs(b), std::abs(c)), std::abs(e)));
+        const Scalar scaled_a = a / scale;
+        const Scalar scaled_d = d / scale;
+        const Scalar scaled_f = f / scale;
+        const Scalar scaled_b = b / scale;
+        const Scalar scaled_c = c / scale;
+        const Scalar scaled_e = e / scale;
+        const Scalar mean = (scaled_a + scaled_d + scaled_f) / Scalar(3);
+        const Scalar da = scaled_a - mean;
+        const Scalar dd = scaled_d - mean;
+        const Scalar df = scaled_f - mean;
+        const Scalar p = std::sqrt((da * da + dd * dd + df * df + Scalar(2) * (scaled_b * scaled_b + scaled_c * scaled_c + scaled_e * scaled_e)) / Scalar(6));
+        if (p == Scalar(0)) {
+            return scale * mean;
+        }
+
+        // B = (A - mean * I) / p has trace zero and squared Frobenius norm six.
+        const Scalar ba = da / p;
+        const Scalar bd = dd / p;
+        const Scalar bf = df / p;
+        const Scalar bb = scaled_b / p;
+        const Scalar bc = scaled_c / p;
+        const Scalar be = scaled_e / p;
+        Scalar r = (ba * bd * bf + Scalar(2) * bb * bc * be - ba * be * be - bd * bc * bc - bf * bb * bb) * Scalar(0.5);
+        // lambda_min(A) = -lambda_max(-A), requiring only one acos and one cos.
+        if constexpr (Minimum) {
+            r = -r;
+        }
+        r = std::max(Scalar(-1), std::min(Scalar(1), r));
+        const Scalar radius = Scalar(2) * p * std::cos(std::acos(r) / Scalar(3));
+        return scale * (Minimum ? mean - radius : mean + radius);
     }
 };
 

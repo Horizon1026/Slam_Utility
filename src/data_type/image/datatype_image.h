@@ -59,7 +59,7 @@ public:
     }
 
     inline bool GetPixelValue(float row, float col, float *value) const {
-        if (col < 0 || row < 0 || col > cols_ - 1 || row > rows_ - 1) {
+        if (col < 0 || row < 0 || col > cols_ - 2 || row > rows_ - 2) {
             return false;
         }
 
