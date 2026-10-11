@@ -5,6 +5,7 @@
 
 #include "algorithm"
 #include "cmath"
+#include "limits"
 #include "type_traits"
 
 namespace slam_utility {
@@ -51,8 +52,9 @@ public:
     }
 
     /**
-     * @brief Minimum eigenvalue of a real symmetric 3x3 matrix, using a closed form.
+     * @brief Minimum eigenvalue of a real symmetric 3x3 matrix, using an analytic fast path.
      * @note Only the upper triangle is read. Scalar must be a floating-point type.
+     * @note Float intermediates use double precision. Ill-conditioned analytic roots use a fixed-size eigensolver.
      */
     template <typename Scalar>
     static Scalar MinEigenValue(const TMat3<Scalar> &matrix) {
@@ -60,12 +62,51 @@ public:
     }
 
     /**
-     * @brief Maximum eigenvalue of a real symmetric 3x3 matrix, using a closed form.
+     * @brief Maximum eigenvalue of a real symmetric 3x3 matrix, using an analytic fast path.
      * @note Only the upper triangle is read. Scalar must be a floating-point type.
+     * @note Float intermediates use double precision. Ill-conditioned analytic roots use a fixed-size eigensolver.
      */
     template <typename Scalar>
     static Scalar MaxEigenValue(const TMat3<Scalar> &matrix) {
         return SymmetricEigenValue3<Scalar, false>(matrix);
+    }
+
+    /**
+     * @brief Minimum eigenvalue of a real symmetric dynamic-size matrix, using eigenvalue decomposition.
+     * @note Only the upper triangle is read. Scalar must be a floating-point type.
+     * @return Quiet NaN if the matrix is empty, non-square, or the decomposition fails.
+     */
+    template <typename Scalar>
+    static Scalar MinEigenValue(const TMat<Scalar> &matrix) {
+        static_assert(std::is_floating_point_v<Scalar>, "Scalar must be a floating-point type.");
+        if (matrix.rows() == 0 || matrix.rows() != matrix.cols()) {
+            return std::numeric_limits<Scalar>::quiet_NaN();
+        }
+        const Eigen::SelfAdjointEigenSolver<TMat<Scalar>> eigen_solver(matrix.template selfadjointView<Eigen::Upper>(), Eigen::EigenvaluesOnly);
+        if (eigen_solver.info() != Eigen::Success) {
+            return std::numeric_limits<Scalar>::quiet_NaN();
+        }
+        // Eigen stores eigenvalues in ascending order.
+        return eigen_solver.eigenvalues()[0];
+    }
+
+    /**
+     * @brief Maximum eigenvalue of a real symmetric dynamic-size matrix, using eigenvalue decomposition.
+     * @note Only the upper triangle is read. Scalar must be a floating-point type.
+     * @return Quiet NaN if the matrix is empty, non-square, or the decomposition fails.
+     */
+    template <typename Scalar>
+    static Scalar MaxEigenValue(const TMat<Scalar> &matrix) {
+        static_assert(std::is_floating_point_v<Scalar>, "Scalar must be a floating-point type.");
+        if (matrix.rows() == 0 || matrix.rows() != matrix.cols()) {
+            return std::numeric_limits<Scalar>::quiet_NaN();
+        }
+        const Eigen::SelfAdjointEigenSolver<TMat<Scalar>> eigen_solver(matrix.template selfadjointView<Eigen::Upper>(), Eigen::EigenvaluesOnly);
+        if (eigen_solver.info() != Eigen::Success) {
+            return std::numeric_limits<Scalar>::quiet_NaN();
+        }
+        // Eigen stores eigenvalues in ascending order.
+        return eigen_solver.eigenvalues()[matrix.rows() - 1];
     }
 
     /**
@@ -633,68 +674,102 @@ private:
     template <typename Scalar, bool Minimum>
     static Scalar SymmetricEigenValue2(const TMat2<Scalar> &matrix) {
         static_assert(std::is_floating_point<Scalar>::value, "Eigenvalue methods require a real floating-point scalar.");
-        const Scalar a = matrix(0, 0);
-        const Scalar b = matrix(0, 1);
-        const Scalar d = matrix(1, 1);
-        if (b == Scalar(0)) {
-            return Minimum ? std::min(a, d) : std::max(a, d);
+        // Float input is exact in double; retain the wider type until the final conversion.
+        using WorkScalar = std::conditional_t<std::is_same_v<Scalar, float>, double, Scalar>;
+        const WorkScalar a = matrix(0, 0);
+        const WorkScalar b = matrix(0, 1);
+        const WorkScalar d = matrix(1, 1);
+        if (b == WorkScalar(0)) {
+            return static_cast<Scalar>(Minimum ? std::min(a, d) : std::max(a, d));
         }
 
         // Normalize before squaring to avoid overflow/underflow for large/small matrices.
-        const Scalar scale = std::max(std::max(std::abs(a), std::abs(d)), std::abs(b));
-        const Scalar half_a = (a / scale) * Scalar(0.5);
-        const Scalar half_d = (d / scale) * Scalar(0.5);
-        const Scalar scaled_b = b / scale;
-        const Scalar half_diff = half_a - half_d;
-        const Scalar radius = std::sqrt(half_diff * half_diff + scaled_b * scaled_b);
-        const Scalar mean = half_a + half_d;
-        return scale * (Minimum ? mean - radius : mean + radius);
+        const WorkScalar scale = std::max(std::max(std::abs(a), std::abs(d)), std::abs(b));
+        const WorkScalar scaled_a = a / scale;
+        const WorkScalar scaled_d = d / scale;
+        const WorkScalar scaled_b = b / scale;
+        const WorkScalar half_diff = (scaled_a - scaled_d) * WorkScalar(0.5);
+        const WorkScalar radius = std::sqrt(half_diff * half_diff + scaled_b * scaled_b);
+        const WorkScalar mean = (scaled_a + scaled_d) * WorkScalar(0.5);
+
+        // Compute the root with larger magnitude without cancellation, then use lambda1*lambda2 = det(A).
+        const WorkScalar large_root = mean + std::copysign(radius, mean);
+        const WorkScalar b_squared = scaled_b * scaled_b;
+        const WorkScalar determinant = std::fma(scaled_a, scaled_d, -b_squared) - std::fma(scaled_b, scaled_b, -b_squared);
+        const WorkScalar small_root = large_root == WorkScalar(0) ? WorkScalar(0) : determinant / large_root;
+        const WorkScalar eigenvalue = Minimum ? std::min(large_root, small_root) : std::max(large_root, small_root);
+        return static_cast<Scalar>(scale * eigenvalue);
     }
 
     template <typename Scalar, bool Minimum>
     static Scalar SymmetricEigenValue3(const TMat3<Scalar> &matrix) {
         static_assert(std::is_floating_point<Scalar>::value, "Eigenvalue methods require a real floating-point scalar.");
-        const Scalar a = matrix(0, 0);
-        const Scalar d = matrix(1, 1);
-        const Scalar f = matrix(2, 2);
-        const Scalar b = matrix(0, 1);
-        const Scalar c = matrix(0, 2);
-        const Scalar e = matrix(1, 2);
-        if (b == Scalar(0) && c == Scalar(0) && e == Scalar(0)) {
-            return Minimum ? std::min(std::min(a, d), f) : std::max(std::max(a, d), f);
+        using WorkScalar = std::conditional_t<std::is_same_v<Scalar, float>, double, Scalar>;
+        const WorkScalar a = matrix(0, 0);
+        const WorkScalar d = matrix(1, 1);
+        const WorkScalar f = matrix(2, 2);
+        const WorkScalar b = matrix(0, 1);
+        const WorkScalar c = matrix(0, 2);
+        const WorkScalar e = matrix(1, 2);
+        if (b == WorkScalar(0) && c == WorkScalar(0) && e == WorkScalar(0)) {
+            return static_cast<Scalar>(Minimum ? std::min(std::min(a, d), f) : std::max(std::max(a, d), f));
         }
 
-        const Scalar scale = std::max(std::max(std::max(std::abs(a), std::abs(d)), std::abs(f)), std::max(std::max(std::abs(b), std::abs(c)), std::abs(e)));
-        const Scalar scaled_a = a / scale;
-        const Scalar scaled_d = d / scale;
-        const Scalar scaled_f = f / scale;
-        const Scalar scaled_b = b / scale;
-        const Scalar scaled_c = c / scale;
-        const Scalar scaled_e = e / scale;
-        const Scalar mean = (scaled_a + scaled_d + scaled_f) / Scalar(3);
-        const Scalar da = scaled_a - mean;
-        const Scalar dd = scaled_d - mean;
-        const Scalar df = scaled_f - mean;
-        const Scalar p = std::sqrt((da * da + dd * dd + df * df + Scalar(2) * (scaled_b * scaled_b + scaled_c * scaled_c + scaled_e * scaled_e)) / Scalar(6));
-        if (p == Scalar(0)) {
-            return scale * mean;
+        const WorkScalar scale = std::max(std::max(std::max(std::abs(a), std::abs(d)), std::abs(f)),
+                                          std::max(std::max(std::abs(b), std::abs(c)), std::abs(e)));
+        const WorkScalar scaled_a = a / scale;
+        const WorkScalar scaled_d = d / scale;
+        const WorkScalar scaled_f = f / scale;
+        const WorkScalar scaled_b = b / scale;
+        const WorkScalar scaled_c = c / scale;
+        const WorkScalar scaled_e = e / scale;
+        const WorkScalar mean = (scaled_a + scaled_d + scaled_f) / WorkScalar(3);
+        const WorkScalar da = scaled_a - mean;
+        const WorkScalar dd = scaled_d - mean;
+        const WorkScalar df = scaled_f - mean;
+        const WorkScalar p = std::sqrt((da * da + dd * dd + df * df + WorkScalar(2) *
+                                       (scaled_b * scaled_b + scaled_c * scaled_c + scaled_e * scaled_e)) / WorkScalar(6));
+        if (p == WorkScalar(0)) {
+            return static_cast<Scalar>(scale * mean);
         }
 
         // B = (A - mean * I) / p has trace zero and squared Frobenius norm six.
-        const Scalar ba = da / p;
-        const Scalar bd = dd / p;
-        const Scalar bf = df / p;
-        const Scalar bb = scaled_b / p;
-        const Scalar bc = scaled_c / p;
-        const Scalar be = scaled_e / p;
-        Scalar r = (ba * bd * bf + Scalar(2) * bb * bc * be - ba * be * be - bd * bc * bc - bf * bb * bb) * Scalar(0.5);
+        const WorkScalar ba = da / p;
+        const WorkScalar bd = dd / p;
+        const WorkScalar bf = df / p;
+        const WorkScalar bb = scaled_b / p;
+        const WorkScalar bc = scaled_c / p;
+        const WorkScalar be = scaled_e / p;
+        WorkScalar r = (ba * bd * bf + WorkScalar(2) * bb * bc * be - ba * be * be - bd * bc * bc - bf * bb * bb) * WorkScalar(0.5);
         // lambda_min(A) = -lambda_max(-A), requiring only one acos and one cos.
         if constexpr (Minimum) {
             r = -r;
         }
-        r = std::max(Scalar(-1), std::min(Scalar(1), r));
-        const Scalar radius = Scalar(2) * p * std::cos(std::acos(r) / Scalar(3));
-        return scale * (Minimum ? mean - radius : mean + radius);
+        r = std::max(WorkScalar(-1), std::min(WorkScalar(1), r));
+
+        // Near repeated roots acos is ill-conditioned; use a fixed-size, eigenvalues-only fallback.
+        // The lambda below is invoked only for unstable analytic roots and performs no heap allocation.
+        const auto stable_eigenvalue = [&]() -> Scalar {
+            TMat3<WorkScalar> scaled_matrix;
+            scaled_matrix << scaled_a, scaled_b, scaled_c, scaled_b, scaled_d, scaled_e, scaled_c, scaled_e, scaled_f;
+            const Eigen::SelfAdjointEigenSolver<TMat3<WorkScalar>> solver(scaled_matrix, Eigen::EigenvaluesOnly);
+            if (solver.info() != Eigen::Success) {
+                return std::numeric_limits<Scalar>::quiet_NaN();
+            }
+            return static_cast<Scalar>(scale * solver.eigenvalues()[Minimum ? 0 : 2]);
+        };
+        if (WorkScalar(1) - std::abs(r) < WorkScalar(1e-4)) {
+            return stable_eigenvalue();
+        }
+
+        const WorkScalar radius = WorkScalar(2) * p * std::cos(std::acos(r) / WorkScalar(3));
+        const WorkScalar eigenvalue = Minimum ? mean - radius : mean + radius;
+        // Avoid cancellation in mean +/- radius when the requested eigenvalue is close to zero.
+        const WorkScalar tolerance = WorkScalar(64) * std::sqrt(std::numeric_limits<WorkScalar>::epsilon());
+        if (std::abs(eigenvalue) < tolerance * (std::abs(mean) + radius)) {
+            return stable_eigenvalue();
+        }
+        return static_cast<Scalar>(scale * eigenvalue);
     }
 };
 
