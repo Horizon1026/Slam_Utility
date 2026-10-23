@@ -128,4 +128,22 @@ bool QuadraticPlane::ComputeCurvaturesAtPoint(const Vec3 &point, Curvatures &cur
     return true;
 }
 
+bool QuadraticPlane::ComputeSaddlePoint(Vec3 &saddle_point) const {
+    // Compute saddle point of parabolic plane: z = a * x^2 + b * y^2 + c * x * y + d * x + e * y + f.
+    const float a = param_[0];
+    const float b = param_[1];
+    const float c = param_[3];
+    const float d = param_[6];
+    const float e = param_[7];
+    const float f = param_[9];
+
+    const float det = 4.0f * a * b - c * c;
+    RETURN_FALSE_IF(!std::isfinite(det) || det >= -kZeroFloat);
+    const float inv_det = 1.0f / det;
+    saddle_point.x() = (c * e - 2.0f * b * d) * inv_det;
+    saddle_point.y() = (c * d - 2.0f * a * e) * inv_det;
+    saddle_point.z() = f + 0.5f * (d * saddle_point.x() + e * saddle_point.y());
+    return true;
+}
+
 }  // namespace slam_utility
