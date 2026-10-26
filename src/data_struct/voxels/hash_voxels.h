@@ -22,6 +22,13 @@ public:
     HashVoxels() = default;
     virtual ~HashVoxels() = default;
 
+    // Move semantics.
+    HashVoxels(HashVoxels &&) = default;
+    HashVoxels &operator=(HashVoxels &&) = default;
+    // Copy semantics.
+    HashVoxels(const HashVoxels &) = default;
+    HashVoxels &operator=(const HashVoxels &) = default;
+
     using Voxels<T>::InitializeBuffer;
     virtual void InitializeBuffer() override;
     void RefreshBuffer(const T &value);

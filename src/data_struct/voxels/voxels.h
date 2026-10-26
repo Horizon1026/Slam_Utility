@@ -22,6 +22,13 @@ public:
     Voxels() = default;
     virtual ~Voxels() = default;
 
+    // Move semantics.
+    Voxels(Voxels &&) = default;
+    Voxels &operator=(Voxels &&) = default;
+    // Copy semantics.
+    Voxels(const Voxels &) = default;
+    Voxels &operator=(const Voxels &) = default;
+
     void InitializeBuffer(const Vec3 &radius, const Vec3 &step);
     void InitializeBuffer(const float radius, const float step);
     virtual void InitializeBuffer() = 0;
