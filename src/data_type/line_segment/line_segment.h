@@ -20,6 +20,10 @@ public:
     Vec3 start_point_homogeneous() const { return Vec3(param_(0), param_(1), 1); }
     Vec3 end_point_homogeneous() const { return Vec3(param_(2), param_(3), 1); }
 
+    // Intersect the supporting infinite lines; the result may lie outside the segments.
+    // Return false for degenerate / parallel lines or a non-finite result; leave output unchanged.
+    bool ComputeIntersection(const LineSegment2D &other, Vec2 &intersection) const;
+
     // Reference for member variables.
     Vec4 &param() { return param_; }
     // Const reference for member variables.

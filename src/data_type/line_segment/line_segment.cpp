@@ -10,6 +10,25 @@ LineSegment2D::LineSegment2D(const Vec2 &xy1, const Vec2 &xy2) {
     param_.tail<2>() = xy2;
 }
 
+bool LineSegment2D::ComputeIntersection(const LineSegment2D &other, Vec2 &intersection) const {
+    RETURN_FALSE_IF(!param_.allFinite() || !other.param().allFinite());
+    Vec2 direction1 = end_point() - start_point();
+    Vec2 direction2 = other.end_point() - other.start_point();
+    const float length1 = direction1.norm();
+    const float length2 = direction2.norm();
+    RETURN_FALSE_IF(length1 <= kZeroFloat || length2 <= kZeroFloat);
+    direction1 /= length1;
+    direction2 /= length2;
+    const float determinant = direction1.x() * direction2.y() - direction1.y() * direction2.x();
+    RETURN_FALSE_IF(std::fabs(determinant) <= kZeroFloat);
+    const Vec2 offset = other.start_point() - start_point();
+    const float distance = (offset.x() * direction2.y() - offset.y() * direction2.x()) / determinant;
+    const Vec2 result = start_point() + distance * direction1;
+    RETURN_FALSE_IF(!result.allFinite());
+    intersection = result;
+    return true;
+}
+
 LineSegment3D::LineSegment3D(const Vec3 &xyz1, const Vec3 &xyz2) {
     param_.head<3>() = xyz1;
     param_.tail<3>() = xyz2;
