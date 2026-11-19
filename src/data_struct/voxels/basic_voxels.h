@@ -37,7 +37,8 @@ public:
     virtual void ClearVoxel(const typename Voxels<T>::Index &voxel_indices) override;
 
     virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices) const override;
-    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices, typename Voxels<T>::Index &map_indices) const override;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices,
+                                              typename Voxels<T>::Index &map_indices) const override;
 
     using Voxels<T>::GetBufferIndex;
     using Voxels<T>::GetVoxel;
@@ -93,7 +94,8 @@ bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, typename
 }
 
 template <typename T>
-bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices, typename Voxels<T>::Index &map_indices) const {
+bool BasicVoxels<T>::ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices,
+                                                  typename Voxels<T>::Index &map_indices) const {
     for (uint32_t i = 0; i < voxel_indices.size(); ++i) {
         voxel_indices[i] = static_cast<int32_t>(std::floor(position[i] / this->options().kStep[i])) + this->half_voxel_length()[i];
         const int32_t voxel_length = this->voxel_length()[i];

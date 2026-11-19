@@ -180,8 +180,8 @@ int main(int argc, char **argv) {
     dyn_buf.PushBack(3);
 
     // Pop front and push back to trigger wraparound
-    dyn_buf.PopFront();  // removes 1, head moves to 1
-    dyn_buf.PushBack(4); // should be at tail position 0 (wrapped)
+    dyn_buf.PopFront();   // removes 1, head moves to 1
+    dyn_buf.PushBack(4);  // should be at tail position 0 (wrapped)
     ReportInfo("Buffer[0]: " << dyn_buf[0]);
     ReportInfo("Buffer[1]: " << dyn_buf[1]);
     ReportInfo("Buffer[2]: " << dyn_buf[2]);

@@ -1,7 +1,7 @@
 #include "basic_type.h"
+#include "extend_kd_tree.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
-#include "extend_kd_tree.h"
 
 #include "visualizor_3d.h"
 
@@ -95,7 +95,7 @@ void TestExtendKdTreeSearch() {
     // Visualization.
     Visualizor3D::Clear();
     // Raw points.
-    for (const auto &data : data_units) {
+    for (const auto &data: data_units) {
         Visualizor3D::points().emplace_back(PointType {
             .p_w = data.position,
             .color = RgbColor::kCyan,
@@ -109,7 +109,7 @@ void TestExtendKdTreeSearch() {
         .radius = 5,
     });
     // Radius results.
-    for (const auto &pair : result_of_radius) {
+    for (const auto &pair: result_of_radius) {
         Visualizor3D::points().emplace_back(PointType {
             .p_w = data_units[pair.second].position,
             .color = RgbColor::kGreen,
@@ -117,7 +117,7 @@ void TestExtendKdTreeSearch() {
         });
     }
     // KNN results.
-    for (const auto &pair : result_of_knn) {
+    for (const auto &pair: result_of_knn) {
         Visualizor3D::points().emplace_back(PointType {
             .p_w = data_units[pair.second].position,
             .color = RgbColor::kRoyalBlue,
@@ -125,7 +125,7 @@ void TestExtendKdTreeSearch() {
         });
     }
     // Cube results.
-    for (const auto &pair : result_of_cube) {
+    for (const auto &pair: result_of_cube) {
         Visualizor3D::points().emplace_back(PointType {
             .p_w = data_units[pair.second].position,
             .color = RgbColor::kRed,

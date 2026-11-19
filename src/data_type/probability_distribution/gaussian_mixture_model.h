@@ -44,7 +44,6 @@ private:
     Options options_;
     std::vector<NormalDistribution<kDimension>> normal_distributions_;
     std::vector<float> weights_;
-
 };
 
 /* Class GaussianMixtureModel Implementation. */
@@ -82,7 +81,7 @@ bool GaussianMixtureModel<kDimension>::DirectlyFitDistribution(const std::vector
         std::vector<TVec<float, kDimension>> new_means(num_of_kernels, TVec<float, kDimension>::Zero());
         std::vector<uint32_t> counts(num_of_kernels, 0);
         // Assign each point to the nearest kernel.
-        for (const auto &p : points) {
+        for (const auto &p: points) {
             uint32_t best_k = 0;
             float min_dist = std::numeric_limits<float>::max();
             // Find the nearest kernel for the current point.

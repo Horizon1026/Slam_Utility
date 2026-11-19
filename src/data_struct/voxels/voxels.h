@@ -43,12 +43,9 @@ public:
 
     virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, Index &voxel_indices) const = 0;
     virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, Index &voxel_indices, Index &map_indices) const = 0;
-    void ConvertLocalIndicesToGlobalIndices(const Index &voxel_indices, const Index &map_index,
-                                            Index &global_voxel_indices) const;
+    void ConvertLocalIndicesToGlobalIndices(const Index &voxel_indices, const Index &map_index, Index &global_voxel_indices) const;
 
-    uint32_t GetBufferIndex(const Index &voxel_indices) const {
-        return this->GetBufferIndex(voxel_indices[0], voxel_indices[1], voxel_indices[2]);
-    }
+    uint32_t GetBufferIndex(const Index &voxel_indices) const { return this->GetBufferIndex(voxel_indices[0], voxel_indices[1], voxel_indices[2]); }
     uint32_t GetBufferIndex(int32_t x, int32_t y, int32_t z) const {
         return static_cast<uint32_t>(z * voxel_length_[0] * voxel_length_[1] + y * voxel_length_[0] + x);
     }
@@ -113,8 +110,7 @@ void Voxels<T>::ClearVoxel(const Vec3 &position) {
 }
 
 template <typename T>
-void Voxels<T>::ConvertLocalIndicesToGlobalIndices(const Index &voxel_indices, const Index &map_index,
-                                                   Index &global_voxel_indices) const {
+void Voxels<T>::ConvertLocalIndicesToGlobalIndices(const Index &voxel_indices, const Index &map_index, Index &global_voxel_indices) const {
     for (uint32_t i = 0; i < voxel_indices.size(); ++i) {
         global_voxel_indices[i] = map_index[i] * voxel_length_[i] + voxel_indices[i];
     }

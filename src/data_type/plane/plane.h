@@ -8,12 +8,12 @@ namespace slam_utility {
 
 /* Class Plane3D Declaration. */
 class Plane3D {
-/* Plane 3D model: n * x + d = 0
-   Note:
-    - n: normal vector of the plane, usually unit vector.
-    - d: distance from the origin to the plane.
-    - x: arbitrary points.
-*/
+    /* Plane 3D model: n * x + d = 0
+       Note:
+        - n: normal vector of the plane, usually unit vector.
+        - d: distance from the origin to the plane.
+        - x: arbitrary points.
+    */
 
 public:
     Plane3D() = default;

@@ -181,7 +181,7 @@ bool ClampedCubicBSplineInterpolator<T>::GetValue(const double time_stamp_s, T &
 
 template <typename T>
 void ClampedCubicBSplineInterpolator<T>::CalculateBasis(const double time_stamp_s, std::vector<double> &basis, std::vector<double> &first_basis,
-                                            std::vector<double> &second_basis) const {
+                                                        std::vector<double> &second_basis) const {
     // Cox-de Boor basis functions are conventionally half-open on each knot interval. Evaluate the final time infinitesimally from the left to obtain
     // the correct endpoint value and one-sided derivatives.
     const double evaluation_time_stamp_s = time_stamp_s == end_time_stamp_s_ ? std::nextafter(time_stamp_s, start_time_stamp_s_) : time_stamp_s;

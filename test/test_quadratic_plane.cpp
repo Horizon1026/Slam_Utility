@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
     plane_pts.emplace_back(-0.5, 0.3, 0);
     plane_pts.emplace_back(0.7, -0.2, 0);
     plane_pts.emplace_back(-0.9, 0.6, 0);
-    TestQuadraticPlane("Plane", plane_pts, Vec3(0,0,0));
+    TestQuadraticPlane("Plane", plane_pts, Vec3(0, 0, 0));
 
     // Unit sphere: x²+y²+z²=1
     // Ground truth: K=1, H=1, k1=k2=1
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
     sphere_pts.emplace_back(-0.5f, 0.5f, std::sqrt(0.5f));
     sphere_pts.emplace_back(0.2f, 0.6f, std::sqrt(1.0f - 0.04f - 0.36f));
     sphere_pts.emplace_back(0.6f, 0.3f, std::sqrt(1.0f - 0.36f - 0.09f));
-    TestQuadraticPlane("Unit Sphere", sphere_pts, Vec3(0,0,1));
+    TestQuadraticPlane("Unit Sphere", sphere_pts, Vec3(0, 0, 1));
 
     // Saddle surface: z = x² - y²
     // Ground truth: H=0, K<0
@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
     saddle_pts.emplace_back(0.8, 0.2, 0.6);
     saddle_pts.emplace_back(0.2, 0.8, -0.6);
     saddle_pts.emplace_back(-0.6, 0.4, 0.2);
-    TestQuadraticPlane("Saddle Surface z=x²-y²", saddle_pts, Vec3(0,0,0));
+    TestQuadraticPlane("Saddle Surface z=x²-y²", saddle_pts, Vec3(0, 0, 0));
 
     // Parabolic surface: z = x² + y²
     // Ground truth: K=4, H=2 at (0,0,0) ? No, wait.

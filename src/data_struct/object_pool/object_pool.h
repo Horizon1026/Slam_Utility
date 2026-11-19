@@ -1,10 +1,10 @@
 #ifndef _SLAM_UTILITY_OBJECT_POOL_H_
 #define _SLAM_UTILITY_OBJECT_POOL_H_
 
-#include "memory"
-#include "vector"
 #include "chrono"
+#include "memory"
 #include "mutex"
+#include "vector"
 
 namespace slam_utility {
 
@@ -44,7 +44,7 @@ class ObjectPool {
     friend struct PoolDeleter<T>;
 
 public:
-    ObjectPool() : ObjectPool(100) {}
+    ObjectPool(): ObjectPool(100) {}
     explicit ObjectPool(uint32_t initial_size);
     virtual ~ObjectPool() = default;
 
@@ -78,8 +78,7 @@ ObjectPool<T>::ObjectPool(uint32_t initial_size) {
 }
 
 template <typename T>
-ObjectPool<T>::ObjectPool(ObjectPool &&other) noexcept
-    : objects_(std::move(other.objects_)), free_objects_list_(std::move(other.free_objects_list_)) {}
+ObjectPool<T>::ObjectPool(ObjectPool &&other) noexcept: objects_(std::move(other.objects_)), free_objects_list_(std::move(other.free_objects_list_)) {}
 
 template <typename T>
 ObjectPool<T> &ObjectPool<T>::operator=(ObjectPool &&other) noexcept {

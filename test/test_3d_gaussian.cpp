@@ -1,8 +1,8 @@
+#include "2d_gaussian.h"
+#include "3d_gaussian.h"
 #include "datatype_image.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
-#include "2d_gaussian.h"
-#include "3d_gaussian.h"
 
 #include "visualizor_2d.h"
 

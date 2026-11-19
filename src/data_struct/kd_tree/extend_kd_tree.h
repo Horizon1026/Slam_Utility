@@ -7,10 +7,10 @@
 
 #include "algorithm"
 #include "cmath"
-#include "memory"
-#include "map"
-#include "vector"
 #include "functional"
+#include "map"
+#include "memory"
+#include "vector"
 
 namespace slam_utility {
 
@@ -43,7 +43,7 @@ public:
      * @param point_indices Indices of points to include
      * @param accessor Lambda to get point from index
      */
-    void Construct(const std::vector<int32_t>& point_indices, const PointAccessor& accessor) {
+    void Construct(const std::vector<int32_t> &point_indices, const PointAccessor &accessor) {
         RETURN_IF(point_indices.empty());
 
         this->point_indices_ = point_indices;
@@ -90,14 +90,12 @@ public:
     /**
      * @brief Search K nearest neighbors
      */
-    void SearchKnn(const PointType& target_point,
-                   const uint32_t target_number,
-                   const PointAccessor& accessor,
-                   std::multimap<float, int32_t>& residual_index_of_points) const {
+    void SearchKnn(const PointType &target_point, const uint32_t target_number, const PointAccessor &accessor,
+                   std::multimap<float, int32_t> &residual_index_of_points) const {
         RETURN_IF(target_number == 0);
 
         if (IsLeafNode()) {
-            for (const auto& index : point_indices_) {
+            for (const auto &index: point_indices_) {
                 const Scalar dist_sq = (target_point - accessor(index)).squaredNorm();
                 residual_index_of_points.insert({static_cast<float>(dist_sq), index});
             }
@@ -136,15 +134,13 @@ public:
     /**
      * @brief Search points within radius
      */
-    void SearchRadius(const PointType& target_point,
-                      const Scalar max_radius,
-                      const PointAccessor& accessor,
-                      std::multimap<float, int32_t>& residual_index_of_points) const {
+    void SearchRadius(const PointType &target_point, const Scalar max_radius, const PointAccessor &accessor,
+                      std::multimap<float, int32_t> &residual_index_of_points) const {
         RETURN_IF(max_radius < static_cast<Scalar>(0));
         const Scalar max_radius_sq = max_radius * max_radius;
 
         if (IsLeafNode()) {
-            for (const auto& index : point_indices_) {
+            for (const auto &index: point_indices_) {
                 const Scalar dist_sq = (target_point - accessor(index)).squaredNorm();
                 CONTINUE_IF(dist_sq > max_radius_sq);
                 residual_index_of_points.insert({static_cast<float>(dist_sq), index});
@@ -178,10 +174,8 @@ public:
     /**
      * @brief Search points within cube
      */
-    void SearchCube(const PointType& min_value,
-                    const PointType& max_value,
-                    const PointAccessor& accessor,
-                    std::multimap<float, int32_t>& residual_index_of_points) const {
+    void SearchCube(const PointType &min_value, const PointType &max_value, const PointAccessor &accessor,
+                    std::multimap<float, int32_t> &residual_index_of_points) const {
         for (uint32_t dim = 0; dim < Dimension; ++dim) {
             RETURN_IF(min_value(dim) > max_value(dim));
         }
@@ -189,7 +183,7 @@ public:
         const PointType cube_center = static_cast<Scalar>(0.5) * (min_value + max_value);
 
         if (IsLeafNode()) {
-            for (const auto& index : point_indices_) {
+            for (const auto &index: point_indices_) {
                 const PointType p = accessor(index);
                 bool is_inside = true;
                 for (uint32_t dim = 0; dim < Dimension; ++dim) {
@@ -207,46 +201,52 @@ public:
         }
 
         if (min_value(dimension_) < divider_) {
-            if (left_ptr_) left_ptr_->SearchCube(min_value, max_value, accessor, residual_index_of_points);
+            if (left_ptr_)
+                left_ptr_->SearchCube(min_value, max_value, accessor, residual_index_of_points);
         }
         if (max_value(dimension_) > divider_) {
-            if (right_ptr_) right_ptr_->SearchCube(min_value, max_value, accessor, residual_index_of_points);
+            if (right_ptr_)
+                right_ptr_->SearchCube(min_value, max_value, accessor, residual_index_of_points);
         }
     }
 
-    void ExtractAllPoints(std::vector<int32_t>& point_indices) const {
+    void ExtractAllPoints(std::vector<int32_t> &point_indices) const {
         if (IsLeafNode()) {
-            for (const auto& index : point_indices_) {
+            for (const auto &index: point_indices_) {
                 point_indices.emplace_back(index);
             }
         }
-        if (left_ptr_) left_ptr_->ExtractAllPoints(point_indices);
-        if (right_ptr_) right_ptr_->ExtractAllPoints(point_indices);
+        if (left_ptr_)
+            left_ptr_->ExtractAllPoints(point_indices);
+        if (right_ptr_)
+            right_ptr_->ExtractAllPoints(point_indices);
     }
 
     int32_t GetDepth() const {
-        if (!left_ptr_ && !right_ptr_) return IsLeafNode() ? 1 : 0;
+        if (!left_ptr_ && !right_ptr_)
+            return IsLeafNode() ? 1 : 0;
         const int32_t left_depth = left_ptr_ ? left_ptr_->GetDepth() : 0;
         const int32_t right_depth = right_ptr_ ? right_ptr_->GetDepth() : 0;
         return std::max(left_depth, right_depth) + 1;
     }
 
     void Information() const {
-        ReportInfo("[ExtendKdTreeNode] Axis [" << dimension_ << "], Value [" << divider_ << "], ["
-                  << point_indices_.size() << "] points." << " Left child "
-                  << LogPtr(left_ptr_.get()) << ", Right child " << LogPtr(right_ptr_.get()));
+        ReportInfo("[ExtendKdTreeNode] Axis [" << dimension_ << "], Value [" << divider_ << "], [" << point_indices_.size() << "] points." << " Left child "
+                                               << LogPtr(left_ptr_.get()) << ", Right child " << LogPtr(right_ptr_.get()));
     }
 
     void InformationRecursion() const {
         Information();
-        if (left_ptr_) left_ptr_->InformationRecursion();
-        if (right_ptr_) right_ptr_->InformationRecursion();
+        if (left_ptr_)
+            left_ptr_->InformationRecursion();
+        if (right_ptr_)
+            right_ptr_->InformationRecursion();
     }
 
 private:
-    int32_t GetAxisWithMaxRange(const std::vector<int32_t>& point_indices,
-                                const PointAccessor& accessor) const {
-        if (point_indices.empty()) return 0;
+    int32_t GetAxisWithMaxRange(const std::vector<int32_t> &point_indices, const PointAccessor &accessor) const {
+        if (point_indices.empty())
+            return 0;
 
         int32_t best_axis = 0;
         Scalar max_range = static_cast<Scalar>(0);
@@ -255,7 +255,7 @@ private:
             Scalar max_val = accessor(point_indices.front())[i];
             Scalar min_val = max_val;
 
-            for (const auto& index : point_indices) {
+            for (const auto &index: point_indices) {
                 const Scalar val = accessor(index)[i];
                 max_val = std::max(val, max_val);
                 min_val = std::min(val, min_val);
@@ -280,6 +280,6 @@ private:
     std::vector<int32_t> point_indices_;
 };
 
-} // namespace slam_utility
+}  // namespace slam_utility
 
 #endif

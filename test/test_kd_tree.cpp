@@ -1,7 +1,7 @@
 #include "basic_type.h"
+#include "kd_tree.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
-#include "kd_tree.h"
 
 #include "visualizor_3d.h"
 

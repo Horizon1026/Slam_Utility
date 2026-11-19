@@ -138,9 +138,8 @@ void TestCircularMotion() {
         const TVec3<double> expect_position = TVec3<double>(kRadius * std::cos(kAngularSpeed * time_s), kRadius * std::sin(kAngularSpeed * time_s), 0.0);
         const TVec3<double> expect_velocity =
             TVec3<double>(-kRadius * kAngularSpeed * std::sin(kAngularSpeed * time_s), kRadius * kAngularSpeed * std::cos(kAngularSpeed * time_s), 0.0);
-        const TVec3<double> expect_acceleration =
-            TVec3<double>(-kRadius * kAngularSpeed * kAngularSpeed * std::cos(kAngularSpeed * time_s),
-                          -kRadius * kAngularSpeed * kAngularSpeed * std::sin(kAngularSpeed * time_s), 0.0);
+        const TVec3<double> expect_acceleration = TVec3<double>(-kRadius * kAngularSpeed * kAngularSpeed * std::cos(kAngularSpeed * time_s),
+                                                                -kRadius * kAngularSpeed * kAngularSpeed * std::sin(kAngularSpeed * time_s), 0.0);
         max_position_error = std::max(max_position_error, (position - expect_position).norm());
         max_velocity_error = std::max(max_velocity_error, (velocity - expect_velocity).norm());
         max_acceleration_error = std::max(max_acceleration_error, (acceleration - expect_acceleration).norm());
@@ -190,8 +189,8 @@ void TestC2Continuity() {
         max_velocity_jump = std::max(max_velocity_jump, (left_velocity - right_velocity).norm());
         max_acceleration_jump = std::max(max_acceleration_jump, (left_acceleration - right_acceleration).norm());
     }
-    ReportInfo("C2 seam checks over +-" << kTinyWindowS << " s: value " << max_value_jump << " / velocity " << max_velocity_jump
-                                        << " / acceleration " << max_acceleration_jump);
+    ReportInfo("C2 seam checks over +-" << kTinyWindowS << " s: value " << max_value_jump << " / velocity " << max_velocity_jump << " / acceleration "
+                                        << max_acceleration_jump);
     // A seam would be O(1); all smooth variation here is O(1e-4) or below.
     assert(max_value_jump < 1e-4);
     assert(max_velocity_jump < 1e-3);

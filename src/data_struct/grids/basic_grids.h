@@ -2,9 +2,9 @@
 #define _SLAM_UTILITY_BASIC_GRIDS_H_
 
 #include "basic_type.h"
+#include "grids.h"
 #include "slam_log_reporter.h"
 #include "slam_operations.h"
-#include "grids.h"
 
 #include "unordered_set"
 
@@ -37,7 +37,8 @@ public:
     virtual void ClearGrid(const typename Grids<T>::Index &grid_indices) override;
 
     virtual bool ConvertPositionTo2DofIndices(const Vec2 &position, typename Grids<T>::Index &grid_indices) const override;
-    virtual bool ConvertPositionTo2DofIndices(const Vec2 &position, typename Grids<T>::Index &grid_indices, typename Grids<T>::Index &map_indices) const override;
+    virtual bool ConvertPositionTo2DofIndices(const Vec2 &position, typename Grids<T>::Index &grid_indices,
+                                              typename Grids<T>::Index &map_indices) const override;
 
     using Grids<T>::GetBufferIndex;
     using Grids<T>::GetGrid;

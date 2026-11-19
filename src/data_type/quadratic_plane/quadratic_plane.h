@@ -7,14 +7,14 @@ namespace slam_utility {
 
 /* Class QuadraticPlane Declaration. */
 class QuadraticPlane {
-/* Quadratic plane model: ax^2 + by^2 + cz^2 + dxy + exz + fyz + gx + hy + iz + j = 0
-   Note:
-    - a, b, c: quadratic coefficients.
-    - d, e, f: cross terms coefficients.
-    - g, h, i: linear terms coefficients.
-    - j: constant term.
-    - x, y, z: axis coordinates of points.
-*/
+    /* Quadratic plane model: ax^2 + by^2 + cz^2 + dxy + exz + fyz + gx + hy + iz + j = 0
+       Note:
+        - a, b, c: quadratic coefficients.
+        - d, e, f: cross terms coefficients.
+        - g, h, i: linear terms coefficients.
+        - j: constant term.
+        - x, y, z: axis coordinates of points.
+    */
 public:
     struct Curvatures {
         float gaussian_curvature = 0.0f;

@@ -1,11 +1,11 @@
 #ifndef _SLAM_UTILITY_COVISIBLE_GRAPH_H_
 #define _SLAM_UTILITY_COVISIBLE_GRAPH_H_
 
+#include "slam_log_reporter.h"
+#include "slam_operations.h"
 #include "visual_feature.h"
 #include "visual_frame.h"
 #include "visual_observe.h"
-#include "slam_log_reporter.h"
-#include "slam_operations.h"
 
 #include "deque"
 #include "unordered_map"

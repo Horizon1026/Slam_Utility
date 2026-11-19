@@ -36,23 +36,16 @@ public:
 
     virtual bool ConvertPositionTo2DofIndices(const Vec2 &position, Index &grid_indices) const = 0;
     virtual bool ConvertPositionTo2DofIndices(const Vec2 &position, Index &grid_indices, Index &map_indices) const = 0;
-    void ConvertLocalIndicesToGlobalIndices(const Index &grid_indices, const Index &map_index,
-                                            Index &global_grid_indices) const;
+    void ConvertLocalIndicesToGlobalIndices(const Index &grid_indices, const Index &map_index, Index &global_grid_indices) const;
 
-    uint32_t GetBufferIndex(const Index &grid_indices) const {
-        return this->GetBufferIndex(grid_indices[0], grid_indices[1]);
-    }
-    uint32_t GetBufferIndex(int32_t x, int32_t y) const {
-        return static_cast<uint32_t>(y * grid_length_[0] + x);
-    }
+    uint32_t GetBufferIndex(const Index &grid_indices) const { return this->GetBufferIndex(grid_indices[0], grid_indices[1]); }
+    uint32_t GetBufferIndex(int32_t x, int32_t y) const { return static_cast<uint32_t>(y * grid_length_[0] + x); }
 
     T &GetGrid(int32_t x, int32_t y) { return this->GetGrid(this->GetBufferIndex(x, y)); }
     T &GetGrid(const Index &grid_indices) { return this->GetGrid(this->GetBufferIndex(grid_indices)); }
     virtual T &GetGrid(uint32_t index) = 0;
 
-    static bool IsSameIndices(const Index &indices1, const Index &indices2) {
-        return indices1[0] == indices2[0] && indices1[1] == indices2[1];
-    }
+    static bool IsSameIndices(const Index &indices1, const Index &indices2) { return indices1[0] == indices2[0] && indices1[1] == indices2[1]; }
 
     // Reference for member variables.
     Options &options() { return options_; }
@@ -106,8 +99,7 @@ void Grids<T>::ClearGrid(const Vec2 &position) {
 }
 
 template <typename T>
-void Grids<T>::ConvertLocalIndicesToGlobalIndices(const Index &grid_indices, const Index &map_index,
-                                                  Index &global_grid_indices) const {
+void Grids<T>::ConvertLocalIndicesToGlobalIndices(const Index &grid_indices, const Index &map_index, Index &global_grid_indices) const {
     for (uint32_t i = 0; i < grid_indices.size(); ++i) {
         global_grid_indices[i] = map_index[i] * grid_length_[i] + grid_indices[i];
     }

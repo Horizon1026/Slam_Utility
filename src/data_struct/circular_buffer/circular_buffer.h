@@ -188,9 +188,7 @@ public:
     }
 
     // Status of buffer.
-    bool Full() const {
-        return !buffer_.empty() && size_ > 0 && (tail_ + 1) % buffer_.size() == head_;
-    }
+    bool Full() const { return !buffer_.empty() && size_ > 0 && (tail_ + 1) % buffer_.size() == head_; }
     bool Empty() const { return size_ == 0; }
     uint32_t Size() const { return size_; }
     uint32_t Capacity() const { return buffer_.size(); }

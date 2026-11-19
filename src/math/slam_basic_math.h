@@ -715,8 +715,7 @@ private:
             return static_cast<Scalar>(Minimum ? std::min(std::min(a, d), f) : std::max(std::max(a, d), f));
         }
 
-        const WorkScalar scale = std::max(std::max(std::max(std::abs(a), std::abs(d)), std::abs(f)),
-                                          std::max(std::max(std::abs(b), std::abs(c)), std::abs(e)));
+        const WorkScalar scale = std::max(std::max(std::max(std::abs(a), std::abs(d)), std::abs(f)), std::max(std::max(std::abs(b), std::abs(c)), std::abs(e)));
         const WorkScalar scaled_a = a / scale;
         const WorkScalar scaled_d = d / scale;
         const WorkScalar scaled_f = f / scale;
@@ -727,8 +726,8 @@ private:
         const WorkScalar da = scaled_a - mean;
         const WorkScalar dd = scaled_d - mean;
         const WorkScalar df = scaled_f - mean;
-        const WorkScalar p = std::sqrt((da * da + dd * dd + df * df + WorkScalar(2) *
-                                       (scaled_b * scaled_b + scaled_c * scaled_c + scaled_e * scaled_e)) / WorkScalar(6));
+        const WorkScalar p =
+            std::sqrt((da * da + dd * dd + df * df + WorkScalar(2) * (scaled_b * scaled_b + scaled_c * scaled_c + scaled_e * scaled_e)) / WorkScalar(6));
         if (p == WorkScalar(0)) {
             return static_cast<Scalar>(scale * mean);
         }

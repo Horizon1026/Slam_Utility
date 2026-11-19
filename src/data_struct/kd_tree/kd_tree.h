@@ -7,10 +7,10 @@
 
 #include "algorithm"
 #include "cmath"
-#include "memory"
 #include "map"
-#include "vector"
+#include "memory"
 #include "type_traits"
+#include "vector"
 
 namespace slam_utility {
 
@@ -45,13 +45,13 @@ public:
      * @param points Input point cloud data
      * @param point_indices Indices of points to include in this tree
      */
-    void Construct(const std::vector<PointType>& points, const std::vector<int32_t>& point_indices);
+    void Construct(const std::vector<PointType> &points, const std::vector<int32_t> &point_indices);
 
     /**
      * @brief Extract all point indices stored in the tree (recursive)
      * @param point_indices Output vector to store all point indices
      */
-    void ExtractAllPoints(std::vector<int32_t>& point_indices) const;
+    void ExtractAllPoints(std::vector<int32_t> &point_indices) const;
 
     /**
      * @brief Search K nearest neighbors for target point
@@ -60,10 +60,8 @@ public:
      * @param target_number Number of nearest neighbors to find
      * @param residual_index_of_points Output: map of (squared distance, point index)
      */
-    void SearchKnn(const std::vector<PointType>& points,
-                   const PointType& target_point,
-                   const uint32_t target_number,
-                   std::multimap<float, int32_t>& residual_index_of_points) const;
+    void SearchKnn(const std::vector<PointType> &points, const PointType &target_point, const uint32_t target_number,
+                   std::multimap<float, int32_t> &residual_index_of_points) const;
 
     /**
      * @brief Search all points within specified radius from target point
@@ -72,10 +70,8 @@ public:
      * @param max_radius Maximum search radius (linear distance)
      * @param residual_index_of_points Output: map of (squared distance, point index)
      */
-    void SearchRadius(const std::vector<PointType>& points,
-                      const PointType& target_point,
-                      const Scalar max_radius,
-                      std::multimap<float, int32_t>& residual_index_of_points) const;
+    void SearchRadius(const std::vector<PointType> &points, const PointType &target_point, const Scalar max_radius,
+                      std::multimap<float, int32_t> &residual_index_of_points) const;
 
     /**
      * @brief Search all points within axis-aligned bounding box (cube)
@@ -84,10 +80,8 @@ public:
      * @param max_value Maximum bounds of cube (per dimension)
      * @param residual_index_of_points Output: map of (squared distance to cube center, point index)
      */
-    void SearchCube(const std::vector<PointType>& points,
-                    const PointType& min_value,
-                    const PointType& max_value,
-                    std::multimap<float, int32_t>& residual_index_of_points) const;
+    void SearchCube(const std::vector<PointType> &points, const PointType &min_value, const PointType &max_value,
+                    std::multimap<float, int32_t> &residual_index_of_points) const;
 
     /**
      * @brief Get tree depth (maximum depth of left/right subtrees + 1)
@@ -108,9 +102,9 @@ public:
     // Const accessors (encapsulation - prevent external modification)
     int32_t dimension() const { return dimension_; }
     Scalar divider() const { return divider_; }
-    const std::vector<int32_t>& point_indices() const { return point_indices_; }
-    const Ptr& left_ptr() const { return left_ptr_; }
-    const Ptr& right_ptr() const { return right_ptr_; }
+    const std::vector<int32_t> &point_indices() const { return point_indices_; }
+    const Ptr &left_ptr() const { return left_ptr_; }
+    const Ptr &right_ptr() const { return right_ptr_; }
 
 private:
     /**
@@ -119,8 +113,7 @@ private:
      * @param points Input point cloud data
      * @return Axis index with maximum range
      */
-    int32_t GetAxisWithMaxRange(const std::vector<int32_t>& point_indices,
-                                const std::vector<PointType>& points) const;
+    int32_t GetAxisWithMaxRange(const std::vector<int32_t> &point_indices, const std::vector<PointType> &points) const;
 
     /**
      * @brief Check if current node is leaf node (contains points)
@@ -130,11 +123,11 @@ private:
 
     // Member variables
     OptionsOfKdTree options_;
-    int32_t dimension_ = 0;                // Split axis for current node
-    Scalar divider_ = static_cast<Scalar>(0); // Split value on current axis
-    Ptr left_ptr_ = nullptr;               // Left subtree (points <= divider)
-    Ptr right_ptr_ = nullptr;              // Right subtree (points > divider)
-    std::vector<int32_t> point_indices_;   // Point indices (only for leaf nodes)
+    int32_t dimension_ = 0;                    // Split axis for current node
+    Scalar divider_ = static_cast<Scalar>(0);  // Split value on current axis
+    Ptr left_ptr_ = nullptr;                   // Left subtree (points <= divider)
+    Ptr right_ptr_ = nullptr;                  // Right subtree (points > divider)
+    std::vector<int32_t> point_indices_;       // Point indices (only for leaf nodes)
 };
 
 // -----------------------------------------------------------------------------
@@ -142,13 +135,12 @@ private:
 // -----------------------------------------------------------------------------
 
 template <typename Scalar, int32_t Dimension>
-void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<PointType>& points,
-                                              const std::vector<int32_t>& point_indices) {
+void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<PointType> &points, const std::vector<int32_t> &point_indices) {
     // Input validation
     RETURN_IF(points.empty() || point_indices.empty());
 
     // Validate point indices are within bounds
-    for (const auto& idx : point_indices) {
+    for (const auto &idx: point_indices) {
         RETURN_IF(idx < 0 || static_cast<size_t>(idx) >= points.size());
     }
 
@@ -200,10 +192,10 @@ void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<PointType>& poin
 }
 
 template <typename Scalar, int32_t Dimension>
-void KdTreeNode<Scalar, Dimension>::ExtractAllPoints(std::vector<int32_t>& point_indices) const {
+void KdTreeNode<Scalar, Dimension>::ExtractAllPoints(std::vector<int32_t> &point_indices) const {
     // Add points from current leaf node
     if (IsLeafNode()) {
-        for (const auto& index : point_indices_) {
+        for (const auto &index: point_indices_) {
             point_indices.emplace_back(index);
         }
     }
@@ -218,16 +210,14 @@ void KdTreeNode<Scalar, Dimension>::ExtractAllPoints(std::vector<int32_t>& point
 }
 
 template <typename Scalar, int32_t Dimension>
-void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::vector<PointType>& points,
-                                              const PointType& target_point,
-                                              const uint32_t target_number,
-                                              std::multimap<float, int32_t>& residual_index_of_points) const {
+void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::vector<PointType> &points, const PointType &target_point, const uint32_t target_number,
+                                              std::multimap<float, int32_t> &residual_index_of_points) const {
     // Input validation
     RETURN_IF(points.empty() || target_number == 0);
 
     // Leaf node: process all points in node
     if (IsLeafNode()) {
-        for (const auto& index : point_indices_) {
+        for (const auto &index: point_indices_) {
             // Skip invalid indices
             CONTINUE_IF(index < 0 || static_cast<size_t>(index) >= points.size());
 
@@ -278,10 +268,8 @@ void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::vector<PointType>& poin
 }
 
 template <typename Scalar, int32_t Dimension>
-void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::vector<PointType>& points,
-                                                 const PointType& target_point,
-                                                 const Scalar max_radius,
-                                                 std::multimap<float, int32_t>& residual_index_of_points) const {
+void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::vector<PointType> &points, const PointType &target_point, const Scalar max_radius,
+                                                 std::multimap<float, int32_t> &residual_index_of_points) const {
     // Input validation
     RETURN_IF(points.empty() || max_radius < static_cast<Scalar>(0));
 
@@ -290,7 +278,7 @@ void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::vector<PointType>& p
 
     // Leaf node: process all points in node
     if (IsLeafNode()) {
-        for (const auto& index : point_indices_) {
+        for (const auto &index: point_indices_) {
             // Skip invalid indices
             CONTINUE_IF(index < 0 || static_cast<size_t>(index) >= points.size());
 
@@ -336,10 +324,8 @@ void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::vector<PointType>& p
 }
 
 template <typename Scalar, int32_t Dimension>
-void KdTreeNode<Scalar, Dimension>::SearchCube(const std::vector<PointType>& points,
-                                               const PointType& min_value,
-                                               const PointType& max_value,
-                                               std::multimap<float, int32_t>& residual_index_of_points) const {
+void KdTreeNode<Scalar, Dimension>::SearchCube(const std::vector<PointType> &points, const PointType &min_value, const PointType &max_value,
+                                               std::multimap<float, int32_t> &residual_index_of_points) const {
     // Input validation
     RETURN_IF(points.empty());
 
@@ -353,7 +339,7 @@ void KdTreeNode<Scalar, Dimension>::SearchCube(const std::vector<PointType>& poi
 
     // Leaf node: process all points in node
     if (IsLeafNode()) {
-        for (const auto& index : point_indices_) {
+        for (const auto &index: point_indices_) {
             // Skip invalid indices
             CONTINUE_IF(index < 0 || static_cast<size_t>(index) >= points.size());
 
@@ -391,8 +377,7 @@ void KdTreeNode<Scalar, Dimension>::SearchCube(const std::vector<PointType>& poi
 }
 
 template <typename Scalar, int32_t Dimension>
-int32_t KdTreeNode<Scalar, Dimension>::GetAxisWithMaxRange(const std::vector<int32_t>& point_indices,
-                                                           const std::vector<PointType>& points) const {
+int32_t KdTreeNode<Scalar, Dimension>::GetAxisWithMaxRange(const std::vector<int32_t> &point_indices, const std::vector<PointType> &points) const {
     // Return default axis if no points to analyze
     if (point_indices.empty() || points.empty()) {
         return 0;
@@ -408,7 +393,7 @@ int32_t KdTreeNode<Scalar, Dimension>::GetAxisWithMaxRange(const std::vector<int
         Scalar min_val = max_val;
 
         // Calculate min/max values for current axis
-        for (const auto& index : point_indices) {
+        for (const auto &index: point_indices) {
             // Skip invalid indices
             if (index < 0 || static_cast<size_t>(index) >= points.size()) {
                 continue;
@@ -446,9 +431,8 @@ int32_t KdTreeNode<Scalar, Dimension>::GetDepth() const {
 template <typename Scalar, int32_t Dimension>
 void KdTreeNode<Scalar, Dimension>::Information() const {
     // Debug information (keep original logging logic)
-    ReportInfo("[KdTreeNode] Axis [" << dimension_ << "], Value [" << divider_ << "], ["
-              << point_indices_.size() << "] points." << " Left child "
-              << LogPtr(left_ptr_.get()) << ", Right child " << LogPtr(right_ptr_.get()));
+    ReportInfo("[KdTreeNode] Axis [" << dimension_ << "], Value [" << divider_ << "], [" << point_indices_.size() << "] points." << " Left child "
+                                     << LogPtr(left_ptr_.get()) << ", Right child " << LogPtr(right_ptr_.get()));
 }
 
 template <typename Scalar, int32_t Dimension>
@@ -463,6 +447,6 @@ void KdTreeNode<Scalar, Dimension>::InformationRecursion() const {
     }
 }
 
-} // namespace slam_utility
+}  // namespace slam_utility
 
-#endif // _SLAM_UTILITY_KD_TREE_H_
+#endif  // _SLAM_UTILITY_KD_TREE_H_

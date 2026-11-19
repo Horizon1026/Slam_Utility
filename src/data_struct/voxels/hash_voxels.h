@@ -42,7 +42,8 @@ public:
     virtual void ClearVoxel(const typename Voxels<T>::Index &voxel_indices) override;
 
     virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices) const override;
-    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices, typename Voxels<T>::Index &map_indices) const override;
+    virtual bool ConvertPositionTo3DofIndices(const Vec3 &position, typename Voxels<T>::Index &voxel_indices,
+                                              typename Voxels<T>::Index &map_indices) const override;
 
     using Voxels<T>::GetBufferIndex;
     using Voxels<T>::GetVoxel;

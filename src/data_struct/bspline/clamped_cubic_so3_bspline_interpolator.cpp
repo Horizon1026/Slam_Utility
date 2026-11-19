@@ -100,7 +100,7 @@ bool ClampedCubicSO3BSplineInterpolator::Fit(const std::vector<double> &all_time
 }
 
 bool ClampedCubicSO3BSplineInterpolator::GetValue(const double time_stamp_s, TQuat<double> &orientation, TVec3<double> &angular_velocity,
-                                      TVec3<double> &angular_acceleration) const {
+                                                  TVec3<double> &angular_acceleration) const {
     RETURN_FALSE_IF(!IsFitted() || !GetAngularVelocity(time_stamp_s, angular_velocity));
 
     TVec3<double> evaluated_angular_velocity;

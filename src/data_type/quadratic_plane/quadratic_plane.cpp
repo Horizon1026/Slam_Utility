@@ -14,9 +14,7 @@ bool QuadraticPlane::FitModel(const std::vector<Vec3> &points) {
     Mat matrix_A = Mat::Zero(points.size(), param_.rows());
     for (uint32_t i = 0; i < points.size(); ++i) {
         const Vec3 &p = points[i];
-        matrix_A.row(i) << p.x() * p.x(), p.y() * p.y(), p.z() * p.z(),
-                           p.x() * p.y(), p.x() * p.z(), p.y() * p.z(),
-                           p.x(), p.y(), p.z(), 1.0f;
+        matrix_A.row(i) << p.x() * p.x(), p.y() * p.y(), p.z() * p.z(), p.x() * p.y(), p.x() * p.z(), p.y() * p.z(), p.x(), p.y(), p.z(), 1.0f;
     }
 
     // Solve for parameters.
@@ -74,11 +72,7 @@ bool QuadraticPlane::ComputeCurvaturesAtPoint(const Vec3 &point, Curvatures &cur
     const float &z = point.z();
 
     // Compute jacobian.
-    const Vec3 jacobian = Vec3(
-        2.0f * a * x + d * y + e * z + g,
-        d * x + 2.0f * b * y + f * z + h,
-        e * x + f * y + 2.0f * c * z + i
-    );
+    const Vec3 jacobian = Vec3(2.0f * a * x + d * y + e * z + g, d * x + 2.0f * b * y + f * z + h, e * x + f * y + 2.0f * c * z + i);
     const float delta1 = jacobian.squaredNorm();
     RETURN_FALSE_IF(delta1 < kZeroFloat);
     const float delta1_1_over_2 = std::sqrt(delta1);
@@ -96,29 +90,20 @@ bool QuadraticPlane::ComputeCurvaturesAtPoint(const Vec3 &point, Curvatures &cur
     const float Fyz = f;
     // Compute 4-order determinat.
     Mat4 mat_delta2 = Mat4::Zero();
-    mat_delta2 << Fxx, Fxy, Fxz, Fx,
-                  Fxy, Fyy, Fyz, Fy,
-                  Fxz, Fyz, Fzz, Fz,
-                  Fx,  Fy,  Fz,  0.0f;
+    mat_delta2 << Fxx, Fxy, Fxz, Fx, Fxy, Fyy, Fyz, Fy, Fxz, Fyz, Fzz, Fz, Fx, Fy, Fz, 0.0f;
     const float delta2 = mat_delta2.determinant();
 
     // Compute gaussian curvature.
-    curvatures.gaussian_curvature = - delta2 / (delta1 * delta1);
+    curvatures.gaussian_curvature = -delta2 / (delta1 * delta1);
     // Compute mean curvature.
     Mat3 temp_mat = Mat3::Zero();
-    temp_mat << Fxx, Fxy, Fx,
-                Fxy, Fyy, Fy,
-                Fx, Fy, 0;
+    temp_mat << Fxx, Fxy, Fx, Fxy, Fyy, Fy, Fx, Fy, 0;
     float intersection = temp_mat.determinant();
-    temp_mat << Fxx, Fxz, Fx,
-                Fxz, Fzz, Fz,
-                Fx, Fz, 0;
+    temp_mat << Fxx, Fxz, Fx, Fxz, Fzz, Fz, Fx, Fz, 0;
     intersection += temp_mat.determinant();
-    temp_mat << Fyy, Fyz, Fy,
-                Fyz, Fzz, Fz,
-                Fy, Fz, 0;
+    temp_mat << Fyy, Fyz, Fy, Fyz, Fzz, Fz, Fy, Fz, 0;
     intersection += temp_mat.determinant();
-    curvatures.mean_curvature = - intersection / (2.0f * delta1_3_over_2);
+    curvatures.mean_curvature = -intersection / (2.0f * delta1_3_over_2);
     // Compute principal curvatures.
     const float desc = std::max(0.0f, curvatures.mean_curvature * curvatures.mean_curvature - curvatures.gaussian_curvature);
     const float sqrt_desc = std::sqrt(desc);

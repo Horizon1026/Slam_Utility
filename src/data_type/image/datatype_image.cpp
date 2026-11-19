@@ -18,8 +18,7 @@ GrayImage::~GrayImage() {
     }
 }
 
-GrayImage::GrayImage(GrayImage &&other) noexcept
-    : data_(other.data_), cols_(other.cols_), rows_(other.rows_), memory_owner_(other.memory_owner_) {
+GrayImage::GrayImage(GrayImage &&other) noexcept: data_(other.data_), cols_(other.cols_), rows_(other.rows_), memory_owner_(other.memory_owner_) {
     other.data_ = nullptr;
     other.cols_ = 0;
     other.rows_ = 0;
@@ -98,8 +97,7 @@ RgbImage::~RgbImage() {
     }
 }
 
-RgbImage::RgbImage(RgbImage &&other) noexcept
-    : data_(other.data_), cols_(other.cols_), rows_(other.rows_), memory_owner_(other.memory_owner_) {
+RgbImage::RgbImage(RgbImage &&other) noexcept: data_(other.data_), cols_(other.cols_), rows_(other.rows_), memory_owner_(other.memory_owner_) {
     other.data_ = nullptr;
     other.cols_ = 0;
     other.rows_ = 0;
