@@ -141,7 +141,7 @@ void KdTreeNode<Scalar, Dimension>::Construct(const std::vector<PointType> &poin
 
     // Validate point indices are within bounds
     for (const auto &idx: point_indices) {
-        RETURN_IF(idx < 0 || static_cast<size_t>(idx) >= points.size());
+        RETURN_IF(idx < 0 || static_cast<uint32_t>(idx) >= points.size());
     }
 
     // Initialize current node with point indices
@@ -219,7 +219,7 @@ void KdTreeNode<Scalar, Dimension>::SearchKnn(const std::vector<PointType> &poin
     if (IsLeafNode()) {
         for (const auto &index: point_indices_) {
             // Skip invalid indices
-            CONTINUE_IF(index < 0 || static_cast<size_t>(index) >= points.size());
+            CONTINUE_IF(index < 0 || static_cast<uint32_t>(index) >= points.size());
 
             // Calculate squared distance (avoids expensive sqrt for comparison)
             const Scalar dist_sq = (target_point - points[index]).squaredNorm();
@@ -280,7 +280,7 @@ void KdTreeNode<Scalar, Dimension>::SearchRadius(const std::vector<PointType> &p
     if (IsLeafNode()) {
         for (const auto &index: point_indices_) {
             // Skip invalid indices
-            CONTINUE_IF(index < 0 || static_cast<size_t>(index) >= points.size());
+            CONTINUE_IF(index < 0 || static_cast<uint32_t>(index) >= points.size());
 
             // Calculate squared distance to avoid sqrt
             const Scalar dist_sq = (target_point - points[index]).squaredNorm();
@@ -341,7 +341,7 @@ void KdTreeNode<Scalar, Dimension>::SearchCube(const std::vector<PointType> &poi
     if (IsLeafNode()) {
         for (const auto &index: point_indices_) {
             // Skip invalid indices
-            CONTINUE_IF(index < 0 || static_cast<size_t>(index) >= points.size());
+            CONTINUE_IF(index < 0 || static_cast<uint32_t>(index) >= points.size());
 
             // Check if point is inside axis-aligned cube
             bool is_inside = true;
@@ -395,7 +395,7 @@ int32_t KdTreeNode<Scalar, Dimension>::GetAxisWithMaxRange(const std::vector<int
         // Calculate min/max values for current axis
         for (const auto &index: point_indices) {
             // Skip invalid indices
-            if (index < 0 || static_cast<size_t>(index) >= points.size()) {
+            if (index < 0 || static_cast<uint32_t>(index) >= points.size()) {
                 continue;
             }
             max_val = std::max(points[index](i), max_val);

@@ -232,7 +232,7 @@ std::string SlamOperation::GetLastSubStringAfter(const std::string &raw_string, 
     if (divider.empty()) {
         return raw_string;
     }
-    size_t pos = raw_string.rfind(divider);
+    uint32_t pos = raw_string.rfind(divider);
     if (pos == std::string::npos) {
         return raw_string;
     }
